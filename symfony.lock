@@ -80,6 +80,9 @@
     "jdorn/sql-formatter": {
         "version": "v1.2.17"
     },
+    "jsor/doctrine-postgis": {
+        "version": "v1.7.0"
+    },
     "nikic/php-parser": {
         "version": "v4.1.1"
     },
@@ -103,6 +106,15 @@
     },
     "psr/simple-cache": {
         "version": "1.0.1"
+    },
+    "sensio/framework-extra-bundle": {
+        "version": "5.2",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "5.2",
+            "ref": "fb7e19da7f013d0d422fa9bce16f5c510e27609b"
+        }
     },
     "swiftmailer/swiftmailer": {
         "version": "v6.1.3"

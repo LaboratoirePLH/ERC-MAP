@@ -1,0 +1,5 @@
+app_name: "ERC MAP"
+
+login_page:
+    login_required: "Login required"
+    access_database: "Access the database"

@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * Chercheur
@@ -10,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="chercheur")
  * @ORM\Entity
  */
-class Chercheur
+class Chercheur implements UserInterface
 {
     /**
      * @var int
@@ -141,5 +142,17 @@ class Chercheur
         return $this;
     }
 
+    public function getRoles(): array
+    {
+        return ['ROLE_USER'];
+    }
 
+    public function getSalt()
+    {
+        return null;
+    }
+
+    public function eraseCredentials()
+    {
+    }
 }

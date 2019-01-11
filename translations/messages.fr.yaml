@@ -3,3 +3,7 @@ app_name: "ERC MAP"
 login_page:
     login_required: "Identification requise"
     access_database: "Accès à la base de données"
+    form:
+        username: "Nom d'utilisateur"
+        password: "Mot de passe"
+        login: "Connexion"

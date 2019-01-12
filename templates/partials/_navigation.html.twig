@@ -8,7 +8,7 @@
                 <div class="row">
                     <div class="col-12">
                         <a href="{{url('logout')}}" class="btn w-100">
-                            {{ 'home_page.logout'|trans }}
+                            {{ 'nav.logout'|trans }}
                         </a>
                     </div>
                 </div>
@@ -23,7 +23,7 @@
                 <div class="row">
                     <div class="col-12">
                         <a href="{{ showcase_website_url }}" class="btn w-100" target="_blank" rel="noopener">
-                            {{ 'home_page.go_to_showcase_website'|trans }}
+                            {{ 'nav.go_to_showcase_website'|trans }}
                         </a>
                     </div>
                 </div>
@@ -34,17 +34,29 @@
         <div class="container">
             <div class="col-12">
                 <ul class="nav nav-fill">
-                    <li class="nav-item active">
-                        <a class="nav-link" href="#">Active</a>
+                    <li class="nav-item {{ app.request.uri == url('home') ? 'active' : '' }}">
+                        <a class="nav-link" href="{{ url('home') }}">
+                            <i class="fas fa-place-of-worship"></i>
+                            {{ 'nav.home'|trans }}
+                        </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Link</a>
+                    <li class="nav-item {{ app.request.uri == url('source') ? 'active' : '' }}">
+                        <a class="nav-link" href="{{ url('source') }}">{{ 'nav.sources'|trans }}</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Link</a>
+                    <li class="nav-item {{ app.request.uri == url('attestation') ? 'active' : '' }}">
+                        <a class="nav-link" href="{{ url('attestation') }}">{{ 'nav.attestations'|trans }}</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link disabled" href="#">Disabled</a>
+                    <li class="nav-item {{ app.request.uri == url('element') ? 'active' : '' }}">
+                        <a class="nav-link" href="{{ url('element') }}">{{ 'nav.elements'|trans }}</a>
+                    </li>
+                    <li class="nav-item {{ app.request.uri == url('bibliography') ? 'active' : '' }}">
+                        <a class="nav-link" href="{{ url('bibliography') }}">{{ 'nav.bibliography'|trans }}</a>
+                    </li>
+                    <li class="nav-item {{ app.request.uri == url('contact') ? 'active' : '' }}">
+                        <a class="nav-link" href="{{ url('contact') }}">
+                            <i class="fas fa-envelope"></i>
+                            {{ 'nav.contact'|trans }}
+                        </a>
                     </li>
                 </ul>
             </div>

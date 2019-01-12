@@ -3,6 +3,17 @@ languages:
     fr: "French"
     en: "English"
 
+nav:
+    logout: "Logout"
+    go_to_showcase_website: "Go to the showcase website"
+    admin: "Administrator Section"
+    home: "Home"
+    sources: "Sources"
+    attestations: "Proclamations"
+    elements: "Elements"
+    bibliography: "Bibliography"
+    contact: "Contact"
+
 login_page:
     login_required: "Login required"
     access_database: "Access the database"
@@ -10,7 +21,3 @@ login_page:
         username: "Username"
         password: "Password"
         login: "Login"
-
-home_page:
-    logout: "Logout"
-    go_to_showcase_website: "Go to the showcase website"

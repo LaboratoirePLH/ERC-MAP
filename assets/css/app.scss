@@ -2,4 +2,42 @@
 
 body {
     background-color: lightgray;
+
+    &.login-page {
+        background-image: url('images/bkg-ercmap.jpg');
+    }
+
+    header#site-header {
+        background-image: url('images/bkg-ercmap.jpg');
+
+        .btn {
+            background-color: rgba(67, 67, 67, 0.4);
+            color: #fff;
+
+            &:hover {
+                background-color: rgba(67, 67, 67, 1);
+            }
+        }
+
+        nav#navigation {
+            background-color: #434343;
+
+            .nav-item {
+                border: 1px solid #dbdbdb;
+
+                a {
+                    color: #fff;
+                }
+
+                &.active,
+                &:hover {
+                    background-color: #d8be00;
+
+                    a {
+                        color: #434343;
+                    }
+                }
+            }
+        }
+    }
 }

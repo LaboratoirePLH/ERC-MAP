@@ -1,4 +1,7 @@
 app_name: "ERC MAP"
+languages:
+    fr: "French"
+    en: "English"
 
 login_page:
     login_required: "Login required"
@@ -7,3 +10,7 @@ login_page:
         username: "Username"
         password: "Password"
         login: "Login"
+
+home_page:
+    logout: "Logout"
+    go_to_showcase_website: "Go to the showcase website"

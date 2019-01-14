@@ -12,6 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class TypeSource
 {
+    use Traits\TranslatedName;
     /**
      * @var int
      *
@@ -22,64 +23,29 @@ class TypeSource
      */
     private $id;
 
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="nom", type="string", length=50, nullable=true)
-     */
-    private $nom;
-
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="name", type="string", length=50, nullable=true)
-     */
-    private $name;
-
-    /**
-     * @var int|null
-     *
-     * @ORM\Column(name="id_cat_source", type="smallint", nullable=true)
-     */
-    private $idCatSource;
-
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getNom(): ?string
+    /**
+     * @var \CategorieSource|null
+     *
+     * @ORM\ManyToOne(targetEntity="CategorieSource")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_cat_source", referencedColumnName="id")
+     * })
+     */
+    private $categorieSource;
+
+    public function getCategorieSource(): ?int
     {
-        return $this->nom;
+        return $this->categorieSource;
     }
 
-    public function setNom(?string $nom): self
+    public function setCategorieSource(?CategorieSource $categorieSource): self
     {
-        $this->nom = $nom;
-
-        return $this;
-    }
-
-    public function getName(): ?string
-    {
-        return $this->name;
-    }
-
-    public function setName(?string $name): self
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    public function getIdCatSource(): ?int
-    {
-        return $this->idCatSource;
-    }
-
-    public function setIdCatSource(?int $idCatSource): self
-    {
-        $this->idCatSource = $idCatSource;
+        $this->categorieSource = $categorieSource;
 
         return $this;
     }

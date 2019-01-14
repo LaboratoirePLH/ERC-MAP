@@ -79,12 +79,12 @@ class Elements
      */
     private $idNature;
 
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     *
-     * @ORM\ManyToMany(targetEntity="Elements", mappedBy="idElt1")
-     */
-    private $idElt;
+    // /**
+    //  * @var \Doctrine\Common\Collections\Collection
+    //  *
+    //  * @ORM\ManyToMany(targetEntity="Elements", mappedBy="idElt1")
+    //  */
+    // private $idElt;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
@@ -105,7 +105,7 @@ class Elements
      */
     public function __construct()
     {
-        $this->idElt = new \Doctrine\Common\Collections\ArrayCollection();
+        // $this->idElt = new \Doctrine\Common\Collections\ArrayCollection();
         $this->idCatElt = new \Doctrine\Common\Collections\ArrayCollection();
         $this->idBiblio = new \Doctrine\Common\Collections\ArrayCollection();
     }

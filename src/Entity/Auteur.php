@@ -14,6 +14,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Auteur
 {
+    use Traits\TranslatedName;
+
     /**
      * @var int
      *
@@ -22,97 +24,59 @@ class Auteur
      * @ORM\GeneratedValue(strategy="SEQUENCE")
      * @ORM\SequenceGenerator(sequenceName="auteur_id_auteur_seq", allocationSize=1, initialValue=1)
      */
-    private $idAuteur;
+    private $id;
 
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="nom", type="string", length=255, nullable=true)
-     */
-    private $nom;
-
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="name", type="string", length=255, nullable=true)
-     */
-    private $name;
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
 
     /**
      * @var \Doctrine\Common\Collections\Collection
      *
-     * @ORM\ManyToMany(targetEntity="Titre", mappedBy="idAuteur")
+     * @ORM\ManyToMany(targetEntity="Titre", mappedBy="auteurs")
      */
-    private $idTitre;
+    private $titres;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
      *
-     * @ORM\ManyToMany(targetEntity="Source", mappedBy="idAuteur")
+     * @ORM\ManyToMany(targetEntity="Source", mappedBy="auteurs")
      */
-    private $idSource;
+    private $sources;
 
     /**
      * Constructor
      */
     public function __construct()
     {
-        $this->idTitre = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->idSource = new \Doctrine\Common\Collections\ArrayCollection();
-    }
-
-    public function getIdAuteur(): ?int
-    {
-        return $this->idAuteur;
-    }
-
-    public function getNom(): ?string
-    {
-        return $this->nom;
-    }
-
-    public function setNom(?string $nom): self
-    {
-        $this->nom = $nom;
-
-        return $this;
-    }
-
-    public function getName(): ?string
-    {
-        return $this->name;
-    }
-
-    public function setName(?string $name): self
-    {
-        $this->name = $name;
-
-        return $this;
+        $this->titres = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->sources = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
      * @return Collection|Titre[]
      */
-    public function getIdTitre(): Collection
+    public function getTitres(): Collection
     {
-        return $this->idTitre;
+        return $this->titres;
     }
 
-    public function addIdTitre(Titre $idTitre): self
+    public function addTitres(Titre $titre): self
     {
-        if (!$this->idTitre->contains($idTitre)) {
-            $this->idTitre[] = $idTitre;
-            $idTitre->addIdAuteur($this);
+        if (!$this->titres->contains($titre)) {
+            $this->titres[] = $titre;
+            $titre->addAuteurs($this);
         }
 
         return $this;
     }
 
-    public function removeIdTitre(Titre $idTitre): self
+    public function removeTitres(Titre $titre): self
     {
-        if ($this->idTitre->contains($idTitre)) {
-            $this->idTitre->removeElement($idTitre);
-            $idTitre->removeIdAuteur($this);
+        if ($this->titres->contains($titre)) {
+            $this->titres->removeElement($titre);
+            $titre->removeAuteurs($this);
         }
 
         return $this;
@@ -121,26 +85,26 @@ class Auteur
     /**
      * @return Collection|Source[]
      */
-    public function getIdSource(): Collection
+    public function getSources(): Collection
     {
-        return $this->idSource;
+        return $this->sources;
     }
 
-    public function addIdSource(Source $idSource): self
+    public function addSources(Source $source): self
     {
-        if (!$this->idSource->contains($idSource)) {
-            $this->idSource[] = $idSource;
-            $idSource->addIdAuteur($this);
+        if (!$this->sources->contains($source)) {
+            $this->sources[] = $source;
+            $source->addAuteurs($this);
         }
 
         return $this;
     }
 
-    public function removeIdSource(Source $idSource): self
+    public function removeSources(Source $source): self
     {
-        if ($this->idSource->contains($idSource)) {
-            $this->idSource->removeElement($idSource);
-            $idSource->removeIdAuteur($this);
+        if ($this->sources->contains($source)) {
+            $this->sources->removeElement($source);
+            $source->removeAuteurs($this);
         }
 
         return $this;

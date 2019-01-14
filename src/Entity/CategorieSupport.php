@@ -5,21 +5,22 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * CategorieSource
+ * CategorieSupport
  *
- * @ORM\Table(name="categorie_source")
+ * @ORM\Table(name="cat_support")
  * @ORM\Entity
  */
-class CategorieSource
+class CategorieSupport
 {
     use Traits\TranslatedName;
+
     /**
      * @var int
      *
      * @ORM\Column(name="id", type="smallint", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="SEQUENCE")
-     * @ORM\SequenceGenerator(sequenceName="categorie_source_id_seq", allocationSize=1, initialValue=1)
+     * @ORM\SequenceGenerator(sequenceName="cat_support_id_seq", allocationSize=1, initialValue=1)
      */
     private $id;
 

@@ -12,6 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class TypeSupport
 {
+    use Traits\TranslatedName;
     /**
      * @var int
      *
@@ -22,67 +23,29 @@ class TypeSupport
      */
     private $id;
 
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="nom", type="string", length=100, nullable=true)
-     */
-    private $nom;
-
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="name", type="string", length=100, nullable=true)
-     */
-    private $name;
-
-    /**
-     * @var \CatSupport
-     *
-     * @ORM\ManyToOne(targetEntity="CatSupport")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_cat_supp", referencedColumnName="id")
-     * })
-     */
-    private $idCatSupp;
-
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getNom(): ?string
+    /**
+     * @var \CategorieSupport
+     *
+     * @ORM\ManyToOne(targetEntity="CategorieSupport")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_cat_supp", referencedColumnName="id")
+     * })
+     */
+    private $categorieSupport;
+
+    public function getCategorieSupport(): ?CategorieSupport
     {
-        return $this->nom;
+        return $this->categorieSupport;
     }
 
-    public function setNom(?string $nom): self
+    public function setCategorieSupport(?CategorieSupport $categorieSupport): self
     {
-        $this->nom = $nom;
-
-        return $this;
-    }
-
-    public function getName(): ?string
-    {
-        return $this->name;
-    }
-
-    public function setName(?string $name): self
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    public function getIdCatSupp(): ?CatSupport
-    {
-        return $this->idCatSupp;
-    }
-
-    public function setIdCatSupp(?CatSupport $idCatSupp): self
-    {
-        $this->idCatSupp = $idCatSupp;
+        $this->categorieSupport = $categorieSupport;
 
         return $this;
     }

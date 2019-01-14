@@ -12,6 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Langue
 {
+    use Traits\TranslatedName;
     /**
      * @var int
      *
@@ -22,48 +23,49 @@ class Langue
      */
     private $id;
 
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="nom", type="string", length=100, nullable=true)
-     */
-    private $nom;
-
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="name", type="string", length=100, nullable=true)
-     */
-    private $name;
-
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getNom(): ?string
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     *
+     * @ORM\ManyToMany(targetEntity="Source", mappedBy="langues")
+     */
+    private $sources;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
     {
-        return $this->nom;
+        $this->sources = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
-    public function setNom(?string $nom): self
+    /**
+     * @return Collection|Source[]
+     */
+    public function getSources(): Collection
     {
-        $this->nom = $nom;
+        return $this->sources;
+    }
 
+    public function addSource(Source $source): self
+    {
+        if (!$this->sources->contains($source)) {
+            $this->sources[] = $source;
+            $source->addAuteur($this);
+        }
         return $this;
     }
 
-    public function getName(): ?string
+    public function removeSource(Source $source): self
     {
-        return $this->name;
-    }
-
-    public function setName(?string $name): self
-    {
-        $this->name = $name;
-
+        if ($this->sources->contains($source)) {
+            $this->sources->removeElement($source);
+            $source->removeAuteur($this);
+        }
         return $this;
     }
-
-
 }

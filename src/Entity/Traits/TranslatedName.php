@@ -9,7 +9,7 @@ trait TranslatedName
      *
      * @ORM\Column(name="nom", type="string", length=255, nullable=true)
      */
-    private $nom_fr;
+    private $nomFr;
 
     public function getNomFr(): ?string
     {

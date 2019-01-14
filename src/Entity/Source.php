@@ -434,9 +434,10 @@ class Source
     {
         $this->titresCites = new \Doctrine\Common\Collections\ArrayCollection();
         $this->auteurs = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->langues = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
-        /**
+    /**
      * @var \Doctrine\Common\Collections\Collection
      *
      * @ORM\ManyToMany(targetEntity="Titre", inversedBy="sourcesCitees")
@@ -510,6 +511,45 @@ class Source
     {
         if ($this->auteurs->contains($auteur)) {
             $this->auteurs->removeElement($auteur);
+        }
+        return $this;
+    }
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     *
+     * @ORM\ManyToMany(targetEntity="Langue", inversedBy="sources")
+     * @ORM\JoinTable(name="a_langue",
+     *   joinColumns={
+     *     @ORM\JoinColumn(name="id_source", referencedColumnName="id")
+     *   },
+     *   inverseJoinColumns={
+     *     @ORM\JoinColumn(name="id_langue", referencedColumnName="id")
+     *   }
+     * )
+     */
+    private $langues;
+
+    /**
+     * @return Collection|Langue[]
+     */
+    public function getLangues(): Collection
+    {
+        return $this->langues;
+    }
+
+    public function addLangue(Langue $langue): self
+    {
+        if (!$this->langues->contains($langue)) {
+            $this->langues[] = $langue;
+        }
+        return $this;
+    }
+
+    public function removeLangue(Langue $langue): self
+    {
+        if ($this->langues->contains($langue)) {
+            $this->langues->removeElement($langue);
         }
         return $this;
     }

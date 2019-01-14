@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Source
  *
  * @ORM\Table(name="source", indexes={@ORM\Index(name="fki_id_datation_fkey", columns={"id_datation"}), @ORM\Index(name="fki_create_user_fkey", columns={"create_source"}), @ORM\Index(name="fki_modif_user_fkey", columns={"modif_source"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\SourceRepository")
  */
 class Source
 {
@@ -459,18 +459,18 @@ class Source
         return $this->titreCites;
     }
 
-    public function addTitresCites(Titre $titreCite): self
+    public function addTitresCite(Titre $titresCite): self
     {
-        if (!$this->titreCites->contains($titreCite)) {
-            $this->titreCites[] = $titreCite;
+        if (!$this->titresCites->contains($titresCite)) {
+            $this->titresCites[] = $titresCite;
         }
         return $this;
     }
 
-    public function removeTitresCites(Titre $titreCite): self
+    public function removeTitresCite(Titre $titresCite): self
     {
-        if ($this->titreCites->contains($titreCite)) {
-            $this->titreCites->removeElement($titreCite);
+        if ($this->titresCites->contains($titresCite)) {
+            $this->titresCites->removeElement($titresCite);
         }
         return $this;
     }
@@ -498,7 +498,7 @@ class Source
         return $this->auteurs;
     }
 
-    public function addAuteurs(Auteur $auteur): self
+    public function addAuteur(Auteur $auteur): self
     {
         if (!$this->auteurs->contains($auteur)) {
             $this->auteurs[] = $auteur;
@@ -506,7 +506,7 @@ class Source
         return $this;
     }
 
-    public function removeAuteurs(Auteur $auteur): self
+    public function removeAuteur(Auteur $auteur): self
     {
         if ($this->auteurs->contains($auteur)) {
             $this->auteurs->removeElement($auteur);

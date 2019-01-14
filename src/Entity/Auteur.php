@@ -62,23 +62,21 @@ class Auteur
         return $this->titres;
     }
 
-    public function addTitres(Titre $titre): self
+    public function addTitre(Titre $titre): self
     {
         if (!$this->titres->contains($titre)) {
             $this->titres[] = $titre;
-            $titre->addAuteurs($this);
+            $titre->addAuteur($this);
         }
-
         return $this;
     }
 
-    public function removeTitres(Titre $titre): self
+    public function removeTitre(Titre $titre): self
     {
         if ($this->titres->contains($titre)) {
             $this->titres->removeElement($titre);
-            $titre->removeAuteurs($this);
+            $titre->removeAuteur($this);
         }
-
         return $this;
     }
 
@@ -90,23 +88,21 @@ class Auteur
         return $this->sources;
     }
 
-    public function addSources(Source $source): self
+    public function addSource(Source $source): self
     {
         if (!$this->sources->contains($source)) {
             $this->sources[] = $source;
-            $source->addAuteurs($this);
+            $source->addAuteur($this);
         }
-
         return $this;
     }
 
-    public function removeSources(Source $source): self
+    public function removeSource(Source $source): self
     {
         if ($this->sources->contains($source)) {
             $this->sources->removeElement($source);
-            $source->removeAuteurs($this);
+            $source->removeAuteur($this);
         }
-
         return $this;
     }
 

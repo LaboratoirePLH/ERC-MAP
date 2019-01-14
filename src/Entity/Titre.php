@@ -54,7 +54,7 @@ class Titre
         return $this->auteurs;
     }
 
-    public function addAuteurs(Auteur $auteur): self
+    public function addAuteur(Auteur $auteur): self
     {
         if (!$this->auteurs->contains($auteur)) {
             $this->auteurs[] = $auteur;
@@ -62,7 +62,7 @@ class Titre
         return $this;
     }
 
-    public function removeAuteurs(Auteur $auteur): self
+    public function removeAuteur(Auteur $auteur): self
     {
         if ($this->auteurs->contains($auteur)) {
             $this->auteurs->removeElement($auteur);
@@ -85,20 +85,20 @@ class Titre
         return $this->sourceCitees;
     }
 
-    public function addSourcesCitees(Source $source): self
+    public function addSourcesCitee(Source $sourcesCitee): self
     {
-        if (!$this->sourceCitees->contains($source)) {
-            $this->sourceCitees[] = $source;
-            $source->addTitresCites($this);
+        if (!$this->sourcesCitees->contains($sourcesCitee)) {
+            $this->sourcesCitees[] = $sourcesCitee;
+            $sourcesCitee->addTitresCite($this);
         }
         return $this;
     }
 
-    public function removeSourcesCitees(Source $source): self
+    public function removeSourcesCitee(Source $sourcesCitee): self
     {
-        if ($this->sourceCitees->contains($source)) {
-            $this->sourceCitees->removeElement($source);
-            $source->removeTitresCites($this);
+        if ($this->sourcesCitees->contains($sourcesCitee)) {
+            $this->sourcesCitees->removeElement($sourcesCitee);
+            $sourcesCitee->removeTitresCite($this);
         }
         return $this;
     }

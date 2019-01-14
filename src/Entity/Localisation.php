@@ -83,7 +83,7 @@ class Localisation
     /**
      * @var geometry|null
      *
-     * @ORM\Column(name="geom", type="geometry", nullable=true)
+     * @ORM\Column(name="geom", type="geometry", nullable=true, options={"geometry_type"="POINT", "srid"=4326})
      */
     private $geom;
 

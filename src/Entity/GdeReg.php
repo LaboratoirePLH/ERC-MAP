@@ -39,7 +39,7 @@ class GdeReg
     /**
      * @var geometry|null
      *
-     * @ORM\Column(name="geom", type="geometry", nullable=true)
+     * @ORM\Column(name="geom", type="geometry", nullable=true, options={"geometry_type"="MULTIPOLYGON", "srid"=4326})
      */
     private $geom;
 

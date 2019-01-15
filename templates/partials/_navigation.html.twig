@@ -40,16 +40,16 @@
                             {{ 'nav.home'|trans }}
                         </a>
                     </li>
-                    <li class="nav-item {{ app.request.uri == url('source') ? 'active' : '' }}">
-                        <a class="nav-link" href="{{ url('source') }}">{{ 'nav.sources'|trans }}</a>
+                    <li class="nav-item {{ controller_name == 'SourceController' ? 'active' : '' }}">
+                        <a class="nav-link" href="{{ url('source_list') }}">{{ 'nav.source_list'|trans }}</a>
                     </li>
-                    <li class="nav-item {{ app.request.uri == url('attestation') ? 'active' : '' }}">
-                        <a class="nav-link" href="{{ url('attestation') }}">{{ 'nav.attestations'|trans }}</a>
+                    <li class="nav-item {{ controller_name == 'AttestationController' ? 'active' : '' }}">
+                        <a class="nav-link" href="{{ url('attestation') }}">{{ 'nav.attestation'|trans }}</a>
                     </li>
-                    <li class="nav-item {{ app.request.uri == url('element') ? 'active' : '' }}">
-                        <a class="nav-link" href="{{ url('element') }}">{{ 'nav.elements'|trans }}</a>
+                    <li class="nav-item {{ controller_name == 'ElementController' ? 'active' : '' }}">
+                        <a class="nav-link" href="{{ url('element') }}">{{ 'nav.element'|trans }}</a>
                     </li>
-                    <li class="nav-item {{ app.request.uri == url('bibliography') ? 'active' : '' }}">
+                    <li class="nav-item {{ controller_name == 'BibliographyController' ? 'active' : '' }}">
                         <a class="nav-link" href="{{ url('bibliography') }}">{{ 'nav.bibliography'|trans }}</a>
                     </li>
                     <li class="nav-item {{ app.request.uri == url('contact') ? 'active' : '' }}">

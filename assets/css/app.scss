@@ -46,6 +46,13 @@ body {
     main {
         padding-top: 40px;
 
+        form {
+            .col-form-label {
+                font-weight: bold;
+                text-align: right;
+            }
+        }
+
         #source_list {
             tbody tr {
                 cursor: pointer;

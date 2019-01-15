@@ -47,15 +47,33 @@ class SourceRepository extends ServiceEntityRepository
         return $query->getResult();
     }
 
-    /*
-    public function findOneBySomeField($value): ?Source
+    /**
+     * @return Source|null Returns a Source object
+     */
+    public function getRecord(int $id): ?Source
     {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        $query = $this->createQueryBuilder('source')
+            ->select([
+                'partial s.{id, dateModification}',
+                'titrePrincipal',
+                'typeSource',
+                'categorieSource',
+                'createur',
+                'dernierEditeur',
+            ])
+            ->from('App\Entity\Source', 's')
+            ->join('s.titrePrincipal', 'titrePrincipal')
+            ->join('s.typeSource', 'typeSource')
+            ->join('s.categorieSource', 'categorieSource')
+            ->join('s.createur', 'createur')
+            ->join('s.dernierEditeur', 'dernierEditeur')
+            ->where('s.id = ?1')
+            ->orderBy('s.dateModification', 'DESC')
+            ->setParameter(1, $id)
+            ->getQuery();
+
+        $query->setHint(\Doctrine\ORM\Query::HINT_FORCE_PARTIAL_LOAD, 1);
+
+        return $query->getOneOrNullResult();
     }
-    */
 }

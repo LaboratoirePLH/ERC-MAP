@@ -10,9 +10,9 @@ nav:
     go_to_showcase_website: "Go to the showcase website"
     admin: "Administrator Section"
     home: "Home"
-    sources: "Sources"
-    attestations: "Proclamations"
-    elements: "Elements"
+    source_list: "Sources"
+    attestation: "Proclamations"
+    element: "Elements"
     bibliography: "Bibliography"
     contact: "Contact"
 
@@ -25,11 +25,16 @@ login_page:
         login: "Login"
 
 generic:
+    close: "Close"
     cancel: "Cancel"
     search: "Search"
+    save: "Save"
+    delete: "Delete"
     fields:
         id: "ID"
+        date_creation: "Creation"
         date_modification: "Latest Edition"
+        by: "by"
 
 sources:
     list: "Sources List"
@@ -43,12 +48,17 @@ sources:
         createur: "Creator"
         dernier_editeur: "Latest Editor"
         reference_bibliographique: "Bibliographic Reference"
+        to_translate: "To translate in"
+        fiability: "Reliability score"
 
 biblio:
     fields:
         titre_abrege: "Shortened Title"
 
-
+modals:
+    confirm_deletion:
+        title: "Confirm delete"
+        body: "Are you sure you want to delete this record ? This action cannot be undone, and may cause the deletion of children records."
 
 datatable:
     all: "All"

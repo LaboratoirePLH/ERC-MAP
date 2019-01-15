@@ -1,0 +1,90 @@
+{% extends 'authenticated.html.twig' %}
+{% block title %}
+{{ ('sources.' ~ action)|trans }}{{ source is defined ? ' #'~source.id : ''}}
+{% endblock %}
+{% block content %}
+
+
+<h3 class="text-center">
+    <u>{{ source.titrePrincipal.getNom(locale)}}</u>
+</h3>
+<div class="row">
+    <div class="col-12 text-center">
+        <u>{{ 'generic.fields.date_creation'|trans }}:</u>&nbsp;
+        {{ source.dateCreation|date('locale_datetime'|trans) }}&nbsp;
+        {{ 'generic.fields.by'|trans }}&nbsp;
+        {{ source.createur.prenomNom|trim }}
+    </div>
+    <div class="col-12 text-center">
+        <u>{{ 'generic.fields.date_modification'|trans }}:</u>&nbsp;
+        {{ source.dateModification|date('locale_datetime'|trans) }}&nbsp;
+        {{ 'generic.fields.by'|trans }}&nbsp;
+        {{ source.dernierEditeur.prenomNom|trim }}
+    </div>
+</div>
+<form action="" method="POST" class="form form-horizontal d-inline">
+    <hr>
+
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label pt-0">{{ 'sources.fields.to_translate'|trans }}</label>
+        <div class="col-sm-9">
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="inputToTranslateFr" value="a_traduire">
+                <label class="form-check-label" for="inputToTranslateFr">{{ 'languages.fr'|trans }}</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="inputToTranslateEn" value="to_translate">
+                <label class="form-check-label" for="inputToTranslateEn">{{ 'languages.en'|trans }}</label>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label for="inputFiability" class="col-sm-3 col-form-label">{{ 'sources.fields.fiability'|trans }}</label>
+        <div class="col-sm-9">
+            <input type="text" class="form-control" id="inputFiability" name="fiability" value="{{ old.fiability|default(source.fiability|default(0)) }}"
+                readonly>
+        </div>
+    </div>
+
+    <hr>
+    <div class="row">
+        <div class="col-12 text-center">
+            <button type="submit" class="btn btn-primary">{{ 'generic.save'|trans }}</button>
+
+            <a href="{{ url('source_list')}}" class="btn btn-secondary">{{ 'generic.cancel'|trans }}</a>
+            {% if action == 'edit' %}
+            <a href="{{ url('source_delete', {'id' : source.id})}}" class="btn btn-danger" id="delete-button">
+                {{ 'generic.delete'|trans }}
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</form>
+
+<hr>
+{% if action == 'edit' %}
+{% include "modals/confirmation.html.twig" with {
+'modalName': 'confirm_deletion',
+'triggerSelector': '#delete-button',
+'targetUrl': url('source_delete', {'id' : source.id}),
+'confirmationLabel': 'generic.delete',
+'csrfToken': 'delete_source_'~source.id,
+} %}
+{% endif %}
+{% endblock %}
+
+
+
+
+{% block javascripts %}
+{{ parent() }}
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("button[type=reset]").click(function (e) {
+            e.preventDefault();
+            alert('reset');
+        })
+    });
+</script>
+{% endblock %}

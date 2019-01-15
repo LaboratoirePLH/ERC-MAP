@@ -42,7 +42,7 @@
         {% for source in sources %}
         <tr>
             <th scope="row">
-                <a href="#">{{ source.id }}</a>
+                <a href="{{ url('source_edit', {'id': source.id}) }}">#{{ source.id }}</a>
             </th>
             <td>
                 {{ source.typeSource is not null ? source.typeSource.nom(locale) : "" }}

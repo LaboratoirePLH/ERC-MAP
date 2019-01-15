@@ -1,0 +1,43 @@
+{#
+Modal component.
+Parameters :
+- modalName : Name of the modal, used to generate its ID, and to fetch translation sentences
+- triggerSelector : jQuery selector for the link that should trigger the modal's opening
+- targetUrl : URL to redirect to if user clicks the primary button
+- confirmationLabel : Text of the primary button
+- csrfToken : CSRF token to pass in the form
+#}
+{% set id = modalName ~ random() %}
+<div class="modal fade" id="{{ id }}" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{ ('modals.'~modalName~'.title')|trans }}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="{{ 'generic.close'|trans}}">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>{{ ('modals.'~modalName~'.body')|trans }}</p>
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-secondary" data-dismiss="modal">{{ 'generic.cancel'|trans }}</a>
+                <form action="{{ targetUrl }}" method="post">
+                    <input type="hidden" name="token" value="{{ csrf_token(csrfToken) }}">
+                    <button type="submit" class="btn btn-danger">
+                        {{ confirmationLabel|trans }}
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" defer>
+    $(document).ready(function () {
+        $("{{ triggerSelector }}").click(function (e) {
+            e.preventDefault();
+            $(".modal#{{ id }}").modal();
+        });
+    })
+</script>

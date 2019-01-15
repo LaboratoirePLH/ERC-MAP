@@ -10,9 +10,9 @@ nav:
     go_to_showcase_website: "Aller au site vitrine"
     admin: "Administration"
     home: "Accueil"
-    sources: "Sources"
-    attestations: "Attestations"
-    elements: "Élements"
+    source_list: "Sources"
+    attestation: "Attestations"
+    element: "Élements"
     bibliography: "Bibliographie"
     contact: "Contact"
 
@@ -25,11 +25,16 @@ login_page:
         login: "Connexion"
 
 generic:
+    close: "Fermer"
     cancel: "Annuler"
     search: "Rechercher"
+    save: "Enregistrer"
+    delete: "Supprimer"
     fields:
         id: "ID"
+        date_creation: "Création"
         date_modification: "Dernière Modification"
+        by: "par"
 
 sources:
     list: "Liste des Source"
@@ -43,12 +48,17 @@ sources:
         createur: "Créateur"
         dernier_editeur: "Dernier Éditeur"
         reference_bibliographique: "Référence Bibliographique"
+        to_translate: "À traduire en"
+        fiability: "Score de fiabilité"
 
 biblio:
     fields:
         titre_abrege: "Titre Abrégé"
 
-
+modals:
+    confirm_deletion:
+        title: "Confirmer la suppression"
+        body: "Êtes-vous sûr de vouloir supprimer cet enregistrement ? Cette action est irréversible et peut entraîner la suppression des enregistrements liés."
 
 datatable:
     all: "Tous"

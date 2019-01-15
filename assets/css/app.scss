@@ -1,5 +1,6 @@
 @import "~bootstrap/scss/bootstrap";
 @import '~@fortawesome/fontawesome-free/css/all.css';
+@import "~datatables.net-bs4/css/dataTables.bootstrap4.min.css";
 
 body {
     background-color: lightgray;
@@ -38,6 +39,16 @@ body {
                         color: #434343;
                     }
                 }
+            }
+        }
+    }
+
+    main {
+        padding-top: 40px;
+
+        #source_list {
+            tbody tr {
+                cursor: pointer;
             }
         }
     }

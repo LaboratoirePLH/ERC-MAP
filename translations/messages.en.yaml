@@ -1,4 +1,6 @@
 app_name: "ERC MAP"
+locale: "en"
+locale_datetime: "Y-m-d H:i:s"
 languages:
     fr: "French"
     en: "English"
@@ -21,3 +23,34 @@ login_page:
         username: "Username"
         password: "Password"
         login: "Login"
+
+generic:
+    cancel: "Cancel"
+    search: "Search"
+    fields:
+        id: "ID"
+        date_modification: "Latest Edition"
+
+sources:
+    list: "Sources List"
+    create: "Create Source"
+    edit: "Edit Source"
+    fields:
+        titre_principal: "Main Title"
+        type_source: "Source Type"
+        categorie_source: "Source Category"
+        langues: "Languages"
+        createur: "Creator"
+        dernier_editeur: "Latest Editor"
+        reference_bibliographique: "Bibliographic Reference"
+
+biblio:
+    fields:
+        titre_abrege: "Shortened Title"
+
+
+
+datatable:
+    all: "All"
+    language: '{"emptyTable":"No data available","info":"Page _PAGE_ of _PAGES_",
+    "infoEmpty":"No data available","infoFiltered":"(filtered from _MAX_ total results)","lengthMenu":"Display _MENU_ items per page","search":"Search :","zeroRecords":"No result","paginate":{"first":"First","last":"Last","next":"Next","previous":"Previous"},"aria":{"sortAscending":"Activate to sort column ascending","sortDescending":"Activate to sort column descending"}}'

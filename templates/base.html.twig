@@ -1,11 +1,16 @@
+{% set locale = 'locale'|trans %}
 <!DOCTYPE html>
 <html>
     <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <meta name="description" content="">
-        <meta name="author" content="">
-        <title>{{ 'app_name'|trans }} - {% block title %}{% endblock %}</title>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+        <meta name="description" content=""/>
+        <meta name="author" content=""/>
+        <title>
+            {{ 'app_name'|trans }}
+            -
+            {% block title %}{% endblock %}
+        </title>
         {% block stylesheets %}
             {{ encore_entry_link_tags('app') }}
         {% endblock %}

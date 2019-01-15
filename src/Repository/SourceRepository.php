@@ -19,22 +19,33 @@ class SourceRepository extends ServiceEntityRepository
         parent::__construct($registry, Source::class);
     }
 
-    // /**
-    //  * @return Source[] Returns an array of Source objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @return Source[] Returns an array of Source objects
+     */
+    public function getSimpleList()
     {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('s.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+        $query = $this->createQueryBuilder('source')
+            ->select([
+                'partial s.{id, dateModification}',
+                'titrePrincipal',
+                'typeSource',
+                'categorieSource',
+                'createur',
+                'dernierEditeur',
+            ])
+            ->from('App\Entity\Source', 's')
+            ->join('s.titrePrincipal', 'titrePrincipal')
+            ->join('s.typeSource', 'typeSource')
+            ->join('s.categorieSource', 'categorieSource')
+            ->join('s.createur', 'createur')
+            ->join('s.dernierEditeur', 'dernierEditeur')
+            ->orderBy('s.dateModification', 'DESC')
+            ->getQuery();
+
+        $query->setHint(\Doctrine\ORM\Query::HINT_FORCE_PARTIAL_LOAD, 1);
+
+        return $query->getResult();
     }
-    */
 
     /*
     public function findOneBySomeField($value): ?Source

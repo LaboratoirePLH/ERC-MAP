@@ -65,6 +65,13 @@ class Chercheur implements UserInterface
      */
     private $dateAjout;
 
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="role", type="string", length=50, nullable=true)
+     */
+    private $role;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -78,7 +85,6 @@ class Chercheur implements UserInterface
     public function setPrenomNom(string $prenomNom): self
     {
         $this->prenomNom = $prenomNom;
-
         return $this;
     }
 
@@ -90,7 +96,6 @@ class Chercheur implements UserInterface
     public function setUsername(string $username): self
     {
         $this->username = $username;
-
         return $this;
     }
 
@@ -102,7 +107,6 @@ class Chercheur implements UserInterface
     public function setInstitution(?string $institution): self
     {
         $this->institution = $institution;
-
         return $this;
     }
 
@@ -114,7 +118,6 @@ class Chercheur implements UserInterface
     public function setMail(?string $mail): self
     {
         $this->mail = $mail;
-
         return $this;
     }
 
@@ -126,7 +129,6 @@ class Chercheur implements UserInterface
     public function setPassword(?string $password): self
     {
         $this->password = $password;
-
         return $this;
     }
 
@@ -138,7 +140,17 @@ class Chercheur implements UserInterface
     public function setDateAjout(?\DateTimeInterface $dateAjout): self
     {
         $this->dateAjout = $dateAjout;
+        return $this;
+    }
 
+    public function getRole(): ?string
+    {
+        return $this->role;
+    }
+
+    public function setRole(?string $role): self
+    {
+        $this->role = $role;
         return $this;
     }
 

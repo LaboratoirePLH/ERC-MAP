@@ -539,6 +539,15 @@ class Source
         return $this->langues;
     }
 
+    public function concatLangues($lang): string
+    {
+        if(empty($this->langues)){ return ""; }
+        $names = $this->langues->map(function($langue) use ($lang) {
+            return $langue->getNom($lang);
+        });
+        return implode(', ', $names);
+    }
+
     public function addLangue(Langue $langue): self
     {
         if (!$this->langues->contains($langue)) {

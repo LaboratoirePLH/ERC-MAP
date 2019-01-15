@@ -1,9 +1,18 @@
 {% extends 'base.html.twig' %}
-
 {% block body %}
-    {{ include('partials/_navigation.html.twig') }}
-    <div class="container">
-        {% block content %}
-        {% endblock %}
+{{ include('partials/_navigation.html.twig') }}
+<main class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h2 class="text-center">
+                {% block title %}{% endblock %}
+            </h2>
+        </div>
     </div>
+    <div class="row justify-content-center">
+        <div class="col-11">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+</main>
 {% endblock %}

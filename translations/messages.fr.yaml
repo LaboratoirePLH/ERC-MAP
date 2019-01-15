@@ -1,4 +1,6 @@
 app_name: "ERC MAP"
+locale: "fr"
+locale_datetime: "d/m/Y H:i:s"
 languages:
     fr: "Français"
     en: "Anglais"
@@ -21,3 +23,33 @@ login_page:
         username: "Nom d'utilisateur"
         password: "Mot de passe"
         login: "Connexion"
+
+generic:
+    cancel: "Annuler"
+    search: "Rechercher"
+    fields:
+        id: "ID"
+        date_modification: "Dernière Modification"
+
+sources:
+    list: "Liste des Source"
+    create: "Nouvelle Source"
+    edit: "Modifier la Source"
+    fields:
+        titre_principal: "Titre Principal"
+        type_source: "Type de Source"
+        categorie_source: "Catégorie de Source"
+        langues: "Langues"
+        createur: "Créateur"
+        dernier_editeur: "Dernier Éditeur"
+        reference_bibliographique: "Référence Bibliographique"
+
+biblio:
+    fields:
+        titre_abrege: "Titre Abrégé"
+
+
+
+datatable:
+    all: "Tous"
+    language: '{"emptyTable":"Aucun enregistrement disponible","info":"Page _PAGE_ sur _PAGES_","infoEmpty":"Aucun enregistrement disponible","infoFiltered":"(filtré à partir de _MAX_ résultats totaux)","lengthMenu":"Afficher _MENU_ éléments par page","search":"Recherche :","zeroRecords":"Aucun résultat","paginate":{"first":"Première","last":"Dernière","next":"Suivante","previous":"Précédente"},"aria":{"sortAscending":"Activer pour classer la colonne de façon croissante","sortDescending":"Activer pour classer la colonne de façon décroissante"}}'

@@ -14,6 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Attestation
 {
+    use Traits\Translatable;
     /**
      * @var int
      *

@@ -14,6 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Source
 {
+    use Traits\Translatable;
     /**
      * @var int
      *

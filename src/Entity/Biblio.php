@@ -29,14 +29,14 @@ class Biblio
      *
      * @ORM\Column(name="titre_abr", type="string", length=255, nullable=true)
      */
-    private $titreAbr;
+    private $titreAbrege;
 
     /**
      * @var string|null
      *
      * @ORM\Column(name="titre_com", type="text", nullable=true)
      */
-    private $titreCom;
+    private $titreComplet;
 
     /**
      * @var int|null
@@ -90,26 +90,26 @@ class Biblio
         return $this->id;
     }
 
-    public function getTitreAbr(): ?string
+    public function getTitreAbrege(): ?string
     {
-        return $this->titreAbr;
+        return $this->titreAbrege;
     }
 
-    public function setTitreAbr(?string $titreAbr): self
+    public function setTitreAbrege(?string $titreAbrege): self
     {
-        $this->titreAbr = $titreAbr;
+        $this->titreAbrege = $titreAbrege;
 
         return $this;
     }
 
-    public function getTitreCom(): ?string
+    public function getTitreComplet(): ?string
     {
-        return $this->titreCom;
+        return $this->titreComplet;
     }
 
-    public function setTitreCom(?string $titreCom): self
+    public function setTitreComplet(?string $titreComplet): self
     {
-        $this->titreCom = $titreCom;
+        $this->titreComplet = $titreComplet;
 
         return $this;
     }

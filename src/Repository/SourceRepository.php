@@ -54,7 +54,7 @@ class SourceRepository extends ServiceEntityRepository
     {
         $query = $this->createQueryBuilder('source')
             ->select([
-                'partial s.{id, dateModification}',
+                'partial s.{id, dateModification, citation, urlTexte, urlImage}',
                 'titrePrincipal',
                 'typeSource',
                 'categorieSource',

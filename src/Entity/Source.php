@@ -436,6 +436,7 @@ class Source
         $this->titresCites = new \Doctrine\Common\Collections\ArrayCollection();
         $this->auteurs = new \Doctrine\Common\Collections\ArrayCollection();
         $this->langues = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->sourceBiblios = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -560,6 +561,37 @@ class Source
     {
         if ($this->langues->contains($langue)) {
             $this->langues->removeElement($langue);
+        }
+        return $this;
+    }
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     *
+     * @ORM\OneToMany(targetEntity="SourceBiblio", mappedBy="source")
+     */
+    private $sourceBiblios;
+
+    /**
+     * @return Collection|SourceBiblio[]
+     */
+    public function getSourceBiblios(): ?Collection
+    {
+        return $this->sourceBiblios;
+    }
+
+    public function addSourceBiblio(SourceBiblio $sourceBiblio): self
+    {
+        if (!$this->sourceBiblios->contains($sourceBiblio)) {
+            $this->sourceBiblios[] = $sourceBiblio;
+        }
+        return $this;
+    }
+
+    public function removeSourceBiblio(SourceBiblio $sourceBiblio): self
+    {
+        if ($this->sourceBiblios->contains($sourceBiblio)) {
+            $this->sourceBiblios->removeElement($sourceBiblio);
         }
         return $this;
     }

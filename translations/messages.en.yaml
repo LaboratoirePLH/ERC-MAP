@@ -30,11 +30,13 @@ generic:
     search: "Search"
     save: "Save"
     delete: "Delete"
+    add: "Add"
     fields:
         id: "ID"
         date_creation: "Creation"
         date_modification: "Latest Edition"
         by: "by"
+        commentaires: "Comments"
 
 sources:
     list: "Sources List"
@@ -42,6 +44,8 @@ sources:
     edit: "Edit Source"
     fields:
         titre_principal: "Main Title"
+        titres_cites: "Quoted Titles"
+        auteur: "Author Name"
         type_source: "Source Type"
         categorie_source: "Source Category"
         langues: "Languages"
@@ -50,10 +54,35 @@ sources:
         reference_bibliographique: "Bibliographic Reference"
         to_translate: "To translate in"
         fiability: "Reliability score"
+        url_image: "Image URL"
+        url_texte: "Text URL"
+        citation: "Quote"
+        in_situ: "In Situ"
+        biblio_1 : "Main Source"
+        biblio_n : "Secondary Sources"
+
+    sections:
+        informations_source: "Source informations"
+        bibliographie: "Bibliography"
+        datation: "Datation"
+        localisation: "Location"
+        commentaires: "Comments"
+
+source_biblio:
+    fields:
+        reference_source: "Reference"
 
 biblio:
     fields:
-        titre_abrege: "Shortened Title"
+        titre_abrege: "Short Title"
+        titre_complet: "Full Title"
+        annee: "Year"
+        auteur: "Author"
+
+corpus:
+    fields:
+        nom: "Corpus Name"
+        nom_complet: "Corpus Full Name"
 
 modals:
     confirm_deletion:

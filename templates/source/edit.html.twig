@@ -26,8 +26,8 @@
     <hr>
 
     <div class="form-group row">
-        <label class="col-sm-3 col-form-label pt-0">{{ 'sources.fields.to_translate'|trans }}</label>
-        <div class="col-sm-9">
+        <label class="col-sm-2 col-form-label pt-0">{{ 'sources.fields.to_translate'|trans }}</label>
+        <div class="col-sm-10">
             <div class="form-check form-check-inline">
                 <input class="form-check-input" type="checkbox" id="inputToTranslateFr" value="a_traduire">
                 <label class="form-check-label" for="inputToTranslateFr">{{ 'languages.fr'|trans }}</label>
@@ -40,12 +40,132 @@
     </div>
 
     <div class="form-group row">
-        <label for="inputFiability" class="col-sm-3 col-form-label">{{ 'sources.fields.fiability'|trans }}</label>
-        <div class="col-sm-9">
+        <label for="inputFiability" class="col-sm-2 col-form-label">{{ 'sources.fields.fiability'|trans }}</label>
+        <div class="col-sm-10">
             <input type="text" class="form-control" id="inputFiability" name="fiability" value="{{ old.fiability|default(source.fiability|default(0)) }}"
                 readonly>
         </div>
     </div>
+
+    <h4>
+        {{ 'sources.sections.informations_source'|trans }}
+    </h4>
+
+    <div class="form-group row">
+        <label for="inputTitrePrincipalFr" class="col-sm-2 col-form-label">{{ 'sources.fields.titre_principal'|trans }}</label>
+        <div class="col-sm-10">
+            <div class="form-group row">
+                <label for="inputTitrePrincipalFr" class="col-sm-1 col-form-label">{{ 'languages.fr'|trans }}: </label>
+                <div class="col-sm-5">
+                    <input type="text" class="form-control" id="inputTitrePrincipalFr" name="titre_principal_fr" value="{{ old.titrePrincipal.nom('fr')|default(source.titrePrincipal.nom('fr')|default("")) }}">
+                </div>
+                <label for="inputTitrePrincipalEn" class="col-sm-1 col-form-label">{{ 'languages.en'|trans }}: </label>
+                <div class="col-sm-5">
+                    <input type="text" class="form-control" id="inputTitrePrincipalEn" name="titre_principal_en" value="{{ old.titrePrincipal.nom('en')|default(source.titrePrincipal.nom('en')|default("")) }}">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label pt-0" for="inputCitation">{{ 'sources.fields.citation'|trans }}</label>
+        <div class="col-sm-10">
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="inputCitation" value="citation">
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group row" id="titresCites">
+        <label class="col-sm-2 col-form-label">{{ 'sources.fields.titres_cites'|trans }}</label>
+        <div class="col-sm-10">
+            {% for item in old.titreCite|default(source.titreCite|default([{nomFr: "", nomEn: ""}])) %}
+            <div class="form-group row itemTitreCite">
+                <label for="inputTitreCiteFr_{{loop.index}}" class="col-sm-1 col-form-label">
+                    {{ 'languages.fr'|trans }}:&nbsp;
+                </label>
+                <div class="col-sm-5">
+                    <input type="text" class="form-control" id="inputTitreCiteFr_{{loop.index}}" name="titreCiteFr_{{loop.index}}"
+                        value="{{ item.nomFr }}">
+                </div>
+                <label for="inputTitreCiteEn_{{loop.index}}" class="col-sm-1 col-form-label">
+                    {{ 'languages.en'|trans }}:&nbsp;
+                </label>
+                <div class="col-sm-5">
+                    <input type="text" class="form-control" id="inputTitreCiteEn_{{loop.index}}" name="titreCiteEn_{{loop.index}}"
+                        value="{{ item.nomEn }}">
+                </div>
+            </div>
+            {% endfor %}
+            <button id="addTitreCite" type="button">
+                <i class="fa fa-plus"></i>
+                {{ 'generic.add'|trans }}
+            </button>
+        </div>
+
+    </div>
+
+    <div class="form-group row">
+        <label for="inputUrlImage" class="col-sm-2 col-form-label">{{ 'sources.fields.url_image'|trans }}</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" id="inputUrlImage" name="urlImage" value="{{ old.urlImage|default(source.urlImage|default("")) }}">
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label for="inputUrlTexte" class="col-sm-2 col-form-label">{{ 'sources.fields.url_texte'|trans }}</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" id="inputUrlTexte" name="urlTexte" value="{{ old.urlTexte|default(source.urlTexte|default("")) }}">
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label pt-0" for="inputInSitu">{{ 'sources.fields.in_situ'|trans }}</label>
+        <div class="col-sm-10">
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="inputInSitu" value="in_situ">
+            </div>
+        </div>
+    </div>
+
+    <h4>
+        {{ 'sources.sections.bibliographie'|trans }}
+    </h4>
+
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label">{{ 'sources.fields.biblio_1'|trans }}</label>
+        <div class="col-sm-10">
+            <div class="form-group row">
+                <label for="inputBiblioTitreComplet_1" class="col-sm-2 col-form-label">
+                    {{ 'biblio.fields.titre_complet'|trans }}
+                </label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="inputBiblioTitreComplet_1" name="biblio_titre_complet_1"
+                        value="{{ old.sourceBiblios[0].titreComplet|default(source.sourceBiblios[0].titreComplet|default("")) }}">
+                </div>
+                <label for="inputBiblioTitreAbrege_1" class="col-sm-2 col-form-label">
+                    {{ 'biblio.fields.titre_abrege'|trans }}
+                </label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="inputBiblioTitreAbrege_1" name="biblio_titre_abrege_1"
+                        value="{{ old.sourceBiblios[0].titreAbrege|default(source.sourceBiblios[0].titreAbrege|default("")) }}">
+                </div>
+                <label for="inputBiblioAuteur_1" class="col-sm-2 col-form-label">
+                    {{ 'biblio.fields.auteur'|trans }}
+                </label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="inputBiblioAuteur_1" name="biblio_auteur_1" value="{{ old.sourceBiblios[0].auteur|default(source.sourceBiblios[0].auteur|default("")) }}">
+                </div>
+                <label for="inputBiblioAnnee_1" class="col-sm-2 col-form-label">
+                    {{ 'biblio.fields.annee'|trans }}
+                </label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="inputBiblioAnnee_1" name="biblio_annee_1" value="{{ old.sourceBiblios[0].annee|default(source.sourceBiblios[0].annee|default("")) }}">
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <hr>
     <div class="row">
@@ -84,7 +204,32 @@
         $("button[type=reset]").click(function (e) {
             e.preventDefault();
             alert('reset');
-        })
+        });
+
+        // Show/hide "titresCites" depending on "quote" checkbox
+        $('input#inputCitation').on('change', function () {
+            $('#titresCites')[($(this).is(':checked') ? "show" : "hide")]();
+        });
+        $('#titresCites')[($('input#inputCitation').is(':checked') ? "show" : "hide")]();
+
+        // Add an entry to "titresCites"
+        $('button#addTitreCite').on('click', function (e) {
+            e.preventDefault();
+
+            var count = $(this).siblings('.itemTitreCite').length + 1;
+            var newItem = $(this).prev('.itemTitreCite').clone();
+            newItem.find('label').each(function () {
+                $(this).attr('for', $(this).attr('for').replace(/_\d/, "_" + count));
+            });
+            newItem.find('input').each(function () {
+                $(this).attr('id', $(this).attr('id').replace(/_\d/, "_" + count));
+                $(this).attr('name', $(this).attr('name').replace(/_\d/, "_" + count));
+                $(this).val("");
+            });
+
+            newItem.insertBefore(this);
+        });
+
     });
 </script>
 {% endblock %}

@@ -50,6 +50,14 @@ sources:
         reference_bibliographique: "Référence Bibliographique"
         to_translate: "À traduire en"
         fiability: "Score de fiabilité"
+        url_image: "URL de l'image"
+        url_texte: "URL du texte"
+    sections:
+        informations_source: "Informations de la source"
+        bibliographie: "Bibliographie"
+        datation: "Datation"
+        localisation: "Localisation"
+        commentaires: "Commentaires"
 
 biblio:
     fields:

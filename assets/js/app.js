@@ -14,3 +14,4 @@ global.$ = global.jQuery = $;
 require('bootstrap');
 require('datatables.net-bs4')(window, $);
 require('datatables.net-responsive-bs4')(window, $);
+require('chosen-js');

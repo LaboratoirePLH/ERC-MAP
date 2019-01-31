@@ -3,3 +3,12 @@
 twig:
     form_themes:
         - '@FOSCKEditor/Form/ckeditor_widget.html.twig'
+
+fos_ck_editor:
+    configs:
+        text_styling_only:
+            toolbar: "basic_styles"
+            uiColor: "#000000"
+    toolbars:
+        configs:
+            basic_styles: [ 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript' ]

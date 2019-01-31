@@ -13,6 +13,10 @@ body {
     header#site-header {
         background-image: url('images/bkg-ercmap.jpg');
 
+        #site-logo {
+            width: 100%;
+        }
+
         .btn {
             background-color: rgba(67, 67, 67, 0.4);
             color: #fff;

@@ -7,7 +7,7 @@ languages:
 
 nav:
     logout: "Logout"
-    go_to_showcase_website: "Go to the showcase website"
+    go_to_showcase_website: "Showcase website"
     admin: "Administrator Section"
     home: "Home"
     source_list: "Sources"

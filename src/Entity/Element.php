@@ -7,12 +7,12 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Elements
+ * Element
  *
  * @ORM\Table(name="elements", indexes={@ORM\Index(name="IDX_444A075D16F64486", columns={"id_loc"}), @ORM\Index(name="IDX_444A075D97EF374A", columns={"id_nature"})})
  * @ORM\Entity
  */
-class Elements
+class Element
 {
     use Traits\Translatable;
     /**
@@ -90,16 +90,16 @@ class Elements
     /**
      * @var \Doctrine\Common\Collections\Collection
      *
-     * @ORM\ManyToMany(targetEntity="CategorieElt", mappedBy="idElt")
+     * @ORM\ManyToMany(targetEntity="CategorieElement", mappedBy="elements")
      */
-    private $idCatElt;
+    private $categories;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
      *
-     * @ORM\ManyToMany(targetEntity="Biblio", mappedBy="idElt")
+     * @ORM\OneToMany(targetEntity="ElementBiblio", mappedBy="element")
      */
-    private $idBiblio;
+    private $elementBiblios;
 
     /**
      * Constructor
@@ -107,8 +107,8 @@ class Elements
     public function __construct()
     {
         // $this->idElt = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->idCatElt = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->idBiblio = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->categories = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->elementBiblios = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     public function getId(): ?int
@@ -229,56 +229,54 @@ class Elements
     }
 
     /**
-     * @return Collection|CategorieElt[]
+     * @return Collection|CategorieElement[]
      */
-    public function getIdCatElt(): Collection
+    public function getCategories(): Collection
     {
-        return $this->idCatElt;
+        return $this->categories;
     }
 
-    public function addIdCatElt(CategorieElt $idCatElt): self
+    public function addCategorie(CategorieElement $categorie): self
     {
-        if (!$this->idCatElt->contains($idCatElt)) {
-            $this->idCatElt[] = $idCatElt;
-            $idCatElt->addIdElt($this);
+        if (!$this->categories->contains($categorie)) {
+            $this->categories[] = $categorie;
+            $categorie->addElement($this);
         }
 
         return $this;
     }
 
-    public function removeIdCatElt(CategorieElt $idCatElt): self
+    public function removeCategorie(CategorieElement $categorie): self
     {
-        if ($this->idCatElt->contains($idCatElt)) {
-            $this->idCatElt->removeElement($idCatElt);
-            $idCatElt->removeIdElt($this);
+        if ($this->categories->contains($categorie)) {
+            $this->categories->removeElement($categorie);
+            $categorie->removeElement($this);
         }
 
         return $this;
     }
 
     /**
-     * @return Collection|Biblio[]
+     * @return Collection|ElementBiblio[]
      */
-    public function getIdBiblio(): Collection
+    public function getElementBiblios(): Collection
     {
-        return $this->idBiblio;
+        return $this->elementBiblios;
     }
 
-    public function addIdBiblio(Biblio $idBiblio): self
+    public function addElementBiblio(ElementBiblio $elementBiblio): self
     {
-        if (!$this->idBiblio->contains($idBiblio)) {
-            $this->idBiblio[] = $idBiblio;
-            $idBiblio->addIdElt($this);
+        if (!$this->elementBiblios->contains($elementBiblio)) {
+            $this->elementBiblios[] = $elementBiblio;
         }
 
         return $this;
     }
 
-    public function removeIdBiblio(Biblio $idBiblio): self
+    public function removeElementBiblio(ElementBiblio $elementBiblio): self
     {
-        if ($this->idBiblio->contains($idBiblio)) {
-            $this->idBiblio->removeElement($idBiblio);
-            $idBiblio->removeIdElt($this);
+        if ($this->elementBiblios->contains($elementBiblio)) {
+            $this->elementBiblios->removeElement($elementBiblio);
         }
 
         return $this;

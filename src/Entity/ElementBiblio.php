@@ -5,41 +5,34 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * SourceBiblio
+ * ElementBiblio
  *
- * @ORM\Table(name="trouve_source", indexes={@ORM\Index(name="IDX_4E6330D7FF3B0EC8", columns={"id_biblio"})})
+ * @ORM\Table(name="trouve_elt")
  * @ORM\Entity
  */
-class SourceBiblio
+class ElementBiblio
 {
     /**
-     * @var \Source
+     * @var \Element
      *
      * @ORM\Id
-     * @ORM\ManyToOne(targetEntity="Source", inversedBy="sourceBiblios")
+     * @ORM\ManyToOne(targetEntity="Element", inversedBy="elementBiblios")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_source", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="id_elt", referencedColumnName="id")
      * })
      */
-    private $source;
+    private $element;
 
     /**
      * @var \Biblio
      *
      * @ORM\Id
-     * @ORM\ManyToOne(targetEntity="Biblio", inversedBy="sourceBiblios")
+     * @ORM\ManyToOne(targetEntity="Biblio", inversedBy="elementBiblios")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_biblio", referencedColumnName="id")
      * })
      */
     private $biblio;
-
-    /**
-     * @var bool|null
-     *
-     * @ORM\Column(name="ed_ppale", type="boolean", nullable=true)
-     */
-    private $editionPrincipale;
 
     /**
      * @var string|null
@@ -58,19 +51,19 @@ class SourceBiblio
     /**
      * @var string|null
      *
-     * @ORM\Column(name="bib_ref_source", type="string", length=255, nullable=true)
+     * @ORM\Column(name="bib_ref_elt", type="string", length=255, nullable=true)
      */
-    private $referenceSource;
+    private $referenceElement;
 
 
-    public function getSource(): ?Source
+    public function getElement(): ?Elemen
     {
-        return $this->source;
+        return $this->element;
     }
 
-    public function setSource(?Source $source): self
+    public function setElement(?Element $element): self
     {
-        $this->source = $source;
+        $this->element = $element;
         return $this;
     }
 
@@ -82,17 +75,6 @@ class SourceBiblio
     public function setBiblio(?Biblio $biblio): self
     {
         $this->biblio = $biblio;
-        return $this;
-    }
-
-    public function getEditionPrincipale(): ?bool
-    {
-        return $this->editionPrincipale;
-    }
-
-    public function setEditionPrincipale(?bool $editionPrincipale): self
-    {
-        $this->editionPrincipale = $editionPrincipale;
         return $this;
     }
 
@@ -127,14 +109,14 @@ class SourceBiblio
         }
     }
 
-    public function getReferenceSource(): ?string
+    public function getReferenceElement(): ?string
     {
-        return $this->referenceSource;
+        return $this->referenceElement;
     }
 
-    public function setReferenceSource(?string $referenceSource): self
+    public function setReferenceElement(?string $referenceElement): self
     {
-        $this->referenceSource = $referenceSource;
+        $this->referenceElement = $referenceElement;
         return $this;
     }
 

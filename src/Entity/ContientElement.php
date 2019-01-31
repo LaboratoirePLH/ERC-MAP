@@ -5,12 +5,12 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * ContientElt
+ * ContientElement
  *
  * @ORM\Table(name="contient_elt", indexes={@ORM\Index(name="fki_contient_elt_id_categorie_fkey", columns={"id_categorie_elt"}), @ORM\Index(name="IDX_EE80CB35A1342FAE", columns={"id_attest"}), @ORM\Index(name="IDX_EE80CB35B1D9A90D", columns={"id_elt"}), @ORM\Index(name="IDX_EE80CB356DD572C8", columns={"id_genre"}), @ORM\Index(name="IDX_EE80CB351CA724CB", columns={"id_nombre"})})
  * @ORM\Entity
  */
-class ContientElt
+class ContientElement
 {
     /**
      * @var int
@@ -55,21 +55,21 @@ class ContientElt
     private $idAttest;
 
     /**
-     * @var \CategorieElt
+     * @var \CategorieElement
      *
-     * @ORM\ManyToOne(targetEntity="CategorieElt")
+     * @ORM\ManyToOne(targetEntity="CategorieElement")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_categorie_elt", referencedColumnName="id_cat_elt")
      * })
      */
-    private $idCategorieElt;
+    private $idCategorieElement;
 
     /**
-     * @var \Elements
+     * @var \Element
      *
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="NONE")
-     * @ORM\OneToOne(targetEntity="Elements")
+     * @ORM\OneToOne(targetEntity="Element")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_elt", referencedColumnName="id")
      * })
@@ -77,9 +77,9 @@ class ContientElt
     private $idElt;
 
     /**
-     * @var \GenreElt
+     * @var \GenreElement
      *
-     * @ORM\ManyToOne(targetEntity="GenreElt")
+     * @ORM\ManyToOne(targetEntity="GenreElement")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_genre", referencedColumnName="id_genre")
      * })
@@ -87,9 +87,9 @@ class ContientElt
     private $idGenre;
 
     /**
-     * @var \NombreElt
+     * @var \NombreElement
      *
-     * @ORM\ManyToOne(targetEntity="NombreElt")
+     * @ORM\ManyToOne(targetEntity="NombreElement")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_nombre", referencedColumnName="id_nombre")
      * })
@@ -149,48 +149,48 @@ class ContientElt
         return $this;
     }
 
-    public function getIdCategorieElt(): ?CategorieElt
+    public function getIdCategorieElt(): ?CategorieElement
     {
         return $this->idCategorieElt;
     }
 
-    public function setIdCategorieElt(?CategorieElt $idCategorieElt): self
+    public function setIdCategorieElt(?CategorieElement $idCategorieElt): self
     {
         $this->idCategorieElt = $idCategorieElt;
 
         return $this;
     }
 
-    public function getIdElt(): ?Elements
+    public function getIdElt(): ?Element
     {
         return $this->idElt;
     }
 
-    public function setIdElt(?Elements $idElt): self
+    public function setIdElt(?Element $idElt): self
     {
         $this->idElt = $idElt;
 
         return $this;
     }
 
-    public function getIdGenre(): ?GenreElt
+    public function getIdGenre(): ?GenreElement
     {
         return $this->idGenre;
     }
 
-    public function setIdGenre(?GenreElt $idGenre): self
+    public function setIdGenre(?GenreElement $idGenre): self
     {
         $this->idGenre = $idGenre;
 
         return $this;
     }
 
-    public function getIdNombre(): ?NombreElt
+    public function getIdNombre(): ?NombreElement
     {
         return $this->idNombre;
     }
 
-    public function setIdNombre(?NombreElt $idNombre): self
+    public function setIdNombre(?NombreElement $idNombre): self
     {
         $this->idNombre = $idNombre;
 

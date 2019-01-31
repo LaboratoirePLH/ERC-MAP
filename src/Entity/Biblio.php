@@ -65,24 +65,72 @@ class Biblio
     /**
      * @var \Doctrine\Common\Collections\Collection
      *
-     * @ORM\ManyToMany(targetEntity="Elements", inversedBy="idBiblio")
-     * @ORM\JoinTable(name="trouve_elt",
-     *   joinColumns={
-     *     @ORM\JoinColumn(name="id_biblio", referencedColumnName="id")
-     *   },
-     *   inverseJoinColumns={
-     *     @ORM\JoinColumn(name="id_elt", referencedColumnName="id")
-     *   }
-     * )
+     * @ORM\OneToMany(targetEntity="SourceBiblio", mappedBy="biblio")
      */
-    private $idElt;
+    private $sourceBiblios;
+
+    /**
+     * @return Collection|SourceBiblio[]
+     */
+    public function getSourceBiblios(): ?Collection
+    {
+        return $this->sourceBiblios;
+    }
+
+    public function addSourceBiblio(SourceBiblio $sourceBiblio): self
+    {
+        if (!$this->sourceBiblios->contains($sourceBiblio)) {
+            $this->sourceBiblios[] = $sourceBiblio;
+        }
+        return $this;
+    }
+
+    public function removeSourceBiblio(SourceBiblio $sourceBiblio): self
+    {
+        if ($this->sourceBiblios->contains($sourceBiblio)) {
+            $this->sourceBiblios->removeElement($sourceBiblio);
+        }
+        return $this;
+    }
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     *
+     * @ORM\OneToMany(targetEntity="ElementBiblio", mappedBy="biblio")
+     */
+    private $elementBiblios;
+
+    /**
+     * @return Collection|ElementBiblio[]
+     */
+    public function getElementBiblios(): ?Collection
+    {
+        return $this->elementBiblios;
+    }
+
+    public function addElementBiblio(ElementBiblio $elementBiblio): self
+    {
+        if (!$this->elementBiblios->contains($elementBiblio)) {
+            $this->elementBiblios[] = $elementBiblio;
+        }
+        return $this;
+    }
+
+    public function removeElementBiblio(ElementBiblio $elementBiblio): self
+    {
+        if ($this->elementBiblios->contains($elementBiblio)) {
+            $this->elementBiblios->removeElement($elementBiblio);
+        }
+        return $this;
+    }
 
     /**
      * Constructor
      */
     public function __construct()
     {
-        $this->idElt = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->elementBiblios = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->sourceBiblios = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     public function getId(): ?int

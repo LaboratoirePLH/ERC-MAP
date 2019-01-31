@@ -93,3 +93,11 @@ datatable:
     all: "All"
     language: '{"emptyTable":"No data available","info":"Page _PAGE_ of _PAGES_",
     "infoEmpty":"No data available","infoFiltered":"(filtered from _MAX_ total results)","lengthMenu":"Display _MENU_ items per page","search":"Search :","zeroRecords":"No result","paginate":{"first":"First","last":"Last","next":"Next","previous":"Previous"},"aria":{"sortAscending":"Activate to sort column ascending","sortDescending":"Activate to sort column descending"}}'
+
+autocomplete:
+    select_element: "Select an element (type text to filter)"
+    select_multiple: "Select elements (type text to filter)"
+    no_matches: "No matches found for : "
+
+misc:
+    copyright: "ERC-MAP - Laboratoire PLH - Université de Toulouse Jean Jaurès"

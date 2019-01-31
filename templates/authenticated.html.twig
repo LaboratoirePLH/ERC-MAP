@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 {% block body %}
 {{ include('partials/_navigation.html.twig') }}
-<main class="container-fluid">
+<main class="container-fluid mb-5">
     <div class="row">
         <div class="col-12">
             <h2 class="text-center">
@@ -15,4 +15,8 @@
         </div>
     </div>
 </main>
+<hr />
+<footer class="text-center font-weight-light">
+    &copy; {{ 'misc.copyright'|trans }}
+</footer>
 {% endblock %}

@@ -23,6 +23,7 @@ login_page:
         username: "Username"
         password: "Password"
         login: "Login"
+        reset_password: "Reset password"
 
 generic:
     close: "Close"

@@ -34,11 +34,11 @@ class SourceRepository extends ServiceEntityRepository
                 'dernierEditeur',
             ])
             ->from('App\Entity\Source', 's')
-            ->join('s.titrePrincipal', 'titrePrincipal')
-            ->join('s.typeSource', 'typeSource')
-            ->join('s.categorieSource', 'categorieSource')
-            ->join('s.createur', 'createur')
-            ->join('s.dernierEditeur', 'dernierEditeur')
+            ->leftJoin('s.titrePrincipal', 'titrePrincipal')
+            ->leftJoin('s.typeSource', 'typeSource')
+            ->leftJoin('s.categorieSource', 'categorieSource')
+            ->leftJoin('s.createur', 'createur')
+            ->leftJoin('s.dernierEditeur', 'dernierEditeur')
             ->orderBy('s.dateModification', 'DESC')
             ->getQuery();
 
@@ -54,21 +54,32 @@ class SourceRepository extends ServiceEntityRepository
     {
         $query = $this->createQueryBuilder('source')
             ->select([
-                'partial s.{id, dateModification, citation, urlTexte, urlImage}',
-                'titrePrincipal',
+                's',
                 'typeSource',
-                'categorieSource',
+                'materiau',
+                'typeSupport',
+                'auteurs',
+                'langues',
+                'titrePrincipal',
+                'titresCites',
+                'datation',
+                'sourceBiblios',
                 'createur',
                 'dernierEditeur',
             ])
             ->from('App\Entity\Source', 's')
-            ->join('s.titrePrincipal', 'titrePrincipal')
-            ->join('s.typeSource', 'typeSource')
-            ->join('s.categorieSource', 'categorieSource')
-            ->join('s.createur', 'createur')
-            ->join('s.dernierEditeur', 'dernierEditeur')
+            ->leftJoin('s.typeSource', 'typeSource')
+            ->leftJoin('s.materiau', 'materiau')
+            ->leftJoin('s.typeSupport', 'typeSupport')
+            ->leftJoin('s.auteurs', 'auteurs')
+            ->leftJoin('s.langues', 'langues')
+            ->leftJoin('s.titrePrincipal', 'titrePrincipal')
+            ->leftJoin('s.titresCites', 'titresCites')
+            ->leftJoin('s.datation', 'datation')
+            ->leftJoin('s.sourceBiblios', 'sourceBiblios')
+            ->leftJoin('s.createur', 'createur')
+            ->leftJoin('s.dernierEditeur', 'dernierEditeur')
             ->where('s.id = ?1')
-            ->orderBy('s.dateModification', 'DESC')
             ->setParameter(1, $id)
             ->getQuery();
 

@@ -72,15 +72,49 @@ class SourceController extends AbstractController
     /**
      * @Route("/source/{id}/edit", name="source_edit")
      */
-    public function edit($id, Request $request){
+    public function edit($id, Request $request, TranslatorInterface $translator){
         $source = $this->getDoctrine()
                        ->getRepository(Source::class)
                        ->getRecord($id);
 
+        $form   = $this->get('form.factory')->create(SourceType::class, $source, [
+            'locale' => $request->getLocale(),
+            'translations' => [
+                'autocomplete.select_element' => $translator->trans('autocomplete.select_element'),
+                'autocomplete.select_multiple' => $translator->trans('autocomplete.select_multiple')
+            ]
+        ]);
+
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()){
+            // Association de l'utilisateur
+            $user = $this->get('security.token_storage')->getToken()->getUser();
+            $source->setCreateur($user);
+            $source->setDernierEditeur($user);
+
+            // Sauvegarde
+            $em = $this->getDoctrine()->getManager();
+            foreach($source->getSourceBiblios() as $sb){
+                if(!$em->contains($sb->getBiblio())){
+                    $em->persist($sb->getBiblio());
+                }
+                $sb->setSource($source);
+                if(!$em->contains($sb)){
+                    $em->persist($sb);
+                }
+            }
+            $em->flush();
+
+            // Message de confirmation
+            $request->getSession()->getFlashBag()->add('notice', 'source.messages.edited');
+
+            return $this->redirectToRoute('source_list');
+        }
+
         return $this->render('source/edit.html.twig', [
             'controller_name' => 'SourceController',
             'action' => 'edit',
-            'source' => $source
+            'source' => $source,
+            'form' => $form->createView()
         ]);
     }
 

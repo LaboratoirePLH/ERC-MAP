@@ -37,41 +37,41 @@ class SourceType extends AbstractType
             ->add('traduireFr', HiddenType::class)
             ->add('traduireEn', HiddenType::class)
             ->add('translations', ChoiceType::class, [
-                'label' => 'source.fields.to_translate',
-                'mapped' => false,
+                'label'    => 'source.fields.to_translate',
+                'mapped'   => false,
                 'required' => false,
                 'expanded' => true,
                 'multiple' => true,
-                'choices' => [
+                'choices'  => [
                     'languages.fr' => 'traduireFr',
                     'languages.en' => 'traduireEn'
                 ]
             ])
             ->add('citation', CheckboxType::class, [
-                'label' => 'source.fields.citation',
+                'label'      => 'source.fields.citation',
                 'label_attr' => [
                     'class' => 'quote_field'
                 ],
                 'required' => false
             ])
             ->add('urlTexte', UrlType::class, [
-                'label' => 'source.fields.url_texte',
+                'label'    => 'source.fields.url_texte',
                 'required' => false
             ])
             ->add('urlImage', UrlType::class, [
-                'label' => 'source.fields.url_image',
+                'label'    => 'source.fields.url_image',
                 'required' => false
             ])
             ->add('inSitu', CheckboxType::class, [
-                'label' => 'source.fields.in_situ',
+                'label'    => 'source.fields.in_situ',
                 'required' => false
             ])
             ->add('commentaireSourceFr', TextareaType::class, [
-                'label' => 'generic.fields.commentaire_fr',
+                'label'    => 'generic.fields.commentaire_fr',
                 'required' => false
             ])
             ->add('commentaireSourceEn', TextareaType::class, [
-                'label' => 'generic.fields.commentaire_en',
+                'label'    => 'generic.fields.commentaire_en',
                 'required' => false
             ])
             ->add('typeSource', EntityType::class, [
@@ -79,22 +79,22 @@ class SourceType extends AbstractType
                 'required'     => false,
                 'class'        => TypeSource::class,
                 'choice_label' => 'nom'.ucfirst($locale),
-                'attr'         =>  [
+                'attr'         => [
                     'class' => 'autocomplete',
                     'data-placeholder' => $options['translations']['autocomplete.select_element']
                 ],
-                'group_by'     => 'categorieSource.nom'.ucfirst($locale),
+                'group_by'      => 'categorieSource.nom'.ucfirst($locale),
                 'query_builder' => function (EntityRepository $er) use ($locale) {
                     return $er->createQueryBuilder('e')
                         ->orderBy('e.nom'.ucfirst($locale), 'ASC');
                 }
             ])
             ->add('materiau', EntityType::class, [
-                'label' => 'source.fields.materiau',
-                'required' => false,
+                'label'        => 'source.fields.materiau',
+                'required'     => false,
                 'class'        => Materiau::class,
                 'choice_label' => 'nom'.ucfirst($locale),
-                'attr'         =>  [
+                'attr'         => [
                     'class' => 'autocomplete',
                     'data-placeholder' => $options['translations']['autocomplete.select_element']
                 ],
@@ -105,11 +105,11 @@ class SourceType extends AbstractType
                 }
             ])
             ->add('typeSupport', EntityType::class, [
-                'label' => 'source.fields.support',
-                'required' => false,
+                'label'        => 'source.fields.support',
+                'required'     => false,
                 'class'        => TypeSupport::class,
                 'choice_label' => 'nom'.ucfirst($locale),
-                'attr'         =>  [
+                'attr'         => [
                     'class' => 'autocomplete',
                     'data-placeholder' => $options['translations']['autocomplete.select_element']
                 ],
@@ -120,13 +120,13 @@ class SourceType extends AbstractType
                 }
             ])
             ->add('auteurs', EntityType::class, [
-                'label' => 'source.fields.auteurs',
-                'required' => false,
-                'multiple' => true,
-                'expanded' => false,
-                'class' => Auteur::class,
+                'label'        => 'source.fields.auteurs',
+                'required'     => false,
+                'multiple'     => true,
+                'expanded'     => false,
+                'class'        => Auteur::class,
                 'choice_label' => 'nom'.ucfirst($locale),
-                'attr'         =>  [
+                'attr'         => [
                     'class' => 'autocomplete',
                     'data-placeholder' => $options['translations']['autocomplete.select_multiple']
                 ],
@@ -136,13 +136,13 @@ class SourceType extends AbstractType
                 }
             ])
             ->add('langues', EntityType::class, [
-                'label' => 'source.fields.langues',
-                'required' => false,
-                'multiple' => true,
-                'expanded' => false,
-                'class' => Langue::class,
+                'label'        => 'source.fields.langues',
+                'required'     => false,
+                'multiple'     => true,
+                'expanded'     => false,
+                'class'        => Langue::class,
                 'choice_label' => 'nom'.ucfirst($locale),
-                'attr'         =>  [
+                'attr'         => [
                     'class' => 'autocomplete',
                     'data-placeholder' => $options['translations']['autocomplete.select_multiple']
                 ],
@@ -152,11 +152,11 @@ class SourceType extends AbstractType
                 }
             ])
             ->add('titrePrincipal', EntityType::class, [
-                'label' => 'source.fields.titre_principal',
-                'required' => false,
+                'label'        => 'source.fields.titre_principal',
+                'required'     => false,
                 'class'        => Titre::class,
                 'choice_label' => 'nom'.ucfirst($locale),
-                'attr'         =>  [
+                'attr'         => [
                     'class' => 'autocomplete',
                     'data-placeholder' => $options['translations']['autocomplete.select_element']
                 ],
@@ -166,17 +166,17 @@ class SourceType extends AbstractType
                 }
             ])
             ->add('titresCites', EntityType::class, [
-                'label' => 'source.fields.titres_cites',
+                'label'      => 'source.fields.titres_cites',
                 'label_attr' => [
                     'class' => 'quote_dependent'
                 ],
-                'required' => false,
-                'multiple' => true,
-                'expanded' => false,
-                'class' => Titre::class,
+                'required'     => false,
+                'multiple'     => true,
+                'expanded'     => false,
+                'class'        => Titre::class,
                 'choice_label' => 'nom'.ucfirst($locale),
-                'attr'         =>  [
-                    'class' => 'autocomplete',
+                'attr'         => [
+                    'class'            => 'autocomplete',
                     'data-placeholder' => $options['translations']['autocomplete.select_multiple']
                 ],
                 'query_builder' => function (EntityRepository $er) use ($locale) {
@@ -186,16 +186,13 @@ class SourceType extends AbstractType
             ])
             ->add('datation', DatationType::class)
             ->add('sourceBiblios', CollectionType::class, [
-                'label' => false,
-                'entry_type'   => SourceBiblioType::class,
+                'label'         => false,
+                'entry_type'    => SourceBiblioType::class,
                 'entry_options' => array_intersect_key($options, array_flip(["translations","locale"])),
-                'allow_add'    => true,
-                'allow_delete' => true,
-                'required' => false,
+                'allow_add'     => true,
+                'allow_delete'  => true,
+                'required'      => false,
             ])
-            // ->add('version')
-            // ->add('fiabiliteLocalisation')
-            // Biblio
             ->add('save',      SubmitType::class, [
                 'label' => 'generic.save'
             ])
@@ -254,8 +251,6 @@ class SourceType extends AbstractType
                 unset($data['translations']);
             }
             $event->setData($data);
-            // $form->setData($data);
-            // echo '<pre>';var_dump($event->getData());die;
         });
     }
 

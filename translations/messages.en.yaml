@@ -54,6 +54,7 @@ source:
     delete_sourcebiblio: "Remove Bibliographic Reference"
     messages:
         created: "Source created"
+        edited: "Source edited"
     fields:
         titre_principal: "Main Title"
         titres_cites: "Quoted Titles"

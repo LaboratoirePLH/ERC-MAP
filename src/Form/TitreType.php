@@ -13,21 +13,21 @@ class TitreType extends AbstractType
     {
         $builder
             ->add('nomFr', TextType::class, [
-                'label' => 'generic.fields.nom_fr',
+                'label'    => 'generic.fields.nom_fr',
                 'required' => false
             ])
             ->add('nomEn', TextType::class, [
-                'label' => 'generic.fields.nom_en',
+                'label'    => 'generic.fields.nom_en',
                 'required' => false
             ])
             ->add('auteurs', EntityType::class, [
-                'label' => 'source.fields.auteurs',
-                'required' => false,
-                'multiple' => true,
-                'expanded' => false,
-                'class' => Auteur::class,
+                'label'        => 'source.fields.auteurs',
+                'required'     => false,
+                'multiple'     => true,
+                'expanded'     => false,
+                'class'        => Auteur::class,
                 'choice_label' => 'nom'.ucfirst($locale),
-                'attr'         =>  [
+                'attr'         => [
                     'class' => 'autocomplete',
                     'data-placeholder' => $options['translations']['autocomplete.select_multiple']
                 ],

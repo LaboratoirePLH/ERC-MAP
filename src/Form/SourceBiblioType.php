@@ -22,16 +22,16 @@ class SourceBiblioType extends AbstractType
     {
         $builder
             ->add('editionPrincipale', CheckboxType::class, [
-                'label' => 'source_biblio.fields.edition_principale',
+                'label'      => 'source_biblio.fields.edition_principale',
                 'label_attr' => ['class' => 'mainsource_field'],
-                'required' => false
+                'required'   => false
             ])
             ->add('biblio_creation', ChoiceType::class, [
-                'label' => 'source_biblio.fields.biblio_creation',
+                'label'      => 'source_biblio.fields.biblio_creation',
                 'label_attr' => [
                     'class' => 'biblio_creation_field'
                 ],
-                'mapped' => false,
+                'mapped'   => false,
                 'expanded' => true,
                 'choices'  => [
                     'generic.choices.new' => 'yes',
@@ -39,15 +39,15 @@ class SourceBiblioType extends AbstractType
                 ],
             ])
             ->add('biblio', EntityType::class, [
-                'label' => 'source.fields.source_biblio',
+                'label'      => 'source.fields.source_biblio',
                 'label_attr' => [
                     'class' => 'biblio_creation_no'
                 ],
-                'required' => false,
-                'mapped' => true,
+                'required'     => false,
+                'mapped'       => true,
                 'class'        => Biblio::class,
                 'choice_label' => 'affichage',
-                'attr'         =>  [
+                'attr'         => [
                     'class' => 'autocomplete',
                     'data-placeholder' => $options['translations']['autocomplete.select_element']
                 ],
@@ -60,21 +60,21 @@ class SourceBiblioType extends AbstractType
                 'label_attr' => [
                     'class' => 'biblio_creation_yes remove_this_label'
                 ],
-                'translations' => $options['translations'],
-                'required' => false,
-                'mapped' => false,
+                'translations'  => $options['translations'],
+                'required'      => false,
+                'mapped'        => false,
                 'property_path' => 'biblio'
             ])
             ->add('commentaireBiblioFr', TextareaType::class, [
-                'label' => 'generic.fields.commentaire_fr',
+                'label'    => 'generic.fields.commentaire_fr',
                 'required' => false
             ])
             ->add('commentaireBiblioEn', TextareaType::class, [
-                'label' => 'generic.fields.commentaire_en',
+                'label'    => 'generic.fields.commentaire_en',
                 'required' => false
             ])
             ->add('referenceSource', TextType::class, [
-                'label' => 'source_biblio.fields.reference_source',
+                'label'    => 'source_biblio.fields.reference_source',
                 'required' => false
             ])
         ;

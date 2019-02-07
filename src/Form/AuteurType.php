@@ -13,15 +13,13 @@ class AuteurType extends AbstractType
     {
         $builder
             ->add('nomFr', TextType::class, [
-                'label' => 'generic.fields.nom_fr',
+                'label'    => 'generic.fields.nom_fr',
                 'required' => false
             ])
             ->add('nomEn', TextType::class, [
-                'label' => 'generic.fields.nom_en',
+                'label'    => 'generic.fields.nom_en',
                 'required' => false
             ])
-            // ->add('titres')
-            // ->add('sources')
         ;
     }
 

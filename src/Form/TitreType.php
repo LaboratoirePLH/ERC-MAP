@@ -2,15 +2,21 @@
 
 namespace App\Form;
 
+use App\Entity\Auteur;
 use App\Entity\Titre;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Doctrine\ORM\EntityRepository;
+
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 class TitreType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $locale = $options['locale'];
         $builder
             ->add('nomFr', TextType::class, [
                 'label'    => 'generic.fields.nom_fr',
@@ -44,5 +50,7 @@ class TitreType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Titre::class,
         ]);
+        $resolver->setRequired('locale');
+        $resolver->setRequired('translations');
     }
 }

@@ -20,7 +20,8 @@
 {{ form_row(form.urlTexte) }}
 {{ form_row(form.urlImage) }}
 {{ form_row(form.inSitu) }}
-{{ form_row(form.translations) }}
+{{ form_row(form.traduireFr) }}
+{{ form_row(form.traduireEn) }}
 {{ form_row(form.commentaireSourceFr) }}
 {{ form_row(form.commentaireSourceEn) }}
 <h3 class="form-section-title">
@@ -64,7 +65,10 @@
             selector.chosen({
                 disable_search_threshold: 10,
                 no_results_text: "{{ 'autocomplete.no_matches'|trans }}",
-                allow_single_deselect: true
+                allow_single_deselect: true,
+                group_search: false,
+                display_selected_options: false,
+                include_group_label_in_selected: true
             });
         }
         setupAutocomplete($('select.autocomplete'));

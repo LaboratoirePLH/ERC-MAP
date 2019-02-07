@@ -40,7 +40,7 @@ class SourceRepository extends ServiceEntityRepository
             ->leftJoin('s.langues', 'langues')
             ->leftJoin('s.titrePrincipal', 'titrePrincipal')
             ->leftJoin('s.typeSource', 'typeSource')
-            ->leftJoin('s.categorieSource', 'categorieSource')
+            ->leftJoin('typeSource.categorieSource', 'categorieSource')
             ->leftJoin('s.createur', 'createur')
             ->leftJoin('s.dernierEditeur', 'dernierEditeur')
             ->leftJoin('s.sourceBiblios', 'sourceBiblios', 'WITH', 'sourceBiblios.editionPrincipale = true')
@@ -62,27 +62,41 @@ class SourceRepository extends ServiceEntityRepository
             ->select([
                 's',
                 'typeSource',
+                'categorieSource',
                 'materiau',
+                'categorieMateriau',
                 'typeSupport',
+                'categorieSupport',
                 'auteurs',
                 'langues',
                 'titrePrincipal',
+                'auteurs2',
                 'titresCites',
+                'auteurs3',
                 'datation',
                 'sourceBiblios',
+                'biblio',
+                'corpus',
                 'createur',
                 'dernierEditeur',
             ])
             ->from('App\Entity\Source', 's')
             ->leftJoin('s.typeSource', 'typeSource')
+            ->leftJoin('typeSource.categorieSource', 'categorieSource')
             ->leftJoin('s.materiau', 'materiau')
+            ->leftJoin('materiau.categorieMateriau', 'categorieMateriau')
             ->leftJoin('s.typeSupport', 'typeSupport')
+            ->leftJoin('typeSupport.categorieSupport', 'categorieSupport')
             ->leftJoin('s.auteurs', 'auteurs')
             ->leftJoin('s.langues', 'langues')
             ->leftJoin('s.titrePrincipal', 'titrePrincipal')
+            ->leftJoin('titrePrincipal.auteurs', 'auteurs2')
             ->leftJoin('s.titresCites', 'titresCites')
+            ->leftJoin('titresCites.auteurs', 'auteurs3')
             ->leftJoin('s.datation', 'datation')
             ->leftJoin('s.sourceBiblios', 'sourceBiblios')
+            ->leftJoin('sourceBiblios.biblio', 'biblio')
+            ->leftJoin('biblio.corpus', 'corpus')
             ->leftJoin('s.createur', 'createur')
             ->leftJoin('s.dernierEditeur', 'dernierEditeur')
             ->where('s.id = ?1')

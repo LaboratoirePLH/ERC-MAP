@@ -185,7 +185,7 @@ class SourceType extends AbstractType
                 }
             ])
             ->add('datation', DatationType::class)
-            ->add('sourcebiblios', CollectionType::class, [
+            ->add('sourceBiblios', CollectionType::class, [
                 'label' => false,
                 'entry_type'   => SourceBiblioType::class,
                 'entry_options' => array_intersect_key($options, array_flip(["translations","locale"])),
@@ -205,7 +205,7 @@ class SourceType extends AbstractType
             $form = $event->getForm();
 
             $rawData = $data;
-            foreach($rawData['sourcebiblios'] as $index => &$sourceBiblio){
+            foreach($rawData['sourceBiblios'] as $index => &$sourceBiblio){
                 // On ignore la référence bibliographique si une de ces conditions est réunie :
                 // - l'utilisateur n'a pas choisi entre une biblio existante ou une nouvelle
                 // - l'utilisateur a choisi une biblio existante mais ne l'a pas sélectionnée
@@ -227,7 +227,7 @@ class SourceType extends AbstractType
                         && !array_key_exists('corpusNew', $sourceBiblio['biblioNew'])
                     )
                 )){
-                    unset($data['sourcebiblios'][$index]);
+                    unset($data['sourceBiblios'][$index]);
                     continue;
                 }
 
@@ -236,15 +236,15 @@ class SourceType extends AbstractType
                 // Même logique si l'on crée un nouveau corpus
                 // On retire ensuite du formulaire
                 if($sourceBiblio['biblio_creation'] === "yes"){
-                    $data['sourcebiblios'][$index]['biblio'] = $data['sourcebiblios'][$index]['biblioNew'];
+                    $data['sourceBiblios'][$index]['biblio'] = $data['sourceBiblios'][$index]['biblioNew'];
                     if($sourceBiblio['biblioNew']['corpus_creation'] === "yes"){
-                        $data['sourcebiblios'][$index]['biblio']['corpus'] = $data['sourcebiblios'][$index]['biblio']['corpusNew'];
+                        $data['sourceBiblios'][$index]['biblio']['corpus'] = $data['sourceBiblios'][$index]['biblio']['corpusNew'];
                     }
-                    unset($data['sourcebiblios'][$index]['biblio']['corpusNew']);
-                    unset($data['sourcebiblios'][$index]['biblio']['corpus_creation']);
+                    unset($data['sourceBiblios'][$index]['biblio']['corpusNew']);
+                    unset($data['sourceBiblios'][$index]['biblio']['corpus_creation']);
                 }
-                unset($data['sourcebiblios'][$index]['biblioNew']);
-                unset($data['sourcebiblios'][$index]['biblio_creation']);
+                unset($data['sourceBiblios'][$index]['biblioNew']);
+                unset($data['sourceBiblios'][$index]['biblio_creation']);
             }
             // Gestion des checkboxes
             if (!empty($data['translations'])) {

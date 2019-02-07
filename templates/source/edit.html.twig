@@ -34,8 +34,8 @@
 <h3 class="form-section-title">
     {{ 'source.sections.bibliographie'|trans }}
 </h3>
-{{ form_errors(form.sourcebiblios) }}
-{{ form_widget(form.sourcebiblios) }}
+{{ form_errors(form.sourceBiblios) }}
+{{ form_widget(form.sourceBiblios) }}
 
 <div class="form-group row">
     <div class="col-sm-10 offset-sm-2">
@@ -80,7 +80,7 @@
         toggleQuoteFields($('#source_citation').is(':checked'));
 
         // Gestion de l'ajout d'une référence supplémentaire
-        var container = $('div#source_sourcebiblios');
+        var container = $('div#source_sourceBiblios');
         var index = container.children('.form-group').length;
 
         $('#add_sourcebiblio').click(function (e) {
@@ -106,7 +106,7 @@
                 var radioValue = $("input[name='" + radioName + "']:checked").val();
                 if (radioValue) {
                     toggleCreationSelection(
-                        $(this).parents('#source_sourcebiblios_' + groupIndex),
+                        $(this).parents('#source_sourceBiblios_' + groupIndex),
                         target,
                         radioValue === 'yes'
                     );
@@ -131,7 +131,7 @@
 
             var prototype = $(template);
 
-            var label = prototype.find('#source_sourcebiblios_' + index).find('.remove_this_label');
+            var label = prototype.find('#source_sourceBiblios_' + index).find('.remove_this_label');
             label.siblings('.col-sm-10').removeClass('col-sm-10').addClass('col-sm-12');
             label.hide();
 

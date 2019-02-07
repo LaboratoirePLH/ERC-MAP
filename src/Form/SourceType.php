@@ -35,11 +35,11 @@ class SourceType extends AbstractType
 
         $builder
             ->add('traduireFr', CheckboxType::class, [
-                'label'      => 'source.fields.to_translate_fr',
+                'label'      => 'languages.fr',
                 'required' => false
             ])
             ->add('traduireEn', CheckboxType::class, [
-                'label'      => 'source.fields.to_translate_en',
+                'label'      => 'languages.en',
                 'required' => false
             ])
             ->add('citation', CheckboxType::class, [

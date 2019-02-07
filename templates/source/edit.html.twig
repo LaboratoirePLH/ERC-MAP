@@ -6,6 +6,30 @@
 
 {{ form_start(form, {'attr' : {'id': 'source'}} ) }}
 {{ form_errors(form) }}
+
+<div class="row justify-content-center">
+    <div class="col-sm-6 text-center">
+        {% if action == 'edit' %}
+        {% spaceless %}
+        {{ 'generic.fields.date_creation'|trans }}&nbsp;:&nbsp;
+        {{ source.dateCreation|date("locale_datetime"|trans) }}&nbsp;
+        {{ 'generic.fields.by'|trans }}&nbsp;{{ source.createur.prenomNom }}
+        {% endspaceless %}
+        <br />
+        {% spaceless %}
+        {{ 'generic.fields.date_modification'|trans }}&nbsp;:&nbsp;
+        {{ source.dateModification|date("locale_datetime"|trans) }}&nbsp;
+        {{ 'generic.fields.by'|trans }}&nbsp;{{ source.dernierEditeur.prenomNom }}
+        {% endspaceless %}
+        <br />
+        {{ 'source.fields.version'|trans }}&nbsp;{{ source.version }}&rarr;{{ source.version+1 }}
+        <hr />
+        {% endif %}
+        {{ 'generic.fields.to_translate'|trans }} : {{ form_widget(form.traduireFr) }}{{ form_label(form.traduireFr)
+        }}
+        {{ form_widget(form.traduireEn) }} {{ form_label(form.traduireEn) }}
+    </div>
+</div>
 <h3 class="form-section-title">
     {{ 'source.sections.informations_source'|trans }}
 </h3>
@@ -20,8 +44,6 @@
 {{ form_row(form.urlTexte) }}
 {{ form_row(form.urlImage) }}
 {{ form_row(form.inSitu) }}
-{{ form_row(form.traduireFr) }}
-{{ form_row(form.traduireEn) }}
 {{ form_row(form.commentaireSourceFr) }}
 {{ form_row(form.commentaireSourceEn) }}
 <h3 class="form-section-title">

@@ -45,6 +45,7 @@ generic:
         nom_en: "Name (EN)"
         commentaire_fr: "Comments (FR)"
         commentaire_en: "Comments (EN)"
+        to_translate: "To translate in"
     choices :
         new: "New"
         existing: "Existing"
@@ -76,7 +77,6 @@ source:
         createur: "Creator"
         dernier_editeur: "Latest Editor"
         reference_bibliographique: "Bibliographic Reference"
-        to_translate: "To translate in"
         to_translate_fr: "To translate in French"
         to_translate_en: "To translate in English"
         fiability: "Reliability score"

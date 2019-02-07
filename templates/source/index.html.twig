@@ -28,21 +28,23 @@
                 {{ 'source.fields.reference_bibliographique'|trans }}
             </th>
             <th scope="col">
-                {{ 'source.fields.createur'|trans }}
-            </th>
-            <th scope="col">
-                {{ 'source.fields.dernier_editeur'|trans }}
+                {{ 'generic.fields.date_creation'|trans }}
             </th>
             <th scope="col">
                 {{ 'generic.fields.date_modification'|trans }}
+            </th>
+            <th scope="col">
+                {{ 'generic.actions'|trans }}
             </th>
         </tr>
     </thead>
     <tbody>
         {% for source in sources %}
         <tr>
-            <th scope="row">
+            <th scope="row" class="px-0">
                 <a href="{{ url('source_edit', {'id': source.id}) }}">#{{ source.id }}</a>
+                <br />
+                <small>{{ 'source.fields.version'|trans }}&nbsp;{{ source.version|default("?") }}</small>
             </th>
             <td>
                 {{ source.typeSource is not null ? source.typeSource.nom(locale) : "" }}
@@ -56,16 +58,47 @@
             <td>
                 {{ source.concatLangues(locale) }}
             </td>
-            <td></td>
-            <td></td>
             <td>
-                {{ source.createur.prenomNom }}
+                {{ source.sourceBiblios is not empty ? source.sourceBiblios[0].biblio.titreAbrege : "" }}
             </td>
             <td>
-                {{ source.dernierEditeur.prenomNom }}
+                {{ source.sourceBiblios is not empty ? source.sourceBiblios[0].referenceSource : "" }}
+            </td>
+            <td>
+                {{ source.dateCreation|date("locale_datetime"|trans) }}
+                <br />
+                <small>
+                    {{ source.createur.prenomNom }}<br />
+                </small>
             </td>
             <td>
                 {{ source.dateModification|date("locale_datetime"|trans) }}
+                <br />
+                <small>
+                    {{ source.dernierEditeur.prenomNom }}<br />
+                </small>
+            </td>
+            <td class="py-0 px-1">
+                <a href="{{ url('source_show', {'id': source.id}) }}" class="btn btn-sm btn-block my-1 btn-primary">
+                    <i class="fas fa-eye"></i>
+                    {{ 'generic.view'|trans }}
+                </a>
+                <a href="{{ url('source_edit', {'id': source.id}) }}" class="btn btn-sm btn-block my-1 btn-warning">
+                    <i class="fas fa-edit"></i>
+                    {{ 'generic.edit'|trans }}
+                </a>
+                <a href="#" class="btn btn-sm btn-block my-1 btn-danger" id="delete-link-{{source.id}}">
+                    <i class="fas fa-trash"></i>
+                    {{ 'generic.delete'|trans }}
+                </a>
+                {% include "modals/confirmation.html.twig" with {
+                'modalName': 'confirm_deletion',
+                'triggerSelector': '#delete-link-'~source.id,
+                'targetUrl': url('source_delete', {'id' : source.id}),
+                'confirmationLabel': 'generic.delete',
+                'csrfToken': 'delete_source_'~source.id,
+                } %}
+
             </td>
         </tr>
         {% endfor %}
@@ -79,9 +112,9 @@
             <th>{{ 'source.fields.langues'|trans }}</th>
             <th>{{ 'biblio.fields.titre_abrege'|trans }}</th>
             <th>{{ 'source.fields.reference_bibliographique'|trans }}</th>
-            <th>{{ 'source.fields.createur'|trans }}</th>
-            <th>{{ 'source.fields.dernier_editeur'|trans }}</th>
+            <th>{{ 'generic.fields.date_creation'|trans }}</th>
             <th>{{ 'generic.fields.date_modification'|trans }}</th>
+            <th></th>
         </tr>
     </tfoot>
 </table>
@@ -94,19 +127,28 @@
     $(document).ready(function () {
         $('#source_list tfoot th').each(function () {
             var title = $(this).text();
-            $(this).html(
-                '<input type="text" class="w-100" placeholder="{{"generic.search"|trans}}' +
-                ' ' + title + '" />'
-            );
+            if (title != "") {
+                $(this).html(
+                    '<input type="text" class="w-100" placeholder="{{"generic.search"|trans}}' +
+                    ' ' + title + '" />'
+                );
+            }
         });
         var dt = $('#source_list').DataTable({
-            //autoWidth: true,
+            autoWidth: true,
             lengthChange: true,
-            scrollX: true,
+            scrollX: false,
             searching: true,
             ordering: true,
+            columns: [{
+                width: 80
+            }, null, null, null, null, null, null, null, null, {
+                searchable: false,
+                orderable: false,
+                width: 80
+            }],
             order: [
-                [9, 'desc']
+                [8, 'desc']
             ],
             language: $.parseJSON('{{ "datatable.language"|trans|raw }}'),
             pageLength: 10,
@@ -120,9 +162,6 @@
             ]
         });
         $('#source_list_wrapper select').removeClass('custom-select');
-        $('#source_list tbody td').on('click', function () {
-            $(this).children('th > a').click();
-        });
         dt.columns().every(function () {
             var me = this;
             $('input', this.footer()).on('keyup change', function () {

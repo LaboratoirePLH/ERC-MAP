@@ -543,10 +543,12 @@ class Source
 
     public function concatLangues($lang): string
     {
-        if(empty($this->langues)){ return ""; }
-        $names = $this->langues->map(function($langue) use ($lang) {
+        if(empty($this->getLangues())){ return ""; }
+        $names = $this->getLangues()->map(function($langue) use ($lang) {
             return $langue->getNom($lang);
         });
+        $names = $names->toArray();
+        sort($names);
         return implode(', ', $names);
     }
 

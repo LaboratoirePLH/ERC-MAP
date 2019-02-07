@@ -26,19 +26,25 @@ class SourceRepository extends ServiceEntityRepository
     {
         $query = $this->createQueryBuilder('source')
             ->select([
-                'partial s.{id, dateModification}',
+                'partial s.{id, dateCreation, dateModification, version}',
+                'langues',
                 'titrePrincipal',
                 'typeSource',
                 'categorieSource',
                 'createur',
                 'dernierEditeur',
+                'partial sourceBiblios.{source, biblio, editionPrincipale, referenceSource}',
+                'partial biblio.{id, titreAbrege}'
             ])
             ->from('App\Entity\Source', 's')
+            ->leftJoin('s.langues', 'langues')
             ->leftJoin('s.titrePrincipal', 'titrePrincipal')
             ->leftJoin('s.typeSource', 'typeSource')
             ->leftJoin('s.categorieSource', 'categorieSource')
             ->leftJoin('s.createur', 'createur')
             ->leftJoin('s.dernierEditeur', 'dernierEditeur')
+            ->leftJoin('s.sourceBiblios', 'sourceBiblios', 'WITH', 'sourceBiblios.editionPrincipale = true')
+            ->leftJoin('sourceBiblios.biblio', 'biblio')
             ->orderBy('s.dateModification', 'DESC')
             ->getQuery();
 

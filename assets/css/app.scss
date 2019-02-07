@@ -73,8 +73,10 @@ body {
         }
 
         #source_list {
-            tbody tr {
-                cursor: pointer;
+
+            th[scope=row],
+            td {
+                vertical-align: middle;
             }
         }
 

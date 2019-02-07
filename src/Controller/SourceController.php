@@ -28,6 +28,13 @@ class SourceController extends AbstractController
     }
 
     /**
+     * @Route("/source/{id}", name="source_show")
+     */
+    public function show($id){
+        echo "ok";
+    }
+
+    /**
      * @Route("/source/create", name="source_create")
      */
     public function create(Request $request, TranslatorInterface $translator){
@@ -57,7 +64,7 @@ class SourceController extends AbstractController
             $em->flush();
 
             // Message de confirmation
-            $request->getSession()->getFlashBag()->add('notice', 'source.messages.created');
+            $request->getSession()->getFlashBag()->add('success', 'source.messages.created');
 
             return $this->redirectToRoute('source_list');
         }
@@ -105,7 +112,7 @@ class SourceController extends AbstractController
             $em->flush();
 
             // Message de confirmation
-            $request->getSession()->getFlashBag()->add('notice', 'source.messages.edited');
+            $request->getSession()->getFlashBag()->add('success', 'source.messages.edited');
 
             return $this->redirectToRoute('source_list');
         }
@@ -121,7 +128,15 @@ class SourceController extends AbstractController
     /**
      * @Route("/source/{id}/delete", name="source_delete")
      */
-    public function delete($id){
-        echo "ok";
+    public function delete($id, Request $request){
+        $submittedToken = $request->request->get('token');
+
+        if ($this->isCsrfTokenValid('delete-source-'.$id, $submittedToken)) {
+            echo "ok pour delete";
+        } else {
+            $request->getSession()->getFlashBag()->add('error', 'source.messages.deletion_failed');
+
+            return $this->redirectToRoute('source_list');
+        }
     }
 }

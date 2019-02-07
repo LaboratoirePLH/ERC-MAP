@@ -31,7 +31,7 @@ class TypeSource
     /**
      * @var \CategorieSource|null
      *
-     * @ORM\ManyToOne(targetEntity="CategorieSource")
+     * @ORM\ManyToOne(targetEntity="CategorieSource", fetch="EAGER")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_cat_source", referencedColumnName="id")
      * })

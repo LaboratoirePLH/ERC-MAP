@@ -34,7 +34,7 @@ class Source
     /**
      * @var \Titre|null
      *
-     * @ORM\ManyToOne(targetEntity="Titre", fetch="EAGER")
+     * @ORM\OneToOne(targetEntity="Titre", fetch="EAGER", cascade={"persist"})
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_titre", referencedColumnName="id_titre", nullable=true)
      * })
@@ -304,27 +304,6 @@ class Source
     }
 
     /**
-     * @var \CategorieSupport|null
-     *
-     * @ORM\ManyToOne(targetEntity="CategorieSupport", fetch="EAGER")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_cat_support", referencedColumnName="id", nullable=true)
-     * })
-     */
-    private $categorieSupport;
-
-    public function getCategorieSupport(): ?CategorieSupport
-    {
-        return $this->categorieSupport;
-    }
-
-    public function setCategorieSupport(?CategorieSupport $categorieSupport): self
-    {
-        $this->categorieSupport = $categorieSupport;
-        return $this;
-    }
-
-    /**
      * @var \Materiau|null
      *
      * @ORM\ManyToOne(targetEntity="Materiau", fetch="EAGER")
@@ -346,27 +325,6 @@ class Source
     }
 
     /**
-     * @var \CategorieMateriau|null
-     *
-     * @ORM\ManyToOne(targetEntity="CategorieMateriau", fetch="EAGER")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_cat_mat", referencedColumnName="id", nullable=true)
-     * })
-     */
-    private $categorieMateriau;
-
-    public function getCategorieMateriau(): ?CategorieMateriau
-    {
-        return $this->categorieMateriau;
-    }
-
-    public function setCategorieMateriau(?CategorieMateriau $categorieMateriau): self
-    {
-        $this->categorieMateriau = $categorieMateriau;
-        return $this;
-    }
-
-    /**
      * @var \TypeSource
      *
      * @ORM\ManyToOne(targetEntity="TypeSource", fetch="EAGER")
@@ -384,27 +342,6 @@ class Source
     public function setTypeSource(?TypeSource $typeSource): self
     {
         $this->typeSource = $typeSource;
-        return $this;
-    }
-
-    /**
-     * @var \CategorieSource|null
-     *
-     * @ORM\ManyToOne(targetEntity="CategorieSource", fetch="EAGER")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_type_cat", referencedColumnName="id", nullable=true)
-     * })
-     */
-    private $categorieSource;
-
-    public function getCategorieSource(): ?CategorieSource
-    {
-        return $this->categorieSource;
-    }
-
-    public function setCategorieSource(?CategorieSource $categorieSource): self
-    {
-        $this->categorieSource = $categorieSource;
         return $this;
     }
 
@@ -616,12 +553,5 @@ class Source
         $now = new \DateTime();
         $this->setDateModification($now);
         $this->setVersion($this->getVersion() + 1);
-    }
-
-    /**
-     * @ORM\PreRemove
-     */
-    public function onDelete(){
-
     }
 }

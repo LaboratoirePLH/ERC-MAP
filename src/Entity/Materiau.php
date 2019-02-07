@@ -31,7 +31,7 @@ class Materiau
     /**
      * @var \CategorieMateriau
      *
-     * @ORM\ManyToOne(targetEntity="CategorieMateriau")
+     * @ORM\ManyToOne(targetEntity="CategorieMateriau", fetch="EAGER")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_type", referencedColumnName="id")
      * })

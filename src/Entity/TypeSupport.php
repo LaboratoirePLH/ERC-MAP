@@ -31,7 +31,7 @@ class TypeSupport
     /**
      * @var \CategorieSupport
      *
-     * @ORM\ManyToOne(targetEntity="CategorieSupport")
+     * @ORM\ManyToOne(targetEntity="CategorieSupport", fetch="EAGER")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_cat_supp", referencedColumnName="id")
      * })

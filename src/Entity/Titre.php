@@ -111,4 +111,21 @@ class Titre
         $this->auteurs = new \Doctrine\Common\Collections\ArrayCollection();
         $this->sourcesCitees = new \Doctrine\Common\Collections\ArrayCollection();
     }
+
+    private function _affichage($lang){
+        $auteurs = [];
+        foreach($this->getAuteurs() as $a){
+            $auteurs[] = $a->getNom($lang);
+        }
+        return \sprintf("%s (%s)", $this->getNom($lang), implode(', ', $auteurs));
+    }
+    public function getAffichageFr(): string
+    {
+        return $this->_affichage('fr');
+    }
+
+    public function getAffichageEn(): string
+    {
+        return $this->_affichage('en');
+    }
 }

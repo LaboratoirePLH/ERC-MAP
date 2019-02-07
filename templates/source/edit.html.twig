@@ -1,235 +1,176 @@
 {% extends 'authenticated.html.twig' %}
 {% block title %}
-{{ ('sources.' ~ action)|trans }}{{ source is defined ? ' #'~source.id : ''}}
+{{ ('source.' ~ action)|trans }}{{ source is defined ? ' #'~source.id : ''}}
 {% endblock %}
 {% block content %}
 
-
-<h3 class="text-center">
-    <u>{{ source.titrePrincipal.getNom(locale)}}</u>
+{{ form_start(form, {'attr' : {'id': 'source'}} ) }}
+{{ form_errors(form) }}
+<h3 class="form-section-title">
+    {{ 'source.sections.informations_source'|trans }}
 </h3>
-<div class="row">
-    <div class="col-12 text-center">
-        <u>{{ 'generic.fields.date_creation'|trans }}:</u>&nbsp;
-        {{ source.dateCreation|date('locale_datetime'|trans) }}&nbsp;
-        {{ 'generic.fields.by'|trans }}&nbsp;
-        {{ source.createur.prenomNom|trim }}
-    </div>
-    <div class="col-12 text-center">
-        <u>{{ 'generic.fields.date_modification'|trans }}:</u>&nbsp;
-        {{ source.dateModification|date('locale_datetime'|trans) }}&nbsp;
-        {{ 'generic.fields.by'|trans }}&nbsp;
-        {{ source.dernierEditeur.prenomNom|trim }}
+{{ form_row(form.titrePrincipal) }}
+{{ form_row(form.auteurs) }}
+{{ form_row(form.langues) }}
+{{ form_row(form.typeSource) }}
+{{ form_row(form.materiau) }}
+{{ form_row(form.typeSupport) }}
+{{ form_row(form.citation) }}
+{{ form_row(form.titresCites) }}
+{{ form_row(form.urlTexte) }}
+{{ form_row(form.urlImage) }}
+{{ form_row(form.inSitu) }}
+{{ form_row(form.translations) }}
+{{ form_row(form.commentaireSourceFr) }}
+{{ form_row(form.commentaireSourceEn) }}
+<h3 class="form-section-title">
+    {{ 'source.sections.localisation'|trans }}
+</h3>
+<h3 class="form-section-title">
+    {{ 'source.sections.datation'|trans }}
+</h3>
+{{ form_errors(form.datation) }}
+{{ form_widget(form.datation) }}
+<h3 class="form-section-title">
+    {{ 'source.sections.bibliographie'|trans }}
+</h3>
+{{ form_errors(form.sourcebiblios) }}
+{{ form_widget(form.sourcebiblios) }}
+
+<div class="form-group row">
+    <div class="col-sm-10 offset-sm-2">
+        <a href="#" id="add_sourcebiblio" class="btn btn-primary">
+            <i class="fa fa-plus"></i>&nbsp;
+            {{ 'source.add_sourcebiblio'|trans }}
+        </a>
     </div>
 </div>
-<form action="" method="POST" class="form form-horizontal d-inline">
-    <hr>
 
-    <div class="form-group row">
-        <label class="col-sm-2 col-form-label pt-0">{{ 'sources.fields.to_translate'|trans }}</label>
-        <div class="col-sm-10">
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="inputToTranslateFr" value="a_traduire">
-                <label class="form-check-label" for="inputToTranslateFr">{{ 'languages.fr'|trans }}</label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="inputToTranslateEn" value="to_translate">
-                <label class="form-check-label" for="inputToTranslateEn">{{ 'languages.en'|trans }}</label>
-            </div>
-        </div>
+<hr />
+<div class="form-group row">
+    <div class="col-sm-12 text-center">
+        {{ form_widget(form.save) }}
     </div>
+</div>
+{{ form_rest(form) }}
+{{ form_end(form) }}
 
-    <div class="form-group row">
-        <label for="inputFiability" class="col-sm-2 col-form-label">{{ 'sources.fields.fiability'|trans }}</label>
-        <div class="col-sm-10">
-            <input type="text" class="form-control" id="inputFiability" name="fiability" value="{{ old.fiability|default(source.fiability|default(0)) }}"
-                readonly>
-        </div>
-    </div>
-
-    <h4>
-        {{ 'sources.sections.informations_source'|trans }}
-    </h4>
-
-    <div class="form-group row">
-        <label for="inputTitrePrincipalFr" class="col-sm-2 col-form-label">{{ 'sources.fields.titre_principal'|trans }}</label>
-        <div class="col-sm-10">
-            <div class="form-group row">
-                <label for="inputTitrePrincipalFr" class="col-sm-1 col-form-label">{{ 'languages.fr'|trans }}: </label>
-                <div class="col-sm-5">
-                    <input type="text" class="form-control" id="inputTitrePrincipalFr" name="titre_principal_fr" value="{{ old.titrePrincipal.nom('fr')|default(source.titrePrincipal.nom('fr')|default("")) }}">
-                </div>
-                <label for="inputTitrePrincipalEn" class="col-sm-1 col-form-label">{{ 'languages.en'|trans }}: </label>
-                <div class="col-sm-5">
-                    <input type="text" class="form-control" id="inputTitrePrincipalEn" name="titre_principal_en" value="{{ old.titrePrincipal.nom('en')|default(source.titrePrincipal.nom('en')|default("")) }}">
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <label class="col-sm-2 col-form-label pt-0" for="inputCitation">{{ 'sources.fields.citation'|trans }}</label>
-        <div class="col-sm-10">
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="inputCitation" value="citation">
-            </div>
-        </div>
-    </div>
-
-    <div class="form-group row" id="titresCites">
-        <label class="col-sm-2 col-form-label">{{ 'sources.fields.titres_cites'|trans }}</label>
-        <div class="col-sm-10">
-            {% for item in old.titreCite|default(source.titreCite|default([{nomFr: "", nomEn: ""}])) %}
-            <div class="form-group row itemTitreCite">
-                <label for="inputTitreCiteFr_{{loop.index}}" class="col-sm-1 col-form-label">
-                    {{ 'languages.fr'|trans }}:&nbsp;
-                </label>
-                <div class="col-sm-5">
-                    <input type="text" class="form-control" id="inputTitreCiteFr_{{loop.index}}" name="titreCiteFr_{{loop.index}}"
-                        value="{{ item.nomFr }}">
-                </div>
-                <label for="inputTitreCiteEn_{{loop.index}}" class="col-sm-1 col-form-label">
-                    {{ 'languages.en'|trans }}:&nbsp;
-                </label>
-                <div class="col-sm-5">
-                    <input type="text" class="form-control" id="inputTitreCiteEn_{{loop.index}}" name="titreCiteEn_{{loop.index}}"
-                        value="{{ item.nomEn }}">
-                </div>
-            </div>
-            {% endfor %}
-            <button id="addTitreCite" type="button">
-                <i class="fa fa-plus"></i>
-                {{ 'generic.add'|trans }}
-            </button>
-        </div>
-
-    </div>
-
-    <div class="form-group row">
-        <label for="inputUrlImage" class="col-sm-2 col-form-label">{{ 'sources.fields.url_image'|trans }}</label>
-        <div class="col-sm-10">
-            <input type="text" class="form-control" id="inputUrlImage" name="urlImage" value="{{ old.urlImage|default(source.urlImage|default("")) }}">
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <label for="inputUrlTexte" class="col-sm-2 col-form-label">{{ 'sources.fields.url_texte'|trans }}</label>
-        <div class="col-sm-10">
-            <input type="text" class="form-control" id="inputUrlTexte" name="urlTexte" value="{{ old.urlTexte|default(source.urlTexte|default("")) }}">
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <label class="col-sm-2 col-form-label pt-0" for="inputInSitu">{{ 'sources.fields.in_situ'|trans }}</label>
-        <div class="col-sm-10">
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="inputInSitu" value="in_situ">
-            </div>
-        </div>
-    </div>
-
-    <h4>
-        {{ 'sources.sections.bibliographie'|trans }}
-    </h4>
-
-    <div class="form-group row">
-        <label class="col-sm-2 col-form-label">{{ 'sources.fields.biblio_1'|trans }}</label>
-        <div class="col-sm-10">
-            <div class="form-group row">
-                <label for="inputBiblioTitreComplet_1" class="col-sm-2 col-form-label">
-                    {{ 'biblio.fields.titre_complet'|trans }}
-                </label>
-                <div class="col-sm-10">
-                    <input type="text" class="form-control" id="inputBiblioTitreComplet_1" name="biblio_titre_complet_1"
-                        value="{{ old.sourceBiblios[0].titreComplet|default(source.sourceBiblios[0].titreComplet|default("")) }}">
-                </div>
-                <label for="inputBiblioTitreAbrege_1" class="col-sm-2 col-form-label">
-                    {{ 'biblio.fields.titre_abrege'|trans }}
-                </label>
-                <div class="col-sm-10">
-                    <input type="text" class="form-control" id="inputBiblioTitreAbrege_1" name="biblio_titre_abrege_1"
-                        value="{{ old.sourceBiblios[0].titreAbrege|default(source.sourceBiblios[0].titreAbrege|default("")) }}">
-                </div>
-                <label for="inputBiblioAuteur_1" class="col-sm-2 col-form-label">
-                    {{ 'biblio.fields.auteur'|trans }}
-                </label>
-                <div class="col-sm-10">
-                    <input type="text" class="form-control" id="inputBiblioAuteur_1" name="biblio_auteur_1" value="{{ old.sourceBiblios[0].auteur|default(source.sourceBiblios[0].auteur|default("")) }}">
-                </div>
-                <label for="inputBiblioAnnee_1" class="col-sm-2 col-form-label">
-                    {{ 'biblio.fields.annee'|trans }}
-                </label>
-                <div class="col-sm-10">
-                    <input type="text" class="form-control" id="inputBiblioAnnee_1" name="biblio_annee_1" value="{{ old.sourceBiblios[0].annee|default(source.sourceBiblios[0].annee|default("")) }}">
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <hr>
-    <div class="row">
-        <div class="col-12 text-center">
-            <button type="submit" class="btn btn-primary">{{ 'generic.save'|trans }}</button>
-
-            <a href="{{ url('source_list')}}" class="btn btn-secondary">{{ 'generic.cancel'|trans }}</a>
-            {% if action == 'edit' %}
-            <a href="{{ url('source_delete', {'id' : source.id})}}" class="btn btn-danger" id="delete-button">
-                {{ 'generic.delete'|trans }}
-            </a>
-            {% endif %}
-        </div>
-    </div>
-</form>
-
-<hr>
-{% if action == 'edit' %}
-{% include "modals/confirmation.html.twig" with {
-'modalName': 'confirm_deletion',
-'triggerSelector': '#delete-button',
-'targetUrl': url('source_delete', {'id' : source.id}),
-'confirmationLabel': 'generic.delete',
-'csrfToken': 'delete_source_'~source.id,
-} %}
-{% endif %}
 {% endblock %}
-
-
-
-
 {% block javascripts %}
 {{ parent() }}
 <script type="text/javascript">
     $(document).ready(function () {
-        $("button[type=reset]").click(function (e) {
-            e.preventDefault();
-            alert('reset');
-        });
-
-        // Show/hide "titresCites" depending on "quote" checkbox
-        $('input#inputCitation').on('change', function () {
-            $('#titresCites')[($(this).is(':checked') ? "show" : "hide")]();
-        });
-        $('#titresCites')[($('input#inputCitation').is(':checked') ? "show" : "hide")]();
-
-        // Add an entry to "titresCites"
-        $('button#addTitreCite').on('click', function (e) {
-            e.preventDefault();
-
-            var count = $(this).siblings('.itemTitreCite').length + 1;
-            var newItem = $(this).prev('.itemTitreCite').clone();
-            newItem.find('label').each(function () {
-                $(this).attr('for', $(this).attr('for').replace(/_\d/, "_" + count));
+        function setupAutocomplete(selector) {
+            selector.chosen({
+                disable_search_threshold: 10,
+                no_results_text: "{{ 'autocomplete.no_matches'|trans }}",
+                allow_single_deselect: true
             });
-            newItem.find('input').each(function () {
-                $(this).attr('id', $(this).attr('id').replace(/_\d/, "_" + count));
-                $(this).attr('name', $(this).attr('name').replace(/_\d/, "_" + count));
-                $(this).val("");
-            });
+        }
+        setupAutocomplete($('select.autocomplete'));
 
-            newItem.insertBefore(this);
+        // Gestion des champs qui dépendent de la checkbox "citation"
+        $('#source_citation').on('change', function (e) {
+            toggleQuoteFields($(this).is(':checked'));
         });
 
+        function toggleQuoteFields(display) {
+            $('.quote_dependent').parent('.row')[(display ? "slideDown" : "slideUp")](300);
+        }
+        toggleQuoteFields($('#source_citation').is(':checked'));
+
+        // Gestion de l'ajout d'une référence supplémentaire
+        var container = $('div#source_sourcebiblios');
+        var index = container.children('.form-group').length;
+
+        $('#add_sourcebiblio').click(function (e) {
+            addReference(container);
+            e.preventDefault();
+            return false;
+        });
+
+        if (index == 0) {
+            addReference(container);
+        } else {
+            container.children('.form-group').each(function () {
+                addDeleteLink($(this));
+                toggleCreationSelection($(this), 'biblio', false);
+                toggleCreationSelection($(this), 'corpus', false);
+            });
+        }
+
+        function setupCreationSelection(target) {
+            $('label.' + target + '_creation_field').siblings('input[type=radio]').on('change', function (e) {
+                var radioName = $(this).attr('name');
+                var groupIndex = radioName.match(/\d+/)[0];
+                var radioValue = $("input[name='" + radioName + "']:checked").val();
+                if (radioValue) {
+                    toggleCreationSelection(
+                        $(this).parents('#source_sourcebiblios_' + groupIndex),
+                        target,
+                        radioValue === 'yes'
+                    );
+                }
+            });
+        }
+
+        function toggleCreationSelection(parent, target, creation) {
+            parent.find('.' + target + '_creation_no').parent('.form-group')[(creation === false ? "slideDown" :
+                "slideUp")](300);
+            parent.find('.' + target + '_creation_yes').parent('.form-group')[(creation === true ? "slideDown" :
+                "slideUp")](300);
+        }
+
+        function addReference(container) {
+            $('label.mainsource_field').siblings('input[type=checkbox]').off('change');
+            $('label.biblio_creation_field').siblings('input[type=radio]').off('change');
+            $('label.corpus_creation_field').siblings('input[type=radio]').off('change');
+            var template = container.attr('data-prototype')
+                .replace(/__name__label__/g, '{{ "source.fields.source_biblio_n"|trans }}' + (index + 1))
+                .replace(/__name__/g, index);
+
+            var prototype = $(template);
+
+            var label = prototype.find('#source_sourcebiblios_' + index).find('.remove_this_label');
+            label.siblings('.col-sm-10').removeClass('col-sm-10').addClass('col-sm-12');
+            label.hide();
+
+            prototype.children('legend')
+                .removeClass('col-sm-2 col-form-label')
+                .addClass('col-sm-12 text-center h4');
+            prototype.children('.col-sm-10')
+                .removeClass('col-sm-10')
+                .addClass('col-sm-12');
+
+            addDeleteLink(prototype);
+            container.append(prototype);
+            index++;
+
+            $('label.mainsource_field').siblings('input[type=checkbox]').on('change', function (e) {
+                if ($(this).is(':checked')) {
+                    $('label.mainsource_field').siblings('input[type=checkbox]')
+                        .not(this)
+                        .prop('checked', false);
+                }
+            });
+            setupCreationSelection('biblio');
+            setupCreationSelection('corpus');
+            toggleCreationSelection(prototype, 'biblio', null);
+            toggleCreationSelection(prototype, 'corpus', null);
+            setupAutocomplete(prototype.find('select.autocomplete'));
+        }
+
+        function addDeleteLink(prototype) {
+            var deleteLink = $(
+                '<a href="#" class="btn btn-danger">{{ "source.delete_sourcebiblio"|trans }}</a>'
+            );
+            prototype.children('.col-sm-10').append(deleteLink);
+            deleteLink.click(function (e) {
+                e.preventDefault();
+                prototype.remove();
+                return false;
+            });
+        }
     });
 </script>
 {% endblock %}

@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="datation")
  * @ORM\Entity
+ * @ORM\HasLifecycleCallbacks()
  */
 class Datation
 {
@@ -18,7 +19,7 @@ class Datation
      * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="SEQUENCE")
-     * @ORM\SequenceGenerator(sequenceName="datation_id_seq", allocationSize=1, initialValue=1)
+     * @ORM\SequenceGenerator(sequenceName="datation_id_datation_seq", allocationSize=1, initialValue=1)
      */
     private $id;
 
@@ -62,21 +63,29 @@ class Datation
      *
      * @ORM\Column(name="com_date", type="text", nullable=true)
      */
-    private $comDate;
+    private $commentaireDateFr;
 
     /**
      * @var string|null
      *
      * @ORM\Column(name="com_date_en", type="text", nullable=true)
      */
-    private $comDateEn;
+    private $commentaireDateEn;
 
     /**
      * @var int|null
      *
      * @ORM\Column(name="fiab_datation", type="smallint", nullable=true)
      */
-    private $fiabDatation;
+    private $fiabiliteDatation;
+
+    /**
+     * @ORM\PreUpdate
+     */
+    public function updateFiabilite(): void
+    {
+        $this->setFiabiliteDatation(abs($this->getPostQuem() - $this->getAnteQuem()));
+    }
 
     public function getId(): ?int
     {
@@ -143,38 +152,38 @@ class Datation
         return $this;
     }
 
-    public function getComDate(): ?string
+    public function getCommentaireDateFr(): ?string
     {
-        return $this->comDate;
+        return $this->commentaireDateFr;
     }
 
-    public function setComDate(?string $comDate): self
+    public function setCommentaireDateFr(?string $commentaireDateFr): self
     {
-        $this->comDate = $comDate;
+        $this->commentaireDateFr = $commentaireDateFr;
 
         return $this;
     }
 
-    public function getComDateEn(): ?string
+    public function getCommentaireDateEn(): ?string
     {
-        return $this->comDateEn;
+        return $this->commentaireDateEn;
     }
 
-    public function setComDateEn(?string $comDateEn): self
+    public function setCommentaireDateEn(?string $commentaireDateEn): self
     {
-        $this->comDateEn = $comDateEn;
+        $this->commentaireDateEn = $commentaireDateEn;
 
         return $this;
     }
 
-    public function getFiabDatation(): ?int
+    public function getFiabiliteDatation(): ?int
     {
-        return $this->fiabDatation;
+        return $this->fiabiliteDatation;
     }
 
-    public function setFiabDatation(?int $fiabDatation): self
+    public function setFiabiliteDatation(?int $fiabiliteDatation): self
     {
-        $this->fiabDatation = $fiabDatation;
+        $this->fiabiliteDatation = $fiabiliteDatation;
 
         return $this;
     }

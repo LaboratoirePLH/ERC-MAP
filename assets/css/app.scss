@@ -3,11 +3,25 @@
 @import "~datatables.net-bs4/css/dataTables.bootstrap4.min.css";
 @import "./component-chosen.css";
 
+%inlineCheckInput {
+    display: inline-block;
+    margin-top: ($spacer * .30) !important;
+    margin-right: ($spacer * .50) !important;
+}
+
 body {
     background-color: lightgray;
 
     &.login-page {
         background-image: url('images/bkg-ercmap.jpg');
+
+        form div.form-group {
+            margin-bottom: 2rem;
+
+            label {
+                font-weight: bold;
+            }
+        }
     }
 
     header#site-header {
@@ -65,11 +79,44 @@ body {
         }
 
         form {
-            #source {
+            .form-section-title {
+                border: 1px solid lighten(theme-color("dark"), 50%);
+                background-color: lighten(theme-color("dark"), 50%);
+                text-transform: uppercase;
+                text-align: center;
+                font-weight: bold;
+                margin-top: ($spacer * .50);
+                margin-bottom: ($spacer * .50);
+            }
+
+            &#source {
                 #source_translations .form-check {
-                    display: inline-block;
-                    margin-top: ($spacer * .30) !important;
-                    margin-right: ($spacer * .50) !important;
+                    /* Modification des checkbox pour les afficher en inline */
+                    @extend %inlineCheckInput;
+                }
+
+
+                #source_sourcebiblios {
+
+                    /* Amélioration de l'affichage des références bibliographiques */
+                    &>div.form-group.row {
+                        padding-top: ($spacer * .5) !important;
+                        padding-bottom: ($spacer * 1) !important;
+
+                        &:nth-child(even) {
+                            background-color: darken(lightgray, 10%);
+                        }
+
+                        legend.biblio_creation_field,
+                        legend.corpus_creation_field {
+                            &+.col-sm-10 {
+                                .form-check {
+                                    /* Modification des radio pour les afficher en inline */
+                                    @extend %inlineCheckInput;
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }

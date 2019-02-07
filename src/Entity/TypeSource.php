@@ -38,7 +38,7 @@ class TypeSource
      */
     private $categorieSource;
 
-    public function getCategorieSource(): ?int
+    public function getCategorieSource(): ?CategorieSource
     {
         return $this->categorieSource;
     }

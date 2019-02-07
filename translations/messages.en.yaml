@@ -37,41 +37,60 @@ generic:
         date_creation: "Creation"
         date_modification: "Latest Edition"
         by: "by"
-        commentaires: "Comments"
+        commentaire: "Comments"
+        nom_fr: "Name (FR)"
+        nom_en: "Name (EN)"
+        commentaire_fr: "Comments (FR)"
+        commentaire_en: "Comments (EN)"
+    choices :
+        new: "New"
+        existing: "Existing"
 
-sources:
+source:
     list: "Sources List"
     create: "Create Source"
     edit: "Edit Source"
+    add_sourcebiblio: "Add Bibliographic Reference"
+    delete_sourcebiblio: "Remove Bibliographic Reference"
+    messages:
+        created: "Source created"
     fields:
         titre_principal: "Main Title"
         titres_cites: "Quoted Titles"
-        auteur: "Author Name"
-        type_source: "Source Type"
-        categorie_source: "Source Category"
+        auteurs: "Authors"
+        type_source: "Type"
+        categorie_source: "Category"
+        materiau: "Material"
+        support: "Medium"
         langues: "Languages"
         createur: "Creator"
         dernier_editeur: "Latest Editor"
         reference_bibliographique: "Bibliographic Reference"
         to_translate: "To translate in"
+        to_translate_fr: "To translate in French"
+        to_translate_en: "To translate in English"
         fiability: "Reliability score"
         url_image: "Image URL"
         url_texte: "Text URL"
         citation: "Quote"
         in_situ: "In Situ"
-        biblio_1 : "Main Source"
-        biblio_n : "Secondary Sources"
+        source_biblio: "Reference"
+        source_biblio_n: "Reference #"
+        version: "Version"
+        commentaire_source_fr: "Source Comments (FR)"
+        commentaire_source_en: "Source Comments (EN)"
 
     sections:
         informations_source: "Source informations"
         bibliographie: "Bibliography"
         datation: "Datation"
         localisation: "Location"
-        commentaires: "Comments"
 
 source_biblio:
     fields:
-        reference_source: "Reference"
+        edition_principale: "Main Source"
+        reference_source: "bib_ref_source (???)"
+        biblio_creation: "Choose reference"
 
 biblio:
     fields:
@@ -79,11 +98,21 @@ biblio:
         titre_complet: "Full Title"
         annee: "Year"
         auteur: "Author"
+        corpus: "Corpus"
+        corpus_creation: "Choose corpus"
 
 corpus:
     fields:
         nom: "Corpus Name"
         nom_complet: "Corpus Full Name"
+
+datation:
+    fields:
+        post_quem: "Post Quem"
+        ante_quem: "Ante Quem"
+        post_quem_cit: "Post Quem (Quote)"
+        ante_quem_cit: "Ante Quem (Quote)"
+        date_anc: "date_anc (???)"
 
 modals:
     confirm_deletion:

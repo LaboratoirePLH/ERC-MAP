@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * SourceBiblio
  *
- * @ORM\Table(name="trouve_source", indexes={@ORM\Index(name="IDX_4E6330D7FF3B0EC8", columns={"id_biblio"})})
+ * @ORM\Table(name="trouve_source")
  * @ORM\Entity
  */
 class SourceBiblio
@@ -27,7 +27,7 @@ class SourceBiblio
      * @var \Biblio
      *
      * @ORM\Id
-     * @ORM\ManyToOne(targetEntity="Biblio", inversedBy="sourceBiblios")
+     * @ORM\ManyToOne(targetEntity="Biblio", inversedBy="sourceBiblios", cascade={"persist"})
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_biblio", referencedColumnName="id")
      * })

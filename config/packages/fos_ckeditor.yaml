@@ -8,7 +8,11 @@ fos_ck_editor:
     configs:
         text_styling_only:
             toolbar: "basic_styles"
-            uiColor: "#000000"
+            uiColor: "#ffffff"
+            height: '5rem'
+            removePlugins: 'elementspath,resize'
+            blockless: true
+            enterMode: 2
     toolbars:
         configs:
-            basic_styles: [ 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript' ]
+            basic_styles: [['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript']]

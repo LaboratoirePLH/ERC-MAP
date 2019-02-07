@@ -11,6 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="source", indexes={@ORM\Index(name="fki_id_datation_fkey", columns={"id_datation"}), @ORM\Index(name="fki_create_user_fkey", columns={"create_source"}), @ORM\Index(name="fki_modif_user_fkey", columns={"modif_source"})})
  * @ORM\Entity(repositoryClass="App\Repository\SourceRepository")
+ * @ORM\HasLifecycleCallbacks()
  */
 class Source
 {
@@ -224,9 +225,9 @@ class Source
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date_ope", type="datetime", nullable=false, options={"default"="now()"})
+     * @ORM\Column(name="date_ope", type="datetime", nullable=false, options={"default": "CURRENT_TIMESTAMP"})
      */
-    private $dateModification = 'now()';
+    private $dateModification;
 
     public function getDateModification(): ?\DateTimeInterface
     {
@@ -410,7 +411,7 @@ class Source
     /**
      * @var \Datation
      *
-     * @ORM\ManyToOne(targetEntity="Datation")
+     * @ORM\ManyToOne(targetEntity="Datation", cascade={"persist"})
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_datation", referencedColumnName="id")
      * })
@@ -459,7 +460,7 @@ class Source
      */
     public function getTitresCites(): Collection
     {
-        return $this->titreCites;
+        return $this->titresCites;
     }
 
     public function addTitresCite(Titre $titresCite): self
@@ -568,7 +569,7 @@ class Source
     /**
      * @var \Doctrine\Common\Collections\Collection
      *
-     * @ORM\OneToMany(targetEntity="SourceBiblio", mappedBy="source")
+     * @ORM\OneToMany(targetEntity="SourceBiblio", mappedBy="source", cascade={"remove"})
      */
     private $sourceBiblios;
 
@@ -594,5 +595,24 @@ class Source
             $this->sourceBiblios->removeElement($sourceBiblio);
         }
         return $this;
+    }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function onCreate(){
+        $now = new \DateTime();
+        $this->setDateCreation($now);
+        $this->setDateModification($now);
+        $this->setVersion(1);
+    }
+
+    /**
+     * @ORM\PreUpdate
+     */
+    public function onUpdate(){
+        $now = new \DateTime();
+        $this->setDateModification($now);
+        $this->setVersion($this->getVersion() + 1);
     }
 }

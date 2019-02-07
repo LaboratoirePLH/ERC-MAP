@@ -63,6 +63,7 @@ source:
         created: "Source created"
         edited: "Source edited"
         deleted: "Source deleted"
+        missing: "Source does not exists"
     fields:
         titre_principal: "Main Title"
         titres_cites: "Quoted Titles"

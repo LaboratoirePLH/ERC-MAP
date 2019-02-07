@@ -34,7 +34,7 @@ class Source
     /**
      * @var \Titre|null
      *
-     * @ORM\ManyToOne(targetEntity="Titre")
+     * @ORM\ManyToOne(targetEntity="Titre", fetch="EAGER")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_titre", referencedColumnName="id_titre", nullable=true)
      * })
@@ -243,7 +243,7 @@ class Source
     /**
      * @var \Chercheur
      *
-     * @ORM\ManyToOne(targetEntity="Chercheur")
+     * @ORM\ManyToOne(targetEntity="Chercheur", fetch="EAGER")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="create_source", referencedColumnName="id", nullable=false)
      * })
@@ -264,7 +264,7 @@ class Source
     /**
      * @var \Chercheur|null
      *
-     * @ORM\ManyToOne(targetEntity="Chercheur")
+     * @ORM\ManyToOne(targetEntity="Chercheur", fetch="EAGER")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="modif_source", referencedColumnName="id", nullable=true)
      * })
@@ -285,7 +285,7 @@ class Source
     /**
      * @var \TypeSupport|null
      *
-     * @ORM\ManyToOne(targetEntity="TypeSupport")
+     * @ORM\ManyToOne(targetEntity="TypeSupport", fetch="EAGER")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_support", referencedColumnName="id", nullable=true)
      * })
@@ -306,7 +306,7 @@ class Source
     /**
      * @var \CategorieSupport|null
      *
-     * @ORM\ManyToOne(targetEntity="CategorieSupport")
+     * @ORM\ManyToOne(targetEntity="CategorieSupport", fetch="EAGER")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_cat_support", referencedColumnName="id", nullable=true)
      * })
@@ -327,7 +327,7 @@ class Source
     /**
      * @var \Materiau|null
      *
-     * @ORM\ManyToOne(targetEntity="Materiau")
+     * @ORM\ManyToOne(targetEntity="Materiau", fetch="EAGER")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_mat", referencedColumnName="id_mat", nullable=true)
      * })
@@ -348,7 +348,7 @@ class Source
     /**
      * @var \CategorieMateriau|null
      *
-     * @ORM\ManyToOne(targetEntity="CategorieMateriau")
+     * @ORM\ManyToOne(targetEntity="CategorieMateriau", fetch="EAGER")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_cat_mat", referencedColumnName="id", nullable=true)
      * })
@@ -369,7 +369,7 @@ class Source
     /**
      * @var \TypeSource
      *
-     * @ORM\ManyToOne(targetEntity="TypeSource")
+     * @ORM\ManyToOne(targetEntity="TypeSource", fetch="EAGER")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_typo", referencedColumnName="id", nullable=false)
      * })
@@ -390,7 +390,7 @@ class Source
     /**
      * @var \CategorieSource|null
      *
-     * @ORM\ManyToOne(targetEntity="CategorieSource")
+     * @ORM\ManyToOne(targetEntity="CategorieSource", fetch="EAGER")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_type_cat", referencedColumnName="id", nullable=true)
      * })
@@ -411,7 +411,7 @@ class Source
     /**
      * @var \Datation
      *
-     * @ORM\ManyToOne(targetEntity="Datation", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="Datation", cascade={"persist"}, fetch="EAGER")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_datation", referencedColumnName="id")
      * })
@@ -443,7 +443,7 @@ class Source
     /**
      * @var \Doctrine\Common\Collections\Collection
      *
-     * @ORM\ManyToMany(targetEntity="Titre", inversedBy="sourcesCitees")
+     * @ORM\ManyToMany(targetEntity="Titre", inversedBy="sourcesCitees", fetch="EAGER")
      * @ORM\JoinTable(name="titre_cite",
      *   joinColumns={
      *     @ORM\JoinColumn(name="id_source", referencedColumnName="id")
@@ -571,7 +571,7 @@ class Source
     /**
      * @var \Doctrine\Common\Collections\Collection
      *
-     * @ORM\OneToMany(targetEntity="SourceBiblio", mappedBy="source", cascade={"remove"})
+     * @ORM\OneToMany(targetEntity="SourceBiblio", mappedBy="source", orphanRemoval=true)
      */
     private $sourceBiblios;
 
@@ -616,5 +616,12 @@ class Source
         $now = new \DateTime();
         $this->setDateModification($now);
         $this->setVersion($this->getVersion() + 1);
+    }
+
+    /**
+     * @ORM\PreRemove
+     */
+    public function onDelete(){
+
     }
 }

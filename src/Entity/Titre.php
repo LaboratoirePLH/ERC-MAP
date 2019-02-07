@@ -73,7 +73,7 @@ class Titre
     /**
      * @var \Doctrine\Common\Collections\Collection
      *
-     * @ORM\ManyToMany(targetEntity="Source", mappedBy="titresCites")
+     * @ORM\ManyToMany(targetEntity="Source", mappedBy="titresCites", fetch="EXTRA_LAZY")
      */
     private $sourcesCitees;
 

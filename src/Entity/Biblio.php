@@ -55,7 +55,7 @@ class Biblio
     /**
      * @var \Corpus
      *
-     * @ORM\ManyToOne(targetEntity="Corpus")
+     * @ORM\ManyToOne(targetEntity="Corpus", fetch="EAGER")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="corpus_id", referencedColumnName="id")
      * })
@@ -65,7 +65,7 @@ class Biblio
     /**
      * @var \Doctrine\Common\Collections\Collection
      *
-     * @ORM\OneToMany(targetEntity="SourceBiblio", mappedBy="biblio")
+     * @ORM\OneToMany(targetEntity="SourceBiblio", mappedBy="biblio", fetch="EXTRA_LAZY")
      */
     private $sourceBiblios;
 
@@ -96,7 +96,7 @@ class Biblio
     /**
      * @var \Doctrine\Common\Collections\Collection
      *
-     * @ORM\OneToMany(targetEntity="ElementBiblio", mappedBy="biblio")
+     * @ORM\OneToMany(targetEntity="ElementBiblio", mappedBy="biblio", fetch="EXTRA_LAZY")
      */
     private $elementBiblios;
 
@@ -194,32 +194,6 @@ class Biblio
     public function setCorpus(?Corpus $corpus): self
     {
         $this->corpus = $corpus;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Elements[]
-     */
-    public function getIdElt(): Collection
-    {
-        return $this->idElt;
-    }
-
-    public function addIdElt(Elements $idElt): self
-    {
-        if (!$this->idElt->contains($idElt)) {
-            $this->idElt[] = $idElt;
-        }
-
-        return $this;
-    }
-
-    public function removeIdElt(Elements $idElt): self
-    {
-        if ($this->idElt->contains($idElt)) {
-            $this->idElt->removeElement($idElt);
-        }
 
         return $this;
     }

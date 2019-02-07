@@ -23,16 +23,10 @@ class SourceController extends AbstractController
 
         return $this->render('source/index.html.twig', [
             'controller_name' => 'SourceController',
-            'sources' => $sources
+            'sources'         => $sources
         ]);
     }
 
-    /**
-     * @Route("/source/{id}", name="source_show")
-     */
-    public function show($id){
-        echo "ok";
-    }
 
     /**
      * @Route("/source/create", name="source_create")
@@ -40,9 +34,9 @@ class SourceController extends AbstractController
     public function create(Request $request, TranslatorInterface $translator){
         $source = new Source();
         $form   = $this->get('form.factory')->create(SourceType::class, $source, [
-            'locale' => $request->getLocale(),
+            'locale'       => $request->getLocale(),
             'translations' => [
-                'autocomplete.select_element' => $translator->trans('autocomplete.select_element'),
+                'autocomplete.select_element'  => $translator->trans('autocomplete.select_element'),
                 'autocomplete.select_multiple' => $translator->trans('autocomplete.select_multiple')
             ]
         ]);
@@ -71,8 +65,26 @@ class SourceController extends AbstractController
 
         return $this->render('source/edit.html.twig', [
             'controller_name' => 'SourceController',
-            'action' => 'create',
-            'form' => $form->createView(),
+            'action'          => 'create',
+            'form'            => $form->createView(),
+        ]);
+    }
+
+    /**
+     * @Route("/source/{id}", name="source_show")
+     */
+    public function show($id){
+        $source = $this->getDoctrine()
+                       ->getRepository(Source::class)
+                       ->getRecord($id, true);
+        if(is_null($source)){
+            $request->getSession()->getFlashBag()->add('error', 'source.messages.missing');
+            return $this->redirectToRoute('source_list');
+        }
+
+        return $this->render('source/show.html.twig', [
+            'controller_name' => 'SourceController',
+            'source'          => $source
         ]);
     }
 
@@ -85,9 +97,9 @@ class SourceController extends AbstractController
                        ->getRecord($id);
 
         $form   = $this->get('form.factory')->create(SourceType::class, $source, [
-            'locale' => $request->getLocale(),
+            'locale'       => $request->getLocale(),
             'translations' => [
-                'autocomplete.select_element' => $translator->trans('autocomplete.select_element'),
+                'autocomplete.select_element'  => $translator->trans('autocomplete.select_element'),
                 'autocomplete.select_multiple' => $translator->trans('autocomplete.select_multiple')
             ]
         ]);
@@ -119,9 +131,9 @@ class SourceController extends AbstractController
 
         return $this->render('source/edit.html.twig', [
             'controller_name' => 'SourceController',
-            'action' => 'edit',
-            'source' => $source,
-            'form' => $form->createView()
+            'action'          => 'edit',
+            'source'          => $source,
+            'form'            => $form->createView()
         ]);
     }
 
@@ -131,11 +143,22 @@ class SourceController extends AbstractController
     public function delete($id, Request $request){
         $submittedToken = $request->request->get('token');
 
-        if ($this->isCsrfTokenValid('delete-source-'.$id, $submittedToken)) {
-            echo "ok pour delete";
-        } else {
-            $request->getSession()->getFlashBag()->add('error', 'source.messages.deletion_failed');
+        if ($this->isCsrfTokenValid('delete_source_'.$id, $submittedToken)) {
+            $repository = $this->getDoctrine()->getRepository(Source::class);
+            $source = $repository->find($id);
+            if($source instanceof Source){
+                $em = $this->getDoctrine()->getManager();
+                $em->remove($source);
+                $em->flush();
 
+                $request->getSession()->getFlashBag()->add('error', 'source.messages.deleted');
+                return $this->redirectToRoute('source_list');
+            } else {
+                $request->getSession()->getFlashBag()->add('error', 'generic.messages.deletion_failed_missing');
+                return $this->redirectToRoute('source_list');
+            }
+        } else {
+            $request->getSession()->getFlashBag()->add('error', 'generic.messages.deletion_failed_csrf');
             return $this->redirectToRoute('source_list');
         }
     }

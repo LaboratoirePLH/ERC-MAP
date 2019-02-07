@@ -16,7 +16,7 @@ class SourceBiblio
      * @var \Source
      *
      * @ORM\Id
-     * @ORM\ManyToOne(targetEntity="Source", inversedBy="sourceBiblios")
+     * @ORM\ManyToOne(targetEntity="Source", inversedBy="sourceBiblios", fetch="LAZY")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_source", referencedColumnName="id")
      * })
@@ -27,7 +27,7 @@ class SourceBiblio
      * @var \Biblio
      *
      * @ORM\Id
-     * @ORM\ManyToOne(targetEntity="Biblio", inversedBy="sourceBiblios", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="Biblio", inversedBy="sourceBiblios", cascade={"persist"}, fetch="EAGER")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_biblio", referencedColumnName="id")
      * })

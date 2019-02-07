@@ -34,14 +34,14 @@ class Auteur
     /**
      * @var \Doctrine\Common\Collections\Collection
      *
-     * @ORM\ManyToMany(targetEntity="Titre", mappedBy="auteurs")
+     * @ORM\ManyToMany(targetEntity="Titre", mappedBy="auteurs", fetch="EXTRA_LAZY")
      */
     private $titres;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
      *
-     * @ORM\ManyToMany(targetEntity="Source", mappedBy="auteurs")
+     * @ORM\ManyToMany(targetEntity="Source", mappedBy="auteurs", fetch="EXTRA_LAZY")
      */
     private $sources;
 

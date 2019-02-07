@@ -48,9 +48,13 @@ generic:
     choices :
         new: "New"
         existing: "Existing"
+    messages:
+        deletion_failed_csrf: "Deletion failed, invalid CSRF Token"
+        deletion_failed_missing: "Deletion failed, record not found"
 
 source:
     list: "Sources List"
+    view: "View Source"
     create: "Create Source"
     edit: "Edit Source"
     add_sourcebiblio: "Add Bibliographic Reference"
@@ -58,7 +62,7 @@ source:
     messages:
         created: "Source created"
         edited: "Source edited"
-        deletion_failed: "Deletion failed, invalid CSRF Token"
+        deleted: "Source deleted"
     fields:
         titre_principal: "Main Title"
         titres_cites: "Quoted Titles"

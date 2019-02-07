@@ -54,9 +54,9 @@ class SourceRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return Source|null Returns a Source object
+     * @return Source|array|null Returns a Source object
      */
-    public function getRecord(int $id): ?Source
+    public function getRecord(int $id, bool $arrayResult = false)
     {
         $query = $this->createQueryBuilder('source')
             ->select([
@@ -91,6 +91,9 @@ class SourceRepository extends ServiceEntityRepository
 
         $query->setHint(\Doctrine\ORM\Query::HINT_FORCE_PARTIAL_LOAD, 1);
 
+        if($arrayResult){
+            return $query->getOneOrNullResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
+        }
         return $query->getOneOrNullResult();
     }
 }

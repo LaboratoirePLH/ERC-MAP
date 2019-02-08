@@ -68,7 +68,7 @@ trait Tracked
      *
      * @ORM\ManyToOne(targetEntity="Chercheur", fetch="EAGER")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="user_edition_id", referencedColumnName="id", nullable=true)
+     *   @ORM\JoinColumn(name="user_edition_id", referencedColumnName="id", nullable=false)
      * })
      */
     private $dernierEditeur;

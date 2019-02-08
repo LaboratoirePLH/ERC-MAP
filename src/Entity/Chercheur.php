@@ -70,7 +70,7 @@ class Chercheur implements UserInterface
      *
      * @ORM\Column(name="role", type="string", length=50, nullable=true)
      */
-    private $role;
+    private $role = "user";
 
     public function getId(): ?int
     {
@@ -156,7 +156,11 @@ class Chercheur implements UserInterface
 
     public function getRoles(): array
     {
-        return ['ROLE_USER'];
+        $roles = ['ROLE_USER'];
+        if(strtolower($this->getRole()) === "admin"){
+            $roles[] = 'ROLE_ADMIN';
+        }
+        return $roles;
     }
 
     public function getSalt()

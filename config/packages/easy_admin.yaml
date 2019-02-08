@@ -1,6 +1,13 @@
-#easy_admin:
-#    entities:
-#        # List the entity class name you want to manage
-#        - App\Entity\Product
-#        - App\Entity\Category
-#        - App\Entity\User
+easy_admin:
+    site_name: 'ERC-MAP - Administration'
+    entities:
+       - App\Entity\TypeSource
+       - App\Entity\CategorieSource
+       - App\Entity\TypeSupport
+       - App\Entity\CategorieSupport
+       - App\Entity\Materiau
+       - App\Entity\CategorieMateriau
+       - App\Entity\Titre
+       - App\Entity\Auteur
+       - App\Entity\Langue
+       - App\Entity\Corpus

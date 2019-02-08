@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Biblio
  *
- * @ORM\Table(name="biblio", indexes={@ORM\Index(name="IDX_D90CBB252B41ABF4", columns={"corpus_id"})})
+ * @ORM\Table(name="biblio")
  * @ORM\Entity
  */
 class Biblio
@@ -20,21 +20,20 @@ class Biblio
      * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="SEQUENCE")
-     * @ORM\SequenceGenerator(sequenceName="biblio_id_seq", allocationSize=1, initialValue=1)
      */
     private $id;
 
     /**
      * @var string|null
      *
-     * @ORM\Column(name="titre_abr", type="string", length=255, nullable=true)
+     * @ORM\Column(name="titre_abrege", type="string", length=255, nullable=true)
      */
     private $titreAbrege;
 
     /**
      * @var string|null
      *
-     * @ORM\Column(name="titre_com", type="text", nullable=true)
+     * @ORM\Column(name="titre_complet", type="text", nullable=true)
      */
     private $titreComplet;
 
@@ -61,77 +60,6 @@ class Biblio
      * })
      */
     private $corpus;
-
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     *
-     * @ORM\OneToMany(targetEntity="SourceBiblio", mappedBy="biblio", fetch="EXTRA_LAZY")
-     */
-    private $sourceBiblios;
-
-    /**
-     * @return Collection|SourceBiblio[]
-     */
-    public function getSourceBiblios(): ?Collection
-    {
-        return $this->sourceBiblios;
-    }
-
-    public function addSourceBiblio(SourceBiblio $sourceBiblio): self
-    {
-        if (!$this->sourceBiblios->contains($sourceBiblio)) {
-            $this->sourceBiblios[] = $sourceBiblio;
-        }
-        return $this;
-    }
-
-    public function removeSourceBiblio(SourceBiblio $sourceBiblio): self
-    {
-        if ($this->sourceBiblios->contains($sourceBiblio)) {
-            $this->sourceBiblios->removeElement($sourceBiblio);
-        }
-        return $this;
-    }
-
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     *
-     * @ORM\OneToMany(targetEntity="ElementBiblio", mappedBy="biblio", fetch="EXTRA_LAZY")
-     */
-    private $elementBiblios;
-
-    /**
-     * @return Collection|ElementBiblio[]
-     */
-    public function getElementBiblios(): ?Collection
-    {
-        return $this->elementBiblios;
-    }
-
-    public function addElementBiblio(ElementBiblio $elementBiblio): self
-    {
-        if (!$this->elementBiblios->contains($elementBiblio)) {
-            $this->elementBiblios[] = $elementBiblio;
-        }
-        return $this;
-    }
-
-    public function removeElementBiblio(ElementBiblio $elementBiblio): self
-    {
-        if ($this->elementBiblios->contains($elementBiblio)) {
-            $this->elementBiblios->removeElement($elementBiblio);
-        }
-        return $this;
-    }
-
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->elementBiblios = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->sourceBiblios = new \Doctrine\Common\Collections\ArrayCollection();
-    }
 
     public function getId(): ?int
     {

@@ -19,7 +19,6 @@ class TypeSource
      * @ORM\Column(name="id", type="smallint", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="SEQUENCE")
-     * @ORM\SequenceGenerator(sequenceName="type_source_id_seq", allocationSize=1, initialValue=1)
      */
     private $id;
 
@@ -33,7 +32,7 @@ class TypeSource
      *
      * @ORM\ManyToOne(targetEntity="CategorieSource", fetch="EAGER")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_cat_source", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="categorie_source_id", referencedColumnName="id")
      * })
      */
     private $categorieSource;

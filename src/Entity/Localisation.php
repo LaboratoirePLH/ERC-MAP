@@ -9,18 +9,19 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Localisation
  *
- * @ORM\Table(name="localisation", indexes={@ORM\Index(name="idx_localisation_gid_ssreg", columns={"id_ssreg"}), @ORM\Index(name="idx_localisation_gid_reg", columns={"id_reg"}), @ORM\Index(name="IDX_BFD3CE8FD64EF17D", columns={"entite_pol"})})
+ * @ORM\Table(name="localisation")
  * @ORM\Entity
  */
 class Localisation
 {
+    use Traits\TranslatedComment;
+
     /**
      * @var int
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="SEQUENCE")
-     * @ORM\SequenceGenerator(sequenceName="localisation_id_seq", allocationSize=1, initialValue=1)
      */
     private $id;
 
@@ -41,16 +42,16 @@ class Localisation
     /**
      * @var float|null
      *
-     * @ORM\Column(name="lat", type="float", precision=10, scale=0, nullable=true)
+     * @ORM\Column(name="latitude", type="float", precision=10, scale=0, nullable=true)
      */
-    private $lat;
+    private $latitude;
 
     /**
      * @var float|null
      *
-     * @ORM\Column(name="long", type="float", precision=10, scale=0, nullable=true)
+     * @ORM\Column(name="longitude", type="float", precision=10, scale=0, nullable=true)
      */
-    private $long;
+    private $longitude;
 
     /**
      * @var int|null
@@ -74,13 +75,6 @@ class Localisation
     private $reel;
 
     /**
-     * @var string|null
-     *
-     * @ORM\Column(name="com_loc", type="text", nullable=true)
-     */
-    private $comLoc;
-
-    /**
      * @var geometry|null
      *
      * @ORM\Column(name="geom", type="geometry", nullable=true, options={"geometry_type"="POINT", "srid"=4326})
@@ -88,63 +82,71 @@ class Localisation
     private $geom;
 
     /**
-     * @var string|null
+     * @var \EntitePolitique
      *
-     * @ORM\Column(name="com_loc_en", type="text", nullable=true)
-     */
-    private $comLocEn;
-
-    /**
-     * @var \EntitePol
-     *
-     * @ORM\ManyToOne(targetEntity="EntitePol")
+     * @ORM\ManyToOne(targetEntity="EntitePolitique")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="entite_pol", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="entite_politique", referencedColumnName="id")
      * })
      */
-    private $entitePol;
+    private $entitePolitique;
 
     /**
-     * @var \GdeReg
+     * @var \grandeRegion
      *
-     * @ORM\ManyToOne(targetEntity="GdeReg")
+     * @ORM\ManyToOne(targetEntity="grandeRegion")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_reg", referencedColumnName="gid_reg")
+     *   @ORM\JoinColumn(name="grande_region_id", referencedColumnName="id")
      * })
      */
-    private $idReg;
+    private $grandeRegion;
 
     /**
-     * @var \SsReg
+     * @var \SousRegion
      *
-     * @ORM\ManyToOne(targetEntity="SsReg")
+     * @ORM\ManyToOne(targetEntity="SousRegion")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_ssreg", referencedColumnName="gid_ssreg")
+     *   @ORM\JoinColumn(name="sous_region_id", referencedColumnName="id")
      * })
      */
-    private $idSsreg;
+    private $sousRegion;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
      *
-     * @ORM\ManyToMany(targetEntity="QTopo", mappedBy="idLoc")
+     * @ORM\ManyToMany(targetEntity="QTopographie")
+     * @ORM\JoinTable(name="localisation_q_topographie",
+     *   joinColumns={
+     *     @ORM\JoinColumn(name="id_localisation", referencedColumnName="id")
+     *   },
+     *   inverseJoinColumns={
+     *     @ORM\JoinColumn(name="id_q_topographie", referencedColumnName="id")
+     *   }
+     * )
      */
-    private $idTopo;
+    private $topographies;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
      *
-     * @ORM\ManyToMany(targetEntity="QFonc", mappedBy="idLoc")
+     * @ORM\ManyToMany(targetEntity="QFonction")
+     * @ORM\JoinTable(name="localisation_q_fonction",
+     *   joinColumns={
+     *     @ORM\JoinColumn(name="id_localisation", referencedColumnName="id")
+     *   },
+     *   inverseJoinColumns={
+     *     @ORM\JoinColumn(name="id_q_fonction", referencedColumnName="id")
+     *   }
+     * )
      */
-    private $idFonc;
-
+    private $fonctions;
     /**
      * Constructor
      */
     public function __construct()
     {
-        $this->idTopo = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->idFonc = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->topographies = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->fonctions = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     public function getId(): ?int
@@ -176,26 +178,26 @@ class Localisation
         return $this;
     }
 
-    public function getLat(): ?float
+    public function getLatitude(): ?float
     {
-        return $this->lat;
+        return $this->latitude;
     }
 
-    public function setLat(?float $lat): self
+    public function setLatitude(?float $latitude): self
     {
-        $this->lat = $lat;
+        $this->latitude = $latitude;
 
         return $this;
     }
 
-    public function getLong(): ?float
+    public function getLongitude(): ?float
     {
-        return $this->long;
+        return $this->longitude;
     }
 
-    public function setLong(?float $long): self
+    public function setLongitude(?float $longitude): self
     {
-        $this->long = $long;
+        $this->longitude = $longitude;
 
         return $this;
     }
@@ -236,18 +238,6 @@ class Localisation
         return $this;
     }
 
-    public function getComLoc(): ?string
-    {
-        return $this->comLoc;
-    }
-
-    public function setComLoc(?string $comLoc): self
-    {
-        $this->comLoc = $comLoc;
-
-        return $this;
-    }
-
     public function getGeom()
     {
         return $this->geom;
@@ -260,107 +250,87 @@ class Localisation
         return $this;
     }
 
-    public function getComLocEn(): ?string
+    public function getEntitePolitique(): ?EntitePolitique
     {
-        return $this->comLocEn;
+        return $this->entitePolitique;
     }
 
-    public function setComLocEn(?string $comLocEn): self
+    public function setEntitePolitique(?EntitePolitique $entitePolitique): self
     {
-        $this->comLocEn = $comLocEn;
+        $this->entitePolitique = $entitePolitique;
 
         return $this;
     }
 
-    public function getEntitePol(): ?EntitePol
+    public function getGrandeRegion(): ?GrandeRegion
     {
-        return $this->entitePol;
+        return $this->grandeRegion;
     }
 
-    public function setEntitePol(?EntitePol $entitePol): self
+    public function setGrandeRegion(?GrandeRegion $grandeRegion): self
     {
-        $this->entitePol = $entitePol;
+        $this->grandeRegion = $grandeRegion;
 
         return $this;
     }
 
-    public function getIdReg(): ?GdeReg
+    public function getSousRegion(): ?SousRegion
     {
-        return $this->idReg;
+        return $this->sousRegion;
     }
 
-    public function setIdReg(?GdeReg $idReg): self
+    public function setSousRegion(?SousRegion $sousRegion): self
     {
-        $this->idReg = $idReg;
-
-        return $this;
-    }
-
-    public function getIdSsreg(): ?SsReg
-    {
-        return $this->idSsreg;
-    }
-
-    public function setIdSsreg(?SsReg $idSsreg): self
-    {
-        $this->idSsreg = $idSsreg;
+        $this->sousRegion = $sousRegion;
 
         return $this;
     }
 
     /**
-     * @return Collection|QTopo[]
+     * @return Collection|QTopographie[]
      */
-    public function getIdTopo(): Collection
+    public function getTopographies(): Collection
     {
-        return $this->idTopo;
+        return $this->topographies;
     }
 
-    public function addIdTopo(QTopo $idTopo): self
+    public function addTopographie(QTopographie $topographie): self
     {
-        if (!$this->idTopo->contains($idTopo)) {
-            $this->idTopo[] = $idTopo;
-            $idTopo->addIdLoc($this);
+        if (!$this->topographies->contains($topographie)) {
+            $this->topographies[] = $topographie;
         }
-
         return $this;
     }
 
-    public function removeIdTopo(QTopo $idTopo): self
+    public function removeTopographie(QTopographie $topographie): self
     {
-        if ($this->idTopo->contains($idTopo)) {
-            $this->idTopo->removeElement($idTopo);
-            $idTopo->removeIdLoc($this);
+        if ($this->topographies->contains($topographie)) {
+            $this->topographies->removeElement($topographie);
         }
-
         return $this;
     }
 
     /**
-     * @return Collection|QFonc[]
+     * @return Collection|QFonction[]
      */
-    public function getIdFonc(): Collection
+    public function getFonctions(): Collection
     {
-        return $this->idFonc;
+        return $this->fonctions;
     }
 
-    public function addIdFonc(QFonc $idFonc): self
+    public function addFonction(QFonction $fonction): self
     {
-        if (!$this->idFonc->contains($idFonc)) {
-            $this->idFonc[] = $idFonc;
-            $idFonc->addIdLoc($this);
+        if (!$this->fonctions->contains($fonction)) {
+            $this->fonctions[] = $fonction;
         }
-
         return $this;
     }
 
-    public function removeIdFonc(QFonc $idFonc): self
+    public function removeFonction(QFonction $fonction): self
     {
-        if ($this->idFonc->contains($idFonc)) {
-            $this->idFonc->removeElement($idFonc);
-            $idFonc->removeIdLoc($this);
+        if ($this->fonctions->contains($fonction)) {
+            $this->fonctions->removeElement($fonction);
         }
-
         return $this;
     }
 

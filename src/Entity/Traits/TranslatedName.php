@@ -2,12 +2,14 @@
 
 namespace App\Entity\Traits;
 
+use Doctrine\ORM\Mapping as ORM;
+
 trait TranslatedName
 {
     /**
      * @var string|null
      *
-     * @ORM\Column(name="nom", type="string", length=255, nullable=true)
+     * @ORM\Column(name="nom_fr", type="string", length=255, nullable=true)
      */
     private $nomFr;
 
@@ -25,7 +27,7 @@ trait TranslatedName
     /**
      * @var string|null
      *
-     * @ORM\Column(name="name", type="string", length=255, nullable=true)
+     * @ORM\Column(name="nom_en", type="string", length=255, nullable=true)
      */
     private $nomEn;
 

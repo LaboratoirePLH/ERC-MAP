@@ -19,7 +19,6 @@ class Datation
      * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="SEQUENCE")
-     * @ORM\SequenceGenerator(sequenceName="datation_id_datation_seq", allocationSize=1, initialValue=1)
      */
     private $id;
 
@@ -75,7 +74,7 @@ class Datation
     /**
      * @var int|null
      *
-     * @ORM\Column(name="fiab_datation", type="smallint", nullable=true)
+     * @ORM\Column(name="fiabilite_datation", type="smallint", nullable=true)
      */
     private $fiabiliteDatation;
 

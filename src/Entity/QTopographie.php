@@ -2,18 +2,19 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * CategorieMateriau
+ * QTopographie
  *
- * @ORM\Table(name="categorie_materiau")
+ * @ORM\Table(name="q_topographie")
  * @ORM\Entity
  */
-class CategorieMateriau
+class QTopographie
 {
     use Traits\TranslatedName;
-
     /**
      * @var int
      *
@@ -27,5 +28,4 @@ class CategorieMateriau
     {
         return $this->id;
     }
-
 }

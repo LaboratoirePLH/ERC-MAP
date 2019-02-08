@@ -19,10 +19,9 @@ class Titre
     /**
      * @var int
      *
-     * @ORM\Column(name="id_titre", type="integer", nullable=false)
+     * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="SEQUENCE")
-     * @ORM\SequenceGenerator(sequenceName="titre_id_titre_seq", allocationSize=1, initialValue=1)
      */
     private $id;
 
@@ -35,12 +34,12 @@ class Titre
      * @var \Doctrine\Common\Collections\Collection
      *
      * @ORM\ManyToMany(targetEntity="Auteur", inversedBy="titres")
-     * @ORM\JoinTable(name="a_ecrit",
+     * @ORM\JoinTable(name="titre_auteur",
      *   joinColumns={
-     *     @ORM\JoinColumn(name="id_titre", referencedColumnName="id_titre")
+     *     @ORM\JoinColumn(name="id_titre", referencedColumnName="id")
      *   },
      *   inverseJoinColumns={
-     *     @ORM\JoinColumn(name="id_auteur", referencedColumnName="id_auteur")
+     *     @ORM\JoinColumn(name="id_auteur", referencedColumnName="id")
      *   }
      * )
      */
@@ -71,45 +70,11 @@ class Titre
     }
 
     /**
-     * @var \Doctrine\Common\Collections\Collection
-     *
-     * @ORM\ManyToMany(targetEntity="Source", mappedBy="titresCites", fetch="EXTRA_LAZY")
-     */
-    private $sourcesCitees;
-
-    /**
-     * @return Collection|Source[]
-     */
-    public function getSourcesCitees(): Collection
-    {
-        return $this->sourceCitees;
-    }
-
-    public function addSourcesCitee(Source $sourcesCitee): self
-    {
-        if (!$this->sourcesCitees->contains($sourcesCitee)) {
-            $this->sourcesCitees[] = $sourcesCitee;
-            $sourcesCitee->addTitresCite($this);
-        }
-        return $this;
-    }
-
-    public function removeSourcesCitee(Source $sourcesCitee): self
-    {
-        if ($this->sourcesCitees->contains($sourcesCitee)) {
-            $this->sourcesCitees->removeElement($sourcesCitee);
-            $sourcesCitee->removeTitresCite($this);
-        }
-        return $this;
-    }
-
-    /**
      * Constructor
      */
     public function __construct()
     {
         $this->auteurs = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->sourcesCitees = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     private function _affichage($lang){

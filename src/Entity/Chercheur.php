@@ -19,7 +19,6 @@ class Chercheur implements UserInterface
      * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="SEQUENCE")
-     * @ORM\SequenceGenerator(sequenceName="chercheur_id_seq", allocationSize=1, initialValue=1)
      */
     private $id;
 
@@ -57,6 +56,13 @@ class Chercheur implements UserInterface
      * @ORM\Column(name="password", type="string", length=50, nullable=true)
      */
     private $password;
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="preference_langue", type="string", length=2, nullable=true)
+     */
+    private $preferenceLangue;
 
     /**
      * @var \DateTime|null

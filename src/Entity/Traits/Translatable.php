@@ -2,12 +2,14 @@
 
 namespace App\Entity\Traits;
 
+use Doctrine\ORM\Mapping as ORM;
+
 trait Translatable
 {
     /**
      * @var bool|null
      *
-     * @ORM\Column(name="a_traduire", type="boolean", nullable=true)
+     * @ORM\Column(name="traduire_fr", type="boolean", nullable=true)
      */
     private $traduireFr;
 
@@ -25,7 +27,7 @@ trait Translatable
     /**
      * @var bool|null
      *
-     * @ORM\Column(name="to_translate", type="boolean", nullable=true)
+     * @ORM\Column(name="traduire_en", type="boolean", nullable=true)
      */
     private $traduireEn;
 

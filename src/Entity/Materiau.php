@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Materiau
  *
- * @ORM\Table(name="a_mat", indexes={@ORM\Index(name="IDX_9A9F01A47FE4B2B", columns={"id_type"})})
+ * @ORM\Table(name="materiau")
  * @ORM\Entity
  */
 class Materiau
@@ -16,10 +16,9 @@ class Materiau
     /**
      * @var int
      *
-     * @ORM\Column(name="id_mat", type="smallint", nullable=false)
+     * @ORM\Column(name="id", type="smallint", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="SEQUENCE")
-     * @ORM\SequenceGenerator(sequenceName="a_mat_id_mat_seq", allocationSize=1, initialValue=1)
      */
     private $id;
 
@@ -33,7 +32,7 @@ class Materiau
      *
      * @ORM\ManyToOne(targetEntity="CategorieMateriau", fetch="EAGER")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_type", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="categorie_materiau_id", referencedColumnName="id")
      * })
      */
     private $categorieMateriau;

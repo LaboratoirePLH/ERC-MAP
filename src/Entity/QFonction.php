@@ -2,18 +2,19 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * CategorieMateriau
+ * QFonction
  *
- * @ORM\Table(name="categorie_materiau")
+ * @ORM\Table(name="q_fonction")
  * @ORM\Entity
  */
-class CategorieMateriau
+class QFonction
 {
     use Traits\TranslatedName;
-
     /**
      * @var int
      *
@@ -22,10 +23,4 @@ class CategorieMateriau
      * @ORM\GeneratedValue(strategy="SEQUENCE")
      */
     private $id;
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
 }

@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * TypeSupport
  *
- * @ORM\Table(name="type_support", indexes={@ORM\Index(name="IDX_A82584503826693B", columns={"id_cat_supp"})})
+ * @ORM\Table(name="type_support")
  * @ORM\Entity
  */
 class TypeSupport
@@ -19,7 +19,6 @@ class TypeSupport
      * @ORM\Column(name="id", type="smallint", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="SEQUENCE")
-     * @ORM\SequenceGenerator(sequenceName="type_support_id_seq", allocationSize=1, initialValue=1)
      */
     private $id;
 
@@ -33,7 +32,7 @@ class TypeSupport
      *
      * @ORM\ManyToOne(targetEntity="CategorieSupport", fetch="EAGER")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_cat_supp", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="categorie_support_id", referencedColumnName="id")
      * })
      */
     private $categorieSupport;

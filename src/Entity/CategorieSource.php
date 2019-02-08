@@ -19,7 +19,6 @@ class CategorieSource
      * @ORM\Column(name="id", type="smallint", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="SEQUENCE")
-     * @ORM\SequenceGenerator(sequenceName="categorie_source_id_seq", allocationSize=1, initialValue=1)
      */
     private $id;
 

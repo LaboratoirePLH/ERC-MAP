@@ -19,10 +19,9 @@ class Auteur
     /**
      * @var int
      *
-     * @ORM\Column(name="id_auteur", type="integer", nullable=false)
+     * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="SEQUENCE")
-     * @ORM\SequenceGenerator(sequenceName="auteur_id_auteur_seq", allocationSize=1, initialValue=1)
      */
     private $id;
 
@@ -39,19 +38,11 @@ class Auteur
     private $titres;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection
-     *
-     * @ORM\ManyToMany(targetEntity="Source", mappedBy="auteurs", fetch="EXTRA_LAZY")
-     */
-    private $sources;
-
-    /**
      * Constructor
      */
     public function __construct()
     {
         $this->titres = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->sources = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -79,31 +70,4 @@ class Auteur
         }
         return $this;
     }
-
-    /**
-     * @return Collection|Source[]
-     */
-    public function getSources(): Collection
-    {
-        return $this->sources;
-    }
-
-    public function addSource(Source $source): self
-    {
-        if (!$this->sources->contains($source)) {
-            $this->sources[] = $source;
-            $source->addAuteur($this);
-        }
-        return $this;
-    }
-
-    public function removeSource(Source $source): self
-    {
-        if ($this->sources->contains($source)) {
-            $this->sources->removeElement($source);
-            $source->removeAuteur($this);
-        }
-        return $this;
-    }
-
 }

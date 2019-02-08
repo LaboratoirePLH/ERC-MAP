@@ -28,44 +28,4 @@ class Langue
         return $this->id;
     }
 
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     *
-     * @ORM\ManyToMany(targetEntity="Source", mappedBy="langues")
-     */
-    private $sources;
-
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->sources = new \Doctrine\Common\Collections\ArrayCollection();
-    }
-
-    /**
-     * @return Collection|Source[]
-     */
-    public function getSources(): Collection
-    {
-        return $this->sources;
-    }
-
-    public function addSource(Source $source): self
-    {
-        if (!$this->sources->contains($source)) {
-            $this->sources[] = $source;
-            $source->addAuteur($this);
-        }
-        return $this;
-    }
-
-    public function removeSource(Source $source): self
-    {
-        if ($this->sources->contains($source)) {
-            $this->sources->removeElement($source);
-            $source->removeAuteur($this);
-        }
-        return $this;
-    }
 }

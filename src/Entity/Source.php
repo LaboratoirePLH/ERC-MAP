@@ -458,7 +458,7 @@ class Source
     /**
      * @var \Doctrine\Common\Collections\Collection
      *
-     * @ORM\ManyToMany(targetEntity="Langue", inversedBy="sources")
+     * @ORM\ManyToMany(targetEntity="Langue", fetch="EAGER")
      * @ORM\JoinTable(name="a_langue",
      *   joinColumns={
      *     @ORM\JoinColumn(name="id_source", referencedColumnName="id")

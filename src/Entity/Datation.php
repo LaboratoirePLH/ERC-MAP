@@ -9,10 +9,11 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="datation")
  * @ORM\Entity
- * @ORM\HasLifecycleCallbacks()
  */
 class Datation
 {
+    use Traits\TranslatedComment;
+
     /**
      * @var int
      *
@@ -39,52 +40,23 @@ class Datation
     /**
      * @var int|null
      *
-     * @ORM\Column(name="post_quem_cit", type="smallint", nullable=true)
+     * @ORM\Column(name="post_quem_citation", type="smallint", nullable=true)
      */
-    private $postQuemCit;
+    private $postQuemCitation;
 
     /**
      * @var int|null
      *
-     * @ORM\Column(name="ante_quem_cit", type="smallint", nullable=true)
+     * @ORM\Column(name="ante_quem_citation", type="smallint", nullable=true)
      */
-    private $anteQuemCit;
+    private $anteQuemCitation;
 
     /**
      * @var string|null
      *
-     * @ORM\Column(name="date_anc", type="text", nullable=true)
+     * @ORM\Column(name="dateAncienne", type="text", nullable=true)
      */
-    private $dateAnc;
-
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="com_date", type="text", nullable=true)
-     */
-    private $commentaireDateFr;
-
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="com_date_en", type="text", nullable=true)
-     */
-    private $commentaireDateEn;
-
-    /**
-     * @var int|null
-     *
-     * @ORM\Column(name="fiabilite_datation", type="smallint", nullable=true)
-     */
-    private $fiabiliteDatation;
-
-    /**
-     * @ORM\PreUpdate
-     */
-    public function updateFiabilite(): void
-    {
-        $this->setFiabiliteDatation(abs($this->getPostQuem() - $this->getAnteQuem()));
-    }
+    private $dateAncienne;
 
     public function getId(): ?int
     {
@@ -115,77 +87,39 @@ class Datation
         return $this;
     }
 
-    public function getPostQuemCit(): ?int
+    public function getPostQuemCitation(): ?int
     {
-        return $this->postQuemCit;
+        return $this->postQuemCitation;
     }
 
-    public function setPostQuemCit(?int $postQuemCit): self
+    public function setPostQuemCitation(?int $postQuemCitation): self
     {
-        $this->postQuemCit = $postQuemCit;
+        $this->postQuemCitation = $postQuemCitation;
 
         return $this;
     }
 
-    public function getAnteQuemCit(): ?int
+    public function getAnteQuemCitation(): ?int
     {
-        return $this->anteQuemCit;
+        return $this->anteQuemCitation;
     }
 
-    public function setAnteQuemCit(?int $anteQuemCit): self
+    public function setAnteQuemCitation(?int $anteQuemCitation): self
     {
-        $this->anteQuemCit = $anteQuemCit;
+        $this->anteQuemCitation = $anteQuemCitation;
 
         return $this;
     }
 
-    public function getDateAnc(): ?string
+    public function getDateAncienne(): ?string
     {
-        return $this->dateAnc;
+        return $this->dateAncienne;
     }
 
-    public function setDateAnc(?string $dateAnc): self
+    public function setDateAncienne(?string $dateAncienne): self
     {
-        $this->dateAnc = $dateAnc;
+        $this->dateAncienne = $dateAncienne;
 
         return $this;
     }
-
-    public function getCommentaireDateFr(): ?string
-    {
-        return $this->commentaireDateFr;
-    }
-
-    public function setCommentaireDateFr(?string $commentaireDateFr): self
-    {
-        $this->commentaireDateFr = $commentaireDateFr;
-
-        return $this;
-    }
-
-    public function getCommentaireDateEn(): ?string
-    {
-        return $this->commentaireDateEn;
-    }
-
-    public function setCommentaireDateEn(?string $commentaireDateEn): self
-    {
-        $this->commentaireDateEn = $commentaireDateEn;
-
-        return $this;
-    }
-
-    public function getFiabiliteDatation(): ?int
-    {
-        return $this->fiabiliteDatation;
-    }
-
-    public function setFiabiliteDatation(?int $fiabiliteDatation): self
-    {
-        $this->fiabiliteDatation = $fiabiliteDatation;
-
-        return $this;
-    }
-
-
 }

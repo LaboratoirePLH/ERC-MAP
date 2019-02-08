@@ -9,20 +9,21 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Source
  *
- * @ORM\Table(name="source", indexes={@ORM\Index(name="fki_id_datation_fkey", columns={"id_datation"}), @ORM\Index(name="fki_create_user_fkey", columns={"create_source"}), @ORM\Index(name="fki_modif_user_fkey", columns={"modif_source"})})
+ * @ORM\Table(name="source")
  * @ORM\Entity(repositoryClass="App\Repository\SourceRepository")
  * @ORM\HasLifecycleCallbacks()
  */
 class Source
 {
+    use Traits\Tracked;
     use Traits\Translatable;
+    use Traits\TranslatedComment;
     /**
      * @var int
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="SEQUENCE")
-     * @ORM\SequenceGenerator(sequenceName="source_id_seq", allocationSize=1, initialValue=1)
      */
     private $id;
 
@@ -35,9 +36,7 @@ class Source
      * @var \Titre|null
      *
      * @ORM\OneToOne(targetEntity="Titre", fetch="EAGER", cascade={"persist"})
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_titre", referencedColumnName="id_titre", nullable=true)
-     * })
+     * @ORM\JoinColumn(name="titre_principal_id", referencedColumnName="id", nullable=true)
      */
     private $titrePrincipal;
 
@@ -89,6 +88,24 @@ class Source
     }
 
     /**
+     * @var bool|null
+     *
+     * @ORM\Column(name="iconographie", type="boolean", nullable=true)
+     */
+    private $iconographie = false;
+
+    public function getIconographie(): ?bool
+    {
+        return $this->iconographie;
+    }
+
+    public function setIconographie(?bool $iconographie): self
+    {
+        $this->iconographie = $iconographie;
+        return $this;
+    }
+
+    /**
      * @var string|null
      *
      * @ORM\Column(name="url_texte", type="text", nullable=true)
@@ -129,7 +146,7 @@ class Source
      *
      * @ORM\Column(name="in_situ", type="boolean", nullable=true)
      */
-    private $inSitu = false;
+    private $inSitu;
 
     public function getInSitu(): ?bool
     {
@@ -145,7 +162,7 @@ class Source
     /**
      * @var int|null
      *
-     * @ORM\Column(name="fiab_loc", type="smallint", nullable=true)
+     * @ORM\Column(name="fiabilite_localisation", type="smallint", nullable=true)
      */
     private $fiabiliteLocalisation;
 
@@ -161,124 +178,20 @@ class Source
     }
 
     /**
-     * @var string|null
+     * @var int|null
      *
-     * @ORM\Column(name="com_source", type="text", nullable=true)
+     * @ORM\Column(name="fiabilite_datation", type="smallint", nullable=true)
      */
-    private $commentaireSourceFr;
+    private $fiabiliteDatation;
 
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="com_source_en", type="text", nullable=true)
-     */
-    private $commentaireSourceEn;
-
-    public function getCommentaireSourceFr(): ?string
+    public function getFiabiliteDatation(): ?int
     {
-        return $this->commentaireSourceFr;
+        return $this->fiabiliteDatation;
     }
 
-    public function setCommentaireSourceFr(?string $commentaireSourceFr): self
+    public function setFiabiliteDatation(?int $fiabiliteDatation): self
     {
-        $this->commentaireSourceFr = $commentaireSourceFr;
-        return $this;
-    }
-    public function getCommentaireSourceEn(): ?string
-    {
-        return $this->commentaireSourceEn;
-    }
-
-    public function setCommentaireSourceEn(?string $commentaireSourceEn): self
-    {
-        $this->commentaireSourceEn = $commentaireSourceEn;
-        return $this;
-    }
-
-    public function getCommentaireSource(?string $lang): ?string
-    {
-        if($lang == 'fr'){
-            return $this->commentaireSourceFr;
-        } else {
-            return $this->commentaireSourceEn;
-        }
-    }
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="created", type="datetime", nullable=false)
-     */
-    private $dateCreation;
-
-    public function getDateCreation(): ?\DateTimeInterface
-    {
-        return $this->dateCreation;
-    }
-
-    public function setDateCreation(\DateTimeInterface $dateCreation): self
-    {
-        $this->dateCreation = $dateCreation;
-        return $this;
-    }
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="date_ope", type="datetime", nullable=false, options={"default": "CURRENT_TIMESTAMP"})
-     */
-    private $dateModification;
-
-    public function getDateModification(): ?\DateTimeInterface
-    {
-        return $this->dateModification;
-    }
-
-    public function setDateModification(\DateTimeInterface $dateModification): self
-    {
-        $this->dateModification = $dateModification;
-        return $this;
-    }
-
-    /**
-     * @var \Chercheur
-     *
-     * @ORM\ManyToOne(targetEntity="Chercheur", fetch="EAGER")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="create_source", referencedColumnName="id", nullable=false)
-     * })
-     */
-    private $createur;
-
-    public function getCreateur(): ?Chercheur
-    {
-        return $this->createur;
-    }
-
-    public function setCreateur(?Chercheur $createur): self
-    {
-        $this->createur = $createur;
-        return $this;
-    }
-
-    /**
-     * @var \Chercheur|null
-     *
-     * @ORM\ManyToOne(targetEntity="Chercheur", fetch="EAGER")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="modif_source", referencedColumnName="id", nullable=true)
-     * })
-     */
-    private $dernierEditeur;
-
-    public function getDernierEditeur(): ?Chercheur
-    {
-        return $this->dernierEditeur;
-    }
-
-    public function setDernierEditeur(?Chercheur $dernierEditeur): self
-    {
-        $this->dernierEditeur = $dernierEditeur;
+        $this->fiabiliteDatation = $fiabiliteDatation;
         return $this;
     }
 
@@ -287,7 +200,7 @@ class Source
      *
      * @ORM\ManyToOne(targetEntity="TypeSupport", fetch="EAGER")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_support", referencedColumnName="id", nullable=true)
+     *   @ORM\JoinColumn(name="type_support_id", referencedColumnName="id", nullable=true)
      * })
      */
     private $typeSupport;
@@ -304,11 +217,32 @@ class Source
     }
 
     /**
+     * @var \CategorieSupport|null
+     *
+     * @ORM\ManyToOne(targetEntity="CategorieSupport")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="categorie_support_id", referencedColumnName="id", nullable=true)
+     * })
+     */
+    private $categorieSupport;
+
+    public function getCategorieSupport(): ?CategorieSupport
+    {
+        return $this->categorieSupport;
+    }
+
+    public function setCategorieSupport(?CategorieSupport $categorieSupport): self
+    {
+        $this->categorieSupport = $categorieSupport;
+        return $this;
+    }
+
+    /**
      * @var \Materiau|null
      *
      * @ORM\ManyToOne(targetEntity="Materiau", fetch="EAGER")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_mat", referencedColumnName="id_mat", nullable=true)
+     *   @ORM\JoinColumn(name="materiau_id", referencedColumnName="id", nullable=true)
      * })
      */
     private $materiau;
@@ -325,11 +259,32 @@ class Source
     }
 
     /**
+     * @var \CategorieMateriau|null
+     *
+     * @ORM\ManyToOne(targetEntity="CategorieMateriau")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="categorie_materiau_id", referencedColumnName="id", nullable=true)
+     * })
+     */
+    private $categorieMateriau;
+
+    public function getCategorieMateriau(): ?CategorieMateriau
+    {
+        return $this->categorieMateriau;
+    }
+
+    public function setCategorieMateriau(?CategorieMateriau $categorieMateriau): self
+    {
+        $this->categorieMateriau = $categorieMateriau;
+        return $this;
+    }
+
+    /**
      * @var \TypeSource
      *
      * @ORM\ManyToOne(targetEntity="TypeSource", fetch="EAGER")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_typo", referencedColumnName="id", nullable=false)
+     *   @ORM\JoinColumn(name="type_source_id", referencedColumnName="id", nullable=false)
      * })
      */
     private $typeSource;
@@ -346,12 +301,31 @@ class Source
     }
 
     /**
+     * @var \CategorieSource|null
+     *
+     * @ORM\ManyToOne(targetEntity="CategorieSource")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="categorie_source_id", referencedColumnName="id", nullable=true)
+     * })
+     */
+    private $categorieSource;
+
+    public function getCategorieSource(): ?CategorieSource
+    {
+        return $this->categorieSource;
+    }
+
+    public function setCategorieSource(?CategorieSource $categorieSource): self
+    {
+        $this->categorieSource = $categorieSource;
+        return $this;
+    }
+
+    /**
      * @var \Datation
      *
-     * @ORM\ManyToOne(targetEntity="Datation", cascade={"persist"}, fetch="EAGER")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_datation", referencedColumnName="id")
-     * })
+     * @ORM\OneToOne(targetEntity="Datation", cascade={"persist"}, fetch="EAGER")
+     * @ORM\JoinColumn(name="datation_id", referencedColumnName="id")
      */
     private $datation;
 
@@ -380,13 +354,13 @@ class Source
     /**
      * @var \Doctrine\Common\Collections\Collection
      *
-     * @ORM\ManyToMany(targetEntity="Titre", inversedBy="sourcesCitees", fetch="EAGER")
-     * @ORM\JoinTable(name="titre_cite",
+     * @ORM\ManyToMany(targetEntity="Titre", fetch="EAGER")
+     * @ORM\JoinTable(name="source_titre_cite",
      *   joinColumns={
      *     @ORM\JoinColumn(name="id_source", referencedColumnName="id")
      *   },
      *   inverseJoinColumns={
-     *     @ORM\JoinColumn(name="id_titre", referencedColumnName="id_titre")
+     *     @ORM\JoinColumn(name="id_titre", referencedColumnName="id")
      *   }
      * )
      */
@@ -419,13 +393,13 @@ class Source
     /**
      * @var \Doctrine\Common\Collections\Collection
      *
-     * @ORM\ManyToMany(targetEntity="Auteur", inversedBy="sources")
-     * @ORM\JoinTable(name="ecrit",
+     * @ORM\ManyToMany(targetEntity="Auteur")
+     * @ORM\JoinTable(name="source_auteur",
      *   joinColumns={
      *     @ORM\JoinColumn(name="id_source", referencedColumnName="id")
      *   },
      *   inverseJoinColumns={
-     *     @ORM\JoinColumn(name="id_auteur", referencedColumnName="id_auteur")
+     *     @ORM\JoinColumn(name="id_auteur", referencedColumnName="id")
      *   }
      * )
      */
@@ -459,7 +433,7 @@ class Source
      * @var \Doctrine\Common\Collections\Collection
      *
      * @ORM\ManyToMany(targetEntity="Langue", fetch="EAGER")
-     * @ORM\JoinTable(name="a_langue",
+     * @ORM\JoinTable(name="source_langue",
      *   joinColumns={
      *     @ORM\JoinColumn(name="id_source", referencedColumnName="id")
      *   },
@@ -544,6 +518,7 @@ class Source
         $this->setDateCreation($now);
         $this->setDateModification($now);
         $this->setVersion(1);
+        $this->_updateFiabilite();
     }
 
     /**
@@ -553,5 +528,16 @@ class Source
         $now = new \DateTime();
         $this->setDateModification($now);
         $this->setVersion($this->getVersion() + 1);
+        $this->_updateFiabilite();
+    }
+
+    private function _updateFiabilite(){
+        if(!is_null($datation = $this->getDatation())){
+            $this->setFiabiliteDatation(abs($datation->getPostQuem() - $datation->getAnteQuem()));
+        }
+        if(!is_null($localisation = $this->getLocalisation())){
+            // TODO
+            $this->setFiabiliteLocalisation(0);
+        }
     }
 }

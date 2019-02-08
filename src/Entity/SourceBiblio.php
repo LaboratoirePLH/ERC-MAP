@@ -7,16 +7,18 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * SourceBiblio
  *
- * @ORM\Table(name="trouve_source")
+ * @ORM\Table(name="source_biblio")
  * @ORM\Entity
  */
 class SourceBiblio
 {
+    use Traits\TranslatedComment;
+
     /**
      * @var \Source
      *
      * @ORM\Id
-     * @ORM\ManyToOne(targetEntity="Source", inversedBy="sourceBiblios", fetch="LAZY")
+     * @ORM\ManyToOne(targetEntity="Source", inversedBy="sourceBiblios", fetch="EXTRA_LAZY")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_source", referencedColumnName="id")
      * })
@@ -27,7 +29,7 @@ class SourceBiblio
      * @var \Biblio
      *
      * @ORM\Id
-     * @ORM\ManyToOne(targetEntity="Biblio", inversedBy="sourceBiblios", cascade={"persist"}, fetch="EAGER")
+     * @ORM\ManyToOne(targetEntity="Biblio", cascade={"persist"}, fetch="EAGER")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_biblio", referencedColumnName="id")
      * })
@@ -37,28 +39,14 @@ class SourceBiblio
     /**
      * @var bool|null
      *
-     * @ORM\Column(name="ed_ppale", type="boolean", nullable=true)
+     * @ORM\Column(name="edition_principale", type="boolean", nullable=true)
      */
     private $editionPrincipale;
 
     /**
      * @var string|null
      *
-     * @ORM\Column(name="com_bib_fr", type="text", nullable=true)
-     */
-    private $commentaireBiblioFr;
-
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="com_bib_en", type="text", nullable=true)
-     */
-    private $commentaireBiblioEn;
-
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="bib_ref_source", type="string", length=255, nullable=true)
+     * @ORM\Column(name="reference_source", type="string", length=255, nullable=true)
      */
     private $referenceSource;
 
@@ -96,37 +84,6 @@ class SourceBiblio
         return $this;
     }
 
-    public function getCommentaireBiblioFr(): ?string
-    {
-        return $this->commentaireBiblioFr;
-    }
-
-    public function setCommentaireBiblioFr(?string $commentaireBiblioFr): self
-    {
-        $this->commentaireBiblioFr = $commentaireBiblioFr;
-        return $this;
-    }
-
-    public function getCommentaireBiblioEn(): ?string
-    {
-        return $this->commentaireBiblioEn;
-    }
-
-    public function setCommentaireBiblioEn(?string $commentaireBiblioEn): self
-    {
-        $this->commentaireBiblioEn = $commentaireBiblioEn;
-        return $this;
-    }
-
-    public function getCommentaireBiblio(?string $lang): ?string
-    {
-        if($lang == 'fr'){
-            return $this->commentaireBiblioFr;
-        } else {
-            return $this->commentaireBiblioEn;
-        }
-    }
-
     public function getReferenceSource(): ?string
     {
         return $this->referenceSource;
@@ -137,8 +94,4 @@ class SourceBiblio
         $this->referenceSource = $referenceSource;
         return $this;
     }
-
-
-
-
 }

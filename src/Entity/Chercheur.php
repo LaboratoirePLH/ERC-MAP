@@ -53,7 +53,7 @@ class Chercheur implements UserInterface
     /**
      * @var string|null
      *
-     * @ORM\Column(name="password", type="string", length=50, nullable=true)
+     * @ORM\Column(name="password", type="string", length=255, nullable=true)
      */
     private $password;
 

@@ -61,11 +61,11 @@ class SourceType extends AbstractType
                 'label'    => 'source.fields.in_situ',
                 'required' => false
             ])
-            ->add('commentaireSourceFr', TextareaType::class, [
+            ->add('commentaireFr', TextareaType::class, [
                 'label'    => 'generic.fields.commentaire_fr',
                 'required' => false
             ])
-            ->add('commentaireSourceEn', TextareaType::class, [
+            ->add('commentaireEn', TextareaType::class, [
                 'label'    => 'generic.fields.commentaire_en',
                 'required' => false
             ])

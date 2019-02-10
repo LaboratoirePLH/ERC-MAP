@@ -284,7 +284,7 @@ class Source
      *
      * @ORM\ManyToOne(targetEntity="TypeSource", fetch="EAGER")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="type_source_id", referencedColumnName="id", nullable=false)
+     *   @ORM\JoinColumn(name="type_source_id", referencedColumnName="id", nullable=true)
      * })
      */
     private $typeSource;
@@ -325,7 +325,7 @@ class Source
      * @var \Datation
      *
      * @ORM\OneToOne(targetEntity="Datation", cascade={"persist"}, fetch="EAGER")
-     * @ORM\JoinColumn(name="datation_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="datation_id", referencedColumnName="id", nullable=true)
      */
     private $datation;
 
@@ -535,9 +535,9 @@ class Source
         if(!is_null($datation = $this->getDatation())){
             $this->setFiabiliteDatation(abs($datation->getPostQuem() - $datation->getAnteQuem()));
         }
-        if(!is_null($localisation = $this->getLocalisation())){
-            // TODO
-            $this->setFiabiliteLocalisation(0);
-        }
+        // if(!is_null($localisation = $this->getLocalisation())){
+        //     // TODO
+        //     $this->setFiabiliteLocalisation(0);
+        // }
     }
 }

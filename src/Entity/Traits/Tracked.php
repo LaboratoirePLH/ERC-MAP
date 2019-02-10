@@ -2,6 +2,8 @@
 
 namespace App\Entity\Traits;
 
+use App\Entity\Chercheur;
+
 use Doctrine\ORM\Mapping as ORM;
 
 trait Tracked

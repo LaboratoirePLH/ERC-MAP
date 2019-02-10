@@ -34,5 +34,6 @@ class CorpusType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Corpus::class,
         ]);
+        $resolver->setDefined(['translations', 'locale']);
     }
 }

@@ -15,3 +15,6 @@ require('bootstrap');
 require('datatables.net-bs4')(window, $);
 require('datatables.net-responsive-bs4')(window, $);
 require('chosen-js');
+require('./collection.js');
+require('./dependent_fields.js');
+require('./selectorcreate.js');

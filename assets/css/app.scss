@@ -3,12 +3,6 @@
 @import "~datatables.net-bs4/css/dataTables.bootstrap4.min.css";
 @import "./component-chosen.css";
 
-%inlineCheckInput {
-    display: inline-block;
-    margin-top: ($spacer * .30) !important;
-    margin-right: ($spacer * .50) !important;
-}
-
 body {
     background-color: lightgray;
 
@@ -92,12 +86,6 @@ body {
             }
 
             &#source {
-                #source_translations .form-check {
-                    /* Modification des checkbox pour les afficher en inline */
-                    @extend %inlineCheckInput;
-                }
-
-
                 #source_sourcebiblios {
 
                     /* Amélioration de l'affichage des références bibliographiques */
@@ -107,16 +95,6 @@ body {
 
                         &:nth-child(even) {
                             background-color: darken(lightgray, 10%);
-                        }
-
-                        legend.biblio_creation_field,
-                        legend.corpus_creation_field {
-                            &+.col-sm-10 {
-                                .form-check {
-                                    /* Modification des radio pour les afficher en inline */
-                                    @extend %inlineCheckInput;
-                                }
-                            }
                         }
                     }
                 }

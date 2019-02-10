@@ -42,13 +42,14 @@
 {{ form_row(form.citation) }}
 {{ form_row(form.titresCites) }}
 {{ form_row(form.urlTexte) }}
+{{ form_row(form.iconographie) }}
 {{ form_row(form.urlImage) }}
-{{ form_row(form.inSitu) }}
 {{ form_row(form.commentaireFr) }}
 {{ form_row(form.commentaireEn) }}
 <h3 class="form-section-title">
     {{ 'source.sections.localisation'|trans }}
 </h3>
+{{ form_row(form.inSitu) }}
 <h3 class="form-section-title">
     {{ 'source.sections.datation'|trans }}
 </h3>
@@ -83,95 +84,14 @@
 {{ parent() }}
 <script type="text/javascript">
     $(document).ready(function () {
-        function setupAutocomplete(selector) {
-            selector.chosen({
-                disable_search_threshold: 10,
-                no_results_text: "{{ 'autocomplete.no_matches'|trans }}",
-                allow_single_deselect: true,
-                group_search: false,
-                display_selected_options: false,
-                include_group_label_in_selected: true
-            });
-        }
-        setupAutocomplete($('select.autocomplete'));
-
-        // Gestion des champs qui dépendent de la checkbox "citation"
-        $('#source_citation').on('change', function (e) {
-            toggleQuoteFields($(this).is(':checked'));
-        });
-
-        function toggleQuoteFields(display) {
-            $('.quote_dependent').parent('.row')[(display ? "slideDown" : "slideUp")](300);
-        }
-        toggleQuoteFields($('#source_citation').is(':checked'));
-
         // Gestion de l'ajout d'une référence supplémentaire
-        var container = $('div#source_sourceBiblios');
-        var index = container.children('.form-group').length;
-
-        $('#add_sourcebiblio').click(function (e) {
-            addReference(container);
-            e.preventDefault();
-            return false;
+        $('div#source_sourceBiblios').collectionField({
+            blockTitle: '{{ "source.fields.source_biblio_n"|trans }}',
+            deleteLink: '{{ "generic.delete"|trans }}'
         });
-
-        if (index == 0) {
-            addReference(container);
-        } else {
-            container.children('.form-group').each(function () {
-                addDeleteLink($(this));
-                toggleCreationSelection($(this), 'biblio', false);
-                toggleCreationSelection($(this), 'corpus', false);
-            });
-        }
-
-        function setupCreationSelection(target) {
-            $('label.' + target + '_creation_field').siblings('input[type=radio]').on('change', function (e) {
-                var radioName = $(this).attr('name');
-                var groupIndex = radioName.match(/\d+/)[0];
-                var radioValue = $("input[name='" + radioName + "']:checked").val();
-                if (radioValue) {
-                    toggleCreationSelection(
-                        $(this).parents('#source_sourceBiblios_' + groupIndex),
-                        target,
-                        radioValue === 'yes'
-                    );
-                }
-            });
-        }
-
-        function toggleCreationSelection(parent, target, creation) {
-            parent.find('.' + target + '_creation_no').parent('.form-group')[(creation === false ? "slideDown" :
-                "slideUp")](300);
-            parent.find('.' + target + '_creation_yes').parent('.form-group')[(creation === true ? "slideDown" :
-                "slideUp")](300);
-        }
-
-        function addReference(container) {
+        $('div#source_sourceBiblios').on('collectionField.add', function (e, newEl) {
+            $(newEl).find('.selectorcreate').selectOrCreate();
             $('label.mainsource_field').siblings('input[type=checkbox]').off('change');
-            $('label.biblio_creation_field').siblings('input[type=radio]').off('change');
-            $('label.corpus_creation_field').siblings('input[type=radio]').off('change');
-            var template = container.attr('data-prototype')
-                .replace(/__name__label__/g, '{{ "source.fields.source_biblio_n"|trans }}' + (index + 1))
-                .replace(/__name__/g, index);
-
-            var prototype = $(template);
-
-            var label = prototype.find('#source_sourceBiblios_' + index).find('.remove_this_label');
-            label.siblings('.col-sm-10').removeClass('col-sm-10').addClass('col-sm-12');
-            label.hide();
-
-            prototype.children('legend')
-                .removeClass('col-sm-2 col-form-label')
-                .addClass('col-sm-12 text-center h4');
-            prototype.children('.col-sm-10')
-                .removeClass('col-sm-10')
-                .addClass('col-sm-12');
-
-            addDeleteLink(prototype);
-            container.append(prototype);
-            index++;
-
             $('label.mainsource_field').siblings('input[type=checkbox]').on('change', function (e) {
                 if ($(this).is(':checked')) {
                     $('label.mainsource_field').siblings('input[type=checkbox]')
@@ -179,24 +99,18 @@
                         .prop('checked', false);
                 }
             });
-            setupCreationSelection('biblio');
-            setupCreationSelection('corpus');
-            toggleCreationSelection(prototype, 'biblio', null);
-            toggleCreationSelection(prototype, 'corpus', null);
-            setupAutocomplete(prototype.find('select.autocomplete'));
-        }
+        });
 
-        function addDeleteLink(prototype) {
-            var deleteLink = $(
-                '<a href="#" class="btn btn-danger">{{ "source.delete_sourcebiblio"|trans }}</a>'
-            );
-            prototype.children('.col-sm-10').append(deleteLink);
-            deleteLink.click(function (e) {
-                e.preventDefault();
-                prototype.remove();
-                return false;
-            });
-        }
+        $('.selectorcreate').selectOrCreate();
+        $('select.autocomplete').chosen({
+            disable_search_threshold: 10,
+            no_results_text: "{{ 'autocomplete.no_matches'|trans }}",
+            allow_single_deselect: true,
+            group_search: false,
+            display_selected_options: false,
+            include_group_label_in_selected: true
+        });
+        $.fn.dependentFields(['quote', 'iconography', 'insitu']);
     });
 </script>
 {% endblock %}

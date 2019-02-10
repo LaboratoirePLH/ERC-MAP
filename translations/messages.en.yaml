@@ -66,8 +66,11 @@ source:
         deleted: "Source deleted"
         missing: "Source does not exists"
     fields:
+        titre:  "Title"
         titre_principal: "Main Title"
         titres_cites: "Quoted Titles"
+        titre_selection: "Select Title"
+        titre_creation: "Create Title"
         auteurs: "Authors"
         type_source: "Type"
         categorie_source: "Category"
@@ -84,6 +87,7 @@ source:
         url_texte: "Text URL"
         citation: "Quote"
         in_situ: "In Situ"
+        iconographie: "Iconography"
         source_biblio: "Reference"
         source_biblio_n: "Reference #"
         version: "Version"
@@ -100,7 +104,8 @@ source_biblio:
     fields:
         edition_principale: "Main Source"
         reference_source: "bib_ref_source (???)"
-        biblio_creation: "Choose reference"
+        biblio_selection: "Select Reference"
+        biblio_creation: "Create Reference"
 
 biblio:
     fields:
@@ -109,7 +114,8 @@ biblio:
         annee: "Year"
         auteur: "Author"
         corpus: "Corpus"
-        corpus_creation: "Choose corpus"
+        corpus_selection: "Select Corpus"
+        corpus_creation: "Create Corpus"
 
 corpus:
     fields:

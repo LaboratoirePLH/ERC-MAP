@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Biblio;
 use App\Entity\Corpus;
+use App\Form\Type\SelectOrCreateType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -37,43 +38,17 @@ class BiblioType extends AbstractType
                 'label'    => 'biblio.fields.auteur',
                 'required' => false
             ])
-            ->add('corpus_creation', ChoiceType::class, [
-                'label'      => 'biblio.fields.corpus_creation',
-                'label_attr' => [
-                    'class' => 'corpus_creation_field'
-                ],
-                'mapped'   => false,
-                'expanded' => true,
-                'choices'  => [
-                    'generic.choices.new' => 'yes',
-                    'generic.choices.existing' => 'no',
-                ],
-            ])
-            ->add('corpus', EntityType::class, [
-                'label'      => 'biblio.fields.corpus',
-                'label_attr' => [
-                    'class' => 'corpus_creation_no'
-                ],
-                'required'     => false,
-                'mapped'       => true,
-                'class'        => Corpus::class,
-                'choice_label' => 'nom',
-                'attr'         => [
-                    'class' => 'autocomplete',
-                    'data-placeholder' => $options['translations']['autocomplete.select_element']
-                ],
-                'query_builder' => function (EntityRepository $er) {
+            ->add('corpus', SelectOrCreateType::class, [
+                'locale'                  => $options['locale'],
+                'translations'            => $options['translations'],
+                'field_name'              => 'corpus',
+                'object_class'            => Corpus::class,
+                'creation_form_class'     => CorpusType::class,
+                'selection_choice_label'  => 'nom',
+                'selection_query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('e')
                         ->orderBy('e.nom', 'ASC');
                 }
-            ])
-            ->add('corpusNew', CorpusType::class, [
-                'label_attr' => [
-                    'class' => 'corpus_creation_yes remove_this_label'
-                ],
-                'required'      => false,
-                'mapped'        => false,
-                'property_path' => 'corpus'
             ])
         ;
     }
@@ -84,5 +59,6 @@ class BiblioType extends AbstractType
             'data_class' => Biblio::class,
         ]);
         $resolver->setRequired('translations');
+        $resolver->setDefined('locale');
     }
 }

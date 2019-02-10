@@ -10,6 +10,8 @@ use App\Entity\Titre;
 use App\Entity\TypeSource;
 use App\Entity\TypeSupport;
 
+use App\Form\Type\SelectOrCreateType;
+
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -45,7 +47,7 @@ class SourceType extends AbstractType
             ->add('citation', CheckboxType::class, [
                 'label'      => 'source.fields.citation',
                 'label_attr' => [
-                    'class' => 'quote_field'
+                    'class' => 'dependent_field_quote_main'
                 ],
                 'required' => false
             ])
@@ -55,10 +57,23 @@ class SourceType extends AbstractType
             ])
             ->add('urlImage', UrlType::class, [
                 'label'    => 'source.fields.url_image',
+                'label_attr' => [
+                    'class' => 'dependent_field_iconography'
+                ],
                 'required' => false
             ])
             ->add('inSitu', CheckboxType::class, [
                 'label'    => 'source.fields.in_situ',
+                'label_attr' => [
+                    'class' => 'dependent_field_insitu_main'
+                ],
+                'required' => false
+            ])
+            ->add('iconographie', CheckboxType::class, [
+                'label'    => 'source.fields.iconographie',
+                'label_attr' => [
+                    'class' => 'dependent_field_iconography_main'
+                ],
                 'required' => false
             ])
             ->add('commentaireFr', TextareaType::class, [
@@ -152,17 +167,23 @@ class SourceType extends AbstractType
                         ->orderBy('e.nom'.ucfirst($locale), 'ASC');
                 }
             ])
-            ->add('titrePrincipal', TitreType::class, [
-                'label'         => 'source.fields.titre_principal',
-                'required'      => false,
-                'mapped'        => true,
-                'locale'        => $locale,
-                'translations'  => $options['translations']
+            ->add('titrePrincipal', SelectOrCreateType::class, [
+                'label'                   => 'source.fields.titre_principal',
+                'locale'                  => $options['locale'],
+                'translations'            => $options['translations'],
+                'field_name'              => 'titrePrincipal',
+                'object_class'            => Titre::class,
+                'creation_form_class'     => TitreType::class,
+                'selection_choice_label'  => 'nom'.ucfirst($locale),
+                'selection_query_builder' => function (EntityRepository $er) use ($locale) {
+                    return $er->createQueryBuilder('e')
+                        ->orderBy('e.nom'.ucfirst($locale), 'ASC');
+                }
             ])
             ->add('titresCites', EntityType::class, [
                 'label'      => 'source.fields.titres_cites',
                 'label_attr' => [
-                    'class' => 'quote_dependent'
+                    'class' => 'dependent_field_quote'
                 ],
                 'required'     => false,
                 'multiple'     => true,
@@ -191,58 +212,6 @@ class SourceType extends AbstractType
                 'label' => 'generic.save'
             ])
         ;
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit']);
-    }
-
-    public function onPreSubmit(FormEvent $event) {
-        $data = $event->getData();
-        $form = $event->getForm();
-
-        $rawData = $data;
-        foreach($rawData['sourceBiblios'] as $index => &$sourceBiblio){
-            // On ignore la référence bibliographique si une de ces conditions est réunie :
-            // - l'utilisateur n'a pas choisi entre une biblio existante ou une nouvelle
-            // - l'utilisateur a choisi une biblio existante mais ne l'a pas sélectionnée
-            // - l'utilisateur a choisi de créer une biblio et :
-            //     - il manque des données
-            //     - il n'a pas choisi entre un corpus existant ou un nouveau
-            //     - il a choisi un corpus existant mais ne l'a pas sélectionné
-            //     - il a choisi de créer un corpus et il manque des données
-            if(!array_key_exists('biblio_creation', $sourceBiblio)
-                || $sourceBiblio['biblio_creation'] === "no" && empty($sourceBiblio['biblio'])
-                || $sourceBiblio['biblio_creation'] === "yes" && (
-                    !array_key_exists('biblioNew', $sourceBiblio)
-                    || !array_key_exists('corpus_creation', $sourceBiblio['biblioNew'])
-                    || (
-                    $sourceBiblio['biblioNew']['corpus_creation'] === "no"
-                    && empty($sourceBiblio['biblioNew']['corpus'])
-                ) || (
-                    $sourceBiblio['biblioNew']['corpus_creation'] === "yes"
-                    && !array_key_exists('corpusNew', $sourceBiblio['biblioNew'])
-                )
-            )){
-                unset($data['sourceBiblios'][$index]);
-                continue;
-            }
-
-            // Si la référence a passé les tests, on regarde le choix de biblio
-            // Si c'est une création, on vient écraser la clé "biblio" avec ce qui est dans "biblioNew"
-            // Même logique si l'on crée un nouveau corpus
-            // On retire ensuite du formulaire
-            if($sourceBiblio['biblio_creation'] === "yes"){
-                // $data['sourceBiblios'][$index]['biblio'] = $data['sourceBiblios'][$index]['biblioNew'];
-                if($sourceBiblio['biblioNew']['corpus_creation'] === "yes"){
-                    $data['sourceBiblios'][$index]['biblio']['corpus'] = $data['sourceBiblios'][$index]['biblio']['corpusNew'];
-                }
-                unset($data['sourceBiblios'][$index]['biblioNew']['corpusNew']);
-                unset($data['sourceBiblios'][$index]['biblioNew']['corpus_creation']);
-                unset($data['sourceBiblios'][$index]['biblio']);
-            } else {
-                unset($data['sourceBiblios'][$index]['biblioNew']);
-            }
-            unset($data['sourceBiblios'][$index]['biblio_creation']);
-        }
-        $event->setData($data);
     }
 
     public function configureOptions(OptionsResolver $resolver)

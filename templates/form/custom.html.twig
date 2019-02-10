@@ -1,0 +1,15 @@
+{% use "bootstrap_4_horizontal_layout.html.twig" %}
+
+{% block selectorcreate_widget %}
+<div id="selectorcreate_{{ uuid }}" class="selectorcreate">
+    <div class="selectorcreate_decision mb-2">
+        {{ form_widget(form.decision) }}
+    </div>
+    <div class="selectorcreate_selection">
+        {{ form_widget(form.selection) }}
+    </div>
+    <div class="selectorcreate_creation">
+        {{ form_widget(form.creation) }}
+    </div>
+</div>
+{% endblock selectorcreate_widget %}

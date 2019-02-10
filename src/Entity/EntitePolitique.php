@@ -51,5 +51,13 @@ class EntitePolitique
         return $this;
     }
 
+    public function getAffichageFr(){
+        return \sprintf("%s (IACP: %s)", $this->getNomFr(), $this->getNumeroIacp() ?? "?");
+    }
+
+    public function getAffichageEn(){
+        return \sprintf("%s (IACP: %s)", $this->getNomEn(), $this->getNumeroIacp() ?? "?");
+    }
+
 
 }

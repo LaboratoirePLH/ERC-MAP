@@ -200,6 +200,19 @@ class SourceType extends AbstractType
                 }
             ])
             ->add('datation', DatationType::class)
+            ->add('lieuDecouverte', LocalisationType::class, [
+                'label'        => 'source.fields.lieu_decouverte',
+                'locale'       => $options['locale'],
+                'translations' => $options['translations'],
+            ])
+            ->add('lieuOrigine', LocalisationType::class, [
+                'label' => 'source.fields.lieu_origine',
+                'label_attr' => [
+                    'class' => 'dependent_field_insitu dependent_field_inverse'
+                ],
+                'locale'       => $options['locale'],
+                'translations' => $options['translations'],
+            ])
             ->add('sourceBiblios', CollectionType::class, [
                 'label'         => false,
                 'entry_type'    => SourceBiblioType::class,

@@ -87,6 +87,8 @@ source:
         url_texte: "Text URL"
         citation: "Quote"
         in_situ: "In Situ"
+        lieu_origine: "Original Location"
+        lieu_decouverte: "Discovery Location"
         iconographie: "Iconography"
         source_biblio: "Reference"
         source_biblio_n: "Reference #"
@@ -99,6 +101,8 @@ source:
         bibliographie: "Bibliography"
         datation: "Datation"
         localisation: "Location"
+        commentaires: "Comments"
+        attestations: "Testimonies"
 
 source_biblio:
     fields:
@@ -129,6 +133,12 @@ datation:
         post_quem_cit: "Post Quem (Quote)"
         ante_quem_cit: "Ante Quem (Quote)"
         date_anc: "date_anc (???)"
+
+localisation:
+    fields:
+        region: "Region"
+        entite_politique: "Political Entity"
+
 
 modals:
     confirm_deletion:

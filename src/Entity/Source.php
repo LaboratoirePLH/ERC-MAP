@@ -341,6 +341,44 @@ class Source
     }
 
     /**
+     * @var \Localisation|null
+     *
+     * @ORM\OneToOne(targetEntity="Localisation", cascade={"persist"}, fetch="EAGER")
+     * @ORM\JoinColumn(name="localisation_decouverte_id", referencedColumnName="id", nullable=true)
+     */
+    private $lieuDecouverte;
+
+    public function getLieuDecouverte(): ?Localisation
+    {
+        return $this->lieuDecouverte;
+    }
+
+    public function setLieuDecouverte(?Localisation $lieuDecouverte): self
+    {
+        $this->lieuDecouverte = $lieuDecouverte;
+        return $this;
+    }
+
+    /**
+     * @var \Localisation|null
+     *
+     * @ORM\OneToOne(targetEntity="Localisation", cascade={"persist"}, fetch="EAGER")
+     * @ORM\JoinColumn(name="localisation_origine_id", referencedColumnName="id", nullable=true)
+     */
+    private $lieuOrigine;
+
+    public function getLieuOrigine(): ?Localisation
+    {
+        return $this->lieuOrigine;
+    }
+
+    public function setLieuOrigine(?Localisation $lieuOrigine): self
+    {
+        $this->lieuOrigine = $lieuOrigine;
+        return $this;
+    }
+
+    /**
      * Constructor
      */
     public function __construct()

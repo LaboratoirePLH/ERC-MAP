@@ -33,34 +33,23 @@
 <h3 class="form-section-title">
     {{ 'source.sections.informations_source'|trans }}
 </h3>
+{{ form_row(form.typeSource) }}
+{{ form_row(form.langues) }}
 {{ form_row(form.titrePrincipal) }}
 {{ form_row(form.auteurs) }}
-{{ form_row(form.langues) }}
-{{ form_row(form.typeSource) }}
-{{ form_row(form.materiau) }}
-{{ form_row(form.typeSupport) }}
 {{ form_row(form.citation) }}
 {{ form_row(form.titresCites) }}
+{{ form_row(form.materiau) }}
+{{ form_row(form.typeSupport) }}
 {{ form_row(form.urlTexte) }}
 {{ form_row(form.iconographie) }}
 {{ form_row(form.urlImage) }}
-{{ form_row(form.commentaireFr) }}
-{{ form_row(form.commentaireEn) }}
-<h3 class="form-section-title">
-    {{ 'source.sections.localisation'|trans }}
-</h3>
-{{ form_row(form.inSitu) }}
-<h3 class="form-section-title">
-    {{ 'source.sections.datation'|trans }}
-</h3>
-{{ form_errors(form.datation) }}
-{{ form_widget(form.datation) }}
+
 <h3 class="form-section-title">
     {{ 'source.sections.bibliographie'|trans }}
 </h3>
 {{ form_errors(form.sourceBiblios) }}
 {{ form_widget(form.sourceBiblios) }}
-
 <div class="form-group row">
     <div class="col-sm-10 offset-sm-2">
         <a href="#" id="add_sourcebiblio" class="btn btn-primary">
@@ -69,6 +58,32 @@
         </a>
     </div>
 </div>
+
+<h3 class="form-section-title">
+    {{ 'source.sections.datation'|trans }}
+</h3>
+{{ form_errors(form.datation) }}
+{{ form_widget(form.datation) }}
+
+<h3 class="form-section-title">
+    {{ 'source.sections.localisation'|trans }}
+</h3>
+{{ form_row(form.lieuDecouverte) }}
+{{ form_row(form.inSitu) }}
+{{ form_row(form.lieuOrigine) }}
+
+<h3 class="form-section-title">
+    {{ 'source.sections.commentaires'|trans }}
+</h3>
+{{ form_row(form.commentaireFr) }}
+{{ form_row(form.commentaireEn) }}
+
+<h3 class="form-section-title">
+    {{ 'source.sections.attestations'|trans }}
+</h3>
+<br>
+<br>
+<br>
 
 <hr />
 <div class="form-group row">

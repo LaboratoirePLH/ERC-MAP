@@ -17,6 +17,7 @@ use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 
@@ -93,12 +94,46 @@ class LocalisationType extends AbstractType
                 'label'      => 'localisation.fields.nom_site',
                 'required'   => false
             ])
-            // ->add('topographies')
-            // ->add('fonctions')
-            // ->add('reel')
-            // ->add('geom')
-            // ->add('commentaireFr')
-            // ->add('commentaireEn')
+            ->add('topographies', EntityType::class, [
+                'label'        => 'localisation.fields.topographie',
+                'required'     => false,
+                'multiple'     => true,
+                'expanded'     => false,
+                'class'        => QTopographie::class,
+                'choice_label' => 'nom'.ucfirst($locale),
+                'attr'         => [
+                    'class' => 'autocomplete',
+                    'data-placeholder' => $options['translations']['autocomplete.select_multiple']
+                ],
+                'query_builder' => function (EntityRepository $er) use ($locale) {
+                    return $er->createQueryBuilder('e')
+                        ->orderBy('e.nom'.ucfirst($locale), 'ASC');
+                }
+            ])
+            ->add('fonctions', EntityType::class, [
+                'label'        => 'localisation.fields.fonction',
+                'required'     => false,
+                'multiple'     => true,
+                'expanded'     => false,
+                'class'        => QFonction::class,
+                'choice_label' => 'nom'.ucfirst($locale),
+                'attr'         => [
+                    'class' => 'autocomplete',
+                    'data-placeholder' => $options['translations']['autocomplete.select_multiple']
+                ],
+                'query_builder' => function (EntityRepository $er) use ($locale) {
+                    return $er->createQueryBuilder('e')
+                        ->orderBy('e.nom'.ucfirst($locale), 'ASC');
+                }
+            ])
+            ->add('commentaireFr', TextareaType::class, [
+                'label'    => 'generic.fields.commentaire_fr',
+                'required' => false
+            ])
+            ->add('commentaireEn', TextareaType::class, [
+                'label'    => 'generic.fields.commentaire_en',
+                'required' => false
+            ])
         ;
     }
 

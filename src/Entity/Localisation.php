@@ -11,6 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="localisation")
  * @ORM\Entity
+ * @ORM\HasLifecycleCallbacks()
  */
 class Localisation
 {
@@ -333,5 +334,16 @@ class Localisation
         }
         return $this;
     }
+
+    /**
+     * @ORM\PrePersist
+     * @ORM\PreUpdate
+     */
+    public function updateGeometry(){
+        if(($lon = $this->getLongitude()) !== null && ($lat = $this->getLatitude()) !== null){
+            $this->setGeom("SRID=4326;POINT({$lon} {$lat})");
+        }
+    }
+
 
 }

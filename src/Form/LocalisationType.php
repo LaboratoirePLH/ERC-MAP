@@ -2,18 +2,21 @@
 
 namespace App\Form;
 
+use App\Entity\Localisation;
 use App\Entity\SousRegion;
 use App\Entity\EntitePolitique;
 use App\Entity\QTopographie;
 use App\Entity\QFonction;
 
-use App\Entity\Localisation;
+use App\Form\Type\PleiadesType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Doctrine\ORM\EntityRepository;
 
-
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 
@@ -56,14 +59,42 @@ class LocalisationType extends AbstractType
                         ->orderBy('e.nom'.ucfirst($locale), 'ASC');
                 }
             ])
+            ->add('pleiadesVille', PleiadesType::class, [
+                'label_attr'   => ['id' => 'pleiades_ville_id'],
+                'label'        => 'localisation.fields.pleiades_ville',
+                'search_label' => 'localisation.search_pleiades',
+                'clear_label'  => 'generic.clear',
+                'required'     => false
+            ])
+            ->add('nomVille', TextType::class, [
+                'label_attr' => ['id' => 'pleiades_ville_nom', 'class' => 'pleiades_field'],
+                'label'      => 'localisation.fields.nom_ville',
+                'required'   => false
+            ])
+            ->add('latitude', NumberType::class, [
+                'label_attr' => ['id' => 'pleiades_ville_latitude', 'class' => 'pleiades_field'],
+                'label' => 'localisation.fields.latitude',
+                'scale' => 7,
+            ])
+            ->add('longitude', NumberType::class, [
+                'label_attr' => ['id' => 'pleiades_ville_longitude', 'class' => 'pleiades_field'],
+                'label' => 'localisation.fields.longitude',
+                'scale' => 7,
+            ])
+            ->add('pleiadesSite', PleiadesType::class, [
+                'label_attr'   => ['id' => 'pleiades_site_id'],
+                'label'        => 'localisation.fields.pleiades_site',
+                'search_label' => 'localisation.search_pleiades',
+                'clear_label'  => 'generic.clear',
+                'required'     => false
+            ])
+            ->add('nomSite', TextType::class, [
+                'label_attr' => ['id' => 'pleiades_site_nom', 'class' => 'pleiades_field'],
+                'label'      => 'localisation.fields.nom_site',
+                'required'   => false
+            ])
             // ->add('topographies')
             // ->add('fonctions')
-            // ->add('pleiadesVille')
-            // ->add('nomVille')
-            // ->add('latitude')
-            // ->add('longitude')
-            // ->add('pleiadesSite')
-            // ->add('nomSite')
             // ->add('reel')
             // ->add('geom')
             // ->add('commentaireFr')

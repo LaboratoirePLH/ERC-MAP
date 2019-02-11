@@ -13,3 +13,13 @@
     </div>
 </div>
 {% endblock selectorcreate_widget %}
+
+{% block pleiades_widget %}
+<div class="input-group">
+    {{- form_widget(form) -}}
+    <div class="input-group-append">
+        <button class="btn btn-sm btn-outline-primary pleiades_search">{{ search_label|trans }}</button>
+        <button class="btn btn-sm btn-outline-danger pleiades_clear">{{ clear_label|trans }}</button>
+    </div>
+</div>
+{% endblock pleiades_widget %}

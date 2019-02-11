@@ -88,7 +88,7 @@
 <hr />
 <div class="form-group row">
     <div class="col-sm-12 text-center">
-        {{ form_widget(form.save) }}
+        <button class="btn btn-primary">{{ 'generic.save'|trans }}
     </div>
 </div>
 {{ form_rest(form) }}
@@ -99,13 +99,15 @@
 {{ parent() }}
 <script type="text/javascript">
     $(document).ready(function () {
-        // Gestion de l'ajout d'une référence supplémentaire
+        // Gestion du champ collection
         $('div#source_sourceBiblios').collectionField({
             blockTitle: '{{ "source.fields.source_biblio_n"|trans }}',
             deleteLink: '{{ "generic.delete"|trans }}'
         });
         $('div#source_sourceBiblios').on('collectionField.add', function (e, newEl) {
+            // Gestion du champ "selectorcreate"
             $(newEl).find('.selectorcreate').selectOrCreate();
+            // Gestion du champ "main source"
             $('label.mainsource_field').siblings('input[type=checkbox]').off('change');
             $('label.mainsource_field').siblings('input[type=checkbox]').on('change', function (e) {
                 if ($(this).is(':checked')) {
@@ -116,7 +118,9 @@
             });
         });
 
+        // Gestion du champ "selectorcreate"
         $('.selectorcreate').selectOrCreate();
+        // Gestion des champs select avec filtres
         $('select.autocomplete').chosen({
             disable_search_threshold: 10,
             no_results_text: "{{ 'autocomplete.no_matches'|trans }}",
@@ -125,7 +129,57 @@
             display_selected_options: false,
             include_group_label_in_selected: true
         });
+        // Gestion des champs dépendants
         $.fn.dependentFields(['quote', 'iconography', 'insitu']);
+
+        //Gestion des recherches Pleiades
+        $('.pleiades_search').on('click', function (e) {
+            e.preventDefault();
+            var btn = $(this);
+            btn.prepend($('<i class="fas fa-spinner fa-pulse mr-2"></i>'));
+            var id = $(this).parent().siblings('input[type=text]').val();
+            if (id !== "") {
+                var rootForm = $(this).parents('.localisation_form'),
+                    labelId = $(this).parent().parent().parent().siblings('label').attr('id'),
+                    labelSeg = labelId.split('_'),
+                    fields = {};
+
+                rootForm.find('.pleiades_field').each(function () {
+                    var seg = $(this).attr('id').split('_');
+                    if (seg[0] == labelSeg[0] && seg[1] == labelSeg[1]) {
+                        fields[seg[2]] = $(this).siblings().find('input');
+                    }
+                });
+                $.getJSON("http://pleiades.stoa.org/places/" + id + "/json", function (data) {
+                    if (fields.hasOwnProperty('nom'))
+                        fields.nom.attr('disabled', true).val(data.title);
+                    if (fields.hasOwnProperty('longitude'))
+                        fields.longitude.attr('disabled', true).val(data.reprPoint[0]);
+                    if (fields.hasOwnProperty('latitude'))
+                        fields.latitude.attr('disabled', true).val(data.reprPoint[1]);
+
+                    btn.find('i').remove();
+                })
+            }
+
+            return false;
+        });
+        $('.pleiades_clear').on('click', function (e) {
+            e.preventDefault();
+            $(this).parent().siblings('input[type=text]').val('');
+            var rootForm = $(this).parents('.localisation_form'),
+                labelId = $(this).parent().parent().parent().siblings('label').attr('id'),
+                labelSeg = labelId.split('_'),
+                fields = {};
+
+            rootForm.find('.pleiades_field').each(function () {
+                var seg = $(this).attr('id').split('_');
+                if (seg[0] == labelSeg[0] && seg[1] == labelSeg[1]) {
+                    $(this).siblings().find('input').attr('disabled', false).val('');
+                }
+            });
+            return false;
+        });
     });
 </script>
 {% endblock %}

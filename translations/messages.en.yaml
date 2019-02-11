@@ -35,6 +35,7 @@ generic:
     edit: "Edit"
     delete: "Delete"
     add: "Add"
+    clear: "Clear"
     fields:
         id: "ID"
         date_creation: "Creation"
@@ -135,9 +136,18 @@ datation:
         date_anc: "date_anc (???)"
 
 localisation:
+    search_pleiades: "Search on Pleiades"
     fields:
         region: "Region"
         entite_politique: "Political Entity"
+        pleiades_ville: "Pleiades Number (City)"
+        nom_ville : "Name (City)"
+        latitude: "Latitude"
+        longitude: "Longitude"
+        pleiades_site: "Pleiades Number (Site)"
+        nom_site : "Name (Site)"
+        topographie : "Topography"
+        fonction: "Function"
 
 
 modals:

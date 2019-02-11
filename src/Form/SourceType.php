@@ -202,11 +202,13 @@ class SourceType extends AbstractType
             ->add('datation', DatationType::class)
             ->add('lieuDecouverte', LocalisationType::class, [
                 'label'        => 'source.fields.lieu_decouverte',
+                'attr'         => ['class' => 'localisation_form'],
                 'locale'       => $options['locale'],
                 'translations' => $options['translations'],
             ])
             ->add('lieuOrigine', LocalisationType::class, [
-                'label' => 'source.fields.lieu_origine',
+                'label'      => 'source.fields.lieu_origine',
+                'attr'       => ['class' => 'localisation_form'],
                 'label_attr' => [
                     'class' => 'dependent_field_insitu dependent_field_inverse'
                 ],
@@ -220,9 +222,6 @@ class SourceType extends AbstractType
                 'allow_add'     => true,
                 'allow_delete'  => true,
                 'required'      => false,
-            ])
-            ->add('save',      SubmitType::class, [
-                'label' => 'generic.save'
             ])
         ;
     }

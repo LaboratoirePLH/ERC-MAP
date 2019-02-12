@@ -86,8 +86,9 @@ source:
         fiability: "Reliability score"
         url_image: "Image URL"
         url_texte: "Text URL"
-        citation: "Quote"
-        in_situ: "In Situ"
+        citation: "Quote ?"
+        in_situ: "In Situ ?"
+        est_datee: "Is Dated ?"
         lieu_origine: "Original Location"
         lieu_decouverte: "Discovery Location"
         iconographie: "Iconography"
@@ -107,7 +108,7 @@ source:
 
 source_biblio:
     fields:
-        edition_principale: "Main Source"
+        edition_principale: "Main Edition"
         reference_source: "Source Reference"
         biblio_selection: "Select Reference"
         biblio_creation: "Create Reference"

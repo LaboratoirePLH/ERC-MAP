@@ -112,12 +112,17 @@ class SourceController extends AbstractController
             // Sauvegarde
             $em = $this->getDoctrine()->getManager();
             foreach($source->getSourceBiblios() as $sb){
-                if(!$em->contains($sb->getBiblio())){
-                    $em->persist($sb->getBiblio());
+                if($sb->getBiblio() !== null){
+                    if(!$em->contains($sb->getBiblio())){
+                        $em->persist($sb->getBiblio());
+                    }
+                    $sb->setSource($source);
+                    if(!$em->contains($sb)){
+                        $em->persist($sb);
+                    }
                 }
-                $sb->setSource($source);
-                if(!$em->contains($sb)){
-                    $em->persist($sb);
+                else {
+                    $source->removeSourceBiblio($sb);
                 }
             }
             if($source->getInSitu() === true){

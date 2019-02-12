@@ -53,9 +53,13 @@ class SourceController extends AbstractController
             $em = $this->getDoctrine()->getManager();
             $em->persist($source);
             foreach($source->getSourceBiblios() as $sb){
-                $em->persist($sb->getBiblio());
-                $sb->setSource($source);
-                $em->persist($sb);
+                if($sb->getBiblio() !== null){
+                    $em->persist($sb->getBiblio());
+                    $sb->setSource($source);
+                    $em->persist($sb);
+                } else {
+                    $source->removeSourceBiblio($sb);
+                }
             }
             $em->flush();
 

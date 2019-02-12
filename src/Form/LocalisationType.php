@@ -74,13 +74,15 @@ class LocalisationType extends AbstractType
             ])
             ->add('latitude', NumberType::class, [
                 'label_attr' => ['id' => 'pleiades_ville_latitude', 'class' => 'pleiades_field'],
-                'label' => 'localisation.fields.latitude',
-                'scale' => 7,
+                'label'      => 'localisation.fields.latitude',
+                'scale'      => 7,
+                'required'   => false,
             ])
             ->add('longitude', NumberType::class, [
                 'label_attr' => ['id' => 'pleiades_ville_longitude', 'class' => 'pleiades_field'],
-                'label' => 'localisation.fields.longitude',
-                'scale' => 7,
+                'label'      => 'localisation.fields.longitude',
+                'scale'      => 7,
+                'required'   => false,
             ])
             ->add('pleiadesSite', PleiadesType::class, [
                 'label_attr'   => ['id' => 'pleiades_site_id'],

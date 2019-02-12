@@ -27,14 +27,14 @@ class DatationType extends AbstractType
                 'label'      => 'datation.fields.post_quem_cit',
                 'required'   => false,
                 'label_attr' => [
-                    'class' => 'quote_dependent'
+                    'class' => 'dependent_field_quote'
                 ]
             ])
             ->add('anteQuemCitation', IntegerType::class, [
                 'label'      => 'datation.fields.ante_quem_cit',
                 'required'   => false,
                 'label_attr' => [
-                    'class' => 'quote_dependent'
+                    'class' => 'dependent_field_quote'
                 ]
             ])
             ->add('dateAncienne', IntegerType::class, [

@@ -160,6 +160,24 @@ class Source
     }
 
     /**
+     * @var bool|null
+     *
+     * @ORM\Column(name="est_datee", type="boolean", nullable=true)
+     */
+    private $estDatee;
+
+    public function getEstDatee(): ?bool
+    {
+        return $this->estDatee;
+    }
+
+    public function setEstDatee(?bool $estDatee): self
+    {
+        $this->estDatee = $estDatee;
+        return $this;
+    }
+
+    /**
      * @var int|null
      *
      * @ORM\Column(name="fiabilite_localisation", type="smallint", nullable=true)

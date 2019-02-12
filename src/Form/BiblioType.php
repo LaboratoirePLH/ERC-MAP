@@ -39,6 +39,7 @@ class BiblioType extends AbstractType
                 'required' => false
             ])
             ->add('corpus', SelectOrCreateType::class, [
+                'label'                   => 'biblio.fields.corpus',
                 'locale'                  => $options['locale'],
                 'translations'            => $options['translations'],
                 'field_name'              => 'corpus',

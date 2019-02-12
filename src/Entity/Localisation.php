@@ -95,7 +95,7 @@ class Localisation
     /**
      * @var \grandeRegion
      *
-     * @ORM\ManyToOne(targetEntity="grandeRegion")
+     * @ORM\ManyToOne(targetEntity="GrandeRegion")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="grande_region_id", referencedColumnName="id")
      * })
@@ -295,7 +295,7 @@ class Localisation
         return $this->topographies;
     }
 
-    public function addTopographie(QTopographie $topographie): self
+    public function addTopography(QTopographie $topographie): self
     {
         if (!$this->topographies->contains($topographie)) {
             $this->topographies[] = $topographie;
@@ -303,7 +303,7 @@ class Localisation
         return $this;
     }
 
-    public function removeTopographie(QTopographie $topographie): self
+    public function removeTopography(QTopographie $topographie): self
     {
         if ($this->topographies->contains($topographie)) {
             $this->topographies->removeElement($topographie);

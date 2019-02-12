@@ -62,8 +62,13 @@
 <h3 class="form-section-title">
     {{ 'source.sections.datation'|trans }}
 </h3>
-{{ form_errors(form.datation) }}
-{{ form_widget(form.datation) }}
+{{ form_row(form.estDatee) }}
+<div class="row">
+    <div class="col-sm-12 dependent_field_estdatee">
+        {{ form_errors(form.datation) }}
+        {{ form_widget(form.datation) }}
+    </div>
+</div>
 
 <h3 class="form-section-title">
     {{ 'source.sections.localisation'|trans }}
@@ -130,7 +135,7 @@
             include_group_label_in_selected: true
         });
         // Gestion des champs dépendants
-        $.fn.dependentFields(['quote', 'iconography', 'insitu']);
+        $.fn.dependentFields(['quote', 'iconography', 'insitu', 'estdatee']);
 
         //Gestion des recherches Pleiades
         $('.pleiades_search').on('click', function (e) {

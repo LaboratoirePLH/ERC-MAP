@@ -59,6 +59,9 @@ class SourceController extends AbstractController
             if($source->getInSitu() === true){
                 $source->setLieuOrigine(null);
             }
+            if($source->getEstDatee() !== true){
+                $source->setDatation(null);
+            }
             $em->flush();
 
             // Message de confirmation
@@ -127,6 +130,9 @@ class SourceController extends AbstractController
             }
             if($source->getInSitu() === true){
                 $source->setLieuOrigine(null);
+            }
+            if($source->getEstDatee() !== true){
+                $source->setDatation(null);
             }
             $em->flush();
 

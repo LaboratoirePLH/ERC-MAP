@@ -76,6 +76,13 @@ class SourceType extends AbstractType
                 ],
                 'required' => false
             ])
+            ->add('estDatee', CheckboxType::class, [
+                'label'    => 'source.fields.est_datee',
+                'label_attr' => [
+                    'class' => 'dependent_field_estdatee_main'
+                ],
+                'required' => false
+            ])
             ->add('commentaireFr', TextareaType::class, [
                 'label'    => 'generic.fields.commentaire_fr',
                 'required' => false

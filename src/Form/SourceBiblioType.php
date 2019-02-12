@@ -29,7 +29,7 @@ class SourceBiblioType extends AbstractType
                 'required'   => false
             ])
             ->add('biblio', SelectOrCreateType::class, [
-                'label'                   => 'sourcebiblio.fields.biblio',
+                'label'                   => 'source.fields.source_biblio',
                 'locale'                  => $options['locale'],
                 'translations'            => $options['translations'],
                 'field_name'              => 'biblio',

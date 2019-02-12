@@ -108,7 +108,7 @@ source:
 source_biblio:
     fields:
         edition_principale: "Main Source"
-        reference_source: "bib_ref_source (???)"
+        reference_source: "Source Reference"
         biblio_selection: "Select Reference"
         biblio_creation: "Create Reference"
 
@@ -133,7 +133,7 @@ datation:
         ante_quem: "Ante Quem"
         post_quem_cit: "Post Quem (Quote)"
         ante_quem_cit: "Ante Quem (Quote)"
-        date_anc: "date_anc (???)"
+        date_anc: "Ancient Date"
 
 localisation:
     search_pleiades: "Search on Pleiades"

@@ -44,6 +44,9 @@ class SourceController extends AbstractController
         ]);
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()){
+            $user = $this->get('security.token_storage')->getToken()->getUser();
+            $source->setCreateur($user);
+            $source->setDernierEditeur($user);
             // Sauvegarde
             $em = $this->getDoctrine()->getManager();
             $em->persist($source);
@@ -112,6 +115,8 @@ class SourceController extends AbstractController
         ]);
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()){
+            $user = $this->get('security.token_storage')->getToken()->getUser();
+            $source->setDernierEditeur($user);
             // Sauvegarde
             $em = $this->getDoctrine()->getManager();
             foreach($source->getSourceBiblios() as $sb){

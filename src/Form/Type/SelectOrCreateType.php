@@ -110,6 +110,9 @@ class SelectOrCreateType extends AbstractType implements DataMapperInterface
         else if ($decision === "select"){
             $data = $forms['selection']->getData();
         }
+        if(empty($data)){
+            $data = null;
+        }
     }
 
     public function mapDataToForms($data, $forms)
@@ -119,19 +122,12 @@ class SelectOrCreateType extends AbstractType implements DataMapperInterface
             return;
         }
 
-        // invalid data type
-        if (!$data instanceof $this->entityClass) {
-            throw new UnexpectedTypeException($data, $this->entityClass);
-        }
-
-        $emptyRecord = new $this->entityClass;
-
         /** @var FormInterface[] $forms */
         $forms = iterator_to_array($forms);
 
         // initialize form field values
         $forms['decision']->setData("select");
         $forms['selection']->setData($data);
-        $forms['creation']->setData($emptyRecord);
+        $forms['creation']->setData(null);
     }
 }

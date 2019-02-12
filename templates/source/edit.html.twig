@@ -140,31 +140,52 @@
         //Gestion des recherches Pleiades
         $('.pleiades_search').on('click', function (e) {
             e.preventDefault();
-            var btn = $(this);
-            btn.prepend($('<i class="fas fa-spinner fa-pulse mr-2"></i>'));
-            var id = $(this).parent().siblings('input[type=text]').val();
-            if (id !== "") {
+            var btn = $(this),
+                errorEl = $(this).parents('.input-group').siblings('.pleiades-error'),
+                input = $(this).parent().siblings('input[type=number]');
+
+
+            if (input.val() !== "") {
+                // Display loader
+                btn.prepend($('<i class="fas fa-spinner fa-pulse mr-2"></i>'));
+                // Empty error message
+                errorEl.text('');
+
+
                 var rootForm = $(this).parents('.localisation_form'),
                     labelId = $(this).parent().parent().parent().siblings('label').attr('id'),
                     labelSeg = labelId.split('_'),
                     fields = {};
 
+                // Get the fields to fill if the request is successful
                 rootForm.find('.pleiades_field').each(function () {
                     var seg = $(this).attr('id').split('_');
                     if (seg[0] == labelSeg[0] && seg[1] == labelSeg[1]) {
                         fields[seg[2]] = $(this).siblings().find('input');
                     }
                 });
-                $.getJSON("http://pleiades.stoa.org/places/" + id + "/json", function (data) {
-                    if (fields.hasOwnProperty('nom'))
-                        fields.nom.attr('disabled', true).val(data.title);
-                    if (fields.hasOwnProperty('longitude'))
-                        fields.longitude.attr('disabled', true).val(data.reprPoint[0]);
-                    if (fields.hasOwnProperty('latitude'))
-                        fields.latitude.attr('disabled', true).val(data.reprPoint[1]);
 
-                    btn.find('i').remove();
-                })
+                $.getJSON("http://pleiades.stoa.org/places/" + input.val() + "/json")
+                    .done(function (data) {
+                        if (fields.hasOwnProperty('nom'))
+                            fields.nom.attr('disabled', true).val(data.title);
+                        if (fields.hasOwnProperty('longitude'))
+                            fields.longitude.attr('disabled', true).val(data.reprPoint[0]);
+                        if (fields.hasOwnProperty('latitude'))
+                            fields.latitude.attr('disabled', true).val(data.reprPoint[1]);
+                        input.attr('disabled', true);
+                    })
+                    .fail(function (jqXHR, textStatus, errorThrown) {
+                        var error = "{{'generic.messages.error_unknown'|trans}}";
+                        if (errorThrown === "Not Found") {
+                            error = "{{'generic.messages.error_not_found'|trans}}";
+                        }
+                        errorEl.text(error);
+                        input.val('');
+                    })
+                    .always(function () {
+                        btn.find('i').remove();
+                    });
             }
 
             return false;
@@ -183,6 +204,7 @@
                     $(this).siblings().find('input').attr('disabled', false).val('');
                 }
             });
+            $(this).parent().siblings('input[type=number]').val('').attr('disabled', false);
             return false;
         });
     });

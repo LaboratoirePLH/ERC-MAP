@@ -53,6 +53,8 @@ generic:
     messages:
         deletion_failed_csrf: "Deletion failed, invalid CSRF Token"
         deletion_failed_missing: "Deletion failed, record not found"
+        error_not_found: "Error : Not found"
+        error_unknown: "Unknown error"
 
 source:
     list: "Sources List"

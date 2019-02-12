@@ -23,7 +23,8 @@ class PleiadesType extends IntegerType
     {
         $view->vars = array_replace($view->vars, [
             'search_label' => $options['search_label'],
-            'clear_label' => $options['clear_label']
+            'clear_label' => $options['clear_label'],
+            'type' => 'number'
         ]);
     }
 

@@ -324,7 +324,7 @@ class Source
     /**
      * @var \Datation
      *
-     * @ORM\OneToOne(targetEntity="Datation", cascade={"persist"}, fetch="EAGER")
+     * @ORM\OneToOne(targetEntity="Datation", cascade={"persist"}, fetch="EAGER", orphanRemoval=true)
      * @ORM\JoinColumn(name="datation_id", referencedColumnName="id", nullable=true)
      */
     private $datation;
@@ -343,7 +343,7 @@ class Source
     /**
      * @var \Localisation|null
      *
-     * @ORM\OneToOne(targetEntity="Localisation", cascade={"persist"}, fetch="EAGER")
+     * @ORM\OneToOne(targetEntity="Localisation", cascade={"persist"}, fetch="EAGER", orphanRemoval=true)
      * @ORM\JoinColumn(name="localisation_decouverte_id", referencedColumnName="id", nullable=true)
      */
     private $lieuDecouverte;
@@ -362,7 +362,7 @@ class Source
     /**
      * @var \Localisation|null
      *
-     * @ORM\OneToOne(targetEntity="Localisation", cascade={"persist"}, fetch="EAGER")
+     * @ORM\OneToOne(targetEntity="Localisation", cascade={"persist"}, fetch="EAGER", orphanRemoval=true)
      * @ORM\JoinColumn(name="localisation_origine_id", referencedColumnName="id", nullable=true)
      */
     private $lieuOrigine;

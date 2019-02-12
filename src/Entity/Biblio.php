@@ -54,7 +54,7 @@ class Biblio
     /**
      * @var \Corpus
      *
-     * @ORM\ManyToOne(targetEntity="Corpus", fetch="EAGER")
+     * @ORM\ManyToOne(targetEntity="Corpus", cascade={"persist"}, fetch="EAGER")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="corpus_id", referencedColumnName="id")
      * })

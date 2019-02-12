@@ -44,11 +44,6 @@ class SourceController extends AbstractController
         ]);
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()){
-            // Association de l'utilisateur
-            $user = $this->get('security.token_storage')->getToken()->getUser();
-            $source->setCreateur($user);
-            $source->setDernierEditeur($user);
-
             // Sauvegarde
             $em = $this->getDoctrine()->getManager();
             $em->persist($source);
@@ -60,6 +55,9 @@ class SourceController extends AbstractController
                 } else {
                     $source->removeSourceBiblio($sb);
                 }
+            }
+            if($source->getInSitu() === true){
+                $source->setLieuOrigine(null);
             }
             $em->flush();
 
@@ -100,7 +98,7 @@ class SourceController extends AbstractController
     public function edit($id, Request $request, TranslatorInterface $translator){
         $source = $this->getDoctrine()
                        ->getRepository(Source::class)
-                       ->getRecord($id);
+                       ->find($id);
 
         $form   = $this->get('form.factory')->create(SourceType::class, $source, [
             'locale'       => $request->getLocale(),
@@ -111,11 +109,6 @@ class SourceController extends AbstractController
         ]);
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()){
-            // Association de l'utilisateur
-            $user = $this->get('security.token_storage')->getToken()->getUser();
-            $source->setCreateur($user);
-            $source->setDernierEditeur($user);
-
             // Sauvegarde
             $em = $this->getDoctrine()->getManager();
             foreach($source->getSourceBiblios() as $sb){
@@ -126,6 +119,9 @@ class SourceController extends AbstractController
                 if(!$em->contains($sb)){
                     $em->persist($sb);
                 }
+            }
+            if($source->getInSitu() === true){
+                $source->setLieuOrigine(null);
             }
             $em->flush();
 

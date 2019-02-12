@@ -45,6 +45,7 @@ class SelectOrCreateType extends AbstractType implements DataMapperInterface
                 ],
                 'mapped'   => false,
                 'expanded' => true,
+                'required' => false,
                 'choices'  => [
                     'generic.choices.new' => 'create',
                     'generic.choices.existing' => 'select',
@@ -107,6 +108,9 @@ class SelectOrCreateType extends AbstractType implements DataMapperInterface
         }
         else if ($decision === "select"){
             $data = $forms['selection']->getData();
+        }
+        else {
+            $data = null;
         }
     }
 

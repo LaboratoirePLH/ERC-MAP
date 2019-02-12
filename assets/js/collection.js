@@ -33,21 +33,10 @@
         var addEntry = function (container) {
             var index = parseInt(container.attr('data-index'), 10),
                 template = container.attr('data-prototype')
-                .replace(/__name__label__/g, settings.blockTitle + (index + 1))
-                .replace(/__name__/g, index);
+                    .replace(/__name__label__/g, settings.blockTitle + (index + 1))
+                    .replace(/__name__/g, index);
 
             var prototype = $(template);
-
-            var label = prototype.find('.remove_this_label');
-            label.siblings('.col-sm-10').removeClass('col-sm-10').addClass('col-sm-12');
-            label.hide();
-
-            prototype.children('legend')
-                .removeClass('col-sm-2 col-form-label')
-                .addClass('col-sm-12 text-center h4');
-            prototype.children('.col-sm-10')
-                .removeClass('col-sm-10')
-                .addClass('col-sm-12');
 
             setupLinks(prototype);
             container.append(prototype);
@@ -71,7 +60,8 @@
             if (index == 0) {
                 addEntry(container);
             } else {
-                container.children('.form-group').each(function () {
+                container.children('.form-group').each(function (index) {
+                    $(this).children('legend').text(settings.blockTitle + (index + 1));
                     setupLinks($(this));
                 });
             }

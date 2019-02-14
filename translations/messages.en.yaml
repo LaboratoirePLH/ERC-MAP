@@ -11,7 +11,7 @@ nav:
     admin: "Administrator Section"
     home: "Home"
     source_list: "Sources"
-    attestation: "Proclamations"
+    attestation: "Testimonies"
     element: "Elements"
     bibliography: "Bibliography"
     contact: "Contact"
@@ -169,4 +169,4 @@ autocomplete:
     no_matches: "No matches found for : "
 
 misc:
-    copyright: "ERC-MAP - Laboratoire PLH - Université de Toulouse Jean Jaurès"
+    copyright: "ERC-MAP - Laboratoire PLH - Université Toulouse - Jean Jaurès"

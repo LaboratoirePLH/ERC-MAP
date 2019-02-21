@@ -33,34 +33,37 @@
     </div>
     <nav id="navigation" class="container-fluid">
         {# <div class="container"> #}
-            <div class="col-12">
-                <ul class="nav nav-fill">
-                    <li class="nav-item {{ app.request.uri == url('home') ? 'active' : '' }}">
-                        <a class="nav-link" href="{{ url('home') }}">
-                            <i class="fas fa-place-of-worship"></i>
-                            {{ 'nav.home'|trans }}
-                        </a>
-                    </li>
-                    <li class="nav-item {{ controller_name == 'SourceController' ? 'active' : '' }}">
-                        <a class="nav-link" href="{{ url('source_list') }}">{{ 'nav.source_list'|trans }}</a>
-                    </li>
-                    <li class="nav-item {{ controller_name == 'AttestationController' ? 'active' : '' }}">
-                        <a class="nav-link" href="{{ url('attestation') }}">{{ 'nav.attestation'|trans }}</a>
-                    </li>
-                    <li class="nav-item {{ controller_name == 'ElementController' ? 'active' : '' }}">
-                        <a class="nav-link" href="{{ url('element') }}">{{ 'nav.element'|trans }}</a>
-                    </li>
-                    <li class="nav-item {{ controller_name == 'BibliographyController' ? 'active' : '' }}">
-                        <a class="nav-link" href="{{ url('bibliography') }}">{{ 'nav.bibliography'|trans }}</a>
-                    </li>
-                    <li class="nav-item {{ app.request.uri == url('contact') ? 'active' : '' }}">
-                        <a class="nav-link" href="{{ url('contact') }}">
-                            <i class="fas fa-envelope"></i>
-                            {{ 'nav.contact'|trans }}
-                        </a>
-                    </li>
-                </ul>
-            </div>
-            {# </div> #}
+        <div class="col-12">
+            <ul class="nav nav-fill">
+                <li class="nav-item {{ app.request.uri == url('home') ? 'active' : '' }}">
+                    <a class="nav-link" href="{{ url('home') }}">
+                        <i class="fas fa-place-of-worship"></i>
+                        {{ 'nav.home'|trans }}
+                    </a>
+                </li>
+                <li class="nav-item {{ controller_name == 'SourceController' ? 'active' : '' }}">
+                    <a class="nav-link" href="{{ url('source_list') }}">{{ 'nav.source_list'|trans }}</a>
+                </li>
+                <li class="nav-item {{ controller_name == 'AttestationController' ? 'active' : '' }}">
+                    <a class="nav-link" href="{{ url('attestation') }}">{{ 'nav.attestation'|trans }}</a>
+                </li>
+                <li class="nav-item {{ controller_name == 'ElementController' ? 'active' : '' }}">
+                    <a class="nav-link" href="{{ url('element') }}">{{ 'nav.element'|trans }}</a>
+                </li>
+                <li class="nav-item {{ controller_name == 'BibliographyController' ? 'active' : '' }}">
+                    <a class="nav-link" href="{{ url('bibliography') }}">{{ 'nav.bibliography'|trans }}</a>
+                </li>
+                <li class="nav-item {{ controller_name == 'RequeteController' ? 'active' : '' }}">
+                    <a class="nav-link" href="#">{{ 'nav.requete'|trans }}</a>
+                </li>
+                <li class="nav-item {{ app.request.uri == url('contact') ? 'active' : '' }}">
+                    <a class="nav-link" href="{{ url('contact') }}">
+                        <i class="fas fa-envelope"></i>
+                        {{ 'nav.contact'|trans }}
+                    </a>
+                </li>
+            </ul>
+        </div>
+        {# </div> #}
     </nav>
 </header>

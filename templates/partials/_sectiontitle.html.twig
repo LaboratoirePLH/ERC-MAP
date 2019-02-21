@@ -1,0 +1,10 @@
+{% set expanded = expanded|default(false) %}
+<h3 class="form-section-title">
+    <button class="btn btn-sm btn-outline-secondary expand-button float-left" title="{{ 'fold_unfold'|trans }}"
+        type="button" data-toggle="collapse" data-target="{{ collapseTarget }}"
+        aria-expanded="{{ expanded ? 'true' : 'false'}}"
+        onclick="$(this).children('i.fas').toggleClass('fa-rotate-90');">
+        <i class="fas fa-caret-right fa-fw {% if expanded %} fa-rotate-90 {% endif %}"></i>
+    </button>
+    {{ title|trans }}
+</h3>

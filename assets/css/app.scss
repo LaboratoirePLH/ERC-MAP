@@ -4,6 +4,7 @@
 @import "./component-chosen.css";
 
 $map-yellow: #d8be00;
+$map-grey: #434343;
 
 body {
     background-color: lightgray;
@@ -37,7 +38,7 @@ body {
         }
 
         nav#navigation {
-            background-color: #434343;
+            background-color: $map-grey;
 
             .nav-item {
                 border: 1px solid #dbdbdb;

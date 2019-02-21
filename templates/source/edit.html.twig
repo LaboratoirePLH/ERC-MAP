@@ -32,65 +32,101 @@
     </div>
 </div>
 <hr />
-<h3 class="form-section-title">
-    {{ 'source.sections.informations_source'|trans }}
-</h3>
-{{ form_row(form.typeSource) }}
-{{ form_row(form.langues) }}
-{{ form_row(form.titrePrincipal) }}
-{{ form_row(form.auteurs) }}
-{{ form_row(form.citation) }}
-{{ form_row(form.titresCites) }}
-{{ form_row(form.materiau) }}
-{{ form_row(form.typeSupport) }}
-{{ form_row(form.urlTexte) }}
-{{ form_row(form.iconographie) }}
-{{ form_row(form.urlImage) }}
-
-<h3 class="form-section-title">
-    {{ 'source.sections.bibliographie'|trans }}
-</h3>
-{{ form_errors(form.sourceBiblios) }}
-{{ form_widget(form.sourceBiblios) }}
-<div class="form-group row">
-    <div class="col-sm-10 offset-sm-2">
-        <a href="#" id="add_sourcebiblio" class="btn btn-primary">
-            <i class="fa fa-plus"></i>&nbsp;
-            {{ 'source.add_sourcebiblio'|trans }}
-        </a>
+<section>
+    {% include 'partials/_sectiontitle.html.twig' with {
+        'title' : 'source.sections.informations_source',
+        'collapseTarget' : '#section-infos',
+        'expanded' : true
+    } only %}
+    <div class="collapse show" id="section-infos">
+        {{ form_row(form.typeSource) }}
+        {{ form_row(form.langues) }}
+        {{ form_row(form.titrePrincipal) }}
+        {{ form_row(form.auteurs) }}
+        {{ form_row(form.citation) }}
+        {{ form_row(form.titresCites) }}
+        {{ form_row(form.materiau) }}
+        {{ form_row(form.typeSupport) }}
+        {{ form_row(form.urlTexte) }}
+        {{ form_row(form.iconographie) }}
+        {{ form_row(form.urlImage) }}
     </div>
-</div>
+</section>
 
-<h3 class="form-section-title">
-    {{ 'source.sections.datation'|trans }}
-</h3>
-{{ form_row(form.estDatee) }}
-<div class="row">
-    <div class="col-sm-12 dependent_field_estdatee">
-        {{ form_errors(form.datation) }}
-        {{ form_widget(form.datation) }}
+<section>
+    {% include 'partials/_sectiontitle.html.twig' with {
+        'title' : 'source.sections.bibliographie',
+        'collapseTarget' : '#section-bibliographie'
+    } only %}
+    <div class="collapse" id="section-bibliographie">
+        {{ form_errors(form.sourceBiblios) }}
+        {{ form_widget(form.sourceBiblios) }}
+        <div class="form-group row">
+            <div class="col-sm-10 offset-sm-2">
+                <a href="#" id="add_sourcebiblio" class="btn btn-primary">
+                    <i class="fa fa-plus"></i>&nbsp;
+                    {{ 'source.add_sourcebiblio'|trans }}
+                </a>
+            </div>
+        </div>
     </div>
-</div>
+</section>
 
-<h3 class="form-section-title">
-    {{ 'source.sections.localisation'|trans }}
-</h3>
-{{ form_row(form.lieuDecouverte) }}
-{{ form_row(form.inSitu) }}
-{{ form_row(form.lieuOrigine) }}
+<section>
+    {% include 'partials/_sectiontitle.html.twig' with {
+        'title' : 'source.sections.datation',
+        'collapseTarget' : '#section-datation'
+    } only %}
+    <div class="collapse" id="section-datation">
+        {{ form_row(form.estDatee) }}
+        <div class="row">
+            <div class="col-sm-12 dependent_field_estdatee">
+                {{ form_errors(form.datation) }}
+                {{ form_widget(form.datation) }}
+            </div>
+        </div>
+    </div>
+</section>
 
-<h3 class="form-section-title">
-    {{ 'source.sections.commentaires'|trans }}
-</h3>
-{{ form_row(form.commentaireFr) }}
-{{ form_row(form.commentaireEn) }}
+<section>
+    {% include 'partials/_sectiontitle.html.twig' with {
+        'title' : 'source.sections.localisation',
+        'collapseTarget' : '#section-localisation'
+    } only %}
+    <div class="collapse" id="section-localisation">
+        {{ form_row(form.lieuDecouverte) }}
+        {{ form_row(form.inSitu) }}
+        {{ form_row(form.lieuOrigine) }}
+    </div>
+</section>
 
-<h3 class="form-section-title">
-    {{ 'source.sections.attestations'|trans }}
-</h3>
-<br>
-<br>
-<br>
+<section>
+    {% include 'partials/_sectiontitle.html.twig' with {
+        'title' : 'source.sections.commentaires',
+        'collapseTarget' : '#section-commentaires'
+    } only %}
+    <div class="collapse" id="section-commentaires">
+        {{ form_row(form.commentaireFr) }}
+        {{ form_row(form.commentaireEn) }}
+    </div>
+</section>
+<section>
+    {% include 'partials/_sectiontitle.html.twig' with {
+        'title' : 'source.sections.attestations',
+        'collapseTarget' : '#section-attestations'
+    } only %}
+    <div class="collapse" id="section-attestations">
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+    </div>
+</section>
 
 <hr />
 <div class="form-group row">
@@ -123,7 +159,6 @@
                             .prop('checked', false);
                     }
                 });
-                console.log(arguments);
                 if (idx == 1) {
                     $(newEl).find('label.mainsource_field').siblings('input[type=checkbox]').prop('checked', true);
                 }

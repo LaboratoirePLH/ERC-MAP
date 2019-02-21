@@ -36,6 +36,7 @@ generic:
     delete: "Delete"
     add: "Add"
     clear: "Clear"
+    clear_filters: "Clear filters"
     fields:
         id: "ID"
         date_creation: "Creation"

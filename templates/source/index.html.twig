@@ -3,6 +3,14 @@
 {{ 'source.list'|trans }}
 {% endblock %}
 {% block content %}
+<div class="row">
+    <div class="col-12">
+        <a href=" {{ url('source_create') }}" class="btn btn-primary">{{ 'source.create'|trans }}</a>
+        <button type="button" class="btn btn-secondary clear-filter-button">
+            {{ 'generic.clear_filters'|trans }}
+        </button>
+    </div>
+</div>
 <table class="table table-striped table-hover table-bordered w-100 text-center" id="source_list">
     <thead>
         <tr>
@@ -118,7 +126,14 @@
         </tr>
     </tfoot>
 </table>
-<a href="{{ url('source_create') }}" class="btn btn-primary">{{ 'source.create'|trans }}</a>
+<div class="row">
+    <div class="col-12">
+        <a href=" {{ url('source_create') }}" class="btn btn-primary">{{ 'source.create'|trans }}</a>
+        <button type="button" class="btn btn-secondary clear-filter-button">
+            {{ 'generic.clear_filters'|trans }}
+        </button>
+    </div>
+</div>
 {% endblock %}
 
 {% block javascripts %}
@@ -170,6 +185,12 @@
                 }
             })
         });
+        $('.clear-filter-button').on('click', function (e) {
+            e.preventDefault();
+            dt.columns().every(function () {
+                $('input', this.footer()).val("").trigger('change');
+            });
+        })
     });
 </script>
 {% endblock %}

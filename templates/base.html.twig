@@ -15,11 +15,11 @@
     {% block stylesheets %}
     {{ encore_entry_link_tags('app') }}
     {% endblock %}
-    {{ encore_entry_script_tags('app') }}
 </head>
 
-<body class="{% block bodyclass %}{% endblock %}">
+<body class="{% block bodyclass %}{% endblock %}" id="top">
     {% block body %}{% endblock %}
+    {{ encore_entry_script_tags('app') }}
     {% block javascripts %}{% endblock %}
 </body>
 

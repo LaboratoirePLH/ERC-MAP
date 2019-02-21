@@ -170,6 +170,7 @@ autocomplete:
     no_matches: "No matches found for : "
 
 misc:
+    back_to_top: "Back to top"
     copyright: "ERC-MAP - Laboratoire PLH - Université Toulouse - Jean Jaurès"
 
 pages:

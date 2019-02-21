@@ -15,6 +15,32 @@ require('bootstrap');
 require('datatables.net-bs4')(window, $);
 require('datatables.net-responsive-bs4')(window, $);
 require('chosen-js');
+
+(function ($) {
+    if ($('#back-to-top').length) {
+        console.log("test");
+        var scrollTrigger = 100, // px
+            backToTop = function () {
+                var scrollTop = $(window).scrollTop();
+                if (scrollTop > scrollTrigger) {
+                    $('#back-to-top').addClass('show');
+                } else {
+                    $('#back-to-top').removeClass('show');
+                }
+            };
+        backToTop();
+        $(window).on('scroll', function () {
+            backToTop();
+        });
+        $('#back-to-top').on('click', function (e) {
+            e.preventDefault();
+            $('html,body').animate({
+                scrollTop: 0
+            }, 700);
+        });
+    }
+})(jQuery);
+
 require('./collection.js');
 require('./dependent_fields.js');
 require('./selectorcreate.js');

@@ -170,3 +170,8 @@ autocomplete:
 
 misc:
     copyright: "ERC-MAP - Laboratoire PLH - Université Toulouse - Jean Jaurès"
+
+pages:
+    home:
+        title: "Homepage"
+        logged_as: "You are logged in as"

@@ -27,17 +27,25 @@
                 .find('input[type=radio]');
 
             radio.on('change', function (e) {
-                console.log("change " + $(this).attr('name'));
                 var radioValue = container.children('.selectorcreate_decision')
                     .find('input[type=radio]:checked')
                     .val();
                 if (radioValue) {
                     toggleCreationSelection(container, radioValue === 'create');
+                } else {
+                    toggleCreationSelection(container, null);
                 }
             });
             var initialSelection = null;
             if (radio.filter(':checked').length === 1) {
-                initialSelection = radio.filter(':checked').val() === 'create'
+                switch (radio.filter(':checked').val()) {
+                    case 'create':
+                        initialSelection = true;
+                        break;
+                    case 'select':
+                        initialSelection = false;
+                        break;
+                }
             }
             toggleCreationSelection(container, initialSelection);
         });

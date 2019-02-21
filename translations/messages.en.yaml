@@ -52,6 +52,7 @@ generic:
     choices :
         new: "New"
         existing: "Existing"
+        none: "None"
     messages:
         deletion_failed_csrf: "Deletion failed, invalid CSRF Token"
         deletion_failed_missing: "Deletion failed, record not found"

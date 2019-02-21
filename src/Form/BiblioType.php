@@ -45,6 +45,7 @@ class BiblioType extends AbstractType
                 'field_name'              => 'corpus',
                 'object_class'            => Corpus::class,
                 'creation_form_class'     => CorpusType::class,
+                'allow_none'              => true,
                 'selection_choice_label'  => 'nom',
                 'selection_query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('e')

@@ -46,7 +46,7 @@ class SelectOrCreateType extends AbstractType implements DataMapperInterface
                 'mapped'   => false,
                 'expanded' => true,
                 'required' => false,
-                'placeholder' => false,
+                'placeholder' => $options['allow_none'] ? 'generic.choices.none' : false,
                 'choices'  => [
                     'generic.choices.new' => 'create',
                     'generic.choices.existing' => 'select',
@@ -84,6 +84,7 @@ class SelectOrCreateType extends AbstractType implements DataMapperInterface
     {
         $resolver->setRequired(['locale', 'translations', 'field_name', 'object_class', 'creation_form_class', 'selection_query_builder', 'selection_choice_label']);
         $resolver->setDefault('locale', 'en');
+        $resolver->setDefault('allow_none', false);
     }
 
     public function buildView(FormView $view, FormInterface $form, array $options)

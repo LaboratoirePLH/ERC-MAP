@@ -8,7 +8,7 @@
 {{ form_errors(form) }}
 
 <div class="row justify-content-center">
-    <div class="col-sm-6 text-center">
+    <div class="col-sm-10 offset-sm-1 text-center">
         {% if action == 'edit' %}
         {% spaceless %}
         {{ 'generic.fields.date_creation'|trans }}&nbsp;:&nbsp;
@@ -23,13 +23,15 @@
         {% endspaceless %}
         <br />
         {{ 'source.fields.version'|trans }}&nbsp;{{ source.version }}&rarr;{{ source.version+1 }}
-        <hr />
         {% endif %}
+    </div>
+    <div class="col-sm-1">
         {{ 'generic.fields.to_translate'|trans }} : {{ form_widget(form.traduireFr) }}{{ form_label(form.traduireFr)
         }}
         {{ form_widget(form.traduireEn) }} {{ form_label(form.traduireEn) }}
     </div>
 </div>
+<hr />
 <h3 class="form-section-title">
     {{ 'source.sections.informations_source'|trans }}
 </h3>

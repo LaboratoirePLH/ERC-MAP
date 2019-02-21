@@ -18,7 +18,6 @@ require('chosen-js');
 
 (function ($) {
     if ($('#back-to-top').length) {
-        console.log("test");
         var scrollTrigger = 100, // px
             backToTop = function () {
                 var scrollTop = $(window).scrollTop();

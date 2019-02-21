@@ -4,7 +4,8 @@
         var settings = $.extend({
             // These are the defaults.
             blockTitle: "Item #",
-            deleteLink: "Delete"
+            deleteLink: "Delete",
+            addListener: $.noop()
         }, options);
 
         var setupLinks = function (prototype) {
@@ -42,6 +43,7 @@
             container.append(prototype);
             index++;
             container.attr('data-index', index);
+            settings.addListener.call(this, container.children(':last-child'), index);
         };
 
         return this.each(function () {
@@ -53,7 +55,6 @@
             $('#add_sourcebiblio').click(function (e) {
                 addEntry(container);
                 e.preventDefault();
-                container.trigger('collectionField.add', container.children(':last-child'));
                 return false;
             });
 

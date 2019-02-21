@@ -110,20 +110,24 @@
         // Gestion du champ collection
         $('div#source_sourceBiblios').collectionField({
             blockTitle: '{{ "source.fields.source_biblio_n"|trans }}',
-            deleteLink: '{{ "generic.delete"|trans }}'
-        });
-        $('div#source_sourceBiblios').on('collectionField.add', function (e, newEl) {
-            // Gestion du champ "selectorcreate"
-            $(newEl).find('.selectorcreate').selectOrCreate();
-            // Gestion du champ "main source"
-            $('label.mainsource_field').siblings('input[type=checkbox]').off('change');
-            $('label.mainsource_field').siblings('input[type=checkbox]').on('change', function (e) {
-                if ($(this).is(':checked')) {
-                    $('label.mainsource_field').siblings('input[type=checkbox]')
-                        .not(this)
-                        .prop('checked', false);
+            deleteLink: '{{ "generic.delete"|trans }}',
+            addListener: function (newEl, idx) {
+                // Gestion du champ "selectorcreate"
+                $(newEl).find('.selectorcreate').selectOrCreate();
+                // Gestion du champ "main source"
+                $('label.mainsource_field').siblings('input[type=checkbox]').off('change');
+                $('label.mainsource_field').siblings('input[type=checkbox]').on('change', function (e) {
+                    if ($(this).is(':checked')) {
+                        $('label.mainsource_field').siblings('input[type=checkbox]')
+                            .not(this)
+                            .prop('checked', false);
+                    }
+                });
+                console.log(arguments);
+                if (idx == 1) {
+                    $(newEl).find('label.mainsource_field').siblings('input[type=checkbox]').prop('checked', true);
                 }
-            });
+            }
         });
 
         // Gestion du champ "selectorcreate"

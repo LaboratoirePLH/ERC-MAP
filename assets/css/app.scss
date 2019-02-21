@@ -3,6 +3,8 @@
 @import "~datatables.net-bs4/css/dataTables.bootstrap4.min.css";
 @import "./component-chosen.css";
 
+$map-yellow: #d8be00;
+
 body {
     background-color: lightgray;
 
@@ -46,7 +48,7 @@ body {
 
                 &.active,
                 &:hover {
-                    background-color: #d8be00;
+                    background-color: $map-yellow;
 
                     a {
                         color: #434343;
@@ -76,8 +78,8 @@ body {
 
         form {
             .form-section-title {
-                border: 1px solid lighten(theme-color("dark"), 50%);
-                background-color: lighten(theme-color("dark"), 50%);
+                border: 1px solid desaturate($map-yellow, 10%);
+                background-color: desaturate($map-yellow, 10%);
                 text-transform: uppercase;
                 text-align: center;
                 font-weight: bold;

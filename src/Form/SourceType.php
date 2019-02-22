@@ -3,6 +3,9 @@
 namespace App\Form;
 
 use App\Entity\Auteur;
+use App\Entity\CategorieMateriau;
+use App\Entity\CategorieSource;
+use App\Entity\CategorieSupport;
 use App\Entity\Langue;
 use App\Entity\Materiau;
 use App\Entity\Source;
@@ -10,6 +13,7 @@ use App\Entity\Titre;
 use App\Entity\TypeSource;
 use App\Entity\TypeSupport;
 
+use App\Form\Type\DependentSelect;
 use App\Form\Type\SelectOrCreateType;
 
 use Symfony\Component\Form\AbstractType;
@@ -91,56 +95,98 @@ class SourceType extends AbstractType
                 'label'    => 'generic.fields.commentaire_en',
                 'required' => false
             ])
-            ->add('typeSource', EntityType::class, [
-                'label'        => 'source.fields.type_source',
-                'required'     => false,
-                'class'        => TypeSource::class,
-                'choice_label' => 'nom'.ucfirst($locale),
-                'attr'         => [
-                    'class' => 'autocomplete',
-                    'data-placeholder' => $options['translations']['autocomplete.select_element']
+            ->add('typeCategorieSource', DependentSelect::class, [
+                'locale'         => $options['locale'],
+                'translations'   => $options['translations'],
+                'name'           => 'categorieSource',
+                'secondary_name' => 'typeSource',
+                'category_field' => 'categorieSource',
+                'field_options'  => [
+                    'label'        => 'source.fields.categorie_source',
+                    'required'     => false,
+                    'class'        => CategorieSource::class,
+                    'choice_label' => 'nom'.ucfirst($locale),
+                    'attr'         => [
+                        'class' => 'autocomplete',
+                        'data-placeholder' => $options['translations']['autocomplete.select_element']
+                    ],
+                    'query_builder' => function (EntityRepository $er) use ($locale) {
+                        return $er->createQueryBuilder('e')
+                            ->orderBy('e.nom'.ucfirst($locale), 'ASC');
+                    }
                 ],
-                'group_by'      => 'categorieSource.nom'.ucfirst($locale),
-                'query_builder' => function (EntityRepository $er) use ($locale) {
-                    return $er->createQueryBuilder('e')
-                        ->leftJoin('e.categorieSource', 'c')
-                        ->addSelect('c')
-                        ->orderBy('e.nom'.ucfirst($locale), 'ASC');
-                }
+                'secondary_field_options' => [
+                    'label'        => 'source.fields.type_source',
+                    'required'     => false,
+                    'class'        => TypeSource::class,
+                    'choice_label' => 'nom'.ucfirst($locale),
+                    'attr'         => [
+                        'class' => 'autocomplete',
+                        'data-placeholder' => $options['translations']['autocomplete.select_element']
+                    ]
+                ]
             ])
-            ->add('materiau', EntityType::class, [
-                'label'        => 'source.fields.materiau',
-                'required'     => false,
-                'class'        => Materiau::class,
-                'choice_label' => 'nom'.ucfirst($locale),
-                'attr'         => [
-                    'class' => 'autocomplete',
-                    'data-placeholder' => $options['translations']['autocomplete.select_element']
+            ->add('typeCategorieMateriau', DependentSelect::class, [
+                'locale'         => $options['locale'],
+                'translations'   => $options['translations'],
+                'name'           => 'categorieMateriau',
+                'secondary_name' => 'materiau',
+                'category_field' => 'categorieMateriau',
+                'field_options'  => [
+                    'label'        => 'source.fields.categorie_materiau',
+                    'required'     => false,
+                    'class'        => CategorieMateriau::class,
+                    'choice_label' => 'nom'.ucfirst($locale),
+                    'attr'         => [
+                        'class' => 'autocomplete',
+                        'data-placeholder' => $options['translations']['autocomplete.select_element']
+                    ],
+                    'query_builder' => function (EntityRepository $er) use ($locale) {
+                        return $er->createQueryBuilder('e')
+                            ->orderBy('e.nom'.ucfirst($locale), 'ASC');
+                    }
                 ],
-                'group_by'     => 'categorieMateriau.nom'.ucfirst($locale),
-                'query_builder' => function (EntityRepository $er) use ($locale) {
-                    return $er->createQueryBuilder('e')
-                        ->leftJoin('e.categorieMateriau', 'c')
-                        ->addSelect('c')
-                        ->orderBy('e.nom'.ucfirst($locale), 'ASC');
-                }
+                'secondary_field_options' => [
+                    'label'        => 'source.fields.materiau',
+                    'required'     => false,
+                    'class'        => Materiau::class,
+                    'choice_label' => 'nom'.ucfirst($locale),
+                    'attr'         => [
+                        'class' => 'autocomplete',
+                        'data-placeholder' => $options['translations']['autocomplete.select_element']
+                    ]
+                ]
             ])
-            ->add('typeSupport', EntityType::class, [
-                'label'        => 'source.fields.support',
-                'required'     => false,
-                'class'        => TypeSupport::class,
-                'choice_label' => 'nom'.ucfirst($locale),
-                'attr'         => [
-                    'class' => 'autocomplete',
-                    'data-placeholder' => $options['translations']['autocomplete.select_element']
+            ->add('typeCategorieSupport', DependentSelect::class, [
+                'locale'         => $options['locale'],
+                'translations'   => $options['translations'],
+                'name'           => 'categorieSupport',
+                'secondary_name' => 'typeSupport',
+                'category_field' => 'categorieSupport',
+                'field_options'  => [
+                    'label'        => 'source.fields.categorie_support',
+                    'required'     => false,
+                    'class'        => CategorieSupport::class,
+                    'choice_label' => 'nom'.ucfirst($locale),
+                    'attr'         => [
+                        'class' => 'autocomplete',
+                        'data-placeholder' => $options['translations']['autocomplete.select_element']
+                    ],
+                    'query_builder' => function (EntityRepository $er) use ($locale) {
+                        return $er->createQueryBuilder('e')
+                            ->orderBy('e.nom'.ucfirst($locale), 'ASC');
+                    }
                 ],
-                'group_by'     => 'categorieSupport.nom'.ucfirst($locale),
-                'query_builder' => function (EntityRepository $er) use ($locale) {
-                    return $er->createQueryBuilder('e')
-                        ->leftJoin('e.categorieSupport', 'c')
-                        ->addSelect('c')
-                        ->orderBy('e.nom'.ucfirst($locale), 'ASC');
-                }
+                'secondary_field_options' => [
+                    'label'        => 'source.fields.support',
+                    'required'     => false,
+                    'class'        => TypeSupport::class,
+                    'choice_label' => 'nom'.ucfirst($locale),
+                    'attr'         => [
+                        'class' => 'autocomplete',
+                        'data-placeholder' => $options['translations']['autocomplete.select_element']
+                    ]
+                ]
             ])
             ->add('auteurs', EntityType::class, [
                 'label'        => 'source.fields.auteurs',

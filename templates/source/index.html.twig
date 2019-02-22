@@ -58,7 +58,7 @@
                 {{ source.typeSource is not null ? source.typeSource.nom(locale) : "" }}
             </td>
             <td>
-                {{ source.typeSource.categorieSource.nom(locale)|default("") }}
+                {{ source.categorieSource is not null ? source.categorieSource.nom(locale) : "" }}
             </td>
             <td>
                 {{ source.titrePrincipal is not null ? source.titrePrincipal.nom(locale) : "" }}

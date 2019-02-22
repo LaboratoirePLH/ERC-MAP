@@ -255,6 +255,21 @@ class Source
         return $this;
     }
 
+    public function setTypeCategorieSupport($data): self
+    {
+        $this->setCategorieSupport($data['categorieSupport']);
+        $this->setTypeSupport($data['typeSupport']);
+        return $this;
+    }
+
+    public function getTypeCategorieSupport(): array
+    {
+        return [
+            'typeSupport' => $this->getTypeSupport(),
+            'categorieSupport' => $this->getCategorieSupport(),
+        ];
+    }
+
     /**
      * @var \Materiau|null
      *
@@ -297,6 +312,21 @@ class Source
         return $this;
     }
 
+    public function setTypeCategorieMateriau($data): self
+    {
+        $this->setCategorieMateriau($data['categorieMateriau']);
+        $this->setMateriau($data['materiau']);
+        return $this;
+    }
+
+    public function getTypeCategorieMateriau(): array
+    {
+        return [
+            'materiau' => $this->getMateriau(),
+            'categorieMateriau' => $this->getCategorieMateriau(),
+        ];
+    }
+
     /**
      * @var \TypeSource
      *
@@ -337,6 +367,21 @@ class Source
     {
         $this->categorieSource = $categorieSource;
         return $this;
+    }
+
+    public function setTypeCategorieSource($data): self
+    {
+        $this->setCategorieSource($data['categorieSource']);
+        $this->setTypeSource($data['typeSource']);
+        return $this;
+    }
+
+    public function getTypeCategorieSource(): array
+    {
+        return [
+            'typeSource' => $this->getTypeSource(),
+            'categorieSource' => $this->getCategorieSource(),
+        ];
     }
 
     /**

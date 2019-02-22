@@ -39,14 +39,14 @@
         'expanded' : true
     } only %}
     <div class="collapse show" id="section-infos">
-        {{ form_row(form.typeSource) }}
+        {{ form_widget(form.typeCategorieSource) }}
         {{ form_row(form.langues) }}
         {{ form_row(form.titrePrincipal) }}
         {{ form_row(form.auteurs) }}
         {{ form_row(form.citation) }}
         {{ form_row(form.titresCites) }}
-        {{ form_row(form.materiau) }}
-        {{ form_row(form.typeSupport) }}
+        {{ form_widget(form.typeCategorieMateriau) }}
+        {{ form_widget(form.typeCategorieSupport) }}
         {{ form_row(form.urlTexte) }}
         {{ form_row(form.iconographie) }}
         {{ form_row(form.urlImage) }}
@@ -178,6 +178,16 @@
         });
         // Gestion des champs dépendants
         $.fn.dependentFields(['quote', 'iconography', 'insitu', 'estdatee']);
+        // Gestion des combobox liées
+        $('#source_typeCategorieSource').dependentSelects({
+            data_url: "{{ url('data_type_source') }}"
+        });
+        $('#source_typeCategorieSupport').dependentSelects({
+            data_url: "{{ url('data_type_support') }}"
+        });
+        $('#source_typeCategorieMateriau').dependentSelects({
+            data_url: "{{ url('data_materiau') }}"
+        });
 
         //Gestion des recherches Pleiades
         $('.pleiades_search').on('click', function (e) {

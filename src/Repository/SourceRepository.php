@@ -40,7 +40,7 @@ class SourceRepository extends ServiceEntityRepository
             ->leftJoin('s.langues', 'langues')
             ->leftJoin('s.titrePrincipal', 'titrePrincipal')
             ->leftJoin('s.typeSource', 'typeSource')
-            ->leftJoin('typeSource.categorieSource', 'categorieSource')
+            ->leftJoin('s.categorieSource', 'categorieSource')
             ->leftJoin('s.createur', 'createur')
             ->leftJoin('s.dernierEditeur', 'dernierEditeur')
             ->leftJoin('s.sourceBiblios', 'sourceBiblios', 'WITH', 'sourceBiblios.editionPrincipale = true')

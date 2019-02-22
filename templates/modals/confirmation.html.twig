@@ -1,14 +1,14 @@
 {#
 Modal component.
 Parameters :
-- modalName : Name of the modal, used to generate its ID, and to fetch translation sentences
-- triggerSelector : jQuery selector for the link that should trigger the modal's opening
+- uuid : Unique ID of the modal
+- modalName : Name of the modal, used to fetch translation sentences
 - targetUrl : URL to redirect to if user clicks the primary button
 - confirmationLabel : Text of the primary button
 - csrfToken : CSRF token to pass in the form
 #}
 {% set id = modalName ~ random() %}
-<div class="modal fade" id="{{ id }}" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade" id="{{ uuid }}" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -32,12 +32,3 @@ Parameters :
         </div>
     </div>
 </div>
-
-<script type="text/javascript" defer>
-    $(document).ready(function () {
-        $("{{ triggerSelector }}").click(function (e) {
-            e.preventDefault();
-            $(".modal#{{ id }}").modal();
-        });
-    })
-</script>

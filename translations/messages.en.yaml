@@ -145,6 +145,7 @@ datation:
 
 localisation:
     search_pleiades: "Search on Pleiades"
+    view_pleiades: "View on Pleiades"
     fields:
         region: "Region"
         entite_politique: "Political Entity"

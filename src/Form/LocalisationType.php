@@ -64,6 +64,7 @@ class LocalisationType extends AbstractType
                 'label_attr'   => ['id' => 'pleiades_ville_id'],
                 'label'        => 'localisation.fields.pleiades_ville',
                 'search_label' => 'localisation.search_pleiades',
+                'view_label'   => 'localisation.view_pleiades',
                 'clear_label'  => 'generic.clear',
                 'required'     => false
             ])
@@ -88,6 +89,7 @@ class LocalisationType extends AbstractType
                 'label_attr'   => ['id' => 'pleiades_site_id'],
                 'label'        => 'localisation.fields.pleiades_site',
                 'search_label' => 'localisation.search_pleiades',
+                'view_label'   => 'localisation.view_pleiades',
                 'clear_label'  => 'generic.clear',
                 'required'     => false
             ])

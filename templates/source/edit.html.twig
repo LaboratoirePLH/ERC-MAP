@@ -244,7 +244,6 @@
         });
         $('.pleiades_clear').on('click', function (e) {
             e.preventDefault();
-            $(this).parent().siblings('input[type=text]').val('');
             var rootForm = $(this).parents('.localisation_form'),
                 labelId = $(this).parent().parent().parent().siblings('label').attr('id'),
                 labelSeg = labelId.split('_'),
@@ -258,6 +257,15 @@
             });
             $(this).parent().siblings('input[type=number]').val('').attr('disabled', false);
             return false;
+        });
+        $('.pleiades_view').on('click', function (e) {
+            var id = parseInt($(this).parent().siblings('input[type=number]').val(), 10);
+            console.log(id);
+            if (Number.isNaN(id) || id == 0) {
+                e.preventDefault();
+                return false;
+            }
+            $(this).attr('href', "https://pleiades.stoa.org/places/" + id);
         });
     });
 </script>

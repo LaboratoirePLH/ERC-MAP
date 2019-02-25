@@ -41,11 +41,11 @@ class SourceType extends AbstractType
 
         $builder
             ->add('traduireFr', CheckboxType::class, [
-                'label'      => 'languages.fr',
+                'label'    => 'languages.fr',
                 'required' => false
             ])
             ->add('traduireEn', CheckboxType::class, [
-                'label'      => 'languages.en',
+                'label'    => 'languages.en',
                 'required' => false
             ])
             ->add('citation', CheckboxType::class, [
@@ -60,28 +60,28 @@ class SourceType extends AbstractType
                 'required' => false
             ])
             ->add('urlImage', UrlType::class, [
-                'label'    => 'source.fields.url_image',
+                'label'      => 'source.fields.url_image',
                 'label_attr' => [
                     'class' => 'dependent_field_iconography'
                 ],
                 'required' => false
             ])
             ->add('inSitu', CheckboxType::class, [
-                'label'    => 'source.fields.in_situ',
+                'label'      => 'source.fields.in_situ',
                 'label_attr' => [
                     'class' => 'dependent_field_insitu_main'
                 ],
                 'required' => false
             ])
             ->add('iconographie', CheckboxType::class, [
-                'label'    => 'source.fields.iconographie',
+                'label'      => 'source.fields.iconographie',
                 'label_attr' => [
                     'class' => 'dependent_field_iconography_main'
                 ],
                 'required' => false
             ])
             ->add('estDatee', CheckboxType::class, [
-                'label'    => 'source.fields.est_datee',
+                'label'      => 'source.fields.est_datee',
                 'label_attr' => [
                     'class' => 'dependent_field_estdatee_main'
                 ],

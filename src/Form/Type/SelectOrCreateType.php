@@ -50,7 +50,7 @@ class SelectOrCreateType extends AbstractType implements DataMapperInterface
                 'choices'  => [
                     'generic.choices.new' => 'create',
                     'generic.choices.existing' => 'select',
-                ],
+                ]
             ])
             ->add("selection", EntityType::class, [
                 'label_attr' => [
@@ -85,6 +85,7 @@ class SelectOrCreateType extends AbstractType implements DataMapperInterface
         $resolver->setRequired(['locale', 'translations', 'field_name', 'object_class', 'creation_form_class', 'selection_query_builder', 'selection_choice_label']);
         $resolver->setDefault('locale', 'en');
         $resolver->setDefault('allow_none', false);
+        $resolver->setDefault('default_decision', null);
     }
 
     public function buildView(FormView $view, FormInterface $form, array $options)
@@ -118,15 +119,17 @@ class SelectOrCreateType extends AbstractType implements DataMapperInterface
 
     public function mapDataToForms($data, $forms)
     {
-        // there is no data yet, so nothing to prepopulate
-        if (null === $data) {
-            return;
-        }
-
         /** @var FormInterface[] $forms */
         $forms = iterator_to_array($forms);
 
         // initialize form field values
+        // there is no data yet, set decision to default choice
+        if (null === $data) {
+            $forms['decision']->setData(
+                $forms['decision']->getParent()->getConfig()->getOption('default_decision')
+            );
+            return;
+        }
         $forms['decision']->setData("select");
         $forms['selection']->setData($data);
         $forms['creation']->setData(null);

@@ -8,10 +8,10 @@
 {{ form_errors(form) }}
 
 <div class="row justify-content-center">
-    <div class="col-sm-2 d-flex align-items-end">
-        <button class="btn btn-primary">{{ 'generic.save'|trans }}
+    <div class="col-sm-3">
+        {% include "partials/_formbuttons.html.twig" with {'cancelUrl' : url('source_list')} %}
     </div>
-    <div class="col-sm-8 text-center">
+    <div class="col-sm-6 text-center">
         {% if action == 'edit' %}
         {% spaceless %}
         {{ 'generic.fields.date_creation'|trans }}&nbsp;:&nbsp;
@@ -28,7 +28,7 @@
         {{ 'source.fields.version'|trans }}&nbsp;{{ source.version }}&rarr;{{ source.version+1 }}
         {% endif %}
     </div>
-    <div class="col-sm-2 text-right">
+    <div class="col-sm-3 text-right">
         {{ 'generic.fields.to_translate'|trans }} :
         {{ form_widget(form.traduireFr) }}
         {{ form_widget(form.traduireEn) }}
@@ -144,7 +144,7 @@
 <hr />
 <div class="form-group row">
     <div class="col-sm-12 text-center">
-        <button class="btn btn-primary">{{ 'generic.save'|trans }}
+        {% include "partials/_formbuttons.html.twig" with {'cancelUrl' : url('source_list')} %}
     </div>
 </div>
 {{ form_rest(form) }}

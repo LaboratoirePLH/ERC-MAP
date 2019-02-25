@@ -32,6 +32,7 @@ generic:
     cancel: "Cancel"
     search: "Search"
     save: "Save"
+    saveclose: "Save & Close"
     view: "View"
     edit: "Edit"
     delete: "Delete"

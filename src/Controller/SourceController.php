@@ -69,8 +69,10 @@ class SourceController extends AbstractController
 
             // Message de confirmation
             $request->getSession()->getFlashBag()->add('success', 'source.messages.created');
-
-            return $this->redirectToRoute('source_list');
+            if ($request->request->has("saveclose")) {
+                return $this->redirectToRoute('source_list');
+            }
+            return $this->redirectToRoute('source_edit', ['id' => $source->getId()]);
         }
 
         return $this->render('source/edit.html.twig', [
@@ -143,8 +145,10 @@ class SourceController extends AbstractController
 
             // Message de confirmation
             $request->getSession()->getFlashBag()->add('success', 'source.messages.edited');
-
-            return $this->redirectToRoute('source_list');
+            if ($request->request->has("saveclose")) {
+                return $this->redirectToRoute('source_list');
+            }
+            return $this->redirectToRoute('source_edit', ['id' => $source->getId()]);
         }
 
         return $this->render('source/edit.html.twig', [

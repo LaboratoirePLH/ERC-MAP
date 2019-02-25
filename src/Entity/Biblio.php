@@ -128,7 +128,7 @@ class Biblio
 
     public function getAffichage(): string
     {
-        return \sprintf("%s, %s (%i)", $this->auteurBiblio, $this->titreAbrege, $this->annee);
+        return \sprintf("%s, %s (%d) [%s]", $this->auteurBiblio, $this->titreAbrege, $this->annee, $this->getCorpus()->getNom() ?? "");
     }
 
 }

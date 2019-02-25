@@ -56,7 +56,7 @@
 <section>
     {% include 'partials/_sectiontitle.html.twig' with {
         'title' : 'source.sections.bibliographie',
-        'collapseTarget' : '#section-bibliographie'
+        'collapseTarget' : '#section-bibliographie',
     } only %}
     <div class="collapse" id="section-bibliographie">
         {{ form_errors(form.sourceBiblios) }}
@@ -218,14 +218,23 @@
                     "source_lieuDecouverte_grandeSousRegion_grandeRegion",
                     "source_lieuDecouverte_grandeSousRegion_sousRegion",
                     "source_lieuDecouverte_entitePolitique",
-                    "source_lieuDecouverte_pleiadesVille"
+                    "source_lieuDecouverte_pleiadesVille",
                 ];
 
-            $.each(fields, function (i, fieldId) {
-                var targetFieldId = fieldId.replace(copyPath[0], copyPath[1]);
-                $('#' + targetFieldId).val($('#' + fieldId).val()).trigger('change').trigger("chosen:updated");
-            });
             $('#source_inSitu').prop('checked', false).trigger('change');
+            $("#source_lieuOrigine_grandeSousRegion_grandeRegion").val(
+                $("#source_lieuDecouverte_grandeSousRegion_grandeRegion").val()
+            ).on('dependent:updated', function () {
+                $("#source_lieuOrigine_grandeSousRegion_sousRegion").val(
+                    $("#source_lieuDecouverte_grandeSousRegion_sousRegion").val()
+                ).trigger('chosen:updated');
+            }).trigger('chosen:updated').trigger('change');
+            $("#source_lieuOrigine_entitePolitique").val(
+                $("#source_lieuDecouverte_entitePolitique").val()
+            ).trigger('chosen:updated');
+            $("#source_lieuOrigine_pleiadesVille").val(
+                $("#source_lieuDecouverte_pleiadesVille").val()
+            ).trigger('chosen:updated');
             if ($("#source_lieuOrigine_pleiadesVille").val() !== "") {
                 $("#source_lieuOrigine_pleiadesVille").siblings().find('.pleiades_search').click();
             }

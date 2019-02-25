@@ -42,6 +42,7 @@
                         if (selectLast.hasClass('autocomplete')) {
                             selectLast.trigger('chosen:updated');
                         }
+                        selectFirst.trigger('dependent:updated');
                     },
                     error: function (err) {
                         alert("An error ocurred while loading data ...");

@@ -37,10 +37,6 @@ class DatationType extends AbstractType
                     'class' => 'dependent_field_quote'
                 ]
             ])
-            ->add('dateAncienne', IntegerType::class, [
-                'label'    => 'datation.fields.date_anc',
-                'required' => false
-            ])
             ->add('commentaireFr', TextareaType::class, [
                 'label'    => 'generic.fields.commentaire_fr',
                 'required' => false

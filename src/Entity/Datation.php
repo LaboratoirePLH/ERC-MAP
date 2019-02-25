@@ -51,13 +51,6 @@ class Datation
      */
     private $anteQuemCitation;
 
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="dateAncienne", type="text", nullable=true)
-     */
-    private $dateAncienne;
-
     public function getId(): ?int
     {
         return $this->id;
@@ -107,18 +100,6 @@ class Datation
     public function setAnteQuemCitation(?int $anteQuemCitation): self
     {
         $this->anteQuemCitation = $anteQuemCitation;
-
-        return $this;
-    }
-
-    public function getDateAncienne(): ?string
-    {
-        return $this->dateAncienne;
-    }
-
-    public function setDateAncienne(?string $dateAncienne): self
-    {
-        $this->dateAncienne = $dateAncienne;
 
         return $this;
     }

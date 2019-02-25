@@ -2,12 +2,14 @@
 
 namespace App\Form;
 
+use App\Entity\GrandeRegion;
 use App\Entity\Localisation;
 use App\Entity\SousRegion;
 use App\Entity\EntitePolitique;
 use App\Entity\QTopographie;
 use App\Entity\QFonction;
 
+use App\Form\Type\DependentSelectType;
 use App\Form\Type\PleiadesType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -27,22 +29,36 @@ class LocalisationType extends AbstractType
     {
         $locale = $options['locale'];
         $builder
-            ->add('sousRegion', EntityType::class, [
-                'label'        => 'localisation.fields.region',
-                'required'     => false,
-                'class'        => SousRegion::class,
-                'choice_label' => 'nom'.ucfirst($locale),
-                'attr'         => [
-                    'class' => 'autocomplete',
-                    'data-placeholder' => $options['translations']['autocomplete.select_element']
+            ->add('grandeSousRegion', DependentSelectType::class, [
+                'locale'         => $options['locale'],
+                'translations'   => $options['translations'],
+                'name'           => 'grandeRegion',
+                'secondary_name' => 'sousRegion',
+                'category_field' => 'grandeRegion',
+                'field_options'  => [
+                    'label'        => 'localisation.fields.grande_region',
+                    'required'     => false,
+                    'class'        => GrandeRegion::class,
+                    'choice_label' => 'nom'.ucfirst($locale),
+                    'attr'         => [
+                        'class' => 'autocomplete',
+                        'data-placeholder' => $options['translations']['autocomplete.select_element']
+                    ],
+                    'query_builder' => function (EntityRepository $er) use ($locale) {
+                        return $er->createQueryBuilder('e')
+                            ->orderBy('e.nom'.ucfirst($locale), 'ASC');
+                    }
                 ],
-                'group_by'     => 'grandeRegion.nom'.ucfirst($locale),
-                'query_builder' => function (EntityRepository $er) use ($locale) {
-                    return $er->createQueryBuilder('e')
-                        ->leftJoin('e.grandeRegion', 'c')
-                        ->addSelect('c')
-                        ->orderBy('e.nom'.ucfirst($locale), 'ASC');
-                }
+                'secondary_field_options' => [
+                    'label'        => 'localisation.fields.sous_region',
+                    'required'     => false,
+                    'class'        => SousRegion::class,
+                    'choice_label' => 'nom'.ucfirst($locale),
+                    'attr'         => [
+                        'class' => 'autocomplete',
+                        'data-placeholder' => $options['translations']['autocomplete.select_element']
+                    ]
+                ]
             ])
             ->add('entitePolitique', EntityType::class, [
                 'label'        => 'localisation.fields.entite_politique',

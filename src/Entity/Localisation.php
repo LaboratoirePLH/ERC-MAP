@@ -288,6 +288,21 @@ class Localisation
         return $this;
     }
 
+    public function setGrandeSousRegion($data): self
+    {
+        $this->setGrandeRegion($data['grandeRegion']);
+        $this->setSousRegion($data['sousRegion']);
+        return $this;
+    }
+
+    public function getGrandeSousRegion(): array
+    {
+        return [
+            'sousRegion' => $this->getSousRegion(),
+            'grandeRegion' => $this->getGrandeRegion(),
+        ];
+    }
+
     /**
      * @return Collection|QTopographie[]
      */

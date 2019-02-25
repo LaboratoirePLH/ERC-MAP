@@ -147,7 +147,8 @@ localisation:
     search_pleiades: "Search on Pleiades"
     view_pleiades: "View on Pleiades"
     fields:
-        region: "Region"
+        grande_region: "Region"
+        sous_region: "Sub-region"
         entite_politique: "Political Entity"
         pleiades_ville: "Pleiades Number (City)"
         nom_ville : "Name (City)"

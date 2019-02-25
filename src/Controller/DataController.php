@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Materiau;
+use App\Entity\SousRegion;
 use App\Entity\TypeSource;
 use App\Entity\TypeSupport;
 
@@ -69,6 +70,19 @@ class DataController extends AbstractController
         return $this->_fetchDataForCategory(
             TypeSupport::class,
             'categorieSupport',
+            $request->query->get("parentId"),
+            $request->getLocale()
+        );
+    }
+
+    /**
+     * @Route("/data/sous_region", name="data_sous_region")
+     */
+    public function sousRegion(Request $request)
+    {
+        return $this->_fetchDataForCategory(
+            SousRegion::class,
+            'grandeRegion',
             $request->query->get("parentId"),
             $request->getLocale()
         );

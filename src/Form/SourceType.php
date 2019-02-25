@@ -13,7 +13,7 @@ use App\Entity\Titre;
 use App\Entity\TypeSource;
 use App\Entity\TypeSupport;
 
-use App\Form\Type\DependentSelect;
+use App\Form\Type\DependentSelectType;
 use App\Form\Type\SelectOrCreateType;
 
 use Symfony\Component\Form\AbstractType;
@@ -95,7 +95,7 @@ class SourceType extends AbstractType
                 'label'    => 'generic.fields.commentaire_en',
                 'required' => false
             ])
-            ->add('typeCategorieSource', DependentSelect::class, [
+            ->add('typeCategorieSource', DependentSelectType::class, [
                 'locale'         => $options['locale'],
                 'translations'   => $options['translations'],
                 'name'           => 'categorieSource',
@@ -126,7 +126,7 @@ class SourceType extends AbstractType
                     ]
                 ]
             ])
-            ->add('typeCategorieMateriau', DependentSelect::class, [
+            ->add('typeCategorieMateriau', DependentSelectType::class, [
                 'locale'         => $options['locale'],
                 'translations'   => $options['translations'],
                 'name'           => 'categorieMateriau',
@@ -157,7 +157,7 @@ class SourceType extends AbstractType
                     ]
                 ]
             ])
-            ->add('typeCategorieSupport', DependentSelect::class, [
+            ->add('typeCategorieSupport', DependentSelectType::class, [
                 'locale'         => $options['locale'],
                 'translations'   => $options['translations'],
                 'name'           => 'categorieSupport',

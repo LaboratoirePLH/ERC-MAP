@@ -30,6 +30,7 @@ class LocalisationType extends AbstractType
         $locale = $options['locale'];
         $builder
             ->add('grandeSousRegion', DependentSelectType::class, [
+                'label' => null,
                 'locale'         => $options['locale'],
                 'translations'   => $options['translations'],
                 'name'           => 'grandeRegion',

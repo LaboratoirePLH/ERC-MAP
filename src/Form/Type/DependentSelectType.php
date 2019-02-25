@@ -40,7 +40,7 @@ class DependentSelectType extends AbstractType
     }
 
     public function getBlockPrefix(){
-        return "dependent_select";
+        return "dependentselect";
     }
 
     protected function addElements(FormInterface $form, $parentData = null) {

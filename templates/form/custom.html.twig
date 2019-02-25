@@ -28,3 +28,17 @@
 </div>
 <small class="form-text text-danger pleiades-error"></small>
 {% endblock pleiades_widget %}
+
+{% block dependentselect_row %}
+{%- set widget_attr = {} -%}
+{%- if help is not empty -%}
+{%- set widget_attr = {attr: {'aria-describedby': id ~"_help"}} -%}
+{%- endif -%}
+<{{ element|default('div') }} class="form-group">
+    {%- if label is not empty -%}
+    {{- form_label(form) -}}
+    {%- endif -%}
+    {{- form_widget(form, widget_attr) -}}
+    {{- form_help(form) -}}
+</{{ element|default('div') }}>
+{% endblock dependentselect_row %}

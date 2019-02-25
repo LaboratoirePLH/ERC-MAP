@@ -43,4 +43,5 @@ require('chosen-js');
 require('./collection.js');
 require('./dependent_fields.js');
 require('./dependent_selects.js');
+require('./localisation_form.js');
 require('./selectorcreate.js');

@@ -146,6 +146,7 @@ datation:
 localisation:
     search_pleiades: "Search on Pleiades"
     view_pleiades: "View on Pleiades"
+    copy_location: "Copy Location data"
     fields:
         grande_region: "Region"
         sous_region: "Sub-region"

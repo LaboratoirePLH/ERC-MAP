@@ -54,6 +54,7 @@ class DependentSelectType extends AbstractType
             $secondaryData = $secondaryRepo->createQueryBuilder("e")
                 ->where("e.".$options['category_field']." = :parentid")
                 ->setParameter("parentid", $parentData->getId())
+                ->orderBy('e.nom'.ucfirst($options['locale']), 'ASC')
                 ->getQuery()
                 ->getResult();
         }

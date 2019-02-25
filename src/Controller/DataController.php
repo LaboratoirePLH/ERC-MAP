@@ -21,6 +21,7 @@ class DataController extends AbstractController
         $rows = $repo->createQueryBuilder("e")
             ->where("e.$parentField = :id")
             ->setParameter("id", $parentValue)
+            ->orderBy('e.nom'.ucfirst($locale), 'ASC')
             ->getQuery()
             ->getResult();
 

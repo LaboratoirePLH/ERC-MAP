@@ -18,16 +18,19 @@
                 {{ 'generic.fields.id'|trans }}
             </th>
             <th scope="col">
-                {{ 'source.fields.type_source'|trans }}
-            </th>
-            <th scope="col">
                 {{ 'source.fields.categorie_source'|trans }}
             </th>
             <th scope="col">
-                {{ 'source.fields.titre_principal'|trans }}
+                {{ 'source.fields.type_source'|trans }}
             </th>
             <th scope="col">
                 {{ 'source.fields.langues'|trans }}
+            </th>
+            <th scope="col">
+                {{ 'source.fields.region_origine'|trans }}
+            </th>
+            <th scope="col">
+                {{ 'source.sections.datation'|trans }}
             </th>
             <th scope="col">
                 {{ 'biblio.fields.titre_abrege'|trans }}
@@ -40,6 +43,9 @@
             </th>
             <th scope="col">
                 {{ 'generic.fields.date_modification'|trans }}
+            </th>
+            <th scope="col">
+                {{ 'generic.fields.to_translate'|trans }}
             </th>
             <th scope="col">
                 {{ 'generic.actions'|trans }}
@@ -55,16 +61,20 @@
                 <small>{{ 'source.fields.version'|trans }}&nbsp;{{ source.version|default("?") }}</small>
             </th>
             <td>
-                {{ source.typeSource is not null ? source.typeSource.nom(locale) : "" }}
-            </td>
-            <td>
                 {{ source.categorieSource is not null ? source.categorieSource.nom(locale) : "" }}
             </td>
             <td>
-                {{ source.titrePrincipal is not null ? source.titrePrincipal.nom(locale) : "" }}
+                {{ source.typeSource is not null ? source.typeSource.nom(locale) : "" }}
             </td>
             <td>
                 {{ source.concatLangues(locale) }}
+            </td>
+            <td>
+                {% set lieu = source.inSitu ? source.lieuDecouverte : source.lieuOrigine %}
+                {{ lieu.grandeRegion.nom(locale)|default("") }}
+            </td>
+            <td>
+                {{ source.estDatee ? (source.datation.postQuem|default("?") ~ " / " ~ source.datation.anteQuem|default("?")) : "" }}
             </td>
             <td>
                 {{ source.sourceBiblios is not empty ? source.sourceBiblios[0].biblio.titreAbrege : "" }}
@@ -85,6 +95,13 @@
                 <small>
                     {{ source.dernierEditeur.prenomNom }}<br />
                 </small>
+            </td>
+            <td>
+                {{ source.traduireFr ? "languages.fr"|trans : "" }}
+                {% if source.traduireFr and source.traduireEn %}
+                <br />
+                {% endif %}
+                {{ source.traduireEn ? "languages.en"|trans : "" }}
             </td>
             <td class="py-0 px-1">
                 <a href="{{ url('source_show', {'id': source.id}) }}" class="btn btn-sm btn-block my-1 btn-primary">
@@ -116,14 +133,16 @@
     <tfoot>
         <tr>
             <th>{{ 'generic.fields.id'|trans }}</th>
-            <th>{{ 'source.fields.type_source'|trans }}</th>
             <th>{{ 'source.fields.categorie_source'|trans }}</th>
-            <th>{{ 'source.fields.titre_principal'|trans }}</th>
+            <th>{{ 'source.fields.type_source'|trans }}</th>
             <th>{{ 'source.fields.langues'|trans }}</th>
+            <th>{{ 'source.fields.region_origine'|trans }}</th>
+            <th>{{ 'source.sections.datation'|trans }}</th>
             <th>{{ 'biblio.fields.titre_abrege'|trans }}</th>
             <th>{{ 'source.fields.reference_bibliographique'|trans }}</th>
             <th>{{ 'generic.fields.date_creation'|trans }}</th>
             <th>{{ 'generic.fields.date_modification'|trans }}</th>
+            <th>{{ 'generic.fields.to_translate'|trans }}</th>
             <th></th>
         </tr>
     </tfoot>
@@ -158,8 +177,8 @@
             searching: true,
             ordering: true,
             columns: [{
-                width: 80
-            }, null, null, null, null, null, null, null, null, {
+                width: 60
+            }, null, null, null, null, null, null, null, null, null, null, {
                 searchable: false,
                 orderable: false,
                 width: 80

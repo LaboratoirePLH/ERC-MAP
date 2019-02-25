@@ -49,6 +49,7 @@ generic:
         commentaire_fr: "Comments (FR)"
         commentaire_en: "Comments (EN)"
         to_translate: "To translate in"
+        translations: "Translations"
     choices :
         new: "New"
         existing: "Existing"
@@ -96,6 +97,7 @@ source:
         citation: "Quote ?"
         in_situ: "In Situ ?"
         est_datee: "Is Dated ?"
+        region_origine: "Original Region"
         lieu_origine: "Original Location"
         lieu_decouverte: "Discovery Location"
         iconographie: "Iconography"

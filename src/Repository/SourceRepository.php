@@ -26,23 +26,31 @@ class SourceRepository extends ServiceEntityRepository
     {
         $query = $this->createQueryBuilder('source')
             ->select([
-                'partial s.{id, dateCreation, dateModification, version}',
+                'partial s.{id, dateCreation, dateModification, version, inSitu, estDatee, traduireFr, traduireEn}',
                 'langues',
-                'titrePrincipal',
                 'typeSource',
                 'categorieSource',
                 'createur',
                 'dernierEditeur',
+                'lieuDecouverte',
+                'partial regionDecouverte.{id, nomFr, nomEn}',
+                'lieuOrigine',
+                'partial regionOrigine.{id, nomFr, nomEn}',
+                'datation',
                 'partial sourceBiblios.{source, biblio, editionPrincipale, referenceSource}',
                 'partial biblio.{id, titreAbrege}'
             ])
             ->from('App\Entity\Source', 's')
             ->leftJoin('s.langues', 'langues')
-            ->leftJoin('s.titrePrincipal', 'titrePrincipal')
             ->leftJoin('s.typeSource', 'typeSource')
             ->leftJoin('s.categorieSource', 'categorieSource')
             ->leftJoin('s.createur', 'createur')
             ->leftJoin('s.dernierEditeur', 'dernierEditeur')
+            ->leftJoin('s.lieuDecouverte', 'lieuDecouverte')
+            ->leftJoin('lieuDecouverte.grandeRegion', 'regionDecouverte')
+            ->leftJoin('s.lieuOrigine', 'lieuOrigine')
+            ->leftJoin('lieuOrigine.grandeRegion', 'regionOrigine')
+            ->leftJoin('s.datation', 'datation')
             ->leftJoin('s.sourceBiblios', 'sourceBiblios', 'WITH', 'sourceBiblios.editionPrincipale = true')
             ->leftJoin('sourceBiblios.biblio', 'biblio')
             ->orderBy('s.dateModification', 'DESC')

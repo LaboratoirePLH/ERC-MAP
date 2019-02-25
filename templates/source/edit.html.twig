@@ -193,6 +193,9 @@
         $('#source_lieuDecouverte_grandeSousRegion').dependentSelects({
             data_url: "{{ url('data_sous_region') }}"
         });
+        $('#source_lieuOrigine_grandeSousRegion').dependentSelects({
+            data_url: "{{ url('data_sous_region') }}"
+        });
 
         //Gestion des recherches Pleiades
         $('.pleiades_search').on('click', function (e) {

@@ -67,9 +67,13 @@ class DependentSelectType extends AbstractType
         $options = $form->getConfig()->getOptions();
         $data = $event->getData();
 
-        $parentRecord = $this->entityManager
-                             ->getRepository($options['field_options']['class'])
-                             ->find($data[$options['name']]);
+        $parentRecord = null;
+        if(!empty($data[$options['name']]))
+        {
+            $parentRecord = $this->entityManager
+                                 ->getRepository($options['field_options']['class'])
+                                 ->find($data[$options['name']]);
+        }
 
         $this->addElements($form, $parentRecord);
     }

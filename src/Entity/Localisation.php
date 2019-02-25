@@ -283,7 +283,6 @@ class Localisation
     public function setSousRegion(?SousRegion $sousRegion): self
     {
         $this->sousRegion = $sousRegion;
-        $this->setGrandeRegion($sousRegion->getGrandeRegion());
 
         return $this;
     }

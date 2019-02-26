@@ -7,6 +7,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Translation\TranslatorInterface;
 
+use App\Entity\CategorieSource;
 use App\Entity\Source;
 use App\Entity\SourceBiblio;
 use App\Form\SourceType;
@@ -34,6 +35,10 @@ class SourceController extends AbstractController
      */
     public function create(Request $request, TranslatorInterface $translator){
         $source = new Source();
+        $catSource = $this->getDoctrine()
+                       ->getRepository(CategorieSource::class)
+                       ->findOneBy(['nomEn' => 'Epigraphy']);
+        $source->setCategorieSource($catSource);
 
         $form   = $this->get('form.factory')->create(SourceType::class, $source, [
             'locale'       => $request->getLocale(),

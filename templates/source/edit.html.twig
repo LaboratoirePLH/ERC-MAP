@@ -39,9 +39,9 @@
     {% include 'partials/_sectiontitle.html.twig' with {
         'title' : 'source.sections.informations_source',
         'collapseTarget' : '#section-infos',
-        'expanded' : false
+        'expanded' : true
     } only %}
-    <div class="collapse" id="section-infos">
+    <div class="collapse show" id="section-infos">
         {{ form_widget(form.typeCategorieSource) }}
         {{ form_row(form.langues) }}
         {{ form_row(form.titrePrincipal) }}
@@ -60,8 +60,9 @@
     {% include 'partials/_sectiontitle.html.twig' with {
         'title' : 'source.sections.bibliographie',
         'collapseTarget' : '#section-bibliographie',
+        'expanded' : true
     } only %}
-    <div class="collapse" id="section-bibliographie">
+    <div class="collapse show" id="section-bibliographie">
         {{ form_errors(form.sourceBiblios) }}
         {{ form_widget(form.sourceBiblios) }}
         <div class="form-group row">
@@ -78,9 +79,10 @@
 <section>
     {% include 'partials/_sectiontitle.html.twig' with {
         'title' : 'source.sections.datation',
-        'collapseTarget' : '#section-datation'
+        'collapseTarget' : '#section-datation',
+        'expanded' : true
     } only %}
-    <div class="collapse" id="section-datation">
+    <div class="collapse show" id="section-datation">
         {{ form_row(form.estDatee) }}
         <div class="row">
             <div class="col-sm-12 dependent_field_estdatee">

@@ -168,20 +168,23 @@
 <script type="text/javascript">
     $(document).ready(function () {
 
-        var form_old = $("form#source").serialize();
+        var form_old = $("form#source").serialize(),
+            modal_visible = false;
         function isFormDirty(form) { return $(form).serialize() !== form_old; }
 
         $('.exit-form-link').click(function (e) {
             e.preventDefault();
             if (isFormDirty($("form#source"))) {
                 $(".modal#confirm_exit_dirty").modal();
+                $(".modal#confirm_exit_dirty").on('shown.bs.modal', function () { modal_visible = true; });
+                $(".modal#confirm_exit_dirty").on('hidden.bs.modal', function () { modal_visible = false; });
                 return false;
             } else {
                 window.location = $('.exit-form-link').attr('href');
             }
         });
         window.onbeforeunload = function () {
-            if (isFormDirty($("form#source"))) {
+            if (!modal_visible && isFormDirty($("form#source"))) {
                 return "{{ 'modals.confirm_exit_dirty.body'|trans }}";
             }
         }

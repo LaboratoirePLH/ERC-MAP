@@ -9,7 +9,7 @@
 
 <div class="row justify-content-center">
     <div class="col-sm-3">
-        {% include "partials/_formbuttons.html.twig" with {'cancelUrl' : url('source_list')} %}
+        {% include "partials/_formbuttons.html.twig" with {'exitUrl' : url('source_list')} %}
     </div>
     <div class="col-sm-6 text-center">
         {% if action == 'edit' %}
@@ -144,11 +144,19 @@
 <hr />
 <div class="form-group row">
     <div class="col-sm-12 text-center">
-        {% include "partials/_formbuttons.html.twig" with {'cancelUrl' : url('source_list')} %}
+        {% include "partials/_formbuttons.html.twig" with {'exitUrl' : url('source_list')} %}
     </div>
 </div>
 {{ form_rest(form) }}
 {{ form_end(form) }}
+
+{% include "modals/confirmation.html.twig" with {
+'modalName': 'confirm_exit_dirty',
+'uuid': 'confirm_exit_dirty',
+'targetUrl': url('source_list'),
+'method': 'GET',
+'confirmationLabel': 'generic.exit',
+} %}
 
 {{ include('partials/_backtotop.html.twig') }}
 {% endblock %}
@@ -156,6 +164,20 @@
 {{ parent() }}
 <script type="text/javascript">
     $(document).ready(function () {
+
+        var form_old = $("form#source").serialize();
+        function isFormDirty(form) { return $(form).serialize() !== form_old; }
+
+        $('.exit-form-link').click(function (e) {
+            e.preventDefault();
+            if (isFormDirty($("form#source"))) {
+                $(".modal#confirm_exit_dirty").modal();
+                return false;
+            } else {
+                window.location = $('.exit-form-link').attr('href');
+            }
+        });
+
         // Gestion du champ collection
         $('div#source_sourceBiblios').collectionField({
             blockTitle: '{{ "source.fields.source_biblio_n"|trans }}',

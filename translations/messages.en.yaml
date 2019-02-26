@@ -39,6 +39,7 @@ generic:
     add: "Add"
     clear: "Clear"
     clear_filters: "Clear filters"
+    exit: "Exit"
     fields:
         id: "ID"
         date_creation: "Creation"
@@ -171,6 +172,9 @@ modals:
     confirm_deletion:
         title: "Confirm delete"
         body: "Are you sure you want to delete this record ? This action cannot be undone, and may cause the deletion of children records."
+    confirm_exit_dirty:
+        title: "Confirm cancellation"
+        body: "You have unsaved changes. Are you sure you want to cancel ?"
 
 datatable:
     all: "All"

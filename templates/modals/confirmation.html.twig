@@ -7,8 +7,7 @@ Parameters :
 - confirmationLabel : Text of the primary button
 - csrfToken : CSRF token to pass in the form
 #}
-{% set id = modalName ~ random() %}
-<div class="modal fade" id="{{ uuid }}" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade" id="{{ uuid|default(modalName ~ random()) }}" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -21,9 +20,11 @@ Parameters :
                 <p>{{ ('modals.'~modalName~'.body')|trans }}</p>
             </div>
             <div class="modal-footer">
-                <a class="btn btn-secondary" data-dismiss="modal">{{ 'generic.cancel'|trans }}</a>
-                <form action="{{ targetUrl }}" method="post">
+                <a class="btn btn-secondary" data-dismiss="modal">{{ cancelLabel|default('generic.cancel')|trans }}</a>
+                <form action="{{ targetUrl }}" method="{{ method|default("POST") }}">
+                    {% if csrfToken is defined %}
                     <input type="hidden" name="token" value="{{ csrf_token(csrfToken) }}">
+                    {% endif %}
                     <button type="submit" class="btn btn-danger">
                         {{ confirmationLabel|trans }}
                     </button>

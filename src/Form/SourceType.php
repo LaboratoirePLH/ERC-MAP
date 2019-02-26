@@ -49,13 +49,6 @@ class SourceType extends AbstractType
                 'label'    => 'languages.en',
                 'required' => false
             ])
-            ->add('citation', CheckboxType::class, [
-                'label'      => 'source.fields.citation',
-                'label_attr' => [
-                    'class' => 'dependent_field_quote_main'
-                ],
-                'required' => false
-            ])
             ->add('urlTexte', UrlType::class, [
                 'label'    => 'source.fields.url_texte',
                 'required' => false
@@ -234,25 +227,6 @@ class SourceType extends AbstractType
                 'creation_form_class'     => TitreType::class,
                 'selection_choice_label'  => 'nom'.ucfirst($locale),
                 'selection_query_builder' => function (EntityRepository $er) use ($locale) {
-                    return $er->createQueryBuilder('e')
-                        ->orderBy('e.nom'.ucfirst($locale), 'ASC');
-                }
-            ])
-            ->add('titresCites', EntityType::class, [
-                'label'      => 'source.fields.titres_cites',
-                'label_attr' => [
-                    'class' => 'dependent_field_quote'
-                ],
-                'required'     => false,
-                'multiple'     => true,
-                'expanded'     => false,
-                'class'        => Titre::class,
-                'choice_label' => 'affichage'.ucfirst($locale),
-                'attr'         => [
-                    'class'            => 'autocomplete',
-                    'data-placeholder' => $options['translations']['autocomplete.select_multiple']
-                ],
-                'query_builder' => function (EntityRepository $er) use ($locale) {
                     return $er->createQueryBuilder('e')
                         ->orderBy('e.nom'.ucfirst($locale), 'ASC');
                 }

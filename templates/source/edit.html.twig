@@ -46,8 +46,6 @@
         {{ form_row(form.langues) }}
         {{ form_row(form.titrePrincipal) }}
         {{ form_row(form.auteurs) }}
-        {{ form_row(form.citation) }}
-        {{ form_row(form.titresCites) }}
         {{ form_widget(form.typeCategorieMateriau) }}
         {{ form_widget(form.typeCategorieSupport) }}
         {{ form_row(form.urlTexte) }}
@@ -224,10 +222,6 @@
         });
         // Gestion des champs dépendants
         $.fn.dependentFields({
-            quote: {
-                conditionCallback: function (main) { return $(main).is(':checked') },
-                targetFinder: function (name, main) { return $('.dependent_field_' + name); }
-            },
             iconography: {
                 conditionCallback: function (main) { return $(main).is(':checked') },
                 targetFinder: function (name, main) { return $('.dependent_field_' + name); }

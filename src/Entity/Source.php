@@ -72,24 +72,6 @@ class Source
     /**
      * @var bool|null
      *
-     * @ORM\Column(name="citation", type="boolean", nullable=true)
-     */
-    private $citation = false;
-
-    public function getCitation(): ?bool
-    {
-        return $this->citation;
-    }
-
-    public function setCitation(?bool $citation): self
-    {
-        $this->citation = $citation;
-        return $this;
-    }
-
-    /**
-     * @var bool|null
-     *
      * @ORM\Column(name="iconographie", type="boolean", nullable=true)
      */
     private $iconographie = false;
@@ -446,49 +428,9 @@ class Source
      */
     public function __construct()
     {
-        $this->titresCites = new \Doctrine\Common\Collections\ArrayCollection();
         $this->auteurs = new \Doctrine\Common\Collections\ArrayCollection();
         $this->langues = new \Doctrine\Common\Collections\ArrayCollection();
         $this->sourceBiblios = new \Doctrine\Common\Collections\ArrayCollection();
-    }
-
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     *
-     * @ORM\ManyToMany(targetEntity="Titre", fetch="EAGER")
-     * @ORM\JoinTable(name="source_titre_cite",
-     *   joinColumns={
-     *     @ORM\JoinColumn(name="id_source", referencedColumnName="id")
-     *   },
-     *   inverseJoinColumns={
-     *     @ORM\JoinColumn(name="id_titre", referencedColumnName="id")
-     *   }
-     * )
-     */
-    private $titresCites;
-
-    /**
-     * @return Collection|Titre[]
-     */
-    public function getTitresCites(): Collection
-    {
-        return $this->titresCites;
-    }
-
-    public function addTitresCite(Titre $titresCite): self
-    {
-        if (!$this->titresCites->contains($titresCite)) {
-            $this->titresCites[] = $titresCite;
-        }
-        return $this;
-    }
-
-    public function removeTitresCite(Titre $titresCite): self
-    {
-        if ($this->titresCites->contains($titresCite)) {
-            $this->titresCites->removeElement($titresCite);
-        }
-        return $this;
     }
 
     /**

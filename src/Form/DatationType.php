@@ -23,20 +23,6 @@ class DatationType extends AbstractType
                 'label'    => 'datation.fields.ante_quem',
                 'required' => false
             ])
-            ->add('postQuemCitation', IntegerType::class, [
-                'label'      => 'datation.fields.post_quem_cit',
-                'required'   => false,
-                'label_attr' => [
-                    'class' => 'dependent_field_quote'
-                ]
-            ])
-            ->add('anteQuemCitation', IntegerType::class, [
-                'label'      => 'datation.fields.ante_quem_cit',
-                'required'   => false,
-                'label_attr' => [
-                    'class' => 'dependent_field_quote'
-                ]
-            ])
             ->add('commentaireFr', CKEditorType::class, array(
                 'config_name' => 'text_styling_only',
                 'label'       => 'generic.fields.commentaire_fr',

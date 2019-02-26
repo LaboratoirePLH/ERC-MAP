@@ -37,20 +37,6 @@ class Datation
      */
     private $anteQuem;
 
-    /**
-     * @var int|null
-     *
-     * @ORM\Column(name="post_quem_citation", type="smallint", nullable=true)
-     */
-    private $postQuemCitation;
-
-    /**
-     * @var int|null
-     *
-     * @ORM\Column(name="ante_quem_citation", type="smallint", nullable=true)
-     */
-    private $anteQuemCitation;
-
     public function getId(): ?int
     {
         return $this->id;
@@ -76,30 +62,6 @@ class Datation
     public function setAnteQuem(?int $anteQuem): self
     {
         $this->anteQuem = $anteQuem;
-
-        return $this;
-    }
-
-    public function getPostQuemCitation(): ?int
-    {
-        return $this->postQuemCitation;
-    }
-
-    public function setPostQuemCitation(?int $postQuemCitation): self
-    {
-        $this->postQuemCitation = $postQuemCitation;
-
-        return $this;
-    }
-
-    public function getAnteQuemCitation(): ?int
-    {
-        return $this->anteQuemCitation;
-    }
-
-    public function setAnteQuemCitation(?int $anteQuemCitation): self
-    {
-        $this->anteQuemCitation = $anteQuemCitation;
 
         return $this;
     }

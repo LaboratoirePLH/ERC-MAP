@@ -10,7 +10,7 @@
 
         var setupLinks = function (prototype) {
             var deleteLink = $(
-                '<a href="#" class="btn btn-sm btn-danger">' + settings.deleteLink + '</a>'
+                '<a href="#" class="btn btn-sm btn-danger ml-2 mb-1">' + settings.deleteLink + '</a>'
             );
             deleteLink.click(function (e) {
                 e.preventDefault();
@@ -24,7 +24,6 @@
             prototype.children('legend')
                 .removeClass('col-sm-2 col-form-label')
                 .addClass('col-sm-12 text-center h4')
-                .append($('<br>'))
                 .append(deleteLink);
             prototype.children('.col-sm-10')
                 .removeClass('col-sm-10')

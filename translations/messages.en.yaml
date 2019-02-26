@@ -46,6 +46,7 @@ generic:
         date_creation: "Creation"
         date_modification: "Latest Edition"
         by: "by"
+        type: "Type"
         commentaire: "Comments"
         nom_fr: "Name (FR)"
         nom_en: "Name (EN)"
@@ -136,8 +137,6 @@ biblio:
         annee: "Year"
         auteur: "Author"
         corpus: "Corpus"
-        corpus_selection: "Select Corpus"
-        corpus_creation: "Create Corpus"
 
 corpus:
     fields:

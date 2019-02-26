@@ -186,6 +186,7 @@
                 return "{{ 'modals.confirm_exit_dirty.body'|trans }}";
             }
         }
+        $("form#source").on('submit', function () { window.onbeforeunload = null; })
 
         // Gestion du champ collection
         $('div#source_sourceBiblios').collectionField({
@@ -206,6 +207,14 @@
                 if (idx == 1) {
                     $(newEl).find('label.mainsource_field').siblings('input[type=checkbox]').prop('checked', true);
                 }
+                $.fn.dependentFields({
+                    corpus: {
+                        conditionCallback: function (main) { return $(main).val() == 0; },
+                        targetFinder: function (name, main) {
+                            return main.parents('.selectorcreate').find('.dependent_field_' + name);
+                        }
+                    }
+                });
             }
         });
 
@@ -223,21 +232,27 @@
         // Gestion des champs dépendants
         $.fn.dependentFields({
             iconography: {
-                conditionCallback: function (main) { return $(main).is(':checked') },
+                conditionCallback: function (main) { return $(main).is(':checked'); },
                 targetFinder: function (name, main) { return $('.dependent_field_' + name); }
             },
             insitu: {
-                conditionCallback: function (main) { return $(main).is(':checked') },
+                conditionCallback: function (main) { return $(main).is(':checked'); },
                 targetFinder: function (name, main) { return $('.dependent_field_' + name); }
             },
             estdatee: {
-                conditionCallback: function (main) { return $(main).is(':checked') },
+                conditionCallback: function (main) { return $(main).is(':checked'); },
                 targetFinder: function (name, main) { return $('.dependent_field_' + name); }
             },
             sitename: {
-                conditionCallback: function (main) { return $(main).val() != "" },
+                conditionCallback: function (main) { return $(main).val() != ""; },
                 targetFinder: function (name, main) {
                     return main.parents('.localisation_form').find('.dependent_field_' + name);
+                }
+            },
+            corpus: {
+                conditionCallback: function (main) { return $(main).is(':checked'); },
+                targetFinder: function (name, main) {
+                    return main.parents('.selectorcreate').find('.dependent_field_' + name);
                 }
             }
         });

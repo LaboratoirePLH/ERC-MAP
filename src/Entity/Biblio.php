@@ -52,14 +52,11 @@ class Biblio
     private $auteurBiblio;
 
     /**
-     * @var \Corpus
+     * @var bool|null
      *
-     * @ORM\ManyToOne(targetEntity="Corpus", cascade={"persist"}, fetch="EAGER")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="corpus_id", referencedColumnName="id")
-     * })
+     * @ORM\Column(name="est_corpus", type="boolean", nullable=true)
      */
-    private $corpus;
+    private $estCorpus;
 
     public function getId(): ?int
     {
@@ -114,22 +111,24 @@ class Biblio
         return $this;
     }
 
-    public function getCorpus(): ?Corpus
+    public function getEstCorpus(): ?bool
     {
-        return $this->corpus;
+        return $this->estCorpus;
     }
 
-    public function setCorpus(?Corpus $corpus): self
+    public function setEstCorpus(?bool $estCorpus): self
     {
-        $this->corpus = $corpus;
-
+        $this->estCorpus = $estCorpus;
         return $this;
     }
 
     public function getAffichage(): string
     {
-        return \sprintf("%s, %s (%d) [%s]", $this->auteurBiblio, $this->titreAbrege, $this->annee,
-        "");
+        if($this->getEstCorpus()){
+            return sprintf("Corpus : %s", $this->getTitreAbrege());
+        } else {
+            return sprintf("Biblio : %s, %s (%d)", $this->auteurBiblio, $this->titreAbrege, $this->annee);
+        }
     }
 
 }

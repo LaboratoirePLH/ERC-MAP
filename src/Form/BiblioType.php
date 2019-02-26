@@ -10,7 +10,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Doctrine\ORM\EntityRepository;
 
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -21,6 +21,13 @@ class BiblioType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add("estCorpus", CheckboxType::class, [
+                'label'      => 'biblio.fields.corpus',
+                'required'   => false,
+                'label_attr' => [
+                    'class' => 'dependent_field_corpus_main'
+                ]
+            ])
             ->add('titreAbrege', TextType::class, [
                 'label'    => 'biblio.fields.titre_abrege',
                 'required' => false
@@ -32,25 +39,17 @@ class BiblioType extends AbstractType
             ))
             ->add('annee', IntegerType::class, [
                 'label'    => 'biblio.fields.annee',
+                'label_attr' => [
+                    'class' => 'dependent_field_corpus dependent_field_inverse'
+                ],
                 'required' => false
             ])
             ->add('auteurBiblio', TextType::class, [
                 'label'    => 'biblio.fields.auteur',
+                'label_attr' => [
+                    'class' => 'dependent_field_corpus dependent_field_inverse'
+                ],
                 'required' => false
-            ])
-            ->add('corpus', SelectOrCreateType::class, [
-                'label'                   => 'biblio.fields.corpus',
-                'locale'                  => $options['locale'],
-                'translations'            => $options['translations'],
-                'field_name'              => 'corpus',
-                'object_class'            => Corpus::class,
-                'creation_form_class'     => CorpusType::class,
-                'allow_none'              => true,
-                'selection_choice_label'  => 'nom',
-                'selection_query_builder' => function (EntityRepository $er) {
-                    return $er->createQueryBuilder('e')
-                        ->orderBy('e.nom', 'ASC');
-                }
             ])
         ;
     }

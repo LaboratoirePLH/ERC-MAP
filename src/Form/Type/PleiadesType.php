@@ -18,6 +18,7 @@ class PleiadesType extends IntegerType
         $resolver->setDefault('search_label', 'Search');
         $resolver->setDefault('clear_label', 'Clear');
         $resolver->setDefault('view_label', 'View');
+        $resolver->setDefault('help', 'generic.help.pleiades_number');
     }
 
     public function buildView(FormView $view, FormInterface $form, array $options)

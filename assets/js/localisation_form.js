@@ -13,12 +13,12 @@
             rootForm.find('.pleiades_search').on('click', function (e) {
                 e.preventDefault();
                 var btn = $(this),
-                    errorEl = $(this).parents('.input-group').siblings('.pleiades-error'),
+                    errorEl = rootForm.find('.pleiades-error'),
                     input = $(this).parent().siblings('input[type=number]');
 
                 if (input.val() !== "") {
                     // Display loader
-                    btn.prepend($('<i class="fas fa-spinner fa-pulse mr-2"></i>'));
+                    btn.prepend($('<i class="fas fa-spinner fa-pulse mr-2 loader"></i>'));
                     // Empty error message
                     errorEl.text('');
 
@@ -45,15 +45,15 @@
                             input.attr('readonly', true);
                         })
                         .fail(function (jqXHR, textStatus, errorThrown) {
-                            var error = "{{'generic.messages.error_unknown'|trans}}";
+                            var error = settings.errorMessage;
                             if (errorThrown === "Not Found") {
-                                error = "{{'generic.messages.error_not_found'|trans}}";
+                                error = settings.notFoundErrorMessage;
                             }
                             errorEl.text(error);
                             input.val('');
                         })
                         .always(function () {
-                            btn.find('i').remove();
+                            btn.find('i.loader').remove();
                         });
                 }
 
@@ -71,14 +71,14 @@
                     }
                 });
                 $(this).parent().siblings('input[type=number]').val('').attr('readonly', false);
+                rootForm.find('.pleiades-error').text('');
                 return false;
             });
             rootForm.find('.pleiades_view').on('click', function (e) {
                 var id = parseInt($(this).parent().siblings('input[type=number]').val(), 10);
                 console.log(id);
                 if (Number.isNaN(id) || id == 0) {
-                    e.preventDefault();
-                    return false;
+                    id = "";
                 }
                 $(this).attr('href', "https://pleiades.stoa.org/places/" + id);
             });

@@ -60,6 +60,8 @@ generic:
         deletion_failed_missing: "Deletion failed, record not found"
         error_not_found: "Error : Not found"
         error_unknown: "Unknown error"
+    help:
+        pleiades_number: "Enter the ID of a Pleiades entry and click the \"Search\" button to fetch the data from Pleiades. Click the \"Clear\" button to erase the data"
 
 source:
     list: "Sources List"

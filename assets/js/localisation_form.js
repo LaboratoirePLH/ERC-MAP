@@ -4,8 +4,12 @@
         var settings = $.extend({
             // These are the defaults.
             errorMessage: "Error",
-            notFoundErrorMessage: "Not Found"
+            notFoundErrorMessage: "Not Found",
+            ambiguousErrorMassage: "Ambiguous Data"
         }, settings);
+        if (!settings.hasOwnProperty('dataUrl')) {
+            throw "Data URL was not specified";
+        }
 
         return this.each(function () {
             var rootForm = $(this);
@@ -98,6 +102,73 @@
                     idField.attr('readonly', true);
                 }
             })
+
+            rootForm.find('.citysearch_search').on('click', function (e) {
+                e.preventDefault();
+                var btn = $(this),
+                    errorEl = rootForm.find('.citysearch-error'),
+                    cityInput = $(this).parent().siblings('input[type=text]'),
+                    pleiadesInput = rootForm.find('.pleiades_search').parent().siblings('input[type=number]');
+
+                if (cityInput.val() !== "" || pleiadesInput.val() !== "") {
+                    // Display loader
+                    btn.prepend($('<i class="fas fa-spinner fa-pulse mr-2 loader"></i>'));
+                    // Empty error message
+                    errorEl.text('');
+
+                    var labelId = $(this).parent().parent().parent().siblings('label').attr('id'),
+                        labelSeg = labelId.split('_'),
+                        fields = {};
+
+                    // Get the fields to fill if the request is successful
+                    rootForm.find('.citysearch_field').each(function () {
+                        var seg = $(this).attr('id').split('_');
+                        if (seg[0] == labelSeg[0] && seg[1] == labelSeg[1]) {
+                            fields[seg[2]] = $(this).siblings().find('input,select');
+                        }
+                    });
+
+                    var data = {};
+                    if (cityInput.val() !== "") { data.city = cityInput.val(); }
+                    if (pleiadesInput.val() !== "") { data.pleiades = pleiadesInput.val(); }
+
+                    $.getJSON(settings.dataUrl, data)
+                        .done(function (data) {
+                            $.each(data, function (fieldName, value) {
+                                if (fields.hasOwnProperty(fieldName)) {
+                                    if (fieldName == "granderegion" && fields.hasOwnProperty("sousregion")) {
+                                        fields.granderegion.val(value).on('dependent:updated', function () {
+                                            fields.sousregion.val(data.sousregion).trigger('chosen:updated');
+                                        }).trigger('chosen:updated').trigger('change')
+                                    }
+                                    else if (fieldName == "sousregion") {
+                                        return true;
+                                    }
+                                    else {
+                                        fields[fieldName].val(value);
+                                    }
+                                }
+
+                            })
+                            cityInput.val(data.nom);
+                        })
+                        .fail(function (jqXHR, textStatus, errorThrown) {
+                            var error = settings.errorMessage;
+                            if (errorThrown === "Not Found") {
+                                error = settings.notFoundErrorMessage;
+                            }
+                            if (errorThrown === "Not Acceptable") {
+                                error = settings.ambiguousErrorMassage;
+                            }
+                            errorEl.text(error);
+                        })
+                        .always(function () {
+                            btn.find('i.loader').remove();
+                        });
+                }
+
+                return false;
+            });
         });
     }
 })(jQuery);

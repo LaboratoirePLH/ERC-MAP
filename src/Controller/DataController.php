@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Localisation;
 use App\Entity\Materiau;
 use App\Entity\SousRegion;
 use App\Entity\TypeSource;
@@ -17,6 +18,9 @@ class DataController extends AbstractController
 {
     private function _fetchDataForCategory($entityClass, $parentField, $parentValue, $locale)
     {
+        if(empty($parentValue)){
+            return new JsonResponse(['message' => 'Missing parameters'], 400);
+        }
         $repo = $this->getDoctrine()->getManager()->getRepository($entityClass);
         $rows = $repo->createQueryBuilder("e")
             ->where("e.$parentField = :id")
@@ -87,5 +91,51 @@ class DataController extends AbstractController
             $request->query->get("parentId"),
             $request->getLocale()
         );
+    }
+
+    /**
+     * @Route("/data/city_search", name="city_search")
+     */
+    public function citySearch(Request $request)
+    {
+        $repo = $this->getDoctrine()->getManager()->getRepository(Localisation::class);
+        $query = $repo->createQueryBuilder("e");
+
+        if($request->query->has('pleiades'))
+        {
+            $query = $query->where("e.pleiadesVille = :number")
+                        ->setParameter("number", $request->query->get('pleiades'));
+        }
+        else if($request->query->has('city'))
+        {
+            $query = $query->where("lower(e.nomVille) = lower(:nomville)")
+                        ->setParameter("nomville", $request->query->get('city'));
+        }
+        else
+        {
+            return new JsonResponse(['message' => 'Missing parameters'], 400);
+        }
+        $result = $query->getQuery()->getResult();
+        $data = [];
+        foreach($result as $row){
+            $data[] = [
+                "granderegion" => $row->getGrandeRegion() ? $row->getGrandeRegion()->getId() : "",
+                "sousregion" => $row->getSousRegion() ? $row->getSousRegion()->getId() : "",
+                "id" => $row->getPleiadesVille() ?? "",
+                "nom" => $row->getNomVille() ?? "",
+                "latitude" => $row->getLatitude() ?? "",
+                "longitude" => $row->getLongitude() ?? ""
+            ];
+        }
+        $data = array_map("unserialize", array_unique(array_map("serialize", $data)));
+        if(count($data) == 0){
+            return new JsonResponse(['message' => 'Not Found'], 404);
+        }
+        else if(count($data) > 1){
+            return new JsonResponse(['message' => 'Ambiguous Data'], 406);
+        }
+        else {
+            return new JsonResponse(array_pop($data));
+        }
     }
 }

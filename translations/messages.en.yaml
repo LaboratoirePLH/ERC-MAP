@@ -31,6 +31,7 @@ generic:
     close: "Close"
     cancel: "Cancel"
     search: "Search"
+    search_database: "Search Database"
     save: "Save"
     saveclose: "Save & Close"
     view: "View"
@@ -60,9 +61,11 @@ generic:
         deletion_failed_csrf: "Deletion failed, invalid CSRF Token"
         deletion_failed_missing: "Deletion failed, record not found"
         error_not_found: "Error : Not found"
+        error_ambiguous: "Error : Ambiguous results"
         error_unknown: "Unknown error"
     help:
-        pleiades_number: "Enter the ID of a Pleiades entry and click the \"Search\" button to fetch the data from Pleiades. Click the \"Clear\" button to erase the data"
+        city_search: "Enter a City name and/or a Pleiades number, then click the \"Search database\" button to search the database. If a single result is found, relevant fields will be populated according to its data"
+        pleiades_number: "Enter the ID of a Pleiades entry and click the \"Search\" button to search on Pleiades. If a result is found, relevant fields will be populated according to its data and locked. Click the \"Clear\" button to erase the data"
 
 source:
     list: "Sources List"

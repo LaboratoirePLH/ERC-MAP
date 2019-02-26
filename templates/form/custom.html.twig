@@ -37,6 +37,20 @@
 <small class="form-text text-danger pleiades-error"></small>
 {% endblock pleiades_widget %}
 
+{% block citysearch_widget %}
+<div class="input-group">
+    {{- form_widget(form) -}}
+    <div class="input-group-append">
+        <button class="btn btn-outline-primary citysearch_search">
+            <i class="fas fa-search fa-fw"></i>
+            {{ search_label|trans }}
+        </button>
+    </div>
+    <br />
+</div>
+<small class="form-text text-danger citysearch-error"></small>
+{% endblock citysearch_widget %}
+
 {% block dependentselect_row %}
 {%- set widget_attr = {} -%}
 {%- if help is not empty -%}

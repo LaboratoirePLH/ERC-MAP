@@ -18,8 +18,7 @@
 
             selectFirst.on('change', function () {
                 var me = $(this);
-
-                if (me.val() == "") {
+                if (me.val() == "" || me.val() == null) {
                     selectLast.html('');
                     selectLast.attr('disabled', true);
                     if (selectLast.hasClass('autocomplete')) {

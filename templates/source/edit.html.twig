@@ -39,9 +39,9 @@
     {% include 'partials/_sectiontitle.html.twig' with {
         'title' : 'source.sections.informations_source',
         'collapseTarget' : '#section-infos',
-        'expanded' : true
+        'expanded' : false
     } only %}
-    <div class="collapse show" id="section-infos">
+    <div class="collapse" id="section-infos">
         {{ form_widget(form.typeCategorieSource) }}
         {{ form_row(form.langues) }}
         {{ form_row(form.titrePrincipal) }}
@@ -94,9 +94,10 @@
 <section>
     {% include 'partials/_sectiontitle.html.twig' with {
         'title' : 'source.sections.localisation',
-        'collapseTarget' : '#section-localisation'
+        'collapseTarget' : '#section-localisation',
+        'expanded' : true
     } only %}
-    <div class="collapse" id="section-localisation">
+    <div class="collapse show" id="section-localisation">
         {# {{ form_widget(form.lieuDecouverte.grandeSousRegion) }} #}
         {{ form_row(form.lieuDecouverte) }}
         {{ form_row(form.inSitu) }}
@@ -262,6 +263,8 @@
         $('.localisation_form').localisationForm({
             errorMessage: "{{'generic.messages.error_unknown'|trans}}",
             notFoundErrorMessage: "{{'generic.messages.error_not_found'|trans}}",
+            ambiguousErrorMessage: "{{'generic.messages.error_ambiguous'|trans}}",
+            dataUrl: "{{ url('city_search') }}"
         });
         $('#copy_location').on('click', function (e) {
             e.preventDefault();

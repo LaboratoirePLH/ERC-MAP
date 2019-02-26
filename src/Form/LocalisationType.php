@@ -9,6 +9,7 @@ use App\Entity\EntitePolitique;
 use App\Entity\QTopographie;
 use App\Entity\QFonction;
 
+use App\Form\Type\CitySearchType;
 use App\Form\Type\DependentSelectType;
 use App\Form\Type\PleiadesType;
 use Symfony\Component\Form\AbstractType;
@@ -28,38 +29,6 @@ class LocalisationType extends AbstractType
     {
         $locale = $options['locale'];
         $builder
-            ->add('grandeSousRegion', DependentSelectType::class, [
-                'label' => null,
-                'locale'         => $options['locale'],
-                'translations'   => $options['translations'],
-                'name'           => 'grandeRegion',
-                'secondary_name' => 'sousRegion',
-                'category_field' => 'grandeRegion',
-                'field_options'  => [
-                    'label'        => 'localisation.fields.grande_region',
-                    'required'     => false,
-                    'class'        => GrandeRegion::class,
-                    'choice_label' => 'nom'.ucfirst($locale),
-                    'attr'         => [
-                        'class' => 'autocomplete',
-                        'data-placeholder' => $options['translations']['autocomplete.select_element']
-                    ],
-                    'query_builder' => function (EntityRepository $er) use ($locale) {
-                        return $er->createQueryBuilder('e')
-                            ->orderBy('e.nom'.ucfirst($locale), 'ASC');
-                    }
-                ],
-                'secondary_field_options' => [
-                    'label'        => 'localisation.fields.sous_region',
-                    'required'     => false,
-                    'class'        => SousRegion::class,
-                    'choice_label' => 'nom'.ucfirst($locale),
-                    'attr'         => [
-                        'class' => 'autocomplete',
-                        'data-placeholder' => $options['translations']['autocomplete.select_element']
-                    ]
-                ]
-            ])
             ->add('entitePolitique', EntityType::class, [
                 'label'        => 'localisation.fields.entite_politique',
                 'required'     => false,
@@ -76,27 +45,62 @@ class LocalisationType extends AbstractType
                         ->orderBy('e.nom'.ucfirst($locale), 'ASC');
                 }
             ])
+            ->add('grandeSousRegion', DependentSelectType::class, [
+                'label' => null,
+                'locale'         => $options['locale'],
+                'translations'   => $options['translations'],
+                'name'           => 'grandeRegion',
+                'secondary_name' => 'sousRegion',
+                'category_field' => 'grandeRegion',
+                'field_options'  => [
+                    'label'        => 'localisation.fields.grande_region',
+                    'label_attr'   => ['id' => 'localisation_ville_granderegion', 'class' => 'citysearch_field'],
+                    'required'     => false,
+                    'class'        => GrandeRegion::class,
+                    'choice_label' => 'nom'.ucfirst($locale),
+                    'attr'         => [
+                        'class' => 'autocomplete',
+                        'data-placeholder' => $options['translations']['autocomplete.select_element']
+                    ],
+                    'query_builder' => function (EntityRepository $er) use ($locale) {
+                        return $er->createQueryBuilder('e')
+                            ->orderBy('e.nom'.ucfirst($locale), 'ASC');
+                    }
+                ],
+                'secondary_field_options' => [
+                    'label'        => 'localisation.fields.sous_region',
+                    'label_attr'   => ['id' => 'localisation_ville_sousregion', 'class' => 'citysearch_field'],
+                    'required'     => false,
+                    'class'        => SousRegion::class,
+                    'choice_label' => 'nom'.ucfirst($locale),
+                    'attr'         => [
+                        'class' => 'autocomplete',
+                        'data-placeholder' => $options['translations']['autocomplete.select_element']
+                    ]
+                ]
+            ])
             ->add('pleiadesVille', PleiadesType::class, [
-                'label_attr'   => ['id' => 'pleiades_ville_id'],
+                'label_attr'   => ['id' => 'localisation_ville_id', 'class' => 'citysearch_field'],
                 'label'        => 'localisation.fields.pleiades_ville',
                 'search_label' => 'localisation.search_pleiades',
                 'view_label'   => 'localisation.view_pleiades',
                 'clear_label'  => 'generic.clear',
                 'required'     => false
             ])
-            ->add('nomVille', TextType::class, [
-                'label_attr' => ['id' => 'pleiades_ville_nom', 'class' => 'pleiades_field'],
-                'label'      => 'localisation.fields.nom_ville',
-                'required'   => false
+            ->add('nomVille', CitySearchType::class, [
+                'label_attr'   => ['id' => 'localisation_ville_nom', 'class' => 'pleiades_field'],
+                'label'        => 'localisation.fields.nom_ville',
+                'search_label' => 'generic.search_database',
+                'required'     => false
             ])
             ->add('latitude', NumberType::class, [
-                'label_attr' => ['id' => 'pleiades_ville_latitude', 'class' => 'pleiades_field'],
+                'label_attr' => ['id' => 'localisation_ville_latitude', 'class' => 'pleiades_field citysearch_field'],
                 'label'      => 'localisation.fields.latitude',
                 'scale'      => 7,
                 'required'   => false,
             ])
             ->add('longitude', NumberType::class, [
-                'label_attr' => ['id' => 'pleiades_ville_longitude', 'class' => 'pleiades_field'],
+                'label_attr' => ['id' => 'localisation_ville_longitude', 'class' => 'pleiades_field citysearch_field'],
                 'label'      => 'localisation.fields.longitude',
                 'scale'      => 7,
                 'required'   => false,
@@ -110,7 +114,7 @@ class LocalisationType extends AbstractType
                 'required'     => false
             ])
             ->add('nomSite', TextType::class, [
-                'label_attr' => ['id' => 'pleiades_site_nom', 'class' => 'pleiades_field'],
+                'label_attr' => ['id' => 'localisation_site_nom', 'class' => 'pleiades_field'],
                 'label'      => 'localisation.fields.nom_site',
                 'attr'       => ['class' => 'dependent_field_sitename_main'],
                 'required'   => false

@@ -177,6 +177,11 @@
                 window.location = $('.exit-form-link').attr('href');
             }
         });
+        window.onbeforeunload = function () {
+            if (isFormDirty($("form#source"))) {
+                return "{{ 'modals.confirm_exit_dirty.body'|trans }}";
+            }
+        }
 
         // Gestion du champ collection
         $('div#source_sourceBiblios').collectionField({

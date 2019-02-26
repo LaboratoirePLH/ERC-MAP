@@ -16,11 +16,10 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Doctrine\ORM\EntityRepository;
 
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use FOS\CKEditorBundle\Form\Type\CKEditorType;
 
 
 class LocalisationType extends AbstractType
@@ -150,14 +149,18 @@ class LocalisationType extends AbstractType
                         ->orderBy('e.nom'.ucfirst($locale), 'ASC');
                 }
             ])
-            ->add('commentaireFr', TextareaType::class, [
-                'label'    => 'generic.fields.commentaire_fr',
-                'required' => false
-            ])
-            ->add('commentaireEn', TextareaType::class, [
-                'label'    => 'generic.fields.commentaire_en',
-                'required' => false
-            ])
+            ->add('commentaireFr', CKEditorType::class, array(
+                'config_name' => 'text_styling_only',
+                'label'       => 'generic.fields.commentaire_fr',
+                'attr'        => ['rows' => 2],
+                'required'    => false
+            ))
+            ->add('commentaireEn', CKEditorType::class, array(
+                'config_name' => 'text_styling_only',
+                'label'       => 'generic.fields.commentaire_en',
+                'attr'        => ['rows' => 2],
+                'required'    => false
+            ))
         ;
     }
 

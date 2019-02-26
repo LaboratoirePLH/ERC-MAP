@@ -13,10 +13,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Doctrine\ORM\EntityRepository;
 
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use FOS\CKEditorBundle\Form\Type\CKEditorType;
 
 class SourceBiblioType extends AbstractType
 {
@@ -41,14 +39,18 @@ class SourceBiblioType extends AbstractType
                         ->orderBy('e.auteurBiblio', 'ASC');
                 }
             ])
-            ->add('commentaireFr', TextareaType::class, [
-                'label'    => 'generic.fields.commentaire_fr',
-                'required' => false
-            ])
-            ->add('commentaireEn', TextareaType::class, [
-                'label'    => 'generic.fields.commentaire_en',
-                'required' => false
-            ])
+            ->add('commentaireFr', CKEditorType::class, array(
+                'config_name' => 'text_styling_only',
+                'label'       => 'generic.fields.commentaire_fr',
+                'attr'        => ['rows' => 2],
+                'required'    => false
+            ))
+            ->add('commentaireEn', CKEditorType::class, array(
+                'config_name' => 'text_styling_only',
+                'label'       => 'generic.fields.commentaire_en',
+                'attr'        => ['rows' => 2],
+                'required'    => false
+            ))
             ->add('referenceSource', TextType::class, [
                 'label'    => 'source_biblio.fields.reference_source',
                 'required' => false

@@ -8,7 +8,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use FOS\CKEditorBundle\Form\Type\CKEditorType;
 
 class DatationType extends AbstractType
 {
@@ -37,14 +37,18 @@ class DatationType extends AbstractType
                     'class' => 'dependent_field_quote'
                 ]
             ])
-            ->add('commentaireFr', TextareaType::class, [
-                'label'    => 'generic.fields.commentaire_fr',
-                'required' => false
-            ])
-            ->add('commentaireEn', TextareaType::class, [
-                'label'    => 'generic.fields.commentaire_en',
-                'required' => false
-            ])
+            ->add('commentaireFr', CKEditorType::class, array(
+                'config_name' => 'text_styling_only',
+                'label'       => 'generic.fields.commentaire_fr',
+                'attr'        => ['rows' => 2],
+                'required'    => false
+            ))
+            ->add('commentaireEn', CKEditorType::class, array(
+                'config_name' => 'text_styling_only',
+                'label'       => 'generic.fields.commentaire_en',
+                'attr'        => ['rows' => 2],
+                'required'    => false
+            ))
             // ->add('fiabiliteDatation')
         ;
     }

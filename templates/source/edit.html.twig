@@ -190,7 +190,30 @@
             include_group_label_in_selected: true
         });
         // Gestion des champs dépendants
-        $.fn.dependentFields(['quote', 'iconography', 'insitu', 'estdatee']);
+        $.fn.dependentFields({
+            quote: {
+                conditionCallback: function (main) { return $(main).is(':checked') },
+                targetFinder: function (name, main) { return $('.dependent_field_' + name); }
+            },
+            iconography: {
+                conditionCallback: function (main) { return $(main).is(':checked') },
+                targetFinder: function (name, main) { return $('.dependent_field_' + name); }
+            },
+            insitu: {
+                conditionCallback: function (main) { return $(main).is(':checked') },
+                targetFinder: function (name, main) { return $('.dependent_field_' + name); }
+            },
+            estdatee: {
+                conditionCallback: function (main) { return $(main).is(':checked') },
+                targetFinder: function (name, main) { return $('.dependent_field_' + name); }
+            },
+            sitename: {
+                conditionCallback: function (main) { return $(main).val() != "" },
+                targetFinder: function (name, main) {
+                    return main.parents('.localisation_form').find('.dependent_field_' + name);
+                }
+            }
+        });
         // Gestion des combobox liées
         $('#source_typeCategorieSource').dependentSelects({
             data_url: "{{ url('data_type_source') }}"

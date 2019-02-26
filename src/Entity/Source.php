@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Source
@@ -333,6 +334,7 @@ class Source
     /**
      * @var \CategorieSource|null
      *
+     * @Assert\NotBlank
      * @ORM\ManyToOne(targetEntity="CategorieSource")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="categorie_source_id", referencedColumnName="id", nullable=true)
@@ -526,6 +528,10 @@ class Source
      * @var \Doctrine\Common\Collections\Collection
      *
      * @ORM\OneToMany(targetEntity="SourceBiblio", mappedBy="source", orphanRemoval=true)
+     * @Assert\Expression(
+     *      "this.hasEditionPrincipaleBiblio()",
+     *      message="edition_principale"
+     * )
      */
     private $sourceBiblios;
 
@@ -551,6 +557,17 @@ class Source
             $this->sourceBiblios->removeElement($sourceBiblio);
         }
         return $this;
+    }
+
+    public function hasEditionPrincipaleBiblio(): bool
+    {
+        foreach($this->getSourceBiblios() as $sb)
+        {
+            if($sb->getEditionPrincipale()){
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

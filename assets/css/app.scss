@@ -66,6 +66,15 @@ body {
             .col-form-label {
                 font-weight: bold;
                 text-align: right;
+
+                &.required {
+                    &::after {
+                        content: "*";
+                        color: red;
+                        font-weight: bolder;
+                        // font-size: 2rem;
+                    }
+                }
             }
         }
 

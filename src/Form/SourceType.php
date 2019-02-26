@@ -101,7 +101,7 @@ class SourceType extends AbstractType
                 'category_field' => 'categorieSource',
                 'field_options'  => [
                     'label'        => 'source.fields.categorie_source',
-                    'required'     => false,
+                    'required'     => true,
                     'class'        => CategorieSource::class,
                     'choice_label' => 'nom'.ucfirst($locale),
                     'attr'         => [
@@ -220,6 +220,7 @@ class SourceType extends AbstractType
             ])
             ->add('titrePrincipal', SelectOrCreateType::class, [
                 'label'                   => 'source.fields.titre_principal',
+                'required'                => false,
                 'locale'                  => $options['locale'],
                 'translations'            => $options['translations'],
                 'field_name'              => 'titrePrincipal',
@@ -233,13 +234,16 @@ class SourceType extends AbstractType
             ])
             ->add('datation', DatationType::class)
             ->add('lieuDecouverte', LocalisationType::class, [
-                'label'        => 'source.fields.lieu_decouverte',
-                'attr'         => ['class' => 'localisation_form'],
-                'locale'       => $options['locale'],
-                'translations' => $options['translations'],
+                'label'           => 'source.fields.lieu_decouverte',
+                'required'        => false,
+                'region_required' => true,
+                'attr'            => ['class' => 'localisation_form'],
+                'locale'          => $options['locale'],
+                'translations'    => $options['translations'],
             ])
             ->add('lieuOrigine', LocalisationType::class, [
                 'label'      => 'source.fields.lieu_origine',
+                'required'     => false,
                 'attr'       => ['class' => 'localisation_form'],
                 'label_attr' => [
                     'class' => 'dependent_field_insitu dependent_field_inverse'

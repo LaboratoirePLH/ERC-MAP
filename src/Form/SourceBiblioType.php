@@ -24,7 +24,8 @@ class SourceBiblioType extends AbstractType
             ->add('editionPrincipale', CheckboxType::class, [
                 'label'      => 'source_biblio.fields.edition_principale',
                 'label_attr' => ['class' => 'mainsource_field'],
-                'required'   => false
+                'required'   => false,
+                'help'       => 'generic.help.edition_principale'
             ])
             ->add('biblio', SelectOrCreateType::class, [
                 'label'                   => 'source.fields.source_biblio',

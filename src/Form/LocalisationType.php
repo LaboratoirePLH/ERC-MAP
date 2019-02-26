@@ -54,8 +54,11 @@ class LocalisationType extends AbstractType
                 'category_field' => 'grandeRegion',
                 'field_options'  => [
                     'label'        => 'localisation.fields.grande_region',
-                    'label_attr'   => ['id' => 'localisation_ville_granderegion', 'class' => 'citysearch_field'],
-                    'required'     => false,
+                    'label_attr'   => [
+                        'id' => 'localisation_ville_granderegion',
+                        'class' => 'citysearch_field' . ($options['region_required'] ? ' required' : '')
+                    ],
+                    'required'     => $options['region_required'],
                     'class'        => GrandeRegion::class,
                     'choice_label' => 'nom'.ucfirst($locale),
                     'attr'         => [
@@ -172,6 +175,7 @@ class LocalisationType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Localisation::class,
+            'region_required' => false
         ]);
         $resolver->setRequired(['translations', 'locale']);
     }

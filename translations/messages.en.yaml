@@ -65,6 +65,7 @@ generic:
         error_ambiguous: "Error : Ambiguous results"
         error_unknown: "Unknown error"
     help:
+        edition_principale: "At least one reference must be specified as the Main Edition"
         city_search: "Enter a City name and/or a Pleiades number, then click the \"Search database\" button to search the database. If a single result is found, relevant fields will be populated according to its data"
         pleiades_number: "Enter the ID of a Pleiades entry and click the \"Search\" button to search on Pleiades. If a result is found, relevant fields will be populated according to its data and locked. Click the \"Clear\" button to erase the data"
 

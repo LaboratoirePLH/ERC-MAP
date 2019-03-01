@@ -39,9 +39,9 @@
 <hr />
 <section>
     {% include 'partials/_sectiontitle.html.twig' with {
-        'title' : 'source.sections.informations_source',
-        'collapseTarget' : '#section-infos',
-        'expanded' : true
+        'title'         : 'source.sections.informations_source',
+        'collapseTarget': '#section-infos',
+        'expanded'      : true
     } only %}
     <div class="collapse show" id="section-infos">
         {{ form_widget(form.typeCategorieSource) }}
@@ -58,9 +58,9 @@
 
 <section>
     {% include 'partials/_sectiontitle.html.twig' with {
-        'title' : 'source.sections.bibliographie',
-        'collapseTarget' : '#section-bibliographie',
-        'expanded' : true
+        'title'         : 'source.sections.bibliographie',
+        'collapseTarget': '#section-bibliographie',
+        'expanded'      : true
     } only %}
     <div class="collapse show" id="section-bibliographie">
         {{ form_errors(form.sourceBiblios) }}
@@ -78,9 +78,10 @@
 
 <section>
     {% include 'partials/_sectiontitle.html.twig' with {
-        'title' : 'source.sections.datation',
-        'collapseTarget' : '#section-datation',
-        'expanded' : true
+        'title'             : 'source.sections.datation',
+        'collapseTarget'    : '#section-datation',
+        'expanded'          : true,
+        'precisionIndicator': 'datation'
     } only %}
     <div class="collapse show" id="section-datation">
         {{ form_row(form.estDatee) }}
@@ -95,9 +96,10 @@
 
 <section>
     {% include 'partials/_sectiontitle.html.twig' with {
-        'title' : 'source.sections.localisation',
-        'collapseTarget' : '#section-localisation',
-        'expanded' : true
+        'title'             : 'source.sections.localisation',
+        'collapseTarget'    : '#section-localisation',
+        'expanded'          : true,
+        'precisionIndicator': 'localisation'
     } only %}
     <div class="collapse show" id="section-localisation">
         {# {{ form_widget(form.lieuDecouverte.grandeSousRegion) }} #}
@@ -118,8 +120,8 @@
 
 <section>
     {% include 'partials/_sectiontitle.html.twig' with {
-        'title' : 'source.sections.commentaires',
-        'collapseTarget' : '#section-commentaires'
+        'title'         : 'source.sections.commentaires',
+        'collapseTarget': '#section-commentaires'
     } only %}
     <div class="collapse" id="section-commentaires">
         {{ form_row(form.commentaireFr) }}
@@ -128,8 +130,8 @@
 </section>
 <section>
     {% include 'partials/_sectiontitle.html.twig' with {
-        'title' : 'source.sections.attestations',
-        'collapseTarget' : '#section-attestations'
+        'title'         : 'source.sections.attestations',
+        'collapseTarget': '#section-attestations'
     } only %}
     <div class="collapse" id="section-attestations">
         <br>
@@ -275,13 +277,14 @@
             data_url: "{{ url('data_sous_region') }}"
         });
 
-        //Gestion des recherches Pleiades
+        // Gestion des recherches Pleiades
         $('.localisation_form').localisationForm({
             errorMessage: "{{'generic.messages.error_unknown'|trans}}",
             notFoundErrorMessage: "{{'generic.messages.error_not_found'|trans}}",
             ambiguousErrorMessage: "{{'generic.messages.error_ambiguous'|trans}}",
             dataUrl: "{{ url('city_search') }}"
         });
+        // Gestion de la copie du lieu de découverte vers le lieu d'origine
         $('#copy_location').on('click', function (e) {
             e.preventDefault();
 
@@ -311,7 +314,63 @@
                 $("#source_lieuOrigine_pleiadesVille").siblings().find('.pleiades_search').click();
             }
             return false;
-        })
+        });
+
+        // Indicateurs de fiabilité
+        var displayPrecisionIndicator = function (el, value) {
+            $(el).text("{{ 'generic.fields.precision'|trans }} : " + value);
+            var newClass;
+            switch (Math.floor(value)) {
+                case 1:
+                    newClass = 'badge-success'; break;
+                case 2:
+                    newClass = 'badge-primary'; break;
+                case 3:
+                    newClass = 'badge-info'; break;
+                case 4:
+                    newClass = 'badge-warning'; break;
+                case 5:
+                    newClass = 'badge-danger'; break;
+                default:
+                    newClass = 'badge-secondary';
+            }
+            $(el).removeClass('badge-success badge-primary badge-info badge-warning badge-danger badge-secondary').addClass(newClass);
+        };
+        $('form#source').precisionIndicator({
+            displayEl: $('#precision-datation'),
+            displayFn: displayPrecisionIndicator,
+            calculatorFn: function (data) {
+                if (!data.source.hasOwnProperty("estDatee") || data.source.estDatee !== "1") {
+                    return "?";
+                }
+                var delta = Math.abs(
+                    parseInt(data.source.datation.postQuem, 10)
+                    - parseInt(data.source.datation.anteQuem, 10)
+                );
+                if (delta <= 5) { return 1; }
+                else if (delta <= 50) { return 2; }
+                else if (delta <= 100) { return 3; }
+                else if (delta <= 200) { return 4; }
+                else { return 5; }
+            }
+        });
+        $('form#source').precisionIndicator({
+            displayEl: $('#precision-localisation'),
+            displayFn: displayPrecisionIndicator,
+            calculatorFn: function (data) {
+                var inSitu = data.source.hasOwnProperty("inSitu") && data.source.inSitu === "1",
+                    lieu = inSitu
+                        ? (data.source.hasOwnProperty("lieuDecouverte") ? data.source.lieuDecouverte : null)
+                        : (data.source.hasOwnProperty("lieuOrigine") ? data.source.lieuOrigine : null);
+
+                if (lieu === null) { return 5; }
+                if (lieu.nomSite !== "") { return 1; }
+                else if (lieu.nomVille !== "") { return 2; }
+                else if (lieu.grandeSousRegion.sousRegion !== "") { return 3; }
+                else if (lieu.grandeSousRegion.grandeRegion !== "") { return 4; }
+                else { return 5; }
+            }
+        });
     });
 </script>
 {% endblock %}

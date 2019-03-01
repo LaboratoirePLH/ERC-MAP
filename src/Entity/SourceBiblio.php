@@ -29,7 +29,7 @@ class SourceBiblio
      * @var \Biblio
      *
      * @ORM\Id
-     * @ORM\ManyToOne(targetEntity="Biblio", cascade={"persist"}, fetch="EAGER")
+     * @ORM\ManyToOne(targetEntity="Biblio", inversedBy="sourceBiblios", cascade={"persist"}, fetch="EAGER")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_biblio", referencedColumnName="id")
      * })

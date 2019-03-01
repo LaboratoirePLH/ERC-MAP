@@ -1,5 +1,3 @@
-import { Z_FILTERED } from "zlib";
-
 (function ($) {
     $.fn.dependentFields = function (targets) {
         var toggleFields = function (main, targets, conditionCallback) {

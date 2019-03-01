@@ -15,6 +15,7 @@ require('bootstrap');
 require('datatables.net-bs4')(window, $);
 require('datatables.net-responsive-bs4')(window, $);
 require('chosen-js');
+require('form-serializer');
 
 (function ($) {
     if ($('#back-to-top').length) {
@@ -45,3 +46,4 @@ require('./dependent_fields.js');
 require('./dependent_selects.js');
 require('./localisation_form.js');
 require('./selectorcreate.js');
+require('./precision_indicator.js');

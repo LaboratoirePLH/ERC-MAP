@@ -613,12 +613,26 @@ class Source
     }
 
     private function _updateFiabilite(){
-        if(!is_null($datation = $this->getDatation())){
-            $this->setFiabiliteDatation(abs($datation->getPostQuem() - $datation->getAnteQuem()));
+        $fiabDatation = 5;
+        if($this->getEstDatee() && !is_null($datation = $this->getDatation())){
+            $delta = abs($datation->getPostQuem() - $datation->getAnteQuem());
+            if($delta <= 5){ $fiabDatation = 1; }
+            else if($delta <= 50){ $fiabDatation = 2; }
+            else if($delta <= 100){ $fiabDatation = 3; }
+            else if($delta <= 200){ $fiabDatation = 4; }
+            else { $fiabDatation = 5; }
         }
-        // if(!is_null($localisation = $this->getLocalisation())){
-        //     // TODO
-        //     $this->setFiabiliteLocalisation(0);
-        // }
+        $this->setFiabiliteDatation($fiabDatation);
+
+        $fiabLocalisation = 5;
+        $lieu = $this->getInSitu() ? $this->getLieuDecouverte() : $this->getLieuOrigine();
+        if(!is_null($lieu)){
+            if(!empty($lieu->getNomSite())){ $fiabLocalisation = 1; }
+            else if(!empty($lieu->getNomVille())){ $fiabLocalisation = 2; }
+            else if(!is_null($lieu->getSousRegion())){ $fiabLocalisation = 3; }
+            else if(!is_null($lieu->getGrandeRegion())){ $fiabLocalisation = 4; }
+            else { $fiabLocalisation = 5; }
+        }
+        $this->setFiabiliteLocalisation($fiabLocalisation);
     }
 }

@@ -55,6 +55,7 @@ generic:
         commentaire_en: "Comments (EN)"
         to_translate: "To translate in"
         translations: "Translations"
+        precision: "Precision"
     choices :
         new: "New"
         existing: "Existing"

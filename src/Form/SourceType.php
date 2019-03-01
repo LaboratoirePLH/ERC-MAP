@@ -8,6 +8,7 @@ use App\Entity\CategorieSource;
 use App\Entity\CategorieSupport;
 use App\Entity\Langue;
 use App\Entity\Materiau;
+use App\Entity\Projet;
 use App\Entity\Source;
 use App\Entity\Titre;
 use App\Entity\TypeSource;
@@ -39,6 +40,7 @@ class SourceType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $locale = $options['locale'];
+        $user = $options['user'];
 
         $builder
             ->add('traduireFr', CheckboxType::class, [
@@ -186,6 +188,23 @@ class SourceType extends AbstractType
                     ]
                 ]
             ])
+            ->add("projet", EntityType::class, [
+                'label'         => 'source.fields.projet',
+                'required'      => true,
+                'class'         => Projet::class,
+                'choice_label'  => 'nom'.ucfirst($locale),
+                'disabled'      => ($options['action'] !== "create"),
+                'attr'          => [
+                    'class' => 'autocomplete',
+                    'data-placeholder' => $options['translations']['autocomplete.select_element']
+                ],
+                'query_builder' => function (EntityRepository $er) use ($locale, $user) {
+                    return $er->createQueryBuilder('e')
+                        ->where(":user MEMBER OF e.chercheurs")
+                        ->setParameter("user", $user)
+                        ->orderBy('e.nom'.ucfirst($locale), 'ASC');
+                }
+            ])
             ->add('auteurs', EntityType::class, [
                 'label'        => 'source.fields.auteurs',
                 'required'     => false,
@@ -269,5 +288,7 @@ class SourceType extends AbstractType
         ]);
         $resolver->setRequired('locale');
         $resolver->setRequired('translations');
+        $resolver->setRequired('action');
+        $resolver->setRequired('user');
     }
 }

@@ -34,6 +34,7 @@ class SourceController extends AbstractController
      * @Route("/source/create", name="source_create")
      */
     public function create(Request $request, TranslatorInterface $translator){
+        $user = $this->get('security.token_storage')->getToken()->getUser();
         $source = new Source();
         $catSource = $this->getDoctrine()
                        ->getRepository(CategorieSource::class)
@@ -41,6 +42,8 @@ class SourceController extends AbstractController
         $source->setCategorieSource($catSource);
 
         $form   = $this->get('form.factory')->create(SourceType::class, $source, [
+            'action'       => 'create',
+            'user'         => $user,
             'locale'       => $request->getLocale(),
             'translations' => [
                 'autocomplete.select_element'  => $translator->trans('autocomplete.select_element'),
@@ -49,7 +52,6 @@ class SourceController extends AbstractController
         ]);
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()){
-            $user = $this->get('security.token_storage')->getToken()->getUser();
             $source->setCreateur($user);
             $source->setDernierEditeur($user);
             // Sauvegarde
@@ -83,6 +85,7 @@ class SourceController extends AbstractController
         return $this->render('source/edit.html.twig', [
             'controller_name' => 'SourceController',
             'action'          => 'create',
+            'locale'          => $request->getLocale(),
             'form'            => $form->createView(),
         ]);
     }
@@ -101,7 +104,8 @@ class SourceController extends AbstractController
 
         return $this->render('source/show.html.twig', [
             'controller_name' => 'SourceController',
-            'source'          => $source
+            'source'          => $source,
+            'locale'          => $request->getLocale()
         ]);
     }
 
@@ -109,11 +113,14 @@ class SourceController extends AbstractController
      * @Route("/source/{id}/edit", name="source_edit")
      */
     public function edit($id, Request $request, TranslatorInterface $translator){
+        $user = $this->get('security.token_storage')->getToken()->getUser();
         $source = $this->getDoctrine()
                        ->getRepository(Source::class)
                        ->find($id);
 
         $form   = $this->get('form.factory')->create(SourceType::class, $source, [
+            'action'       => 'edit',
+            'user'         => $user,
             'locale'       => $request->getLocale(),
             'translations' => [
                 'autocomplete.select_element'  => $translator->trans('autocomplete.select_element'),
@@ -122,7 +129,6 @@ class SourceController extends AbstractController
         ]);
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()){
-            $user = $this->get('security.token_storage')->getToken()->getUser();
             $source->setDernierEditeur($user);
             // Sauvegarde
             $em = $this->getDoctrine()->getManager();
@@ -160,6 +166,7 @@ class SourceController extends AbstractController
             'controller_name' => 'SourceController',
             'action'          => 'edit',
             'source'          => $source,
+            'locale'          => $request->getLocale(),
             'form'            => $form->createView()
         ]);
     }

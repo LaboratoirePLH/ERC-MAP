@@ -27,6 +27,8 @@
         <br />
         {{ 'source.fields.version'|trans }}&nbsp;{{ source.version }}&rarr;{{ source.version+1 }}
         {% endif %}
+        <br />
+        {{ form_row(form.projet) }}
     </div>
     <div class="col-sm-3 text-right">
         {{ 'generic.fields.to_translate'|trans }} :

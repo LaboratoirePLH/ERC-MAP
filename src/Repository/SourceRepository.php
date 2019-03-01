@@ -27,6 +27,7 @@ class SourceRepository extends ServiceEntityRepository
         $query = $this->createQueryBuilder('source')
             ->select([
                 'partial s.{id, dateCreation, dateModification, version, inSitu, estDatee, traduireFr, traduireEn}',
+                'projet',
                 'langues',
                 'typeSource',
                 'categorieSource',
@@ -41,6 +42,7 @@ class SourceRepository extends ServiceEntityRepository
                 'partial biblio.{id, titreAbrege}'
             ])
             ->from('App\Entity\Source', 's')
+            ->leftJoin('s.projet', 'projet')
             ->leftJoin('s.langues', 'langues')
             ->leftJoin('s.typeSource', 'typeSource')
             ->leftJoin('s.categorieSource', 'categorieSource')

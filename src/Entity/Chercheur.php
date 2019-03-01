@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
@@ -77,6 +78,21 @@ class Chercheur implements UserInterface
      * @ORM\Column(name="role", type="string", length=50, nullable=true)
      */
     private $role = "user";
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     *
+     * @ORM\ManyToMany(targetEntity="Projet", mappedBy="chercheurs")
+     */
+    private $projets;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->projets = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -167,6 +183,34 @@ class Chercheur implements UserInterface
             $roles[] = 'ROLE_ADMIN';
         }
         return $roles;
+    }
+
+    /**
+     * @return Collection|Projet[]
+     */
+    public function getProjets(): Collection
+    {
+        return $this->projets;
+    }
+
+    public function addProjet(Projet $projet): self
+    {
+        if (!$this->projets->contains($projet)) {
+            $this->projets[] = $projet;
+            $projets->addChercheur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProjet(Projet $projet): self
+    {
+        if ($this->projets->contains($projet)) {
+            $this->projets->removeElement($projet);
+            $projets->removeChercheur($this);
+        }
+
+        return $this;
     }
 
     public function getSalt()

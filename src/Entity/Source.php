@@ -571,6 +571,27 @@ class Source
     }
 
     /**
+     * @var \Projet|null
+     *
+     * @ORM\ManyToOne(targetEntity="Projet")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_projet", referencedColumnName="id", nullable=true)
+     * })
+     */
+    private $projet;
+
+    public function getProjet(): ?Projet
+    {
+        return $this->projet;
+    }
+
+    public function setProjet(?Projet $projet): self
+    {
+        $this->projet = $projet;
+        return $this;
+    }
+
+    /**
      * @ORM\PrePersist
      */
     public function onCreate(){

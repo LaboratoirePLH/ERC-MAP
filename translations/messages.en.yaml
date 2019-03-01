@@ -82,6 +82,7 @@ source:
         deleted: "Source deleted"
         missing: "Source does not exists"
     fields:
+        projet: "Project"
         titre:  "Title"
         titre_principal: "Main Title"
         titres_cites: "Quoted Titles"

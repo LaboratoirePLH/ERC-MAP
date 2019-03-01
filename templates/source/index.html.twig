@@ -56,7 +56,9 @@
         {% for source in sources %}
         <tr>
             <th scope="row" class="px-0">
-                <a href="{{ url('source_show', {'id': source.id}) }}">#{{ source.id }}</a>
+                <a href="{{ url('source_show', {'id': source.id}) }}">
+                    {{ source.projet.nom(locale) }} #{{ source.id }}
+                </a>
                 <br />
                 <small>{{ 'source.fields.version'|trans }}&nbsp;{{ source.version|default("?") }}</small>
             </th>
@@ -176,9 +178,7 @@
             scrollX: false,
             searching: true,
             ordering: true,
-            columns: [{
-                width: 60
-            }, null, null, null, null, null, null, null, null, null, null, {
+            columns: [null, null, null, null, null, null, null, null, null, null, null, {
                 searchable: false,
                 orderable: false,
                 width: 80

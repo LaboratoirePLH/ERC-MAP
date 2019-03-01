@@ -188,7 +188,7 @@ class Chercheur implements UserInterface
     /**
      * @return Collection|Projet[]
      */
-    public function getProjets(): Collection
+    public function getProjets(): ?Collection
     {
         return $this->projets;
     }

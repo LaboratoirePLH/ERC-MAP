@@ -57,5 +57,25 @@ class BibliographyController extends AbstractController
     /**
      * @Route("/bibliography/{id}/delete", name="bibliography_delete")
      */
-    public function delete($id, Request $request){}
+    public function delete($id, Request $request)
+    {
+        $submittedToken = $request->request->get('token');
+
+        if ($this->isCsrfTokenValid('delete_biblio_'.$id, $submittedToken)) {
+            $repository = $this->getDoctrine()->getRepository(Biblio::class);
+            $biblio = $repository->find($id);
+            if($biblio instanceof Biblio){
+                $em = $this->getDoctrine()->getManager();
+                $em->remove($biblio);
+                $em->flush();
+
+                $request->getSession()->getFlashBag()->add('error', 'biblio.messages.deleted');
+            } else {
+                $request->getSession()->getFlashBag()->add('error', 'generic.messages.deletion_failed_missing');
+            }
+        } else {
+            $request->getSession()->getFlashBag()->add('error', 'generic.messages.deletion_failed_csrf');
+        }
+        return $this->redirectToRoute('bibliography');
+    }
 }

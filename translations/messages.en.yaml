@@ -48,6 +48,7 @@ generic:
         by: "by"
         type: "Type"
         commentaire: "Comments"
+        utilisation: "Usage"
         nom_fr: "Name (FR)"
         nom_en: "Name (EN)"
         commentaire_fr: "Comments (FR)"
@@ -133,12 +134,22 @@ source_biblio:
         biblio_creation: "Create Reference"
 
 biblio:
+    list: "Bibliography list"
+    create: "Create Bibliography"
+    messages:
+        created: "Bibliography created"
+        edited: "Bibliography edited"
+        deleted: "Bibliography deleted"
+        missing: "Bibliography does not exists"
     fields:
         titre_abrege: "Short Title"
         titre_complet: "Full Title"
         annee: "Year"
         auteur: "Author"
         corpus: "Corpus"
+        bibliographique: "Bibliographic"
+        sources: "Sources"
+        elements: "Elements"
 
 corpus:
     fields:

@@ -58,6 +58,21 @@ class Biblio
      */
     private $estCorpus;
 
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     *
+     * @ORM\OneToMany(targetEntity="SourceBiblio", mappedBy="biblio", orphanRemoval=true)
+     */
+    private $sourceBiblios;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->sourceBiblios = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -129,6 +144,30 @@ class Biblio
         } else {
             return sprintf("Biblio : %s, %s (%d)", $this->auteurBiblio, $this->titreAbrege, $this->annee);
         }
+    }
+
+    /**
+     * @return Collection|SourceBiblio[]
+     */
+    public function getSourceBiblios(): ?Collection
+    {
+        return $this->sourceBiblios;
+    }
+
+    public function addSourceBiblio(SourceBiblio $sourceBiblio): self
+    {
+        if (!$this->sourceBiblios->contains($sourceBiblio)) {
+            $this->sourceBiblios[] = $sourceBiblio;
+        }
+        return $this;
+    }
+
+    public function removeSourceBiblio(SourceBiblio $sourceBiblio): self
+    {
+        if ($this->sourceBiblios->contains($sourceBiblio)) {
+            $this->sourceBiblios->removeElement($sourceBiblio);
+        }
+        return $this;
     }
 
 }

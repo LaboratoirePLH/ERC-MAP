@@ -5,7 +5,8 @@
             // These are the defaults.
             blockTitle: "Item #",
             deleteLink: "Delete",
-            addListener: $.noop()
+            addListener: $.noop(),
+            confirmationModal: false
         }, options);
 
         var setupLinks = function (prototype) {
@@ -14,7 +15,19 @@
             );
             deleteLink.click(function (e) {
                 e.preventDefault();
-                prototype.remove();
+                if (settings.confirmationModal !== null && settings.confirmationModal.length) {
+                    settings.confirmationModal.on('show.bs.modal', function () {
+                        settings.confirmationModal.find('.modal-accept-button').on('click', function () {
+                            prototype.remove();
+                            settings.confirmationModal.modal('hide');
+                            settings.confirmationModal.find('.modal-accept-button').off('click');
+                        });
+                    });
+                    settings.confirmationModal.modal();
+                }
+                else {
+                    prototype.remove();
+                }
                 return false;
             });
             var label = prototype.find('.remove_this_label');

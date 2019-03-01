@@ -1,12 +1,15 @@
 {#
 Modal component.
 Parameters :
-- uuid : Unique ID of the modal
 - modalName : Name of the modal, used to fetch translation sentences
-- targetUrl : URL to redirect to if user clicks the primary button
+- uuid : Unique ID of the modal
 - confirmationLabel : Text of the primary button
-- csrfToken : CSRF token to pass in the form
+- useForm : Should the delete button be included in a form (default: true)
+- targetUrl : URL to redirect to if user clicks the primary button (only if useForm is true)
+- method : Method to send data with (only if useForm is true)
+- csrfToken : CSRF token to pass in the form (only if useForm is true)
 #}
+{% set useForm = ((useForm is defined and useForm == false) ? false : true) %}
 <div class="modal fade" id="{{ uuid|default(modalName ~ random()) }}" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -21,14 +24,23 @@ Parameters :
             </div>
             <div class="modal-footer">
                 <a class="btn btn-secondary" data-dismiss="modal">{{ cancelLabel|default('generic.cancel')|trans }}</a>
-                <form action="{{ targetUrl }}" method="{{ method|default("POST") }}">
+                {% if useForm %}
+                <form action="{{ targetUrl|default('') }}" method="{{ method|default('POST') }}">
                     {% if csrfToken is defined %}
                     <input type="hidden" name="token" value="{{ csrf_token(csrfToken) }}">
                     {% endif %}
-                    <button type="submit" class="btn btn-danger">
-                        {{ confirmationLabel|trans }}
-                    </button>
+                    {% endif %}
+
+                    {% if useForm %}
+                    <button type="submit"
+                        class="btn btn-danger modal-accept-button">{{ confirmationLabel|trans }}</button>
+                    {% else %}
+                    <a class="btn btn-danger modal-accept-button">{{ confirmationLabel|trans }}</a>
+                    {% endif %}
+
+                    {% if useForm %}
                 </form>
+                {% endif %}
             </div>
         </div>
     </div>

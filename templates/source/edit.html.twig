@@ -162,6 +162,12 @@
 'method': 'GET',
 'confirmationLabel': 'generic.exit',
 } %}
+{% include "modals/confirmation.html.twig" with {
+'modalName': 'confirm_remove_sourcebiblio',
+'uuid': 'confirm_remove_sourcebiblio',
+'confirmationLabel': 'generic.delete',
+'useForm': false
+} %}
 
 {{ include('partials/_backtotop.html.twig') }}
 {% endblock %}
@@ -196,6 +202,7 @@
         $('div#source_sourceBiblios').collectionField({
             blockTitle: '{{ "source.fields.source_biblio_n"|trans }}',
             deleteLink: '{{ "generic.delete"|trans }}',
+            confirmationModal: $('#confirm_remove_sourcebiblio'),
             addListener: function (newEl, idx) {
                 // Gestion du champ "selectorcreate"
                 $(newEl).find('.selectorcreate').selectOrCreate();

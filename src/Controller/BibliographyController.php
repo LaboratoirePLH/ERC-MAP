@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Biblio;
+use App\Form\BiblioType;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -26,12 +27,50 @@ class BibliographyController extends AbstractController
     }
 
     /**
+     * @Route("/bibliography/create", name="bibliography_create")
+     */
+    public function create(Request $request, TranslatorInterface $translator)
+    {
+        $biblio = new Biblio();
+
+        $form   = $this->get('form.factory')->create(BiblioType::class, $biblio, [
+            'action'       => 'create',
+            'locale'       => $request->getLocale(),
+            'translations' => [
+                'autocomplete.select_element'  => $translator->trans('autocomplete.select_element'),
+                'autocomplete.select_multiple' => $translator->trans('autocomplete.select_multiple')
+            ]
+        ]);
+
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()){
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($biblio);
+            $em->flush();
+
+            // Message de confirmation
+            $request->getSession()->getFlashBag()->add('success', 'biblio.messages.created');
+            if ($request->request->has("saveclose")) {
+                return $this->redirectToRoute('bibliography');
+            }
+            return $this->redirectToRoute('bibliography_edit', ['id' => $biblio->getId()]);
+        }
+
+        return $this->render('bibliography/edit.html.twig', [
+            'controller_name' => 'BibliographyController',
+            'action'          => 'create',
+            'locale'          => $request->getLocale(),
+            'form'            => $form->createView(),
+        ]);
+    }
+
+    /**
      * @Route("/bibliography/{id}", name="bibliography_show")
      */
-    public function show($id){
+    public function show($id)
+    {
         $bibliography = $this->getDoctrine()
                        ->getRepository(Biblio::class)
-                       ->getRecord($id, true);
+                       ->find($id);
         if(is_null($bibliography)){
             $request->getSession()->getFlashBag()->add('error', 'biblio.messages.missing');
             return $this->redirectToRoute('bibliography');
@@ -45,14 +84,43 @@ class BibliographyController extends AbstractController
     }
 
     /**
-     * @Route("/bibliography/create", name="bibliography_create")
-     */
-    public function create(Request $request, TranslatorInterface $translator){}
-
-    /**
      * @Route("/bibliography/{id}/edit", name="bibliography_edit")
      */
-    public function edit($id, Request $request, TranslatorInterface $translator){}
+    public function edit($id, Request $request, TranslatorInterface $translator)
+    {
+        $biblio = $this->getDoctrine()
+                       ->getRepository(Biblio::class)
+                       ->find($id);
+
+        $form   = $this->get('form.factory')->create(BiblioType::class, $biblio, [
+            'action'       => 'edit',
+            'locale'       => $request->getLocale(),
+            'translations' => [
+                'autocomplete.select_element'  => $translator->trans('autocomplete.select_element'),
+                'autocomplete.select_multiple' => $translator->trans('autocomplete.select_multiple')
+            ]
+        ]);
+
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()){
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($biblio);
+            $em->flush();
+
+            // Message de confirmation
+            $request->getSession()->getFlashBag()->add('success', 'biblio.messages.edited');
+            if ($request->request->has("saveclose")) {
+                return $this->redirectToRoute('bibliography');
+            }
+            return $this->redirectToRoute('bibliography_edit', ['id' => $biblio->getId()]);
+        }
+
+        return $this->render('bibliography/edit.html.twig', [
+            'controller_name' => 'BibliographyController',
+            'action'          => 'edit',
+            'locale'          => $request->getLocale(),
+            'form'            => $form->createView(),
+        ]);
+    }
 
     /**
      * @Route("/bibliography/{id}/delete", name="bibliography_delete")

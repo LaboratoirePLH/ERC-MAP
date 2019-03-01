@@ -1,0 +1,74 @@
+{% extends 'authenticated.html.twig' %}
+{% block title %}
+{{ ('biblio.' ~ action)|trans }}{{ biblio is defined ? ' #'~biblio.id : ''}}
+{% endblock %}
+{% block content %}
+
+{{ form_start(form, {'attr' : {'id': 'biblio'}} ) }}
+{{ form_errors(form) }}
+
+<div class="row justify-content-center">
+    <div class="col-sm-3">
+        {% include "partials/_formbuttons.html.twig" with {'exitUrl' : url('bibliography')} %}
+    </div>
+    <div class="col-sm-9"></div>
+</div>
+<hr />
+{{ form_rest(form) }}
+<hr />
+<div class="form-group row">
+    <div class="col-sm-12 text-center">
+        {% include "partials/_formbuttons.html.twig" with {'exitUrl' : url('bibliography')} %}
+    </div>
+</div>
+{{ form_end(form) }}
+{% include "modals/confirmation.html.twig" with {
+    'modalName': 'confirm_exit_dirty',
+    'uuid': 'confirm_exit_dirty',
+    'targetUrl': url('bibliography'),
+    'method': 'GET',
+    'confirmationLabel': 'generic.exit',
+} %}
+
+{{ include('partials/_backtotop.html.twig') }}
+{% endblock %}
+{% block javascripts %}
+{{ parent() }}
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        var form_old = $("form#biblio").serialize(),
+            modal_visible = false;
+        function isFormDirty(form) { return $(form).serialize() !== form_old; }
+
+        $('.exit-form-link').click(function (e) {
+            e.preventDefault();
+            if (isFormDirty($("form#biblio"))) {
+                $(".modal#confirm_exit_dirty").modal();
+                $(".modal#confirm_exit_dirty").on('shown.bs.modal', function () { modal_visible = true; });
+                $(".modal#confirm_exit_dirty").on('hidden.bs.modal', function () { modal_visible = false; });
+                return false;
+            } else {
+                window.location = $('.exit-form-link').attr('href');
+            }
+        });
+        window.onbeforeunload = function () {
+            if (!modal_visible && isFormDirty($("form#biblio"))) {
+                return "{{ 'modals.confirm_exit_dirty.body'|trans }}";
+            }
+        }
+        $("form#biblio").on('submit', function () { window.onbeforeunload = null; })
+
+        // Gestion des champs dépendants
+        $.fn.dependentFields({
+            corpus: {
+                conditionCallback: function (main) { return $(main).is(':checked'); },
+                targetFinder: function (name, main) {
+                    return main.parents('form').find('.dependent_field_' + name);
+                }
+            }
+        });
+
+    });
+</script>
+{% endblock %}

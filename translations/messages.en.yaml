@@ -135,7 +135,9 @@ source_biblio:
 
 biblio:
     list: "Bibliography list"
+    view: "View Bibliography"
     create: "Create Bibliography"
+    edit: "Edit Bibliography"
     messages:
         created: "Bibliography created"
         edited: "Bibliography edited"

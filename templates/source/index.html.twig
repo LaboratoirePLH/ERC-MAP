@@ -55,7 +55,7 @@
     <tbody>
         {% for source in sources %}
         <tr>
-            <th scope="row" class="px-0">
+            <th scope="row" class="px-0" data-order="{{ source.id }}">
                 <a href="{{ url('source_show', {'id': source.id}) }}">
                     {{ source.projet.nom(locale) }} #{{ source.id }}
                 </a>
@@ -84,14 +84,14 @@
             <td>
                 {{ source.sourceBiblios is not empty ? source.sourceBiblios[0].referenceSource : "" }}
             </td>
-            <td>
+            <td data-order="{{ source.dateCreation|date('U') }}">
                 {{ source.dateCreation|date("locale_datetime"|trans) }}
                 <br />
                 <small>
                     {{ source.createur.prenomNom }}<br />
                 </small>
             </td>
-            <td>
+            <td data-order="{{ source.dateModification|date('U') }}">
                 {{ source.dateModification|date("locale_datetime"|trans) }}
                 <br />
                 <small>

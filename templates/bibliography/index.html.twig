@@ -40,7 +40,7 @@
     <tbody>
         {% for biblio in biblios %}
         <tr>
-            <th scope="row" class="px-0">
+            <th scope="row" class="px-0" data-sort="{{ biblio.id }}">
                 <a href="{{ url('bibliography_show', {'id': biblio.id}) }}">
                     #{{ biblio.id }}
                 </a>

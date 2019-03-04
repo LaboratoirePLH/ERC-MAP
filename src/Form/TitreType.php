@@ -19,11 +19,11 @@ class TitreType extends AbstractType
         $locale = $options['locale'];
         $builder
             ->add('nomFr', TextType::class, [
-                'label'    => 'generic.fields.nom_fr',
+                'label'    => 'source.fields.titre_fr',
                 'required' => false
             ])
             ->add('nomEn', TextType::class, [
-                'label'    => 'generic.fields.nom_en',
+                'label'    => 'source.fields.titre_en',
                 'required' => false
             ])
             ->add('auteurs', EntityType::class, [

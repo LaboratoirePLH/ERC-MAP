@@ -118,7 +118,7 @@ source:
         commentaire_source_en: "Source Comments (EN)"
 
     sections:
-        informations_source: "Source informations"
+        informations_source: "Source information"
         bibliographie: "Bibliography"
         datation: "Datation"
         localisation: "Location"

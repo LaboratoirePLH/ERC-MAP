@@ -178,8 +178,17 @@
     $(document).ready(function () {
 
         var form_old = $("form#source").serialize(),
-            modal_visible = false;
-        function isFormDirty(form) { return $(form).serialize() !== form_old; }
+            modal_visible = false,
+            isFormDirty = function (form) { return $(form).serialize() !== form_old; },
+            promptConfirmation = function (e) {
+                if (!modal_visible && isFormDirty($("form#source"))) {
+                    // Cancel the event
+                    e.preventDefault();
+                    // Chrome requires returnValue to be set
+                    e.returnValue = "{{ 'modals.confirm_exit_dirty.body'|trans }}";
+                    return "{{ 'modals.confirm_exit_dirty.body'|trans }}";
+                }
+            };
 
         $('.exit-form-link').click(function (e) {
             e.preventDefault();
@@ -192,12 +201,12 @@
                 window.location = $('.exit-form-link').attr('href');
             }
         });
-        window.onunload = window.onbeforeunload = function () {
-            if (!modal_visible && isFormDirty($("form#source"))) {
-                return "{{ 'modals.confirm_exit_dirty.body'|trans }}";
-            }
-        }
-        $("form#source").on('submit', function () { window.onunload = window.onbeforeunload = null; })
+        window.addEventListener('beforeunload', promptConfirmation);
+        window.addEventListener('unload', promptConfirmation);
+        $("form#source").on('submit', function () {
+            window.removeEventListener('beforeunload', promptConfirmation);
+            window.removeEventListener('unload', promptConfirmation);
+        });
 
         // Gestion du champ collection
         $('div#source_sourceBiblios').collectionField({

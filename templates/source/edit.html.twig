@@ -192,12 +192,12 @@
                 window.location = $('.exit-form-link').attr('href');
             }
         });
-        window.onbeforeunload = function () {
+        window.onunload = window.onbeforeunload = function () {
             if (!modal_visible && isFormDirty($("form#source"))) {
                 return "{{ 'modals.confirm_exit_dirty.body'|trans }}";
             }
         }
-        $("form#source").on('submit', function () { window.onbeforeunload = null; })
+        $("form#source").on('submit', function () { window.onunload = window.onbeforeunload = null; })
 
         // Gestion du champ collection
         $('div#source_sourceBiblios').collectionField({

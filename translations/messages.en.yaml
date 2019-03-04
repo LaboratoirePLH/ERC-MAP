@@ -41,6 +41,7 @@ generic:
     clear: "Clear"
     clear_filters: "Clear filters"
     exit: "Exit"
+    stay: "Stay"
     fields:
         id: "ID"
         date_creation: "Creation"
@@ -189,8 +190,8 @@ modals:
         title: "Confirm deletion"
         body: "Are you sure you want to delete this item ? This action cannot be undone."
     confirm_exit_dirty:
-        title: "Confirm cancellation"
-        body: "You have unsaved changes. Are you sure you want to cancel ?"
+        title: "Confirm exit"
+        body: "You have unsaved changes. Are you sure you want to exit ?"
 
 datatable:
     all: "All"

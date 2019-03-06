@@ -46,7 +46,7 @@ class LocalisationType extends AbstractType
                 }
             ])
             ->add('grandeSousRegion', DependentSelectType::class, [
-                'label' => null,
+                'label'          => null,
                 'locale'         => $options['locale'],
                 'translations'   => $options['translations'],
                 'name'           => 'grandeRegion',
@@ -67,7 +67,7 @@ class LocalisationType extends AbstractType
                     ],
                     'query_builder' => function (EntityRepository $er) use ($locale) {
                         return $er->createQueryBuilder('e')
-                            ->orderBy('e.nom'.ucfirst($locale), 'ASC');
+                        ->orderBy('e.nom'.ucfirst($locale), 'ASC');
                     }
                 ],
                 'secondary_field_options' => [
@@ -76,6 +76,7 @@ class LocalisationType extends AbstractType
                     'required'     => false,
                     'class'        => SousRegion::class,
                     'choice_label' => 'nom'.ucfirst($locale),
+                    'help'         => 'generic.help.regional_data',
                     'attr'         => [
                         'class' => 'autocomplete',
                         'data-placeholder' => $options['translations']['autocomplete.select_element']

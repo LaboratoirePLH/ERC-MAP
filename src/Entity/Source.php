@@ -36,7 +36,7 @@ class Source
     /**
      * @var \Titre|null
      *
-     * @ORM\ManyToOne(targetEntity="Titre", fetch="EAGER")
+     * @ORM\ManyToOne(targetEntity="Titre", fetch="EAGER", cascade={"persist"})
      * @ORM\JoinColumn(name="titre_principal_id", referencedColumnName="id", nullable=true)
      */
     private $titrePrincipal;

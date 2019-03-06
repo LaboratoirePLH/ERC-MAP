@@ -41,11 +41,11 @@
                     $.getJSON("https://pleiades.stoa.org/places/" + input.val() + "/json")
                         .done(function (data) {
                             if (fields.hasOwnProperty('nom'))
-                                fields.nom.attr('readonly', true).val(data.title);
+                                fields.nom.attr('readonly', true).val(data.title).trigger('change');
                             if (fields.hasOwnProperty('longitude'))
-                                fields.longitude.attr('readonly', true).val(data.reprPoint[0]);
+                                fields.longitude.attr('readonly', true).val(data.reprPoint[0]).trigger('change');
                             if (fields.hasOwnProperty('latitude'))
-                                fields.latitude.attr('readonly', true).val(data.reprPoint[1]);
+                                fields.latitude.attr('readonly', true).val(data.reprPoint[1]).trigger('change');
                             input.attr('readonly', true);
                         })
                         .fail(function (jqXHR, textStatus, errorThrown) {

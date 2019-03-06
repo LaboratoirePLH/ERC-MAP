@@ -109,7 +109,7 @@ class LocalisationType extends AbstractType
                 'required'   => false,
             ])
             ->add('pleiadesSite', PleiadesType::class, [
-                'label_attr'   => ['id' => 'pleiades_site_id'],
+                'label_attr'   => ['id' => 'localisation_site_id'],
                 'label'        => 'localisation.fields.pleiades_site',
                 'search_label' => 'localisation.search_pleiades',
                 'view_label'   => 'localisation.view_pleiades',

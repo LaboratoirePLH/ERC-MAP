@@ -246,6 +246,8 @@ class SourceType extends AbstractType
                 'object_class'            => Titre::class,
                 'creation_form_class'     => TitreType::class,
                 'selection_choice_label'  => 'nom'.ucfirst($locale),
+                'allow_none'              => true,
+                'default_decision'        => 'select',
                 'selection_query_builder' => function (EntityRepository $er) use ($locale) {
                     return $er->createQueryBuilder('e')
                         ->orderBy('e.nom'.ucfirst($locale), 'ASC');

@@ -1,1 +1,2 @@
 edition_principale: "At least one reference must be specified as the Main Edition"
+datation_error: "Ante Quem must be greater than or equal to Post Quem if both are present"

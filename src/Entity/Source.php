@@ -373,6 +373,7 @@ class Source
      *
      * @ORM\OneToOne(targetEntity="Datation", cascade={"persist"}, fetch="EAGER", orphanRemoval=true)
      * @ORM\JoinColumn(name="datation_id", referencedColumnName="id", nullable=true)
+     * @Assert\Valid
      */
     private $datation;
 

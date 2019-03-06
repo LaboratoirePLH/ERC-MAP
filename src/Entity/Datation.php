@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Datation
@@ -34,6 +35,10 @@ class Datation
      * @var int|null
      *
      * @ORM\Column(name="ante_quem", type="smallint", nullable=true)
+     * @Assert\Expression(
+     *      "this.hasValidDates()",
+     *      message="datation_error"
+     * )
      */
     private $anteQuem;
 
@@ -64,5 +69,12 @@ class Datation
         $this->anteQuem = $anteQuem;
 
         return $this;
+    }
+
+    public function hasValidDates(): bool
+    {
+        return $this->getPostQuem() === null
+            || $this->getAnteQuem() === null
+            || $this->getPostQuem() <= $this->getAnteQuem();
     }
 }

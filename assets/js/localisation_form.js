@@ -169,6 +169,13 @@
 
                 return false;
             });
+            rootForm.find('#localisation_site_nom')
+                .siblings()
+                .children('input[type=text]')
+                .on('keyup', function (e) {
+                    $(this).trigger('change');
+                });
         });
+
     }
 })(jQuery);

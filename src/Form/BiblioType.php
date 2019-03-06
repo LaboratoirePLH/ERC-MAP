@@ -3,17 +3,13 @@
 namespace App\Form;
 
 use App\Entity\Biblio;
-use App\Entity\Corpus;
-use App\Form\Type\SelectOrCreateType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Doctrine\ORM\EntityRepository;
 
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use FOS\CKEditorBundle\Form\Type\CKEditorType;
 
 class BiblioType extends AbstractType
@@ -28,9 +24,10 @@ class BiblioType extends AbstractType
                     'class' => 'dependent_field_corpus_main'
                 ]
             ])
-            ->add('titreAbrege', TextType::class, [
-                'label'    => 'biblio.fields.titre_abrege',
-                'required' => false
+            ->add('titreAbrege', CKEditorType::class, [
+                'config_name' => 'text_styling_only',
+                'label'       => 'biblio.fields.titre_abrege',
+                'required'    => false
             ])
             ->add('titreComplet', CKEditorType::class, array(
                 'config_name' => 'text_styling_only',

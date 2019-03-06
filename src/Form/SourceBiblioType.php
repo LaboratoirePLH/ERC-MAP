@@ -40,6 +40,10 @@ class SourceBiblioType extends AbstractType
                         ->orderBy('e.auteurBiblio', 'ASC');
                 }
             ])
+            ->add('referenceSource', TextType::class, [
+                'label'    => 'source_biblio.fields.reference_source',
+                'required' => false
+            ])
             ->add('commentaireFr', CKEditorType::class, array(
                 'config_name' => 'text_styling_only',
                 'label'       => 'generic.fields.commentaire_fr',
@@ -52,10 +56,6 @@ class SourceBiblioType extends AbstractType
                 'attr'        => ['rows' => 2],
                 'required'    => false
             ))
-            ->add('referenceSource', TextType::class, [
-                'label'    => 'source_biblio.fields.reference_source',
-                'required' => false
-            ])
         ;
     }
 

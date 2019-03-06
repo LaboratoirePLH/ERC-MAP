@@ -10,14 +10,15 @@
                 targets.parent('.row')[(d ? "slideDown" : "slideUp")](300);
             })
         }
-        $.each(targets, function (name, options) {
+        $.each(targets, function (name, settings) {
             var main = $('.dependent_field_' + name + '_main').parent().find('input');
-            main.each(function (i, mainItem) {
-                var targets = options.targetFinder.call(this, name, $(mainItem));
+            main.filter(':not(.dependent_field_enabled)').each(function (i, mainItem) {
+                var targets = settings.targetFinder.call(this, name, $(mainItem));
                 $(mainItem).on('change', function () {
-                    toggleFields(this, targets, options.conditionCallback);
+                    toggleFields(this, targets, settings.conditionCallback);
                 });
-                toggleFields($(mainItem), targets, options.conditionCallback);
+                toggleFields($(mainItem), targets, settings.conditionCallback);
+                $(mainItem).addClass('dependent_field_enabled');
             });
         });
     }

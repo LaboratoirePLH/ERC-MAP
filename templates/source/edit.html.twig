@@ -230,7 +230,7 @@
                 }
                 $.fn.dependentFields({
                     corpus: {
-                        conditionCallback: function (main) { return $(main).val() == 0; },
+                        conditionCallback: function (main) { return $(main).is(':checked'); },
                         targetFinder: function (name, main) {
                             return main.parents('.selectorcreate').find('.dependent_field_' + name);
                         }

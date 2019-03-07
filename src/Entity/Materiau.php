@@ -46,9 +46,6 @@ class Materiau
     public function setCategorieMateriau(?CategorieMateriau $categorieMateriau): self
     {
         $this->categorieMateriau = $categorieMateriau;
-
         return $this;
     }
-
-
 }

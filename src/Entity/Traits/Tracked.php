@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 trait Tracked
 {
-       /**
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="date_creation", type="datetime", nullable=false)
@@ -84,5 +84,42 @@ trait Tracked
     {
         $this->dernierEditeur = $dernierEditeur;
         return $this;
+    }
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="version", type="integer", nullable=false)
+     */
+    private $version;
+
+    public function getVersion(): ?int
+    {
+        return $this->version;
+    }
+
+    public function setVersion(int $version): self
+    {
+        $this->version = $version;
+        return $this;
+    }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function _setupTracking(){
+        $now = new \DateTime();
+        $this->setDateCreation($now);
+        $this->setDateModification($now);
+        $this->setVersion(1);
+    }
+
+    /**
+     * @ORM\PreUpdate
+     */
+    public function _updateTracking(){
+        $now = new \DateTime();
+        $this->setDateModification($now);
+        $this->setVersion($this->getVersion() + 1);
     }
 }

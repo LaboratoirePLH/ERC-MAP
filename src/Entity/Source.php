@@ -16,6 +16,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Source
 {
+    use Traits\DatedWithFiability;
     use Traits\Tracked;
     use Traits\Translatable;
     use Traits\TranslatedComment;
@@ -49,24 +50,6 @@ class Source
     public function setTitrePrincipal(?Titre $titrePrincipal): self
     {
         $this->titrePrincipal = $titrePrincipal;
-        return $this;
-    }
-
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="version", type="integer", nullable=false)
-     */
-    private $version;
-
-    public function getVersion(): ?int
-    {
-        return $this->version;
-    }
-
-    public function setVersion(int $version): self
-    {
-        $this->version = $version;
         return $this;
     }
 
@@ -143,24 +126,6 @@ class Source
     }
 
     /**
-     * @var bool|null
-     *
-     * @ORM\Column(name="est_datee", type="boolean", nullable=true)
-     */
-    private $estDatee;
-
-    public function getEstDatee(): ?bool
-    {
-        return $this->estDatee;
-    }
-
-    public function setEstDatee(?bool $estDatee): self
-    {
-        $this->estDatee = $estDatee;
-        return $this;
-    }
-
-    /**
      * @var int|null
      *
      * @ORM\Column(name="fiabilite_localisation", type="smallint", nullable=true)
@@ -175,24 +140,6 @@ class Source
     public function setFiabiliteLocalisation(?int $fiabiliteLocalisation): self
     {
         $this->fiabiliteLocalisation = $fiabiliteLocalisation;
-        return $this;
-    }
-
-    /**
-     * @var int|null
-     *
-     * @ORM\Column(name="fiabilite_datation", type="smallint", nullable=true)
-     */
-    private $fiabiliteDatation;
-
-    public function getFiabiliteDatation(): ?int
-    {
-        return $this->fiabiliteDatation;
-    }
-
-    public function setFiabiliteDatation(?int $fiabiliteDatation): self
-    {
-        $this->fiabiliteDatation = $fiabiliteDatation;
         return $this;
     }
 
@@ -366,26 +313,6 @@ class Source
             'typeSource' => $this->getTypeSource(),
             'categorieSource' => $this->getCategorieSource(),
         ];
-    }
-
-    /**
-     * @var \Datation
-     *
-     * @ORM\OneToOne(targetEntity="Datation", cascade={"persist"}, fetch="EAGER", orphanRemoval=true)
-     * @ORM\JoinColumn(name="datation_id", referencedColumnName="id", nullable=true)
-     * @Assert\Valid
-     */
-    private $datation;
-
-    public function getDatation(): ?Datation
-    {
-        return $this->datation;
-    }
-
-    public function setDatation(?Datation $datation): self
-    {
-        $this->datation = $datation;
-        return $this;
     }
 
     /**
@@ -593,38 +520,42 @@ class Source
     }
 
     /**
-     * @ORM\PrePersist
+     * @var \Doctrine\Common\Collections\Collection
+     *
+     * @ORM\OneToMany(targetEntity="Attestation", mappedBy="source", orphanRemoval=true)
      */
-    public function onCreate(){
-        $now = new \DateTime();
-        $this->setDateCreation($now);
-        $this->setDateModification($now);
-        $this->setVersion(1);
-        $this->_updateFiabilite();
-    }
+    private $attestations;
 
     /**
-     * @ORM\PreUpdate
+     * @return Collection|Attestation[]
      */
-    public function onUpdate(){
-        $now = new \DateTime();
-        $this->setDateModification($now);
-        $this->setVersion($this->getVersion() + 1);
-        $this->_updateFiabilite();
+    public function getAttestations(): ?Collection
+    {
+        return $this->attestations;
     }
 
-    private function _updateFiabilite(){
-        $fiabDatation = 5;
-        if($this->getEstDatee() && !is_null($datation = $this->getDatation())){
-            $delta = abs($datation->getPostQuem() - $datation->getAnteQuem());
-            if($delta <= 5){ $fiabDatation = 1; }
-            else if($delta <= 50){ $fiabDatation = 2; }
-            else if($delta <= 100){ $fiabDatation = 3; }
-            else if($delta <= 200){ $fiabDatation = 4; }
-            else { $fiabDatation = 5; }
+    public function addAttestation(Attestation $attestation): self
+    {
+        if (!$this->attestations->contains($attestation)) {
+            $this->attestations[] = $attestation;
         }
-        $this->setFiabiliteDatation($fiabDatation);
+        return $this;
+    }
 
+    public function removeAttestation(Attestation $attestation): self
+    {
+        if ($this->attestations->contains($attestation)) {
+            $this->attestations->removeElement($attestation);
+        }
+        return $this;
+    }
+
+
+    /**
+     * @ORM\PrePersist
+     * @ORM\PreUpdate
+     */
+    private function _updateFiabiliteLocalisation(){
         $fiabLocalisation = 5;
         $lieu = $this->getInSitu() ? $this->getLieuDecouverte() : $this->getLieuOrigine();
         if(!is_null($lieu)){

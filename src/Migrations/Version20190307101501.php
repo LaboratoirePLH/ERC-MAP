@@ -27,7 +27,7 @@ final class Version20190307101501 extends AbstractMigration
         $this->addSql('CREATE SEQUENCE activite_agent_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE SEQUENCE pratique_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE SEQUENCE categorie_occasion_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
-        $this->addSql('CREATE SEQUENCE statu_affiche_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
+        $this->addSql('CREATE SEQUENCE statut_affiche_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE SEQUENCE materiel_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE SEQUENCE genre_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE SEQUENCE nature_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
@@ -57,7 +57,7 @@ final class Version20190307101501 extends AbstractMigration
         $this->addSql('CREATE TABLE activite_agent (id SMALLINT NOT NULL, nom_fr VARCHAR(255) DEFAULT NULL, nom_en VARCHAR(255) DEFAULT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE TABLE pratique (id SMALLINT NOT NULL, nom_fr VARCHAR(255) DEFAULT NULL, nom_en VARCHAR(255) DEFAULT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE TABLE categorie_occasion (id SMALLINT NOT NULL, nom_fr VARCHAR(255) DEFAULT NULL, nom_en VARCHAR(255) DEFAULT NULL, PRIMARY KEY(id))');
-        $this->addSql('CREATE TABLE statu_affiche (id SMALLINT NOT NULL, nom_fr VARCHAR(255) DEFAULT NULL, nom_en VARCHAR(255) DEFAULT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE statut_affiche (id SMALLINT NOT NULL, nom_fr VARCHAR(255) DEFAULT NULL, nom_en VARCHAR(255) DEFAULT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE TABLE materiel (id SMALLINT NOT NULL, categorie_materiel_id SMALLINT DEFAULT NULL, nom_fr VARCHAR(255) DEFAULT NULL, nom_en VARCHAR(255) DEFAULT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_18D2B091C9762CA6 ON materiel (categorie_materiel_id)');
         $this->addSql('CREATE TABLE genre (id SMALLINT NOT NULL, nom_fr VARCHAR(255) DEFAULT NULL, nom_en VARCHAR(255) DEFAULT NULL, PRIMARY KEY(id))');
@@ -88,7 +88,7 @@ final class Version20190307101501 extends AbstractMigration
         $this->addSql('ALTER TABLE agent ADD CONSTRAINT FK_268B9C9D2A7C0BC8 FOREIGN KEY (id_attestation) REFERENCES attestation (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE agent ADD CONSTRAINT FK_268B9C9D343700E0 FOREIGN KEY (localisation_decouverte_id) REFERENCES localisation (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE agent_statut ADD CONSTRAINT FK_BB83A799C80EDDAD FOREIGN KEY (id_agent) REFERENCES agent (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
-        $this->addSql('ALTER TABLE agent_statut ADD CONSTRAINT FK_BB83A799C3534552 FOREIGN KEY (id_statut) REFERENCES statu_affiche (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
+        $this->addSql('ALTER TABLE agent_statut ADD CONSTRAINT FK_BB83A799C3534552 FOREIGN KEY (id_statut) REFERENCES statut_affiche (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE agent_nature ADD CONSTRAINT FK_EF3FD581C80EDDAD FOREIGN KEY (id_agent) REFERENCES agent (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE agent_nature ADD CONSTRAINT FK_EF3FD58197EF374A FOREIGN KEY (id_nature) REFERENCES nature (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE agent_genre ADD CONSTRAINT FK_BAFE1B80C80EDDAD FOREIGN KEY (id_agent) REFERENCES agent (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
@@ -122,7 +122,6 @@ final class Version20190307101501 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
-        $this->addSql('CREATE SCHEMA public');
         $this->addSql('ALTER TABLE agent_agentivite DROP CONSTRAINT FK_AC21DF1C78ED8EC4');
         $this->addSql('ALTER TABLE agent_statut DROP CONSTRAINT FK_BB83A799C80EDDAD');
         $this->addSql('ALTER TABLE agent_nature DROP CONSTRAINT FK_EF3FD581C80EDDAD');
@@ -150,7 +149,7 @@ final class Version20190307101501 extends AbstractMigration
         $this->addSql('DROP SEQUENCE activite_agent_id_seq CASCADE');
         $this->addSql('DROP SEQUENCE pratique_id_seq CASCADE');
         $this->addSql('DROP SEQUENCE categorie_occasion_id_seq CASCADE');
-        $this->addSql('DROP SEQUENCE statu_affiche_id_seq CASCADE');
+        $this->addSql('DROP SEQUENCE statut_affiche_id_seq CASCADE');
         $this->addSql('DROP SEQUENCE materiel_id_seq CASCADE');
         $this->addSql('DROP SEQUENCE genre_id_seq CASCADE');
         $this->addSql('DROP SEQUENCE nature_id_seq CASCADE');
@@ -168,7 +167,7 @@ final class Version20190307101501 extends AbstractMigration
         $this->addSql('DROP TABLE activite_agent');
         $this->addSql('DROP TABLE pratique');
         $this->addSql('DROP TABLE categorie_occasion');
-        $this->addSql('DROP TABLE statu_affiche');
+        $this->addSql('DROP TABLE statut_affiche');
         $this->addSql('DROP TABLE materiel');
         $this->addSql('DROP TABLE genre');
         $this->addSql('DROP TABLE nature');

@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * StatutAffiche
  *
- * @ORM\Table(name="statu_affiche")
+ * @ORM\Table(name="statut_affiche")
  * @ORM\Entity
  */
 class StatutAffiche

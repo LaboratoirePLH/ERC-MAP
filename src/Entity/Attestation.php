@@ -116,32 +116,22 @@ class Attestation
     /**
      * @var \Doctrine\Common\Collections\Collection
      *
-     * @ORM\ManyToMany(targetEntity="CategorieOccasion")
-     * @ORM\JoinTable(name="attestation_categorie_occasion",
-     *   joinColumns={
-     *     @ORM\JoinColumn(name="id_attestation", referencedColumnName="id")
-     *   },
-     *   inverseJoinColumns={
-     *     @ORM\JoinColumn(name="id_categorie_occasion", referencedColumnName="id")
-     *   }
-     * )
+     * @ORM\ManyToOne(targetEntity="CategorieOccasion")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_categorie_occasion", referencedColumnName="id")
+     * })
      */
-    private $categorieOccasions;
+    private $categorieOccasion;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
      *
-     * @ORM\ManyToMany(targetEntity="Occasion")
-     * @ORM\JoinTable(name="attestation_occasion",
-     *   joinColumns={
-     *     @ORM\JoinColumn(name="id_attestation", referencedColumnName="id")
-     *   },
-     *   inverseJoinColumns={
-     *     @ORM\JoinColumn(name="id_occasion", referencedColumnName="id")
-     *   }
-     * )
+     * @ORM\ManyToOne(targetEntity="Occasion")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_occasion", referencedColumnName="id")
+     * })
      */
-    private $occasions;
+    private $occasion;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
@@ -160,8 +150,6 @@ class Attestation
     public function __construct()
     {
         $this->pratiques = new ArrayCollection();
-        $this->categorieOccasions = new ArrayCollection();
-        $this->occasions = new ArrayCollection();
         $this->attestationMateriels = new ArrayCollection();
         $this->agents = new ArrayCollection();
     }
@@ -305,56 +293,41 @@ class Attestation
         return $this;
     }
 
-    /**
-     * @return Collection|CategorieOccasion[]
-     */
-    public function getCategorieOccasions(): Collection
+    public function getCategorieOccasion(): ?CategorieOccasion
     {
-        return $this->categorieOccasions;
+        return $this->categorieOccasion;
     }
 
-    public function addCategorieOccasion(CategorieOccasion $categorieOccasion): self
+    public function setCategorieOccasion(?CategorieOccasion $categorieOccasion): self
     {
-        if (!$this->categorieOccasions->contains($categorieOccasion)) {
-            $this->categorieOccasions[] = $categorieOccasion;
-        }
-
+        $this->categorieOccasion = $categorieOccasion;
         return $this;
     }
 
-    public function removeCategorieOccasion(CategorieOccasion $categorieOccasion): self
+    public function getOccasion(): ?Occasion
     {
-        if ($this->categorieOccasions->contains($categorieOccasion)) {
-            $this->categorieOccasions->removeElement($categorieOccasion);
-        }
+        return $this->occasion;
+    }
 
+    public function setOccasion(?Occasion $occasion): self
+    {
+        $this->occasion = $occasion;
         return $this;
     }
 
-    /**
-     * @return Collection|Occasion[]
-     */
-    public function getOccasions(): Collection
+    public function setTypeCategorieOccasion($data): self
     {
-        return $this->occasions;
-    }
-
-    public function addOccasion(Occasion $occasion): self
-    {
-        if (!$this->occasions->contains($occasion)) {
-            $this->occasions[] = $occasion;
-        }
-
+        $this->setCategorieOccasion($data['categorieOccasion']);
+        $this->setOccasion($data['occasion']);
         return $this;
     }
 
-    public function removeOccasion(Occasion $occasion): self
+    public function getTypeCategorieOccasion(): array
     {
-        if ($this->occasions->contains($occasion)) {
-            $this->occasions->removeElement($occasion);
-        }
-
-        return $this;
+        return [
+            'occasion' => $this->getOccasion(),
+            'categorieOccasion' => $this->getCategorieOccasion(),
+        ];
     }
 
     /**

@@ -60,6 +60,7 @@ generic:
         precision: "Precision"
         fiabilite: "Reliability"
         version: "Version"
+        localisation: "Location"
     choices :
         new: "New"
         existing: "Existing"
@@ -121,7 +122,6 @@ source:
         source_biblio_n: "Reference #"
         commentaire_source_fr: "Source Comments (FR)"
         commentaire_source_en: "Source Comments (EN)"
-
     sections:
         informations_source: "Source information"
         bibliographie: "Bibliography"
@@ -175,11 +175,23 @@ attestation:
     view: "View Testimony"
     create: "Create Testimony"
     edit: "Edit Testimony"
+    add_agent: "Add Agent"
+    delete_agent: "Remove Agent"
     messages:
         created: "Testimony created"
         edited: "Testimony edited"
         deleted: "Testimony deleted"
         missing: "Testimony does not exists"
+    sections:
+        informations_source: "Source information"
+        texte_attestation: "Testimony Text"
+        contexte: "Context"
+        agents: "Agents"
+        datation: "Testimony Datation"
+        localisation: "Testimony Location"
+        commentaires: "Comments"
+        elements: "Elements"
+        formules: "Formulae"
 
 agent:
     fields:

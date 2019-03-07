@@ -487,15 +487,25 @@ class Source
         return $this;
     }
 
+    /**
+     * @var SourceBiblio|null
+     */
+    private $editionPrincipaleBiblio;
+
     public function hasEditionPrincipaleBiblio(): bool
+    {
+        return !is_null($this->getEditionPrincipaleBiblio);
+    }
+
+    public function getEditionPrincipaleBiblio(): ?SourceBiblio
     {
         foreach($this->getSourceBiblios() as $sb)
         {
             if($sb->getEditionPrincipale()){
-                return true;
+                return $sb;
             }
         }
-        return false;
+        return null;
     }
 
     /**

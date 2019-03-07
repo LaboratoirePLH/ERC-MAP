@@ -60,7 +60,7 @@
                     {{ source.projet.nom(locale) }} #{{ source.id }}
                 </a>
                 <br />
-                <small>{{ 'source.fields.version'|trans }}&nbsp;{{ source.version|default("?") }}</small>
+                <small>{{ 'generic.fields.version'|trans }}&nbsp;{{ source.version|default("?") }}</small>
             </th>
             <td>
                 {{ source.categorieSource is not null ? source.categorieSource.nom(locale) : "" }}
@@ -79,10 +79,10 @@
                 {{ source.estDatee ? (source.datation.postQuem|default("?") ~ " / " ~ source.datation.anteQuem|default("?")) : "" }}
             </td>
             <td>
-                {{ source.sourceBiblios is not empty ? source.sourceBiblios[0].biblio.titreAbrege : "" }}
+                {{ source.sourceBiblios is not empty ? source.editionPrincipaleBiblio.biblio.titreAbrege : "" }}
             </td>
             <td>
-                {{ source.sourceBiblios is not empty ? source.sourceBiblios[0].referenceSource : "" }}
+                {{ source.sourceBiblios is not empty ? source.editionPrincipaleBiblio.referenceSource : "" }}
             </td>
             <td data-order="{{ source.dateCreation|date('U') }}">
                 {{ source.dateCreation|date("locale_datetime"|trans) }}
@@ -121,11 +121,11 @@
                     {{ 'generic.delete'|trans }}
                 </button>
                 {% include "modals/confirmation.html.twig" with {
-                'modalName': 'confirm_deletion',
-                'uuid': uuid,
-                'targetUrl': url('source_delete', {'id' : source.id}),
-                'confirmationLabel': 'generic.delete',
-                'csrfToken': 'delete_source_' ~ source.id,
+                    'modalName': 'confirm_deletion',
+                    'uuid': uuid,
+                    'targetUrl': url('source_delete', {'id' : source.id}),
+                    'confirmationLabel': 'generic.delete',
+                    'csrfToken': 'delete_source_' ~ source.id,
                 } %}
 
             </td>

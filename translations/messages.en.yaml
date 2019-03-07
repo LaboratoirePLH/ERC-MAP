@@ -42,6 +42,7 @@ generic:
     clear_filters: "Clear filters"
     exit: "Exit"
     stay: "Stay"
+    toggle_section: "Show/Hide section"
     fields:
         id: "ID"
         date_creation: "Creation"
@@ -57,6 +58,8 @@ generic:
         to_translate: "To translate in"
         translations: "Translations"
         precision: "Precision"
+        fiabilite: "Reliability"
+        version: "Version"
     choices :
         new: "New"
         existing: "Existing"
@@ -105,7 +108,7 @@ source:
         reference_bibliographique: "Bibliographic Reference"
         to_translate_fr: "To translate in French"
         to_translate_en: "To translate in English"
-        fiability: "Reliability score"
+        fiability_score: "Reliability score"
         url_image: "Image URL"
         url_texte: "Text URL"
         in_situ: "In Situ ?"
@@ -116,7 +119,6 @@ source:
         iconographie: "Iconography"
         source_biblio: "Reference"
         source_biblio_n: "Reference #"
-        version: "Version"
         commentaire_source_fr: "Source Comments (FR)"
         commentaire_source_en: "Source Comments (EN)"
 
@@ -155,10 +157,38 @@ biblio:
         sources: "Sources"
         elements: "Elements"
 
-corpus:
+attestation:
     fields:
-        nom: "Corpus Name"
-        nom_complet: "Corpus Full Name"
+        passage: "Passage"
+        prose: "Prose"
+        poesie: "Poetry"
+        extrait_sans_restitution: "Without restitution"
+        extrait_avec_restitution: "With restitution"
+        translitteration: "Transliteration"
+        occasion: "Occasion"
+        categorie_occasion: "Occasion Category"
+        pratique: "Connected Act"
+        materiel: "Connected Material"
+        categorie_materiel: "Connected Material Category"
+        nombre_agents: "Number of Agents"
+    list: "Testimonies List"
+    view: "View Testimony"
+    create: "Create Testimony"
+    edit: "Edit Testimony"
+    messages:
+        created: "Testimony created"
+        edited: "Testimony edited"
+        deleted: "Testimony deleted"
+        missing: "Testimony does not exists"
+
+agent:
+    fields:
+        designation: "Designation"
+        agentivite: "Agency"
+        nature: "Nature"
+        genre: "Gender"
+        statut_affiche: "Explicit Status"
+        activite: "Activity"
 
 datation:
     fields:

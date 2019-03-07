@@ -13,7 +13,7 @@ use Symfony\Component\Translation\TranslatorInterface;
 class BibliographyController extends AbstractController
 {
     /**
-     * @Route("/bibliography", name="bibliography")
+     * @Route("/bibliography", name="bibliography_list")
      */
     public function index()
     {
@@ -50,7 +50,7 @@ class BibliographyController extends AbstractController
             // Message de confirmation
             $request->getSession()->getFlashBag()->add('success', 'biblio.messages.created');
             if ($request->request->has("saveclose")) {
-                return $this->redirectToRoute('bibliography');
+                return $this->redirectToRoute('bibliography_list');
             }
             return $this->redirectToRoute('bibliography_edit', ['id' => $biblio->getId()]);
         }
@@ -73,7 +73,7 @@ class BibliographyController extends AbstractController
                        ->find($id);
         if(is_null($bibliography)){
             $request->getSession()->getFlashBag()->add('error', 'biblio.messages.missing');
-            return $this->redirectToRoute('bibliography');
+            return $this->redirectToRoute('bibliography_list');
         }
 
         return $this->render('bibliography/show.html.twig', [
@@ -109,7 +109,7 @@ class BibliographyController extends AbstractController
             // Message de confirmation
             $request->getSession()->getFlashBag()->add('success', 'biblio.messages.edited');
             if ($request->request->has("saveclose")) {
-                return $this->redirectToRoute('bibliography');
+                return $this->redirectToRoute('bibliography_list');
             }
             return $this->redirectToRoute('bibliography_edit', ['id' => $biblio->getId()]);
         }
@@ -144,6 +144,6 @@ class BibliographyController extends AbstractController
         } else {
             $request->getSession()->getFlashBag()->add('error', 'generic.messages.deletion_failed_csrf');
         }
-        return $this->redirectToRoute('bibliography');
+        return $this->redirectToRoute('bibliography_list');
     }
 }

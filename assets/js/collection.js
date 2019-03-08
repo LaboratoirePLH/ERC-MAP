@@ -64,7 +64,7 @@
 
             container.attr('data-index', index);
 
-            $('#add_sourcebiblio').click(function (e) {
+            container.next().find('.collection-add-link').click(function (e) {
                 addEntry(container);
                 e.preventDefault();
                 return false;

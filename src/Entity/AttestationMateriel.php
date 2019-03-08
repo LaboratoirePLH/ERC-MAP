@@ -39,8 +39,7 @@ class AttestationMateriel
      *
      * @ORM\Column(name="quantite", type="smallint", nullable=true)
      */
-    private $quantite;
-
+    private $quantite = 1;
 
     public function getAttestation(): ?Attestation
     {
@@ -62,6 +61,20 @@ class AttestationMateriel
     {
         $this->materiel = $materiel;
         return $this;
+    }
+
+    public function setTypeCategorieMateriel($data): self
+    {
+        $this->setMateriel($data['materiel'] ?? null);
+        return $this;
+    }
+
+    public function getTypeCategorieMateriel(): array
+    {
+        return [
+            'materiel' => $this->getMateriel() ?? null,
+            'categorieMateriel' => $this->getMateriel() ? $this->getMateriel()->getCategorieMateriel() : null,
+        ];
     }
 
     public function getQuantite(): ?int

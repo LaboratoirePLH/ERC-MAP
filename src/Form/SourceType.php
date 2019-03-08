@@ -25,7 +25,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Doctrine\ORM\EntityRepository;
 
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -77,7 +76,7 @@ class SourceType extends AbstractType
                 'required' => false
             ])
             ->add('estDatee', CheckboxType::class, [
-                'label'      => 'source.fields.est_datee',
+                'label'      => 'generic.fields.est_datee',
                 'label_attr' => [
                     'class' => 'dependent_field_estdatee_main'
                 ],

@@ -70,7 +70,7 @@
         {{ form_widget(form.sourceBiblios) }}
         <div class="form-group row">
             <div class="col-sm-10 offset-sm-2">
-                <a href="#" id="add_sourcebiblio" class="btn btn-primary">
+                <a href="#" class="btn btn-primary collection-add-link">
                     <i class="fa fa-plus"></i>&nbsp;
                     {{ 'source.add_sourcebiblio'|trans }}
                 </a>
@@ -167,8 +167,8 @@
 'cancelLabel': 'generic.stay'
 } %}
 {% include "modals/confirmation.html.twig" with {
-'modalName': 'confirm_remove_sourcebiblio',
-'uuid': 'confirm_remove_sourcebiblio',
+'modalName': 'confirm_remove_item',
+'uuid': 'confirm_remove_item',
 'confirmationLabel': 'generic.delete',
 'useForm': false
 } %}
@@ -215,7 +215,7 @@
         $('div#source_sourceBiblios').collectionField({
             blockTitle: '{{ "source.fields.source_biblio_n"|trans }}',
             deleteLink: '{{ "generic.delete"|trans }}',
-            confirmationModal: $('#confirm_remove_sourcebiblio'),
+            confirmationModal: $('#confirm_remove_item'),
             addListener: function (newEl, idx) {
                 // Gestion du champ "selectorcreate"
                 $(newEl).find('.selectorcreate').selectOrCreate();

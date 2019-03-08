@@ -11,6 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="attestation")
  * @ORM\Entity
+ * @ORM\HasLifecycleCallbacks()
  */
 class Attestation
 {
@@ -34,7 +35,7 @@ class Attestation
      *
      * @ORM\ManyToOne(targetEntity="Source", inversedBy="attestations")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_source", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="id_source", referencedColumnName="id", nullable=false)
      * })
      */
     private $source;
@@ -136,7 +137,7 @@ class Attestation
     /**
      * @var \Doctrine\Common\Collections\Collection
      *
-     * @ORM\OneToMany(targetEntity="AttestationMateriel", mappedBy="attestation", orphanRemoval=true, cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="AttestationMateriel", mappedBy="attestation", orphanRemoval=true, cascade={"persist", "remove"})
      */
     private $attestationMateriels;
 

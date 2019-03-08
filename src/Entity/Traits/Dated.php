@@ -46,4 +46,14 @@ trait Dated
         $this->datation = $datation;
         return $this;
     }
+
+    /**
+     * @ORM\PrePersist
+     * @ORM\PreUpdate
+     */
+    public function _clearOrphanDatation(){
+        if(!$this->getEstDatee()){
+            $this->setDatation(null);
+        }
+    }
 }

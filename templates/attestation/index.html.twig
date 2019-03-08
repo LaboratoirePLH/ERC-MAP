@@ -1,11 +1,16 @@
 {% extends 'authenticated.html.twig' %}
+{% set title = title|default('attestation.'~action) %}
 {% block title %}
-{{ 'attestation.list'|trans }}
+{{ title|trans }}
 {% endblock %}
 {% block content %}
+{% set createUrl = url('attestation_create') %}
+{% if source is defined %}
+{% set createUrl = url('attestation_create_source', { 'source_id' : source.id}) %}
+{% endif %}
 <div class="row">
     <div class="col-12">
-        <a href=" {{ url('attestation_create') }}" class="btn btn-primary">{{ 'attestation.create'|trans }}</a>
+        <a href=" {{ createUrl }}" class="btn btn-primary">{{ 'attestation.create'|trans }}</a>
         <button type="button" class="btn btn-secondary clear-filter-button">
             {{ 'generic.clear_filters'|trans }}
         </button>
@@ -54,10 +59,12 @@
                 <small>{{ 'generic.fields.version'|trans }}&nbsp;{{ source.version|default("?") }}</small>
             </th>
             <td>
-                {{ source.sourceBiblios is not empty ? source.editionPrincipaleBiblio.biblio.titreAbrege : "" }}
+                {{ attestation.source.sourceBiblios is not empty ?
+                    attestation.source.editionPrincipaleBiblio.biblio.titreAbrege : "" }}
             </td>
             <td>
-                {{ source.sourceBiblios is not empty ? source.editionPrincipaleBiblio.referenceSource : "" }}
+                {{ attestation.source.sourceBiblios is not empty ?
+                    attestation.source.editionPrincipaleBiblio.referenceSource : "" }}
             </td>
             <td>
                 {{ attestation.passage }}
@@ -131,7 +138,7 @@
 </table>
 <div class="row">
     <div class="col-12">
-        <a href=" {{ url('attestation_create') }}" class="btn btn-primary">{{ 'attestation.create'|trans }}</a>
+        <a href=" {{ createUrl }}" class="btn btn-primary">{{ 'attestation.create'|trans }}</a>
         <button type="button" class="btn btn-secondary clear-filter-button">
             {{ 'generic.clear_filters'|trans }}
         </button>

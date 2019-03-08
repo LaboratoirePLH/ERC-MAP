@@ -52,6 +52,7 @@ class LocalisationType extends AbstractType
                 'name'           => 'grandeRegion',
                 'secondary_name' => 'sousRegion',
                 'category_field' => 'grandeRegion',
+                'attr'           => ['class' => 'grandeSousRegion'],
                 'field_options'  => [
                     'label'        => 'localisation.fields.grande_region',
                     'label_attr'   => [
@@ -85,6 +86,7 @@ class LocalisationType extends AbstractType
             ])
             ->add('pleiadesVille', PleiadesType::class, [
                 'label_attr'   => ['id' => 'localisation_ville_id', 'class' => 'citysearch_field'],
+                'attr'         => ['min' => 0, 'step' => 1],
                 'label'        => 'localisation.fields.pleiades_ville',
                 'search_label' => 'localisation.search_pleiades',
                 'view_label'   => 'localisation.view_pleiades',
@@ -111,6 +113,7 @@ class LocalisationType extends AbstractType
             ])
             ->add('pleiadesSite', PleiadesType::class, [
                 'label_attr'   => ['id' => 'localisation_site_id'],
+                'attr'         => ['min' => 0, 'step' => 1],
                 'label'        => 'localisation.fields.pleiades_site',
                 'search_label' => 'localisation.search_pleiades',
                 'view_label'   => 'localisation.view_pleiades',

@@ -7,7 +7,7 @@
                 if ($(target).hasClass('dependent_field_inverse')) {
                     d = !d;
                 }
-                targets.parent('.row')[(d ? "slideDown" : "slideUp")](300);
+                targets.closest('.row')[(d ? "slideDown" : "slideUp")](300);
             })
         }
         $.each(targets, function (name, settings) {

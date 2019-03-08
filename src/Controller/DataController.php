@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Localisation;
 use App\Entity\Materiau;
+use App\Entity\Materiel;
+use App\Entity\Occasion;
 use App\Entity\SousRegion;
 use App\Entity\TypeSource;
 use App\Entity\TypeSupport;
@@ -49,6 +51,32 @@ class DataController extends AbstractController
         return $this->_fetchDataForCategory(
             Materiau::class,
             'categorieMateriau',
+            $request->query->get("parentId"),
+            $request->getLocale()
+        );
+    }
+
+    /**
+     * @Route("/data/materiel", name="data_materiel")
+     */
+    public function materiel(Request $request)
+    {
+        return $this->_fetchDataForCategory(
+            Materiel::class,
+            'categorieMateriel',
+            $request->query->get("parentId"),
+            $request->getLocale()
+        );
+    }
+
+    /**
+     * @Route("/data/type_occasion", name="data_type_occasion")
+     */
+    public function typeOccasion(Request $request)
+    {
+        return $this->_fetchDataForCategory(
+            Occasion::class,
+            'categorieOccasion',
             $request->query->get("parentId"),
             $request->getLocale()
         );

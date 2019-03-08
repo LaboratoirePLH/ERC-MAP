@@ -72,7 +72,10 @@ class BibliographyController extends AbstractController
                        ->getRepository(Biblio::class)
                        ->find($id);
         if(is_null($bibliography)){
-            $request->getSession()->getFlashBag()->add('error', 'biblio.messages.missing');
+            $request->getSession()->getFlashBag()->add(
+                'error',
+                $translator->trans('biblio.messages.missing', ['%id%' => $id])
+            );
             return $this->redirectToRoute('bibliography_list');
         }
 
@@ -91,6 +94,13 @@ class BibliographyController extends AbstractController
         $biblio = $this->getDoctrine()
                        ->getRepository(Biblio::class)
                        ->find($id);
+        if(is_null($biblio)){
+            $request->getSession()->getFlashBag()->add(
+                'error',
+                $translator->trans('biblio.messages.missing', ['%id%' => $id])
+            );
+            return $this->redirectToRoute('bibliography_list');
+        }
 
         $form   = $this->get('form.factory')->create(BiblioType::class, $biblio, [
             'action'       => 'edit',

@@ -10,27 +10,27 @@ trait Located
 {
     /**
      * @var bool
+     *
+     * @ORM\Column(name="est_localisee", type="boolean", nullable=true)
      */
     private $estLocalisee;
 
-    public function getEstLocalisee(): bool
+    public function getEstLocalisee(): ?bool
     {
-        return !is_null($this->getLocalisation());
+        return $this->estLocalisee;
     }
 
-    public function setEstLocalisee(bool $estLocalisee): self
+    public function setEstLocalisee(?bool $estLocalisee): self
     {
-        if(!$estLocalisee){
-            $this->setLocalisation(null);
-        }
+        $this->estLocalisee = $estLocalisee;
         return $this;
     }
 
     /**
      * @var \Localisation|null
      *
-     * @ORM\OneToOne(targetEntity="Localisation", cascade={"persist"}, fetch="EAGER", orphanRemoval=true)
-     * @ORM\JoinColumn(name="localisation_decouverte_id", referencedColumnName="id", nullable=true)
+     * @ORM\OneToOne(targetEntity="Localisation", cascade={"persist", "remove"}, fetch="EAGER", orphanRemoval=true)
+     * @ORM\JoinColumn(name="localisation_id", referencedColumnName="id", nullable=true)
      */
     private $localisation;
 
@@ -43,5 +43,15 @@ trait Located
     {
         $this->localisation = $localisation;
         return $this;
+    }
+
+    /**
+     * @ORM\PrePersist
+     * @ORM\PreUpdate
+     */
+    public function _clearOrphanLocalisation(){
+        if(!$this->getEstLocalisee()){
+            $this->setLocalisation(null);
+        }
     }
 }

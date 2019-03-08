@@ -98,7 +98,10 @@ class SourceController extends AbstractController
                        ->getRepository(Source::class)
                        ->getRecord($id, true);
         if(is_null($source)){
-            $request->getSession()->getFlashBag()->add('error', 'source.messages.missing');
+            $request->getSession()->getFlashBag()->add(
+                'error',
+                $translator->trans('source.messages.missing', ['%id%' => $id])
+            );
             return $this->redirectToRoute('source_list');
         }
 
@@ -117,6 +120,13 @@ class SourceController extends AbstractController
         $source = $this->getDoctrine()
                        ->getRepository(Source::class)
                        ->find($id);
+        if(is_null($source)){
+            $request->getSession()->getFlashBag()->add(
+                'error',
+                $translator->trans('source.messages.missing', ['%id%' => $id])
+            );
+            return $this->redirectToRoute('source_list');
+        }
 
         $form   = $this->get('form.factory')->create(SourceType::class, $source, [
             'action'       => 'edit',

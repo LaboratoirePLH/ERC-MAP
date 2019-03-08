@@ -2,7 +2,7 @@
 
 namespace App\Form;
 
-use App\Entity\Activite;
+use App\Entity\ActiviteAgent;
 use App\Entity\Agent;
 use App\Entity\Agentivite;
 use App\Entity\Genre;
@@ -14,6 +14,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Doctrine\ORM\EntityRepository;
 
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use FOS\CKEditorBundle\Form\Type\CKEditorType;
 
@@ -21,14 +22,15 @@ class AgentType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $locale = $options['locale'];
         $builder
             ->add('designation', CKEditorType::class, [
-                'label'       => 'attestation.fields.designation',
+                'label'       => 'agent.fields.designation',
                 'config_name' => 'text_styling_only',
                 'required'    => false
             ])
             ->add('agentivites', EntityType::class, [
-                'label'        => 'attestation.fields.agentivite',
+                'label'        => 'agent.fields.agentivite',
                 'required'     => false,
                 'multiple'     => true,
                 'expanded'     => false,
@@ -44,7 +46,7 @@ class AgentType extends AbstractType
                 }
             ])
             ->add('natures', EntityType::class, [
-                'label'        => 'attestation.fields.nature',
+                'label'        => 'agent.fields.nature',
                 'required'     => false,
                 'multiple'     => true,
                 'expanded'     => false,
@@ -60,7 +62,7 @@ class AgentType extends AbstractType
                 }
             ])
             ->add('genres', EntityType::class, [
-                'label'        => 'attestation.fields.genre',
+                'label'        => 'agent.fields.genre',
                 'required'     => false,
                 'multiple'     => true,
                 'expanded'     => false,
@@ -76,7 +78,7 @@ class AgentType extends AbstractType
                 }
             ])
             ->add('statutAffiches', EntityType::class, [
-                'label'        => 'attestation.fields.statut_affiche',
+                'label'        => 'agent.fields.statut_affiche',
                 'required'     => false,
                 'multiple'     => true,
                 'expanded'     => false,
@@ -92,11 +94,11 @@ class AgentType extends AbstractType
                 }
             ])
             ->add('activites', EntityType::class, [
-                'label'        => 'attestation.fields.activite',
+                'label'        => 'agent.fields.activite',
                 'required'     => false,
                 'multiple'     => true,
                 'expanded'     => false,
-                'class'        => Activite::class,
+                'class'        => ActiviteAgent::class,
                 'choice_label' => 'nom'.ucfirst($locale),
                 'attr'         => [
                     'class' => 'autocomplete',
@@ -107,11 +109,18 @@ class AgentType extends AbstractType
                         ->orderBy('e.nom'.ucfirst($locale), 'ASC');
                 }
             ])
+            ->add('estLocalisee', CheckboxType::class, [
+                'label'      => 'generic.fields.est_localisee',
+                'label_attr' => [
+                    'class' => 'dependent_field_estlocalisee_main'
+                ],
+                'required' => false,
+            ])
             ->add('localisation', LocalisationType::class, [
                 'label'           => 'generic.fields.localisation',
                 'required'        => false,
                 'region_required' => false,
-                'attr'            => ['class' => 'localisation_form'],
+                'attr'            => ['class' => 'localisation_form dependent_field_estlocalisee'],
                 'locale'          => $options['locale'],
                 'translations'    => $options['translations'],
             ])

@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\Attestation;
-// use App\Form\BiblioType;
+use App\Entity\EtatFiche;
+use App\Entity\Source;
+use App\Form\AttestationType;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -22,7 +24,33 @@ class AttestationController extends AbstractController
                         ->findAll();
         return $this->render('attestation/index.html.twig', [
             'controller_name' => 'AttestationController',
-            'attestations'         => $attestations
+            'action'          => 'list',
+            'attestations'    => $attestations
+        ]);
+    }
+
+    /**
+     * @Route("/attestation/source/{source_id}", name="attestation_source")
+     */
+    public function indexSource($source_id, Request $request, TranslatorInterface $translator)
+    {
+        $source = $this->getDoctrine()
+                        ->getRepository(Source::class)
+                        ->find($source_id);
+        if(is_null($source)){
+            $request->getSession()->getFlashBag()->add(
+                'error',
+                $translator->trans('source.messages.missing', ['%id%' => $source_id])
+            );
+            return $this->redirectToRoute('source_list');
+        }
+
+        return $this->render('attestation/index.html.twig', [
+            'controller_name' => 'AttestationController',
+            'action'          => 'list',
+            'attestations'    => $source->getAttestations(),
+            'source'          => $source,
+            'title'           => $translator->trans('attestation.list_for_source', ['%id%' => $source_id])
         ]);
     }
 
@@ -31,10 +59,45 @@ class AttestationController extends AbstractController
      */
     public function create(Request $request, TranslatorInterface $translator)
     {
+        $sources = $this->getDoctrine()
+                        ->getRepository(Source::class)
+                        ->getSimpleList();
+
+        return $this->render('source/index.html.twig', [
+            'controller_name' => 'SourceController',
+            'action'          => 'select',
+            'selectionRoute'  => 'attestation_create_source',
+            'title'           => 'attestation.choose_source',
+            'sources'         => $sources
+        ]);
+    }
+
+    /**
+     * @Route("/attestation/create/{source_id}", name="attestation_create_source")
+     */
+    public function createForSource($source_id, Request $request, TranslatorInterface $translator)
+    {
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
         $attestation = new Attestation();
+        $source = $this->getDoctrine()
+                        ->getRepository(Source::class)
+                        ->find($source_id);
+        if(is_null($source)){
+            $request->getSession()->getFlashBag()->add(
+                'error',
+                $translator->trans('source.messages.missing', ['%id%' => $source_id])
+            );
+            return $this->redirectToRoute('attestation_list');
+        }
+        $attestation->setSource($source);
+        $etatFiche = $this->getDoctrine()
+                        ->getRepository(EtatFiche::class)
+                        ->find(1);
+        $attestation->setEtatFiche($etatFiche);
 
         $form   = $this->get('form.factory')->create(AttestationType::class, $attestation, [
-            'action'       => 'create',
+            'source'       => $source,
             'locale'       => $request->getLocale(),
             'translations' => [
                 'autocomplete.select_element'  => $translator->trans('autocomplete.select_element'),
@@ -45,6 +108,28 @@ class AttestationController extends AbstractController
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()){
             $em = $this->getDoctrine()->getManager();
             $em->persist($attestation);
+
+            $attestation->setCreateur($user);
+            $attestation->setDernierEditeur($user);
+            // Sauvegarde
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($attestation);
+            foreach($attestation->getAttestationMateriels() as $am){
+                if($am->getMateriel() !== null){
+                    $am->setAttestation($attestation);
+                    $em->persist($am);
+                } else {
+                    $attestation->removeAttestationMateriel($am);
+                }
+            }
+            foreach($attestation->getAgents() as $a){
+                if($a->getDesignation() !== null){
+                    $a->setAttestation($attestation);
+                    $em->persist($a);
+                } else {
+                    $attestation->removeAgent($a);
+                }
+            }
             $em->flush();
 
             // Message de confirmation
@@ -72,7 +157,10 @@ class AttestationController extends AbstractController
                        ->getRepository(Attestation::class)
                        ->find($id);
         if(is_null($attestation)){
-            $request->getSession()->getFlashBag()->add('error', 'attestation.messages.missing');
+            $request->getSession()->getFlashBag()->add(
+                'error',
+                $translator->trans('attestation.messages.missing', ['%id%' => $id])
+            );
             return $this->redirectToRoute('attestation_list');
         }
 
@@ -88,12 +176,22 @@ class AttestationController extends AbstractController
      */
     public function edit($id, Request $request, TranslatorInterface $translator)
     {
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
         $attestation = $this->getDoctrine()
                        ->getRepository(Attestation::class)
                        ->find($id);
 
+        if(is_null($attestation)){
+            $request->getSession()->getFlashBag()->add(
+                'error',
+                $translator->trans('attestation.messages.missing', ['%id%' => $id])
+            );
+            return $this->redirectToRoute('attestation_list');
+        }
+
         $form   = $this->get('form.factory')->create(AttestationType::class, $attestation, [
-            'action'       => 'edit',
+            'source'       => $attestation->getSource(),
             'locale'       => $request->getLocale(),
             'translations' => [
                 'autocomplete.select_element'  => $translator->trans('autocomplete.select_element'),
@@ -103,7 +201,33 @@ class AttestationController extends AbstractController
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()){
             $em = $this->getDoctrine()->getManager();
-            $em->persist($attestation);
+            $attestation->setDernierEditeur($user);
+            foreach($attestation->getAttestationMateriels() as $am){
+                if($am->getMateriel() !== null){
+                    $am->setAttestation($attestation);
+                    if(!$em->contains($am)){
+                        $em->persist($am);
+                    }
+                } else {
+                    $attestation->removeAttestationMateriel($am);
+                    if($em->contains($am)){
+                        $em->remove($am);
+                    }
+                }
+            }
+            foreach($attestation->getAgents() as $a){
+                if($a->getDesignation() !== null){
+                    $a->setAttestation($attestation);
+                    if(!$em->contains($a)){
+                        $em->persist($a);
+                    }
+                } else {
+                    $attestation->removeAgent($a);
+                    if($em->contains($a)){
+                        $em->remove($a);
+                    }
+                }
+            }
             $em->flush();
 
             // Message de confirmation
@@ -117,6 +241,7 @@ class AttestationController extends AbstractController
         return $this->render('attestation/edit.html.twig', [
             'controller_name' => 'AttestationController',
             'action'          => 'edit',
+            'attestation'     => $attestation,
             'locale'          => $request->getLocale(),
             'form'            => $form->createView(),
         ]);

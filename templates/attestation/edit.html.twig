@@ -1,33 +1,219 @@
 {% extends 'authenticated.html.twig' %}
 {% block title %}
-{{ ('biblio.' ~ action)|trans }}{{ biblio is defined ? ' #'~biblio.id : ''}}
+{{ ('attestation.' ~ action)|trans }}{{ attestation is defined ? ' #'~attestation.id : ''}}
 {% endblock %}
 {% block content %}
 
-{{ form_start(form, {'attr' : {'id': 'biblio'}} ) }}
-{{ form_errors(form) }}
+{{ form_start(form, {'attr' : {'id': 'attestation'}} ) }}
+{% if not form.vars.valid %}
+{% import "form/macros.html.twig" as macros %}
+{{ macros.display_error(form) }}
+{% endif %}
 
 <div class="row justify-content-center">
     <div class="col-sm-3">
-        {% include "partials/_formbuttons.html.twig" with {'exitUrl' : url('bibliography_list')} %}
+        {% include "partials/_formbuttons.html.twig" with {'exitUrl' : url('attestation_list')} %}
     </div>
-    <div class="col-sm-9"></div>
+    <div class="col-sm-6 text-center">
+        {% if action == 'edit' %}
+        {% spaceless %}
+        {{ 'generic.fields.date_creation'|trans }}&nbsp;:&nbsp;
+        {{ attestation.dateCreation|date("locale_datetime"|trans) }}&nbsp;
+        {{ 'generic.fields.by'|trans }}&nbsp;{{ attestation.createur.prenomNom }}
+        {% endspaceless %}
+        <br />
+        {% spaceless %}
+        {{ 'generic.fields.date_modification'|trans }}&nbsp;:&nbsp;
+        {{ attestation.dateModification|date("locale_datetime"|trans) }}&nbsp;
+        {{ 'generic.fields.by'|trans }}&nbsp;{{ attestation.dernierEditeur.prenomNom }}
+        {% endspaceless %}
+        <br />
+        {{ 'generic.fields.version'|trans }}&nbsp;{{ attestation.version }}&rarr;{{ attestation.version+1 }}
+        {% endif %}
+        <br />
+        {{ form_row(form.etatFiche) }}
+    </div>
+    <div class="col-sm-3 text-right">
+        {{ 'generic.fields.to_translate'|trans }} :
+        {{ form_widget(form.traduireFr) }}
+        {{ form_widget(form.traduireEn) }}
+    </div>
 </div>
 <hr />
-{{ form_rest(form) }}
+<section>
+    {% include 'partials/_sectiontitle.html.twig' with {
+        'title'         : 'attestation.sections.informations_source',
+        'collapseTarget': '#section-infos',
+        'expanded'      : true
+    } only %}
+    <div class="collapse show" id="section-infos">
+        {{ form_row(form.sourceId) }}
+        {{ form_row(form.sourceShortTitle) }}
+        {{ form_row(form.sourceBiblio) }}
+        {{ form_row(form.passage) }}
+        {{ form_row(form.prose) }}
+        {{ form_row(form.poesie) }}
+    </div>
+</section>
+
+<section>
+    {% include 'partials/_sectiontitle.html.twig' with {
+        'title'         : 'attestation.sections.texte_attestation',
+        'collapseTarget': '#section-texte-attestation',
+        'expanded'      : true
+    } only %}
+    <div class="collapse show" id="section-texte-attestation">
+        {{ form_row(form.extraitSansRestitution) }}
+        {{ form_row(form.extraitAvecRestitution) }}
+        {{ form_row(form.translitteration) }}
+        {{ form_row(form.fiabiliteAttestation) }}
+    </div>
+</section>
+
+<section>
+    {% include 'partials/_sectiontitle.html.twig' with {
+        'title'         : 'attestation.sections.contexte',
+        'collapseTarget': '#section-contexte',
+        'expanded'      : true
+    } only %}
+    <div class="collapse show" id="section-contexte">
+        {{ form_row(form.typeCategorieOccasion) }}
+        {{ form_row(form.pratiques) }}
+        {{ form_errors(form.attestationMateriels) }}
+        {{ form_widget(form.attestationMateriels) }}
+        <div class="form-group row">
+            <div class="col-sm-10 offset-sm-2">
+                <a href="#" class="btn btn-primary collection-add-link">
+                    <i class="fa fa-plus"></i>&nbsp;
+                    {{ 'attestation.add_materiel'|trans }}
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section>
+    {% include 'partials/_sectiontitle.html.twig' with {
+        'title'         : 'attestation.sections.agents',
+        'collapseTarget': '#section-agents',
+        'expanded'      : true
+    } only %}
+    <div class="collapse show" id="section-agents">
+        {{ form_errors(form.agents) }}
+        {{ form_widget(form.agents) }}
+        <div class="form-group row">
+            <div class="col-sm-10 offset-sm-2">
+                <a href="#" class="btn btn-primary collection-add-link">
+                    <i class="fa fa-plus"></i>&nbsp;
+                    {{ 'attestation.add_agent'|trans }}
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section>
+    {% include 'partials/_sectiontitle.html.twig' with {
+        'title'             : 'attestation.sections.datation',
+        'collapseTarget'    : '#section-datation',
+        'expanded'          : true
+    } only %}
+    <div class="collapse show" id="section-datation">
+        {{ form_row(form.estDatee) }}
+        <div class="row">
+            <div class="col-sm-12 dependent_field_estdatee">
+                {{ form_errors(form.datation) }}
+                {{ form_widget(form.datation) }}
+            </div>
+        </div>
+    </div>
+</section>
+
+<section>
+    {% include 'partials/_sectiontitle.html.twig' with {
+        'title'             : 'attestation.sections.localisation',
+        'collapseTarget'    : '#section-localisation',
+        'expanded'          : true
+    } only %}
+    <div class="collapse show" id="section-localisation">
+        {{ form_row(form.estLocalisee) }}
+        <div class="row">
+            <div class="col-sm-12 dependent_field_estlocalisee">
+                {{ form_errors(form.localisation) }}
+                {{ form_widget(form.localisation) }}
+            </div>
+        </div>
+    </div>
+</section>
+
+<section>
+    {% include 'partials/_sectiontitle.html.twig' with {
+        'title'         : 'attestation.sections.commentaires',
+        'collapseTarget': '#section-commentaires'
+    } only %}
+    <div class="collapse" id="section-commentaires">
+        {{ form_row(form.commentaireFr) }}
+        {{ form_row(form.commentaireEn) }}
+    </div>
+</section>
+<section>
+    {% include 'partials/_sectiontitle.html.twig' with {
+        'title'         : 'attestation.sections.elements',
+        'collapseTarget': '#section-elements'
+    } only %}
+    <div class="collapse" id="section-elements">
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+    </div>
+</section>
+
+<section>
+    {% include 'partials/_sectiontitle.html.twig' with {
+        'title'         : 'attestation.sections.formules',
+        'collapseTarget': '#section-formules'
+    } only %}
+    <div class="collapse" id="section-formules">
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+    </div>
+</section>
+
 <hr />
 <div class="form-group row">
     <div class="col-sm-12 text-center">
-        {% include "partials/_formbuttons.html.twig" with {'exitUrl' : url('bibliography_list')} %}
+        {% include "partials/_formbuttons.html.twig" with {'exitUrl' : url('attestation_list')} %}
     </div>
 </div>
+{{ form_rest(form) }}
 {{ form_end(form) }}
+
 {% include "modals/confirmation.html.twig" with {
-    'modalName': 'confirm_exit_dirty',
-    'uuid': 'confirm_exit_dirty',
-    'targetUrl': url('bibliography_list'),
-    'method': 'GET',
-    'confirmationLabel': 'generic.exit',
+'modalName': 'confirm_exit_dirty',
+'uuid': 'confirm_exit_dirty',
+'targetUrl': url('attestation_list'),
+'method': 'GET',
+'confirmationLabel': 'generic.exit',
+'cancelLabel': 'generic.stay'
+} %}
+{% include "modals/confirmation.html.twig" with {
+'modalName': 'confirm_remove_item',
+'uuid': 'confirm_remove_item',
+'confirmationLabel': 'generic.delete',
+'useForm': false
 } %}
 
 {{ include('partials/_backtotop.html.twig') }}
@@ -36,14 +222,49 @@
 {{ parent() }}
 <script type="text/javascript">
     $(document).ready(function () {
+        const chosenSettings = {
+            disable_search_threshold: 10,
+            no_results_text: "{{ 'autocomplete.no_matches'|trans }}",
+            allow_single_deselect: true,
+            group_search: false,
+            display_selected_options: false,
+            include_group_label_in_selected: true
+        };
+        const dependentFieldsSettings = {
+            estdatee: {
+                conditionCallback: function (main) { return $(main).is(':checked'); },
+                targetFinder: function (name, main) { return $('.dependent_field_' + name); }
+            },
+            estlocalisee: {
+                conditionCallback: function (main) { return $(main).is(':checked'); },
+                targetFinder: function (name, main) { return $(main).parent().parent().parent().siblings().find('.dependent_field_' + name); }
+            }
+        };
+        const localisationFormSettings = {
+            errorMessage: "{{'generic.messages.error_unknown'|trans}}",
+            notFoundErrorMessage: "{{'generic.messages.error_not_found'|trans}}",
+            ambiguousErrorMessage: "{{'generic.messages.error_ambiguous'|trans}}",
+            dataUrl: "{{ url('city_search') }}"
+        };
 
-        var form_old = $("form#biblio").serialize(),
-            modal_visible = false;
-        function isFormDirty(form) { return $(form).serialize() !== form_old; }
+
+
+        var form_old = $("form#attestation").serialize(),
+            modal_visible = false,
+            isFormDirty = function (form) { return $(form).serialize() !== form_old; },
+            promptConfirmation = function (e) {
+                if (!modal_visible && isFormDirty($("form#attestation"))) {
+                    // Cancel the event
+                    e.preventDefault();
+                    // Chrome requires returnValue to be set
+                    e.returnValue = "{{ 'modals.confirm_exit_dirty.body'|trans }}";
+                    return "{{ 'modals.confirm_exit_dirty.body'|trans }}";
+                }
+            };
 
         $('.exit-form-link').click(function (e) {
             e.preventDefault();
-            if (isFormDirty($("form#biblio"))) {
+            if (isFormDirty($("form#attestation"))) {
                 $(".modal#confirm_exit_dirty").modal();
                 $(".modal#confirm_exit_dirty").on('shown.bs.modal', function () { modal_visible = true; });
                 $(".modal#confirm_exit_dirty").on('hidden.bs.modal', function () { modal_visible = false; });
@@ -52,22 +273,58 @@
                 window.location = $('.exit-form-link').attr('href');
             }
         });
-        window.onbeforeunload = function () {
-            if (!modal_visible && isFormDirty($("form#biblio"))) {
-                return "{{ 'modals.confirm_exit_dirty.body'|trans }}";
-            }
-        }
-        $("form#biblio").on('submit', function () { window.onbeforeunload = null; })
+        window.addEventListener('beforeunload', promptConfirmation);
+        window.addEventListener('unload', promptConfirmation);
+        $("form#attestation").on('submit', function () {
+            window.removeEventListener('beforeunload', promptConfirmation);
+            window.removeEventListener('unload', promptConfirmation);
+        });
 
-        // Gestion des champs dépendants
-        $.fn.dependentFields({
-            corpus: {
-                conditionCallback: function (main) { return $(main).is(':checked'); },
-                targetFinder: function (name, main) {
-                    return main.parents('form').find('.dependent_field_' + name);
-                }
+        // Gestion des champs collection
+        $('div#attestation_attestationMateriels').collectionField({
+            blockTitle: '{{ "attestation.fields.materiel_n"|trans }}',
+            deleteLink: '{{ "generic.delete"|trans }}',
+            confirmationModal: $('#confirm_remove_item'),
+            addListener: function (newEl, idx) {
+                // Gestion du champ "selectorcreate"
+                $(newEl).find('.typeCategorieMateriel').dependentSelects({
+                    data_url: "{{ url('data_materiel') }}"
+                });
             }
         });
+
+        $('div#attestation_agents').collectionField({
+            blockTitle: '{{ "attestation.fields.agent_n"|trans }}',
+            deleteLink: '{{ "generic.delete"|trans }}',
+            confirmationModal: $('#confirm_remove_item'),
+            addListener: function (newEl, idx) {
+                $.fn.dependentFields(dependentFieldsSettings);
+                $('.localisation_form').localisationForm(localisationFormSettings);
+                $('select.autocomplete').chosen(chosenSettings);
+                $(newEl).find('.grandeSousRegion').dependentSelects({
+                    data_url: "{{ url('data_sous_region') }}"
+                });
+            }
+        });
+        // Gestion des champs select avec filtres
+        $('select.autocomplete').chosen(chosenSettings);
+        // Gestion des champs dépendants
+        $.fn.dependentFields(dependentFieldsSettings);
+        // Gestion des recherches Pleiades
+        $('.localisation_form').localisationForm(localisationFormSettings);
+
+
+        // Gestion des combobox liées
+        $('#attestation_typeCategorieOccasion').dependentSelects({
+            data_url: "{{ url('data_type_occasion') }}"
+        });
+        $('#attestation_localisation_grandeSousRegion').dependentSelects({
+            data_url: "{{ url('data_sous_region') }}"
+        });
+        $('.typeCategorieMateriel').dependentSelects({
+            data_url: "{{ url('data_materiel') }}"
+        });
+
 
     });
 </script>

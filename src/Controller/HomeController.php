@@ -26,6 +26,10 @@ class HomeController extends AbstractController
     {
         return $this->render('home/contact.html.twig', [
             'controller_name' => 'HomeController',
+            'breadcrumbs'     => [
+                ['label' => 'nav.home', 'url' => $this->generateUrl('home')],
+                ['label' => 'nav.contact']
+            ]
         ]);
     }
 }

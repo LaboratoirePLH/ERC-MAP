@@ -1,6 +1,10 @@
+$breadcrumb-bg: darken(lightgray, 10%);
+$breadcrumb-active-color: #343a40;
+
 @import "~bootstrap/scss/bootstrap";
 @import '~@fortawesome/fontawesome-free/css/all.css';
 @import "~datatables.net-bs4/css/dataTables.bootstrap4.min.css";
+@import "~datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css";
 @import "./component-chosen.css";
 
 $map-yellow: #d8be00;

@@ -9,9 +9,9 @@
 {% set createUrl = url('attestation_create_source', { 'source_id' : source.id}) %}
 {% endif %}
 <div class="row">
-    <div class="col-12">
+    <div class="col-12 table-buttons">
         <a href=" {{ createUrl }}" class="btn btn-primary">{{ 'attestation.create'|trans }}</a>
-        <button type="button" class="btn btn-secondary clear-filter-button">
+        <button type="button" class="btn btn-warning clear-filter-button">
             {{ 'generic.clear_filters'|trans }}
         </button>
     </div>
@@ -137,9 +137,9 @@
     </tfoot>
 </table>
 <div class="row">
-    <div class="col-12">
+    <div class="col-12 table-buttons">
         <a href=" {{ createUrl }}" class="btn btn-primary">{{ 'attestation.create'|trans }}</a>
-        <button type="button" class="btn btn-secondary clear-filter-button">
+        <button type="button" class="btn btn-warning clear-filter-button">
             {{ 'generic.clear_filters'|trans }}
         </button>
     </div>
@@ -165,7 +165,7 @@
             scrollX: false,
             searching: true,
             ordering: true,
-            columns: [null, null, null, null, null, null, null, {
+            columns: [null, null, null, null, null, null, null, null, {
                 searchable: false,
                 orderable: false,
                 width: 80
@@ -182,7 +182,12 @@
                 [
                     10, 25, 50, "{{'datatable.all'|trans}}"
                 ]
-            ]
+            ],
+            buttons: [{
+                extend: 'csv',
+                filename: "{{ 'app_name'|trans }}-{{ 'attestation.list'|trans }}",
+                text: "{{'generic.export_csv'|trans}}"
+            }]
         });
         $('#attestation_list_wrapper select').removeClass('custom-select');
         dt.columns().every(function () {
@@ -193,6 +198,7 @@
                 }
             })
         });
+        dt.buttons().container().appendTo('.table-buttons');
         $('.clear-filter-button').on('click', function (e) {
             e.preventDefault();
             dt.columns().every(function () {

@@ -25,7 +25,11 @@ class AttestationController extends AbstractController
         return $this->render('attestation/index.html.twig', [
             'controller_name' => 'AttestationController',
             'action'          => 'list',
-            'attestations'    => $attestations
+            'attestations'    => $attestations,
+            'breadcrumbs'     => [
+                ['label' => 'nav.home', 'url' => $this->generateUrl('home')],
+                ['label' => 'attestation.list']
+            ]
         ]);
     }
 
@@ -50,7 +54,12 @@ class AttestationController extends AbstractController
             'action'          => 'list',
             'attestations'    => $source->getAttestations(),
             'source'          => $source,
-            'title'           => $translator->trans('attestation.list_for_source', ['%id%' => $source_id])
+            'title'           => $translator->trans('attestation.list_for_source', ['%id%' => $source_id]),
+            'breadcrumbs'     => [
+                ['label' => 'nav.home', 'url' => $this->generateUrl('home')],
+                ['label' => 'source.list', 'url' => $this->generateUrl('source_list')],
+                ['label' => $translator->trans('attestation.list_for_source', ['%id%' => $source_id])]
+            ]
         ]);
     }
 
@@ -68,7 +77,13 @@ class AttestationController extends AbstractController
             'action'          => 'select',
             'selectionRoute'  => 'attestation_create_source',
             'title'           => 'attestation.choose_source',
-            'sources'         => $sources
+            'sources'         => $sources,
+            'breadcrumbs'     => [
+                ['label' => 'nav.home', 'url' => $this->generateUrl('home')],
+                ['label' => 'source.list', 'url' => $this->generateUrl('source_list')],
+                ['label' => 'attestation.create'],
+                ['label' => 'source.select']
+            ]
         ]);
     }
 
@@ -145,13 +160,18 @@ class AttestationController extends AbstractController
             'action'          => 'create',
             'locale'          => $request->getLocale(),
             'form'            => $form->createView(),
+            'breadcrumbs'     => [
+                ['label' => 'nav.home', 'url' => $this->generateUrl('home')],
+                ['label' => 'source.list', 'url' => $this->generateUrl('source_list')],
+                ['label' => $translator->trans('attestation.create_for_source', ['%id%' => $source_id])]
+            ]
         ]);
     }
 
     /**
      * @Route("/attestation/{id}", name="attestation_show")
      */
-    public function show($id)
+    public function show($id, Request $request, TranslatorInterface $translator)
     {
         $attestation = $this->getDoctrine()
                        ->getRepository(Attestation::class)
@@ -167,7 +187,12 @@ class AttestationController extends AbstractController
         return $this->render('attestation/show.html.twig', [
             'controller_name' => 'AttestationController',
             'attestation'    => $attestation,
-            'locale'          => $request->getLocale()
+            'locale'          => $request->getLocale(),
+            'breadcrumbs'     => [
+                ['label' => 'nav.home', 'url' => $this->generateUrl('home')],
+                ['label' => 'attestation.list', 'url' => $this->generateUrl('attestation_list')],
+                ['label' => $translator->trans('attestation.view', ['%id%' => $id])]
+            ]
         ]);
     }
 
@@ -244,6 +269,11 @@ class AttestationController extends AbstractController
             'attestation'     => $attestation,
             'locale'          => $request->getLocale(),
             'form'            => $form->createView(),
+            'breadcrumbs'     => [
+                ['label' => 'nav.home', 'url' => $this->generateUrl('home')],
+                ['label' => 'attestation.list', 'url' => $this->generateUrl('attestation_list')],
+                ['label' => $translator->trans('attestation.edit', ['%id%' => $id])]
+            ]
         ]);
     }
 

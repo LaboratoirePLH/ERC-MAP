@@ -1,9 +1,7 @@
 {% extends 'authenticated.html.twig' %}
 {% block title %}
-{{ ('source.view')|trans({'%id%': source.id}) }}
+{{ ('attestation.view')|trans({'%id%': attestation.id}) }}
 {% endblock %}
 {% block content %}
-<pre>
-    {{ dump(source) }}
-</pre>
+
 {% endblock %}

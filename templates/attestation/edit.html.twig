@@ -1,6 +1,6 @@
 {% extends 'authenticated.html.twig' %}
 {% block title %}
-{{ ('attestation.' ~ action)|trans }}{{ attestation is defined ? ' #'~attestation.id : ''}}
+{{ ('attestation.' ~ action)|trans((attestation is defined ? {'%id%': attestation.id} : {})) }}
 {% endblock %}
 {% block content %}
 

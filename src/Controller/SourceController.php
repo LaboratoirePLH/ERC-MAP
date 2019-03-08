@@ -25,7 +25,11 @@ class SourceController extends AbstractController
 
         return $this->render('source/index.html.twig', [
             'controller_name' => 'SourceController',
-            'sources'         => $sources
+            'sources'         => $sources,
+            'breadcrumbs'     => [
+                ['label' => 'nav.home', 'url' => $this->generateUrl('home')],
+                ['label' => 'source.list']
+            ]
         ]);
     }
 
@@ -87,6 +91,11 @@ class SourceController extends AbstractController
             'action'          => 'create',
             'locale'          => $request->getLocale(),
             'form'            => $form->createView(),
+            'breadcrumbs'     => [
+                ['label' => 'nav.home', 'url' => $this->generateUrl('home')],
+                ['label' => 'source.list', 'url' => $this->generateUrl('source_list')],
+                ['label' => 'source.create']
+            ]
         ]);
     }
 
@@ -108,7 +117,12 @@ class SourceController extends AbstractController
         return $this->render('source/show.html.twig', [
             'controller_name' => 'SourceController',
             'source'          => $source,
-            'locale'          => $request->getLocale()
+            'locale'          => $request->getLocale(),
+            'breadcrumbs'     => [
+                ['label' => 'nav.home', 'url' => $this->generateUrl('home')],
+                ['label' => 'source.list', 'url' => $this->generateUrl('source_list')],
+                ['label' => 'source.view']
+            ]
         ]);
     }
 
@@ -177,7 +191,12 @@ class SourceController extends AbstractController
             'action'          => 'edit',
             'source'          => $source,
             'locale'          => $request->getLocale(),
-            'form'            => $form->createView()
+            'form'            => $form->createView(),
+            'breadcrumbs'     => [
+                ['label' => 'nav.home', 'url' => $this->generateUrl('home')],
+                ['label' => 'source.list', 'url' => $this->generateUrl('source_list')],
+                ['label' => 'source.edit']
+            ]
         ]);
     }
 

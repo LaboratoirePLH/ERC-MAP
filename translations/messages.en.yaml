@@ -44,6 +44,7 @@ generic:
     stay: "Stay"
     choose: "Choose"
     toggle_section: "Show/Hide section"
+    export_csv: "Export as CSV file"
     fields:
         id: "ID"
         date_creation: "Creation"
@@ -84,9 +85,10 @@ generic:
 
 source:
     list: "Sources List"
-    view: "View Source"
+    view: "View Source #%id%"
     create: "Create Source"
-    edit: "Edit Source"
+    edit: "Edit Source #%id%"
+    select: "Select Source"
     add_sourcebiblio: "Add Bibliographic Reference"
     delete_sourcebiblio: "Remove Bibliographic Reference"
     messages:
@@ -142,9 +144,9 @@ source_biblio:
 
 biblio:
     list: "Bibliography list"
-    view: "View Bibliography"
+    view: "View Bibliography #%id%"
     create: "Create Bibliography"
-    edit: "Edit Bibliography"
+    edit: "Edit Bibliography #%id%"
     messages:
         created: "Bibliography created"
         edited: "Bibliography edited"
@@ -184,9 +186,10 @@ attestation:
         niveau_3: "(3) Uncertain reading"
     list: "Testimonies List"
     list_for_source: "Testimonies of Source #%id%"
-    view: "View Testimony"
+    view: "View Testimony #%id%"
     create: "Create Testimony"
-    edit: "Edit Testimony"
+    create_for_source: "Create Testimony for Source #%id%"
+    edit: "Edit Testimony #%id%"
     add_agent: "Add Agent"
     add_materiel: "Add Connected Material"
     choose_source: "Choose the source for which to create a Testimony"

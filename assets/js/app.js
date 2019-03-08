@@ -13,6 +13,9 @@ global.$ = global.jQuery = $;
 
 require('bootstrap');
 require('datatables.net-bs4')(window, $);
+require('datatables.net-buttons/js/buttons.html5')(window, $);
+require('datatables.net-buttons-bs4')(window, $);
+require('datatables.net-responsive')(window, $);
 require('datatables.net-responsive-bs4')(window, $);
 require('chosen-js');
 require('form-serializer');

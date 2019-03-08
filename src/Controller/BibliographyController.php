@@ -22,7 +22,11 @@ class BibliographyController extends AbstractController
                         ->findAll();
         return $this->render('bibliography/index.html.twig', [
             'controller_name' => 'BibliographyController',
-            'biblios'         => $biblios
+            'biblios'         => $biblios,
+            'breadcrumbs'     => [
+                ['label' => 'nav.home', 'url' => $this->generateUrl('home')],
+                ['label' => 'biblio.list']
+            ]
         ]);
     }
 
@@ -60,13 +64,18 @@ class BibliographyController extends AbstractController
             'action'          => 'create',
             'locale'          => $request->getLocale(),
             'form'            => $form->createView(),
+            'breadcrumbs'     => [
+                ['label' => 'nav.home', 'url' => $this->generateUrl('home')],
+                ['label' => 'biblio.list', 'url' => $this->generateUrl('bibliography_list')],
+                ['label' => 'biblio.create']
+            ]
         ]);
     }
 
     /**
      * @Route("/bibliography/{id}", name="bibliography_show")
      */
-    public function show($id)
+    public function show($id, Request $request, TranslatorInterface $translator)
     {
         $bibliography = $this->getDoctrine()
                        ->getRepository(Biblio::class)
@@ -82,7 +91,12 @@ class BibliographyController extends AbstractController
         return $this->render('bibliography/show.html.twig', [
             'controller_name' => 'BibliographyController',
             'bibliography'    => $bibliography,
-            'locale'          => $request->getLocale()
+            'locale'          => $request->getLocale(),
+            'breadcrumbs'     => [
+                ['label' => 'nav.home', 'url' => $this->generateUrl('home')],
+                ['label' => 'biblio.list', 'url' => $this->generateUrl('bibliography_list')],
+                ['label' => $translator->trans('biblio.view', ['%id%' => $id])]
+            ]
         ]);
     }
 
@@ -129,6 +143,11 @@ class BibliographyController extends AbstractController
             'action'          => 'edit',
             'locale'          => $request->getLocale(),
             'form'            => $form->createView(),
+            'breadcrumbs'     => [
+                ['label' => 'nav.home', 'url' => $this->generateUrl('home')],
+                ['label' => 'biblio.list', 'url' => $this->generateUrl('bibliography_list')],
+                ['label' => $translator->trans('biblio.edit', ['%id%' => $id])]
+            ]
         ]);
     }
 

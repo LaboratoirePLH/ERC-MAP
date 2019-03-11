@@ -56,7 +56,7 @@
                     {{ attestation.source.projet.nom(locale) }} #{{ attestation.id }}
                 </a>
                 <br />
-                <small>{{ 'generic.fields.version'|trans }}&nbsp;{{ source.version|default("?") }}</small>
+                <small>{{ 'generic.fields.version'|trans }}&nbsp;{{ attestation.version|default("?") }}</small>
             </th>
             <td>
                 {{ attestation.source.sourceBiblios is not empty ?

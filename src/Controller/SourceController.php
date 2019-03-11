@@ -121,7 +121,7 @@ class SourceController extends AbstractController
             'breadcrumbs'     => [
                 ['label' => 'nav.home', 'url' => $this->generateUrl('home')],
                 ['label' => 'source.list', 'url' => $this->generateUrl('source_list')],
-                ['label' => 'source.view']
+                ['label' => $translator->trans('source.view', ['%id%' => $source->getId()])]
             ]
         ]);
     }
@@ -195,7 +195,7 @@ class SourceController extends AbstractController
             'breadcrumbs'     => [
                 ['label' => 'nav.home', 'url' => $this->generateUrl('home')],
                 ['label' => 'source.list', 'url' => $this->generateUrl('source_list')],
-                ['label' => 'source.edit']
+                ['label' => $translator->trans('source.edit', ['%id%' => $source->getId()])]
             ]
         ]);
     }

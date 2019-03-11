@@ -279,6 +279,13 @@ class SourceType extends AbstractType
                 'allow_delete'  => true,
                 'required'      => false,
             ])
+            ->add('attestations', CollectionType::class, [
+                'label'         => false,
+                'entry_type'    => AttestationSourceType::class,
+                'allow_add'     => true,
+                'allow_delete'  => false,
+                'required'      => false,
+            ])
         ;
     }
 

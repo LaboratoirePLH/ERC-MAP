@@ -91,6 +91,9 @@ source:
     select: "Select Source"
     add_sourcebiblio: "Add Bibliographic Reference"
     delete_sourcebiblio: "Remove Bibliographic Reference"
+    add_attestation: "Add Testimony"
+    view_attestation: "View Testimony"
+    remove_attestation: "Remove Testimony"
     messages:
         created: "Source created"
         edited: "Source edited"
@@ -125,6 +128,7 @@ source:
         iconographie: "Iconography"
         source_biblio: "Reference"
         source_biblio_n: "Reference #"
+        attestation_n: "Testimony #"
         commentaire_source_fr: "Source Comments (FR)"
         commentaire_source_en: "Source Comments (EN)"
     sections:

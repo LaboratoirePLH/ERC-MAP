@@ -292,7 +292,7 @@ class AttestationController extends AbstractController
                 $em->remove($attestation);
                 $em->flush();
 
-                $request->getSession()->getFlashBag()->add('error', 'attestation.messages.deleted');
+                $request->getSession()->getFlashBag()->add('success', 'attestation.messages.deleted');
             } else {
                 $request->getSession()->getFlashBag()->add('error', 'generic.messages.deletion_failed_missing');
             }

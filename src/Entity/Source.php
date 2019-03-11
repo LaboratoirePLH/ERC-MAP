@@ -456,6 +456,7 @@ class Source
      * @var \Doctrine\Common\Collections\Collection
      *
      * @ORM\OneToMany(targetEntity="SourceBiblio", mappedBy="source", orphanRemoval=true)
+     * @ORM\OrderBy({"editionPrincipale" = "DESC", "biblio" = "ASC"})
      * @Assert\Expression(
      *      "this.hasEditionPrincipaleBiblio()",
      *      message="edition_principale"
@@ -494,7 +495,7 @@ class Source
 
     public function hasEditionPrincipaleBiblio(): bool
     {
-        return !is_null($this->getEditionPrincipaleBiblio);
+        return !is_null($this->getEditionPrincipaleBiblio());
     }
 
     public function getEditionPrincipaleBiblio(): ?SourceBiblio
@@ -533,6 +534,7 @@ class Source
      * @var \Doctrine\Common\Collections\Collection
      *
      * @ORM\OneToMany(targetEntity="Attestation", mappedBy="source", orphanRemoval=true)
+     * @ORM\OrderBy({"id" = "ASC"})
      */
     private $attestations;
 

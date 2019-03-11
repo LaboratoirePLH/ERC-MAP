@@ -159,6 +159,11 @@ class Attestation
     {
         return $this->id;
     }
+    // Hack for attestationSource form
+    public function setId(int $id): self
+    {
+        return $this;
+    }
 
     public function getPassage(): ?string
     {

@@ -4,40 +4,49 @@
         var settings = $.extend({
             // These are the defaults.
             blockTitle: "Item #",
-            deleteLink: "Delete",
-            addListener: $.noop(),
+            deleteLinkGenerator: function () {
+                return $(
+                    '<a href="#" class="btn btn-sm btn-danger ml-2 mb-1">Delete</a>'
+                )
+            },
+            viewLinkGenerator: function () { return; },
+            addListener: function () { return; },
             confirmationModal: false
         }, options);
 
         var setupLinks = function (prototype) {
-            var deleteLink = $(
-                '<a href="#" class="btn btn-sm btn-danger ml-2 mb-1">' + settings.deleteLink + '</a>'
-            );
-            deleteLink.click(function (e) {
-                e.preventDefault();
-                if (settings.confirmationModal !== null && settings.confirmationModal.length) {
-                    settings.confirmationModal.on('show.bs.modal', function () {
-                        settings.confirmationModal.find('.modal-accept-button').on('click', function () {
-                            prototype.remove();
-                            settings.confirmationModal.modal('hide');
-                            settings.confirmationModal.find('.modal-accept-button').off('click');
+            var deleteLink = settings.deleteLinkGenerator.call(this, prototype);
+            if (deleteLink !== "") {
+                deleteLink.click(function (e) {
+                    e.preventDefault();
+                    if (settings.confirmationModal !== null && settings.confirmationModal.length) {
+                        settings.confirmationModal.on('show.bs.modal', function () {
+                            settings.confirmationModal.find('.modal-accept-button').on('click', function () {
+                                prototype.remove();
+                                settings.confirmationModal.modal('hide');
+                                settings.confirmationModal.find('.modal-accept-button').off('click');
+                            });
                         });
-                    });
-                    settings.confirmationModal.modal();
-                }
-                else {
-                    prototype.remove();
-                }
-                return false;
-            });
+                        settings.confirmationModal.modal();
+                    }
+                    else {
+                        prototype.remove();
+                    }
+                    return false;
+                });
+            }
+
             var label = prototype.find('.remove_this_label');
             label.siblings('.col-sm-10').removeClass('col-sm-10').addClass('col-sm-12');
             label.hide();
 
+            var viewLink = settings.viewLinkGenerator.call(this, prototype);
+
             prototype.children('legend')
                 .removeClass('col-sm-2 col-form-label')
                 .addClass('col-sm-12 text-center h4')
-                .append(deleteLink);
+                .append(deleteLink)
+                .append(viewLink);
             prototype.children('.col-sm-10')
                 .removeClass('col-sm-10')
                 .addClass('col-sm-12');

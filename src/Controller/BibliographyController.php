@@ -166,7 +166,7 @@ class BibliographyController extends AbstractController
                 $em->remove($biblio);
                 $em->flush();
 
-                $request->getSession()->getFlashBag()->add('error', 'biblio.messages.deleted');
+                $request->getSession()->getFlashBag()->add('success', 'biblio.messages.deleted');
             } else {
                 $request->getSession()->getFlashBag()->add('error', 'generic.messages.deletion_failed_missing');
             }

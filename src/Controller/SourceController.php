@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Translation\TranslatorInterface;
 
 use App\Entity\CategorieSource;
+use App\Entity\EtatFiche;
 use App\Entity\Source;
 use App\Entity\SourceBiblio;
 use App\Form\SourceType;
@@ -68,6 +69,21 @@ class SourceController extends AbstractController
                     $em->persist($sb);
                 } else {
                     $source->removeSourceBiblio($sb);
+                }
+            }
+            foreach($source->getAttestations() as $a){
+                if(!empty($a->getPassage())){
+                    // Persist only valid data
+                    $a->setSource($source);
+                    $a->setCreateur($user);
+                    $a->setDernierEditeur($user);
+                    $etatFiche = $this->getDoctrine()
+                        ->getRepository(EtatFiche::class)
+                        ->find(1);
+                    $a->setEtatFiche($etatFiche);
+                    $em->persist($a);
+                } else {
+                    $source->removeAttestation($a);
                 }
             }
             if($source->getInSitu() === true){
@@ -170,6 +186,26 @@ class SourceController extends AbstractController
                     $source->removeSourceBiblio($sb);
                 }
             }
+            foreach($source->getAttestations() as $a){
+                // Don't persist/remove already persisted entities
+                if(!$em->contains($a)){
+                    // If it's not persisted, we check the contents of the "passage" field
+                    // to determine if it's valid or not
+                    if(!empty($a->getPassage())){
+                        $a->setSource($source);
+                        $a->setCreateur($user);
+                        $a->setDernierEditeur($user);
+                        $etatFiche = $this->getDoctrine()
+                            ->getRepository(EtatFiche::class)
+                            ->find(1);
+                        $a->setEtatFiche($etatFiche);
+                        $em->persist($a);
+                    }
+                    else {
+
+                    }
+                }
+            }
             if($source->getInSitu() === true){
                 $source->setLieuOrigine(null);
             }
@@ -214,7 +250,7 @@ class SourceController extends AbstractController
                 $em->remove($source);
                 $em->flush();
 
-                $request->getSession()->getFlashBag()->add('error', 'source.messages.deleted');
+                $request->getSession()->getFlashBag()->add('success', 'source.messages.deleted');
                 return $this->redirectToRoute('source_list');
             } else {
                 $request->getSession()->getFlashBag()->add('error', 'generic.messages.deletion_failed_missing');

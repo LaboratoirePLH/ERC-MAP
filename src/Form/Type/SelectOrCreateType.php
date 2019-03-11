@@ -10,7 +10,6 @@ use Symfony\Component\Form\FormView;
 use Symfony\Component\Form\DataMapperInterface;
 use Symfony\Component\Form\Exception\UnexpectedTypeException;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Doctrine\ORM\EntityManagerInterface;
 
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -21,12 +20,6 @@ class SelectOrCreateType extends AbstractType implements DataMapperInterface
     private $uuid;
     private $name;
     private $entityClass;
-    private $entityManager;
-
-    public function __construct(EntityManagerInterface $entityManager)
-    {
-        $this->entityManager = $entityManager;
-    }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {

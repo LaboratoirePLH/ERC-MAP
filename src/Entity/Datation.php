@@ -13,16 +13,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Datation
 {
+    use Traits\EntityId;
     use Traits\TranslatedComment;
-
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="SEQUENCE")
-     */
-    private $id;
 
     /**
      * @var int|null
@@ -41,11 +33,6 @@ class Datation
      * )
      */
     private $anteQuem;
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
     public function getPostQuem(): ?int
     {

@@ -12,16 +12,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class GrandeRegion
 {
+    use Traits\EntityId;
     use Traits\TranslatedName;
-
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="smallint", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="SEQUENCE")
-     */
-    private $id;
 
     /**
      * @var geometry|null
@@ -29,11 +21,6 @@ class GrandeRegion
      * @ORM\Column(name="geom", type="geometry", nullable=true, options={"geometry_type"="MULTIPOLYGON", "srid"=4326})
      */
     private $geom;
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
     public function getGeom()
     {

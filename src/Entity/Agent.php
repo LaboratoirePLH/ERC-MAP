@@ -14,17 +14,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Agent
 {
+    use Traits\EntityId;
     use Traits\Located;
     use Traits\TranslatedComment;
-
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="SEQUENCE")
-     */
-    private $id;
 
     /**
      * @var string|null
@@ -128,11 +120,6 @@ class Agent
         $this->genres         = new \Doctrine\Common\Collections\ArrayCollection();
         $this->activites      = new \Doctrine\Common\Collections\ArrayCollection();
         $this->agentivites    = new \Doctrine\Common\Collections\ArrayCollection();
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
     }
 
     public function getDesignation(): ?string

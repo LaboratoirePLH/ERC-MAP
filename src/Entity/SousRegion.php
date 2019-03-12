@@ -12,15 +12,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class SousRegion
 {
+    use Traits\EntityId;
     use Traits\TranslatedName;
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="smallint", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="SEQUENCE")
-     */
-    private $id;
 
     /**
      * @var geometry|null
@@ -38,11 +31,6 @@ class SousRegion
      * })
      */
     private $grandeRegion;
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
     public function getGeom()
     {

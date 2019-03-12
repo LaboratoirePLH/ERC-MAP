@@ -14,14 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Biblio
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="SEQUENCE")
-     */
-    private $id;
+    use Traits\EntityId;
 
     /**
      * @var string|null
@@ -71,11 +64,6 @@ class Biblio
     public function __construct()
     {
         $this->sourceBiblios = new \Doctrine\Common\Collections\ArrayCollection();
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
     }
 
     public function getTitreAbrege(): ?string

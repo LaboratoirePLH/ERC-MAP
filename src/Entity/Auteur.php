@@ -14,21 +14,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Auteur
 {
+    use Traits\EntityId;
     use Traits\TranslatedName;
-
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="SEQUENCE")
-     */
-    private $id;
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
     /**
      * @var \Doctrine\Common\Collections\Collection

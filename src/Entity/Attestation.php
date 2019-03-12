@@ -16,19 +16,11 @@ use Doctrine\ORM\Mapping as ORM;
 class Attestation
 {
     use Traits\Dated;
+    use Traits\EntityId;
     use Traits\Located;
     use Traits\Tracked;
     use Traits\Translatable;
     use Traits\TranslatedComment;
-
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="SEQUENCE")
-     */
-    private $id;
 
     /**
      * @var \Source
@@ -155,10 +147,6 @@ class Attestation
         $this->agents = new ArrayCollection();
     }
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
     // Hack for attestationSource form
     public function setId(int $id): self
     {

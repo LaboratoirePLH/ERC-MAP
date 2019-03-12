@@ -14,21 +14,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Titre
 {
+    use Traits\EntityId;
     use Traits\TranslatedName;
-
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="SEQUENCE")
-     */
-    private $id;
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
     /**
      * @var \Doctrine\Common\Collections\Collection
@@ -44,6 +31,14 @@ class Titre
      * )
      */
     private $auteurs;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->auteurs = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
     /**
      * @return Collection|Auteur[]
@@ -67,14 +62,6 @@ class Titre
             $this->auteurs->removeElement($auteur);
         }
         return $this;
-    }
-
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->auteurs = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     private function _affichage($lang){

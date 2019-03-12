@@ -15,14 +15,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 class Chercheur implements UserInterface
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="SEQUENCE")
-     */
-    private $id;
+    use Traits\EntityId;
 
     /**
      * @var string
@@ -93,11 +86,6 @@ class Chercheur implements UserInterface
     public function __construct()
     {
         $this->projets = new \Doctrine\Common\Collections\ArrayCollection();
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
     }
 
     public function getPrenomNom(): ?string

@@ -17,22 +17,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Source
 {
     use Traits\DatedWithFiability;
+    use Traits\EntityId;
     use Traits\Tracked;
     use Traits\Translatable;
     use Traits\TranslatedComment;
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="SEQUENCE")
-     */
-    private $id;
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
     /**
      * @var \Titre|null
@@ -42,34 +30,12 @@ class Source
      */
     private $titrePrincipal;
 
-    public function getTitrePrincipal(): ?Titre
-    {
-        return $this->titrePrincipal;
-    }
-
-    public function setTitrePrincipal(?Titre $titrePrincipal): self
-    {
-        $this->titrePrincipal = $titrePrincipal;
-        return $this;
-    }
-
     /**
      * @var bool|null
      *
      * @ORM\Column(name="iconographie", type="boolean", nullable=true)
      */
     private $iconographie = false;
-
-    public function getIconographie(): ?bool
-    {
-        return $this->iconographie;
-    }
-
-    public function setIconographie(?bool $iconographie): self
-    {
-        $this->iconographie = $iconographie;
-        return $this;
-    }
 
     /**
      * @var string|null
@@ -84,6 +50,195 @@ class Source
      * @ORM\Column(name="url_image", type="text", nullable=true)
      */
     private $urlImage;
+
+    /**
+     * @var bool|null
+     *
+     * @ORM\Column(name="in_situ", type="boolean", nullable=true)
+     */
+    private $inSitu;
+
+    /**
+     * @var int|null
+     *
+     * @ORM\Column(name="fiabilite_localisation", type="smallint", nullable=true)
+     */
+    private $fiabiliteLocalisation;
+
+    /**
+     * @var \TypeSupport|null
+     *
+     * @ORM\ManyToOne(targetEntity="TypeSupport", fetch="EAGER")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="type_support_id", referencedColumnName="id", nullable=true)
+     * })
+     */
+    private $typeSupport;
+
+    /**
+     * @var \CategorieSupport|null
+     *
+     * @ORM\ManyToOne(targetEntity="CategorieSupport")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="categorie_support_id", referencedColumnName="id", nullable=true)
+     * })
+     */
+    private $categorieSupport;
+
+    /**
+     * @var \Materiau|null
+     *
+     * @ORM\ManyToOne(targetEntity="Materiau", fetch="EAGER")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="materiau_id", referencedColumnName="id", nullable=true)
+     * })
+     */
+    private $materiau;
+
+    /**
+     * @var \CategorieMateriau|null
+     *
+     * @ORM\ManyToOne(targetEntity="CategorieMateriau")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="categorie_materiau_id", referencedColumnName="id", nullable=true)
+     * })
+     */
+    private $categorieMateriau;
+
+    /**
+     * @var \TypeSource
+     *
+     * @ORM\ManyToOne(targetEntity="TypeSource", fetch="EAGER")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="type_source_id", referencedColumnName="id", nullable=true)
+     * })
+     */
+    private $typeSource;
+
+    /**
+     * @var \CategorieSource|null
+     *
+     * @Assert\NotBlank
+     * @ORM\ManyToOne(targetEntity="CategorieSource")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="categorie_source_id", referencedColumnName="id", nullable=true)
+     * })
+     */
+    private $categorieSource;
+
+    /**
+     * @var \Localisation|null
+     *
+     * @ORM\OneToOne(targetEntity="Localisation", cascade={"persist"}, fetch="EAGER", orphanRemoval=true)
+     * @ORM\JoinColumn(name="localisation_decouverte_id", referencedColumnName="id", nullable=true)
+     */
+    private $lieuDecouverte;
+
+    /**
+     * @var \Localisation|null
+     *
+     * @ORM\OneToOne(targetEntity="Localisation", cascade={"persist"}, fetch="EAGER", orphanRemoval=true)
+     * @ORM\JoinColumn(name="localisation_origine_id", referencedColumnName="id", nullable=true)
+     */
+    private $lieuOrigine;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     *
+     * @ORM\ManyToMany(targetEntity="Auteur")
+     * @ORM\JoinTable(name="source_auteur",
+     *   joinColumns={
+     *     @ORM\JoinColumn(name="id_source", referencedColumnName="id")
+     *   },
+     *   inverseJoinColumns={
+     *     @ORM\JoinColumn(name="id_auteur", referencedColumnName="id")
+     *   }
+     * )
+     */
+    private $auteurs;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     *
+     * @ORM\ManyToMany(targetEntity="Langue", fetch="EAGER")
+     * @ORM\JoinTable(name="source_langue",
+     *   joinColumns={
+     *     @ORM\JoinColumn(name="id_source", referencedColumnName="id")
+     *   },
+     *   inverseJoinColumns={
+     *     @ORM\JoinColumn(name="id_langue", referencedColumnName="id")
+     *   }
+     * )
+     */
+    private $langues;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     *
+     * @ORM\OneToMany(targetEntity="SourceBiblio", mappedBy="source", orphanRemoval=true)
+     * @ORM\OrderBy({"editionPrincipale" = "DESC"})
+     * @Assert\Expression(
+     *      "this.hasEditionPrincipaleBiblio()",
+     *      message="edition_principale"
+     * )
+     */
+    private $sourceBiblios;
+
+    /**
+     * @var SourceBiblio|null
+     */
+    private $editionPrincipaleBiblio;
+
+    /**
+     * @var \Projet|null
+     *
+     * @ORM\ManyToOne(targetEntity="Projet")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_projet", referencedColumnName="id", nullable=true)
+     * })
+     */
+    private $projet;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     *
+     * @ORM\OneToMany(targetEntity="Attestation", mappedBy="source", orphanRemoval=true)
+     * @ORM\OrderBy({"id" = "ASC"})
+     */
+    private $attestations;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->auteurs = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->langues = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->sourceBiblios = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->attestations = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    public function getTitrePrincipal(): ?Titre
+    {
+        return $this->titrePrincipal;
+    }
+
+    public function setTitrePrincipal(?Titre $titrePrincipal): self
+    {
+        $this->titrePrincipal = $titrePrincipal;
+        return $this;
+    }
+
+    public function getIconographie(): ?bool
+    {
+        return $this->iconographie;
+    }
+
+    public function setIconographie(?bool $iconographie): self
+    {
+        $this->iconographie = $iconographie;
+        return $this;
+    }
 
     public function getUrlTexte(): ?string
     {
@@ -107,13 +262,6 @@ class Source
         return $this;
     }
 
-    /**
-     * @var bool|null
-     *
-     * @ORM\Column(name="in_situ", type="boolean", nullable=true)
-     */
-    private $inSitu;
-
     public function getInSitu(): ?bool
     {
         return $this->inSitu;
@@ -124,13 +272,6 @@ class Source
         $this->inSitu = $inSitu;
         return $this;
     }
-
-    /**
-     * @var int|null
-     *
-     * @ORM\Column(name="fiabilite_localisation", type="smallint", nullable=true)
-     */
-    private $fiabiliteLocalisation;
 
     public function getFiabiliteLocalisation(): ?int
     {
@@ -143,16 +284,6 @@ class Source
         return $this;
     }
 
-    /**
-     * @var \TypeSupport|null
-     *
-     * @ORM\ManyToOne(targetEntity="TypeSupport", fetch="EAGER")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="type_support_id", referencedColumnName="id", nullable=true)
-     * })
-     */
-    private $typeSupport;
-
     public function getTypeSupport(): ?TypeSupport
     {
         return $this->typeSupport;
@@ -163,16 +294,6 @@ class Source
         $this->typeSupport = $typeSupport;
         return $this;
     }
-
-    /**
-     * @var \CategorieSupport|null
-     *
-     * @ORM\ManyToOne(targetEntity="CategorieSupport")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="categorie_support_id", referencedColumnName="id", nullable=true)
-     * })
-     */
-    private $categorieSupport;
 
     public function getCategorieSupport(): ?CategorieSupport
     {
@@ -200,16 +321,6 @@ class Source
         ];
     }
 
-    /**
-     * @var \Materiau|null
-     *
-     * @ORM\ManyToOne(targetEntity="Materiau", fetch="EAGER")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="materiau_id", referencedColumnName="id", nullable=true)
-     * })
-     */
-    private $materiau;
-
     public function getMateriau(): ?Materiau
     {
         return $this->materiau;
@@ -220,16 +331,6 @@ class Source
         $this->materiau = $materiau;
         return $this;
     }
-
-    /**
-     * @var \CategorieMateriau|null
-     *
-     * @ORM\ManyToOne(targetEntity="CategorieMateriau")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="categorie_materiau_id", referencedColumnName="id", nullable=true)
-     * })
-     */
-    private $categorieMateriau;
 
     public function getCategorieMateriau(): ?CategorieMateriau
     {
@@ -257,16 +358,6 @@ class Source
         ];
     }
 
-    /**
-     * @var \TypeSource
-     *
-     * @ORM\ManyToOne(targetEntity="TypeSource", fetch="EAGER")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="type_source_id", referencedColumnName="id", nullable=true)
-     * })
-     */
-    private $typeSource;
-
     public function getTypeSource(): ?TypeSource
     {
         return $this->typeSource;
@@ -277,17 +368,6 @@ class Source
         $this->typeSource = $typeSource;
         return $this;
     }
-
-    /**
-     * @var \CategorieSource|null
-     *
-     * @Assert\NotBlank
-     * @ORM\ManyToOne(targetEntity="CategorieSource")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="categorie_source_id", referencedColumnName="id", nullable=true)
-     * })
-     */
-    private $categorieSource;
 
     public function getCategorieSource(): ?CategorieSource
     {
@@ -315,14 +395,6 @@ class Source
         ];
     }
 
-    /**
-     * @var \Localisation|null
-     *
-     * @ORM\OneToOne(targetEntity="Localisation", cascade={"persist"}, fetch="EAGER", orphanRemoval=true)
-     * @ORM\JoinColumn(name="localisation_decouverte_id", referencedColumnName="id", nullable=true)
-     */
-    private $lieuDecouverte;
-
     public function getLieuDecouverte(): ?Localisation
     {
         return $this->lieuDecouverte;
@@ -334,14 +406,6 @@ class Source
         return $this;
     }
 
-    /**
-     * @var \Localisation|null
-     *
-     * @ORM\OneToOne(targetEntity="Localisation", cascade={"persist"}, fetch="EAGER", orphanRemoval=true)
-     * @ORM\JoinColumn(name="localisation_origine_id", referencedColumnName="id", nullable=true)
-     */
-    private $lieuOrigine;
-
     public function getLieuOrigine(): ?Localisation
     {
         return $this->lieuOrigine;
@@ -352,32 +416,6 @@ class Source
         $this->lieuOrigine = $lieuOrigine;
         return $this;
     }
-
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->auteurs = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->langues = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->sourceBiblios = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->attestations = new \Doctrine\Common\Collections\ArrayCollection();
-    }
-
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     *
-     * @ORM\ManyToMany(targetEntity="Auteur")
-     * @ORM\JoinTable(name="source_auteur",
-     *   joinColumns={
-     *     @ORM\JoinColumn(name="id_source", referencedColumnName="id")
-     *   },
-     *   inverseJoinColumns={
-     *     @ORM\JoinColumn(name="id_auteur", referencedColumnName="id")
-     *   }
-     * )
-     */
-    private $auteurs;
 
     /**
      * @return Collection|Auteur[]
@@ -402,21 +440,6 @@ class Source
         }
         return $this;
     }
-
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     *
-     * @ORM\ManyToMany(targetEntity="Langue", fetch="EAGER")
-     * @ORM\JoinTable(name="source_langue",
-     *   joinColumns={
-     *     @ORM\JoinColumn(name="id_source", referencedColumnName="id")
-     *   },
-     *   inverseJoinColumns={
-     *     @ORM\JoinColumn(name="id_langue", referencedColumnName="id")
-     *   }
-     * )
-     */
-    private $langues;
 
     /**
      * @return Collection|Langue[]
@@ -454,18 +477,6 @@ class Source
     }
 
     /**
-     * @var \Doctrine\Common\Collections\Collection
-     *
-     * @ORM\OneToMany(targetEntity="SourceBiblio", mappedBy="source", orphanRemoval=true)
-     * @ORM\OrderBy({"editionPrincipale" = "DESC"})
-     * @Assert\Expression(
-     *      "this.hasEditionPrincipaleBiblio()",
-     *      message="edition_principale"
-     * )
-     */
-    private $sourceBiblios;
-
-    /**
      * @return Collection|SourceBiblio[]
      */
     public function getSourceBiblios(): ?Collection
@@ -489,11 +500,6 @@ class Source
         return $this;
     }
 
-    /**
-     * @var SourceBiblio|null
-     */
-    private $editionPrincipaleBiblio;
-
     public function hasEditionPrincipaleBiblio(): bool
     {
         return !is_null($this->getEditionPrincipaleBiblio());
@@ -510,16 +516,6 @@ class Source
         return null;
     }
 
-    /**
-     * @var \Projet|null
-     *
-     * @ORM\ManyToOne(targetEntity="Projet")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_projet", referencedColumnName="id", nullable=true)
-     * })
-     */
-    private $projet;
-
     public function getProjet(): ?Projet
     {
         return $this->projet;
@@ -530,14 +526,6 @@ class Source
         $this->projet = $projet;
         return $this;
     }
-
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     *
-     * @ORM\OneToMany(targetEntity="Attestation", mappedBy="source", orphanRemoval=true)
-     * @ORM\OrderBy({"id" = "ASC"})
-     */
-    private $attestations;
 
     /**
      * @return Collection|Attestation[]
@@ -562,7 +550,6 @@ class Source
         }
         return $this;
     }
-
 
     /**
      * @ORM\PrePersist

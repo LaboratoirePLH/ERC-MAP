@@ -16,16 +16,6 @@ class TraductionElement
     use Traits\TranslatedName;
 
     /**
-     * @var int
-     *
-     * @ORM\Column(name="id_trad_elt", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="SEQUENCE")
-     * @ORM\SequenceGenerator(sequenceName="trad_elt_id_trad_elt_seq", allocationSize=1, initialValue=1)
-     */
-    private $id;
-
-    /**
      * @var \Element
      *
      * @ORM\ManyToOne(targetEntity="Element")
@@ -34,11 +24,6 @@ class TraductionElement
      * })
      */
     private $element;
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
     public function getElement(): ?Element
     {

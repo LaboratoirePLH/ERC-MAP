@@ -129,7 +129,7 @@ class Attestation
     /**
      * @var \Doctrine\Common\Collections\Collection
      *
-     * @ORM\OneToMany(targetEntity="AttestationMateriel", mappedBy="attestation", orphanRemoval=true, cascade={"persist", "remove"})
+     * @ORM\OneToMany(targetEntity="AttestationMateriel", mappedBy="attestation", orphanRemoval=true)
      */
     private $attestationMateriels;
 

@@ -140,11 +140,19 @@ class Attestation
      */
     private $agents;
 
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     *
+     * @ORM\OneToMany(targetEntity="ContientElement", mappedBy="attestation")
+     */
+    private $contientElements;
+
     public function __construct()
     {
         $this->pratiques = new ArrayCollection();
         $this->attestationMateriels = new ArrayCollection();
         $this->agents = new ArrayCollection();
+        $this->contientElements = new ArrayCollection();
     }
 
     // Hack for attestationSource form
@@ -161,7 +169,6 @@ class Attestation
     public function setPassage(?string $passage): self
     {
         $this->passage = $passage;
-
         return $this;
     }
 
@@ -173,7 +180,6 @@ class Attestation
     public function setExtraitSansRestitution(?string $extraitSansRestitution): self
     {
         $this->extraitSansRestitution = $extraitSansRestitution;
-
         return $this;
     }
 
@@ -185,7 +191,6 @@ class Attestation
     public function setExtraitAvecRestitution(?string $extraitAvecRestitution): self
     {
         $this->extraitAvecRestitution = $extraitAvecRestitution;
-
         return $this;
     }
 
@@ -197,7 +202,6 @@ class Attestation
     public function setTranslitteration(?string $translitteration): self
     {
         $this->translitteration = $translitteration;
-
         return $this;
     }
 
@@ -209,7 +213,6 @@ class Attestation
     public function setFiabiliteAttestation(?int $fiabiliteAttestation): self
     {
         $this->fiabiliteAttestation = $fiabiliteAttestation;
-
         return $this;
     }
 
@@ -221,7 +224,6 @@ class Attestation
     public function setProse(?bool $prose): self
     {
         $this->prose = $prose;
-
         return $this;
     }
 
@@ -233,7 +235,6 @@ class Attestation
     public function setPoesie(?bool $poesie): self
     {
         $this->poesie = $poesie;
-
         return $this;
     }
 
@@ -245,7 +246,6 @@ class Attestation
     public function setSource(?Source $source): self
     {
         $this->source = $source;
-
         return $this;
     }
 
@@ -257,7 +257,6 @@ class Attestation
     public function setEtatFiche(?EtatFiche $etatFiche): self
     {
         $this->etatFiche = $etatFiche;
-
         return $this;
     }
 
@@ -274,7 +273,6 @@ class Attestation
         if (!$this->pratiques->contains($pratique)) {
             $this->pratiques[] = $pratique;
         }
-
         return $this;
     }
 
@@ -283,7 +281,6 @@ class Attestation
         if ($this->pratiques->contains($pratique)) {
             $this->pratiques->removeElement($pratique);
         }
-
         return $this;
     }
 
@@ -338,7 +335,6 @@ class Attestation
             $this->attestationMateriels[] = $attestationMateriel;
             $attestationMateriel->setAttestation($this);
         }
-
         return $this;
     }
 
@@ -347,7 +343,6 @@ class Attestation
         if ($this->attestationMateriels->contains($attestationMateriel)) {
             $this->attestationMateriels->removeElement($attestationMateriel);
         }
-
         return $this;
     }
 
@@ -365,7 +360,6 @@ class Attestation
             $this->agents[] = $agent;
             $agent->setAttestation($this);
         }
-
         return $this;
     }
 
@@ -374,9 +368,35 @@ class Attestation
         if ($this->agents->contains($agent)) {
             $this->agents->removeElement($agent);
         }
-
         return $this;
     }
 
+    /**
+     * @return Collection|ContientElement[]
+     */
+    public function getContientElements(): Collection
+    {
+        return $this->contientElements;
+    }
 
+    public function addContientElement(ContientElement $contientElement): self
+    {
+        if (!$this->contientElements->contains($contientElement)) {
+            $this->contientElements[] = $contientElement;
+            $contientElement->setElement($this);
+        }
+        return $this;
+    }
+
+    public function removeContientElement(ContientElement $contientElement): self
+    {
+        if ($this->contientElements->contains($contientElement)) {
+            $this->contientElements->removeElement($contientElement);
+            // set the owning side to null (unless already changed)
+            if ($contientElement->getElement() === $this) {
+                $contientElement->setElement(null);
+            }
+        }
+        return $this;
+    }
 }

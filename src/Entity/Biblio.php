@@ -59,11 +59,19 @@ class Biblio
     private $sourceBiblios;
 
     /**
+     * @var \Doctrine\Common\Collections\Collection
+     *
+     * @ORM\OneToMany(targetEntity="ElementBiblio", mappedBy="biblio", orphanRemoval=true)
+     */
+    private $elementBiblios;
+
+    /**
      * Constructor
      */
     public function __construct()
     {
         $this->sourceBiblios = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->elementBiblios = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     public function getTitreAbrege(): ?string
@@ -154,6 +162,30 @@ class Biblio
     {
         if ($this->sourceBiblios->contains($sourceBiblio)) {
             $this->sourceBiblios->removeElement($sourceBiblio);
+        }
+        return $this;
+    }
+
+    /**
+     * @return Collection|ElementBiblio[]
+     */
+    public function getElementBiblios(): ?Collection
+    {
+        return $this->elementBiblios;
+    }
+
+    public function addElementBiblio(ElementBiblio $elementBiblio): self
+    {
+        if (!$this->elementBiblios->contains($elementBiblio)) {
+            $this->elementBiblios[] = $elementBiblio;
+        }
+        return $this;
+    }
+
+    public function removeElementBiblio(ElementBiblio $elementBiblio): self
+    {
+        if ($this->elementBiblios->contains($elementBiblio)) {
+            $this->elementBiblios->removeElement($elementBiblio);
         }
         return $this;
     }

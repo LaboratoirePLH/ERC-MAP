@@ -71,19 +71,21 @@ class SourceController extends AbstractController
                     $source->removeSourceBiblio($sb);
                 }
             }
-            foreach($source->getAttestations() as $a){
-                if(!empty($a->getPassage())){
-                    // Persist only valid data
-                    $a->setSource($source);
-                    $a->setCreateur($user);
-                    $a->setDernierEditeur($user);
-                    $etatFiche = $this->getDoctrine()
-                        ->getRepository(EtatFiche::class)
-                        ->find(1);
-                    $a->setEtatFiche($etatFiche);
-                    $em->persist($a);
-                } else {
-                    $source->removeAttestation($a);
+            if(!empty($source->getAttestations())) {
+                foreach($source->getAttestations() as $a){
+                    if(!empty($a->getPassage())){
+                        // Persist only valid data
+                        $a->setSource($source);
+                        $a->setCreateur($user);
+                        $a->setDernierEditeur($user);
+                        $etatFiche = $this->getDoctrine()
+                            ->getRepository(EtatFiche::class)
+                            ->find(1);
+                        $a->setEtatFiche($etatFiche);
+                        $em->persist($a);
+                    } else {
+                        $source->removeAttestation($a);
+                    }
                 }
             }
             if($source->getInSitu() === true){
@@ -186,23 +188,25 @@ class SourceController extends AbstractController
                     $source->removeSourceBiblio($sb);
                 }
             }
-            foreach($source->getAttestations() as $a){
-                // Don't persist/remove already persisted entities
-                if(!$em->contains($a)){
-                    // If it's not persisted, we check the contents of the "passage" field
-                    // to determine if it's valid or not
-                    if(!empty($a->getPassage())){
-                        $a->setSource($source);
-                        $a->setCreateur($user);
-                        $a->setDernierEditeur($user);
-                        $etatFiche = $this->getDoctrine()
-                            ->getRepository(EtatFiche::class)
-                            ->find(1);
-                        $a->setEtatFiche($etatFiche);
-                        $em->persist($a);
-                    }
-                    else {
+            if(!empty($source->getAttestations())) {
+                foreach($source->getAttestations() as $a){
+                    // Don't persist/remove already persisted entities
+                    if(!$em->contains($a)){
+                        // If it's not persisted, we check the contents of the "passage" field
+                        // to determine if it's valid or not
+                        if(!empty($a->getPassage())){
+                            $a->setSource($source);
+                            $a->setCreateur($user);
+                            $a->setDernierEditeur($user);
+                            $etatFiche = $this->getDoctrine()
+                                ->getRepository(EtatFiche::class)
+                                ->find(1);
+                            $a->setEtatFiche($etatFiche);
+                            $em->persist($a);
+                        }
+                        else {
 
+                        }
                     }
                 }
             }

@@ -361,6 +361,7 @@ class Source
         $this->auteurs = new \Doctrine\Common\Collections\ArrayCollection();
         $this->langues = new \Doctrine\Common\Collections\ArrayCollection();
         $this->sourceBiblios = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->attestations = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -456,7 +457,7 @@ class Source
      * @var \Doctrine\Common\Collections\Collection
      *
      * @ORM\OneToMany(targetEntity="SourceBiblio", mappedBy="source", orphanRemoval=true)
-     * @ORM\OrderBy({"editionPrincipale" = "DESC", "biblio" = "ASC"})
+     * @ORM\OrderBy({"editionPrincipale" = "DESC"})
      * @Assert\Expression(
      *      "this.hasEditionPrincipaleBiblio()",
      *      message="edition_principale"

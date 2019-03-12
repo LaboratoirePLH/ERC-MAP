@@ -153,18 +153,18 @@ class Agent
         return $this->statutAffiches;
     }
 
-    public function addStatutAffiche(StatutAffiche $statutAffiche): self
+    public function addStatutAffich(StatutAffiche $statutAffich): self
     {
-        if (!$this->statutAffiches->contains($statutAffiche)) {
-            $this->statutAffiches[] = $statutAffiche;
+        if (!$this->statutAffiches->contains($statutAffich)) {
+            $this->statutAffiches[] = $statutAffich;
         }
         return $this;
     }
 
-    public function removeStatutAffiche(StatutAffiche $statutAffiche): self
+    public function removeStatutAffich(StatutAffiche $statutAffich): self
     {
-        if ($this->statutAffiches->contains($statutAffiche)) {
-            $this->statutAffiches->removeElement($statutAffiche);
+        if ($this->statutAffiches->contains($statutAffich)) {
+            $this->statutAffiches->removeElement($statutAffich);
         }
         return $this;
     }

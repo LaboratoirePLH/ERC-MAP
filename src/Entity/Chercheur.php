@@ -210,4 +210,16 @@ class Chercheur implements UserInterface
     public function eraseCredentials()
     {
     }
+
+    public function getPreferenceLangue(): ?string
+    {
+        return $this->preferenceLangue;
+    }
+
+    public function setPreferenceLangue(?string $preferenceLangue): self
+    {
+        $this->preferenceLangue = $preferenceLangue;
+
+        return $this;
+    }
 }

@@ -65,7 +65,7 @@ class Localisation
      *
      * @ORM\Column(name="reel", type="boolean", nullable=true)
      */
-    private $reel;
+    private $reel = true;
 
     /**
      * @var geometry|null

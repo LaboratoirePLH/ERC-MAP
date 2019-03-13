@@ -3,7 +3,7 @@
 
         var settings = $.extend({
             // These are the defaults.
-            blockTitle: "Item #",
+            blockTitle: "#",
             deleteLinkGenerator: function () {
                 return $(
                     '<a href="#" class="btn btn-sm btn-danger ml-2 mb-1">Delete</a>'
@@ -11,7 +11,9 @@
             },
             viewLinkGenerator: function () { return; },
             addListener: function () { return; },
-            confirmationModal: false
+            confirmationModal: false,
+            inline: false,
+            addLink: null,
         }, options);
 
         var setupLinks = function (prototype) {
@@ -35,21 +37,36 @@
                     return false;
                 });
             }
-
-            var label = prototype.find('.remove_this_label');
-            label.siblings('.col-sm-10').removeClass('col-sm-10').addClass('col-sm-12');
-            label.hide();
-
             var viewLink = settings.viewLinkGenerator.call(this, prototype);
 
-            prototype.children('legend')
-                .removeClass('col-sm-2 col-form-label')
-                .addClass('col-sm-12 text-center h4')
-                .append(deleteLink)
-                .append(viewLink);
-            prototype.children('.col-sm-10')
-                .removeClass('col-sm-10')
-                .addClass('col-sm-12');
+            if (settings.inline === true) {
+                prototype
+                    .removeClass('form-group');
+                prototype.children('legend')
+                    .removeClass('col-sm-2')
+                    .addClass('col-sm-1');
+
+                var buttonContainer = $('<div class="text-right">');
+                buttonContainer
+                    .addClass('col-sm-1')
+                    .append(deleteLink)
+                    .appendTo(prototype);
+            }
+            else {
+                var label = prototype.find('.remove_this_label');
+                label.siblings('.col-sm-10').removeClass('col-sm-10').addClass('col-sm-12');
+                label.hide();
+
+
+                prototype.children('legend')
+                    .removeClass('col-sm-2 col-form-label')
+                    .addClass('col-sm-12 text-center h4')
+                    .append(deleteLink)
+                    .append(viewLink);
+                prototype.children('.col-sm-10')
+                    .removeClass('col-sm-10')
+                    .addClass('col-sm-12');
+            }
         };
 
         var addEntry = function (container) {
@@ -73,11 +90,12 @@
 
             container.attr('data-index', index);
 
-            container.next().find('.collection-add-link').click(function (e) {
-                addEntry(container);
-                e.preventDefault();
-                return false;
-            });
+            (settings.addLink || container.next().find('.collection-add-link'))
+                .click(function (e) {
+                    addEntry(container);
+                    e.preventDefault();
+                    return false;
+                });
 
             if (index == 0) {
                 addEntry(container);

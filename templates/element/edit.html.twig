@@ -1,0 +1,320 @@
+{% extends 'authenticated.html.twig' %}
+{% block title %}
+{{ ('element.' ~ action)|trans((element is defined ? {'%id%': element.id} : {})) }}
+{% endblock %}
+{% block content %}
+
+{{ form_start(form, {'attr' : {'id': 'element'}} ) }}
+{% if not form.vars.valid %}
+{% import "form/macros.html.twig" as macros %}
+{{ macros.display_error(form) }}
+{% endif %}
+
+<div class="row justify-content-center">
+    <div class="col-sm-3">
+        {% include "partials/_formbuttons.html.twig" with {'exitUrl' : url('element_list')} %}
+    </div>
+    <div class="col-sm-6 text-center">
+        {% if action == 'edit' %}
+        {% spaceless %}
+        {{ 'generic.fields.date_creation'|trans }}&nbsp;:&nbsp;
+        {{ element.dateCreation|date("locale_datetime"|trans) }}&nbsp;
+        {{ 'generic.fields.by'|trans }}&nbsp;{{ element.createur.prenomNom }}
+        {% endspaceless %}
+        <br />
+        {% spaceless %}
+        {{ 'generic.fields.date_modification'|trans }}&nbsp;:&nbsp;
+        {{ element.dateModification|date("locale_datetime"|trans) }}&nbsp;
+        {{ 'generic.fields.by'|trans }}&nbsp;{{ element.dernierEditeur.prenomNom }}
+        {% endspaceless %}
+        <br />
+        {{ 'generic.fields.version'|trans }}&nbsp;{{ element.version }}&rarr;{{ element.version+1 }}
+        {% endif %}
+    </div>
+    <div class="col-sm-3 text-right">
+        {{ 'generic.fields.to_translate'|trans }} :
+        {{ form_widget(form.traduireFr) }}
+        {{ form_widget(form.traduireEn) }}
+    </div>
+</div>
+<hr />
+<section>
+    {% include 'partials/_sectiontitle.html.twig' with {
+        'title'         : 'element.sections.description_element',
+        'collapseTarget': '#section-description',
+        'expanded'      : true
+    } only %}
+    <div class="collapse show" id="section-description">
+        {{ form_row(form.etatAbsolu) }}
+        {{ form_row(form.betaCode) }}
+        {{ form_row(form.traductions) }}
+        <div class="form-group row">
+            <div class="col-sm-10 offset-sm-2">
+                <a href="#" class="btn btn-primary collection-add-link" id="link-add-traduction">
+                    <i class="fa fa-plus"></i>&nbsp;
+                    {{ 'element.add_traduction'|trans }}
+                </a>
+            </div>
+        </div>
+        {{ form_row(form.natureElement) }}
+        {{ form_row(form.categories) }}
+    </div>
+</section>
+
+<section>
+    {% include 'partials/_sectiontitle.html.twig' with {
+        'title'         : 'element.sections.references',
+        'collapseTarget': '#section-references',
+        'expanded'      : true
+    } only %}
+    <div class="collapse show" id="section-references">
+        {{ form_row(form.aReference) }}
+        <div class="row">
+            <div class="col-sm-12 dependent_field_areference">
+                {{ form_row(form.theonymesEnfants) }}
+                <div class="form-group row">
+                    <div class="col-sm-10 offset-sm-2">
+                        <a href="#" class="btn btn-primary collection-add-link" id="link-add-theonyme-enfant">
+                            <i class="fa fa-plus"></i>&nbsp;
+                            {{ 'element.add_theonyme_enfant'|trans }}
+                        </a>
+                    </div>
+                </div>
+                {{ form_row(form.theonymesParents) }}
+                <div class="form-group row">
+                    <div class="col-sm-10 offset-sm-2">
+                        <a href="#" class="btn btn-primary collection-add-link" id="link-add-theonyme-parent">
+                            <i class="fa fa-plus"></i>&nbsp;
+                            {{ 'element.add_theonyme_parent'|trans }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section>
+    {% include 'partials/_sectiontitle.html.twig' with {
+        'title'             : 'element.sections.localisation',
+        'collapseTarget'    : '#section-localisation',
+        'expanded'          : true
+    } only %}
+    <div class="collapse show" id="section-localisation">
+        {{ form_row(form.estLocalisee) }}
+        <div class="row">
+            <div class="col-sm-12 dependent_field_estlocalisee">
+                {{ form_errors(form.localisation) }}
+                {{ form_widget(form.localisation) }}
+            </div>
+        </div>
+    </div>
+</section>
+
+<section>
+    {% include 'partials/_sectiontitle.html.twig' with {
+        'title'         : 'element.sections.bibliographie',
+        'collapseTarget': '#section-bibliographie',
+        'expanded'      : true
+    } only %}
+    <div class="collapse show" id="section-bibliographie">
+        {{ form_errors(form.elementBiblios) }}
+        {{ form_widget(form.elementBiblios) }}
+        <div class="form-group row">
+            <div class="col-sm-10 offset-sm-2">
+                <a href="#" class="btn btn-primary collection-add-link">
+                    <i class="fa fa-plus"></i>&nbsp;
+                    {{ 'element.add_elementbiblio'|trans }}
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section>
+    {% include 'partials/_sectiontitle.html.twig' with {
+        'title'         : 'element.sections.commentaires',
+        'collapseTarget': '#section-commentaires'
+    } only %}
+    <div class="collapse" id="section-commentaires">
+        {{ form_row(form.commentaireFr) }}
+        {{ form_row(form.commentaireEn) }}
+    </div>
+</section>
+
+<hr />
+<div class="form-group row">
+    <div class="col-sm-12 text-center">
+        {% include "partials/_formbuttons.html.twig" with {'exitUrl' : url('element_list')} %}
+    </div>
+</div>
+{{ form_rest(form) }}
+{{ form_end(form) }}
+
+{% include "modals/confirmation.html.twig" with {
+'modalName': 'confirm_exit_dirty',
+'uuid': 'confirm_exit_dirty',
+'targetUrl': url('element_list'),
+'method': 'GET',
+'confirmationLabel': 'generic.exit',
+'cancelLabel': 'generic.stay'
+} %}
+{% include "modals/confirmation.html.twig" with {
+'modalName': 'confirm_remove_item',
+'uuid': 'confirm_remove_item',
+'confirmationLabel': 'generic.delete',
+'useForm': false
+} %}
+
+{{ include('partials/_backtotop.html.twig') }}
+{% endblock %}
+{% block javascripts %}
+{{ parent() }}
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        const chosenSettings = {
+            disable_search_threshold: 10,
+            no_results_text: "{{ 'autocomplete.no_matches'|trans }}",
+            allow_single_deselect: true,
+            group_search: false,
+            display_selected_options: false,
+            include_group_label_in_selected: true
+        };
+        const chosenSettingsMax3 = $.extend(chosenSettings, { max_selected_options: 3 });
+
+        var form_old = $("form#element").serialize(),
+            modal_visible = false,
+            isFormDirty = function (form) { return $(form).serialize() !== form_old; },
+            promptConfirmation = function (e) {
+                if (!modal_visible && isFormDirty($("form#element"))) {
+                    // Cancel the event
+                    e.preventDefault();
+                    // Chrome requires returnValue to be set
+                    e.returnValue = "{{ 'modals.confirm_exit_dirty.body'|trans }}";
+                    return "{{ 'modals.confirm_exit_dirty.body'|trans }}";
+                }
+            };
+
+        $('.exit-form-link').click(function (e) {
+            e.preventDefault();
+            if (isFormDirty($("form#element"))) {
+                $(".modal#confirm_exit_dirty").modal();
+                $(".modal#confirm_exit_dirty").on('shown.bs.modal', function () { modal_visible = true; });
+                $(".modal#confirm_exit_dirty").on('hidden.bs.modal', function () { modal_visible = false; });
+                return false;
+            } else {
+                window.location = $('.exit-form-link').attr('href');
+            }
+        });
+        window.addEventListener('beforeunload', promptConfirmation);
+        window.addEventListener('unload', promptConfirmation);
+        $("form#element").on('submit', function () {
+            window.removeEventListener('beforeunload', promptConfirmation);
+            window.removeEventListener('unload', promptConfirmation);
+        });
+
+        // Gestion des champs collection
+        $('div#element_elementBiblios').collectionField({
+            blockTitle: '{{ "element.fields.element_biblio_n"|trans }}',
+            deleteLinkGenerator: function () {
+                return $(
+                    '<a href="#" class="btn btn-sm btn-danger ml-2 mb-1">{{ "generic.delete"| trans }}</a>'
+                )
+            },
+            confirmationModal: $('#confirm_remove_item'),
+            addListener: function (newEl, idx) {
+                // Gestion du champ "selectorcreate"
+                $(newEl).find('.selectorcreate').selectOrCreate();
+                $.fn.dependentFields({
+                    corpus: {
+                        conditionCallback: function (main) { return $(main).is(':checked'); },
+                        targetFinder: function (name, main) {
+                            return main.parents('.selectorcreate').find('.dependent_field_' + name);
+                        }
+                    }
+                });
+            }
+        });
+        $('div#element_traductions').collectionField({
+            addLink: $('#link-add-traduction'),
+            confirmationModal: $('#confirm_remove_item'),
+            deleteLinkGenerator: function () {
+                return $(
+                    '<a href="#" class="btn btn-danger ml-2 mb-1"><i class="fas fa-trash fa-fw"></i></a>'
+                )
+            },
+            inline: true
+        });
+        $('div#element_theonymesEnfants').collectionField({
+            addLink: $('#link-add-theonyme-enfant'),
+            confirmationModal: $('#confirm_remove_item'),
+            deleteLinkGenerator: function () {
+                return $(
+                    '<a href="#" class="btn btn-danger ml-2 mb-1"><i class="fas fa-trash fa-fw"></i></a>'
+                )
+            },
+            inline: true,
+            addListener: function (newEl, idx) {
+                $(newEl).find('.element_traductions').after($('<div class="form-group row"><div class="col-sm-11 offset-sm-1"><a href="#" class="btn btn-primary collection-add-link"><i class="fa fa-plus"></i>&nbsp;{{ "element.add_traduction"| trans }}</a></div></div>'));
+                $(newEl).find('.element_traductions').collectionField({
+                    addLink: $(newEl).find('.collection-add-link'),
+                    confirmationModal: $('#confirm_remove_item'),
+                    deleteLinkGenerator: function () {
+                        return $(
+                            '<a href="#" class="btn btn-danger ml-2 mb-1"><i class="fas fa-trash fa-fw"></i></a>'
+                        )
+                    },
+                    inline: true
+                });
+                $(newEl).find('.selectorcreate').selectOrCreate();
+                $(newEl).find('select.autocomplete:not(.autocomplete-max-3)').chosen(chosenSettings);
+                $(newEl).find('select.autocomplete.autocomplete-max-3').chosen(chosenSettings);
+            }
+        });
+        $('div#element_theonymesParents').collectionField({
+            addLink: $('#link-add-theonyme-parent'),
+            confirmationModal: $('#confirm_remove_item'),
+            deleteLinkGenerator: function () {
+                return $(
+                    '<a href="#" class="btn btn-danger ml-2 mb-1"><i class="fas fa-trash fa-fw"></i></a>'
+                )
+            },
+            inline: true,
+            addListener: function (newEl, idx) {
+                $(newEl).find('.element_traductions').after($('<div class="form-group row"><div class="col-sm-11 offset-sm-1"><a href="#" class="btn btn-primary collection-add-link"><i class="fa fa-plus"></i>&nbsp;{{ "element.add_traduction"| trans }}</a></div></div>'));
+                $(newEl).find('.element_traductions').collectionField({
+                    addLink: $(newEl).find('.collection-add-link'),
+                    confirmationModal: $('#confirm_remove_item'),
+                    deleteLinkGenerator: function () {
+                        return $(
+                            '<a href="#" class="btn btn-danger ml-2 mb-1"><i class="fas fa-trash fa-fw"></i></a>'
+                        )
+                    },
+                    inline: true
+                });
+                $(newEl).find('.selectorcreate').selectOrCreate();
+                $(newEl).find('select.autocomplete:not(.autocomplete-max-3)').chosen(chosenSettings);
+                $(newEl).find('select.autocomplete.autocomplete-max-3').chosen(chosenSettings);
+            }
+        });
+
+        // Gestion du champ "selectorcreate"
+        $('.selectorcreate').selectOrCreate();
+        // Gestion des champs select avec filtres
+        $('select.autocomplete:not(.autocomplete-max-3)').chosen(chosenSettings);
+        $('select.autocomplete.autocomplete-max-3').chosen(chosenSettings);
+        // Gestion des champs dépendants
+        $.fn.dependentFields({
+            areference: {
+                conditionCallback: function (main) { return $(main).is(':checked'); },
+                targetFinder: function (name, main) { return $(main).parent().parent().parent().siblings().find('.dependent_field_' + name); }
+            },
+            estlocalisee: {
+                conditionCallback: function (main) { return $(main).is(':checked'); },
+                targetFinder: function (name, main) { return $(main).parent().parent().parent().siblings().find('.dependent_field_' + name); }
+            }
+        });
+    });
+</script>
+{% endblock %}

@@ -5,19 +5,26 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Element
  *
  * @ORM\Table(name="element")
  * @ORM\Entity
+ * @ORM\HasLifecycleCallbacks()
  */
 class Element
 {
     use Traits\EntityId;
     use Traits\Located;
+    use Traits\Tracked;
     use Traits\Translatable;
     use Traits\TranslatedComment;
+
+    public function __toString(){
+        return 'toto';
+    }
 
     /**
      * @var string|null
@@ -53,9 +60,28 @@ class Element
     /**
      * @var \Doctrine\Common\Collections\Collection
      *
-     * @ORM\ManyToMany(targetEntity="CategorieElement", mappedBy="elements")
+     * @ORM\ManyToMany(targetEntity="CategorieElement")
+     * @ORM\JoinTable(name="element_categorie",
+     *   joinColumns={
+     *     @ORM\JoinColumn(name="id_element", referencedColumnName="id")
+     *   },
+     *   inverseJoinColumns={
+     *     @ORM\JoinColumn(name="id_categorie_element", referencedColumnName="id")
+     *   }
+     * )
+     * @Assert\Expression(
+     *      "this.getCategories().count() <= 3",
+     *      message="categories_count"
+     * )
      */
     private $categories;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     *
+     * @ORM\OneToMany(targetEntity="TraductionElement", mappedBy="element", cascade={"persist", "remove"})
+     */
+    private $traductions;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
@@ -72,6 +98,13 @@ class Element
     private $elementBiblios;
 
     /**
+     * @var bool
+     *
+     * @ORM\Column(name="a_reference", type="boolean", nullable=true)
+     */
+    private $aReference;
+
+    /**
      * @ORM\ManyToMany(targetEntity="Element", inversedBy="theonymesParents")
      * @ORM\JoinTable(name="elements_theonymes",
      *   joinColumns={
@@ -85,7 +118,7 @@ class Element
     private $theonymesEnfants;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Element", mappedBy="theonymesEnfants")
+     * @ORM\ManyToMany(targetEntity="Element", mappedBy="theonymesEnfants", fetch="EAGER")
      */
     private $theonymesParents;
 
@@ -96,6 +129,12 @@ class Element
         $this->theonymesEnfants = new ArrayCollection();
         $this->theonymesParents = new ArrayCollection();
         $this->contientElements = new ArrayCollection();
+        $this->traductions = new ArrayCollection();
+    }
+
+    public function getAffichage(): string
+    {
+        return sprintf("#%d : %s (%s)", $this->getId(), $this->getEtatAbsolu(), $this->getBetaCode());
     }
 
     public function getEtatAbsolu(): ?string
@@ -150,11 +189,21 @@ class Element
         return $this->categories;
     }
 
+    public function concatCategories($lang): string
+    {
+        if(empty($this->getCategories())){ return ""; }
+        $names = $this->getCategories()->map(function($cat) use ($lang) {
+            return $cat->getNom($lang);
+        });
+        $names = $names->toArray();
+        sort($names);
+        return implode('<br/>', $names);
+    }
+
     public function addCategory(CategorieElement $category): self
     {
         if (!$this->categories->contains($category)) {
             $this->categories[] = $category;
-            $category->addElement($this);
         }
         return $this;
     }
@@ -163,7 +212,6 @@ class Element
     {
         if ($this->categories->contains($category)) {
             $this->categories->removeElement($category);
-            $category->removeElement($this);
         }
         return $this;
     }
@@ -234,6 +282,7 @@ class Element
         if (!$this->theonymesParents->contains($theonymesParent)) {
             $this->theonymesParents[] = $theonymesParent;
             $theonymesParent->addTheonymesEnfant($this);
+            $theonymesParent->setAReference(true);
         }
         return $this;
     }
@@ -260,8 +309,9 @@ class Element
         if (!$this->contientElements->contains($contientElement)) {
             $this->contientElements[] = $contientElement;
             $contientElement->setElement($this);
+            $theonymesEnfant->setAReference(true);
+            $this->setAReference(true);
         }
-
         return $this;
     }
 
@@ -274,7 +324,69 @@ class Element
                 $contientElement->setElement(null);
             }
         }
-
         return $this;
+    }
+
+    /**
+     * @return Collection|TraductionElement[]
+     */
+    public function getTraductions(): ?Collection
+    {
+        return $this->traductions;
+    }
+
+    public function concatTraductions($lang): string
+    {
+        if(empty($this->getTraductions())){ return ""; }
+        $names = $this->getTraductions()->map(function($trad) use ($lang) {
+            return $trad->getNom($lang) ?? "?";
+        });
+        $names = $names->toArray();
+        sort($names);
+        return implode('<br>', $names);
+    }
+
+
+    public function addTraduction(TraductionElement $traduction = null): self
+    {
+        if (!is_null($traduction) && !$this->traductions->contains($traduction)) {
+            $this->traductions[] = $traduction;
+            $traduction->setElement($this);
+        }
+        return $this;
+    }
+
+    public function removeTraduction(TraductionElement $traduction = null): self
+    {
+        if (!is_null($traduction) && $this->traductions->contains($traduction)) {
+            $this->traductions->removeElement($traduction);
+            // set the owning side to null (unless already changed)
+            if ($traduction->getElement() === $this) {
+                $traduction->setElement(null);
+            }
+        }
+        return $this;
+    }
+
+    public function getAReference(): ?bool
+    {
+        return $this->aReference;
+    }
+
+    public function setAReference(?bool $aReference): self
+    {
+        $this->aReference = $aReference;
+        return $this;
+    }
+
+    /**
+     * @ORM\PrePersist
+     * @ORM\PreUpdate
+     */
+    public function _clearTheonymes(){
+        if(!$this->getAReference()){
+            $this->getTheonymesEnfants()->clear();
+            $this->getTheonymesParents()->clear();
+        }
     }
 }

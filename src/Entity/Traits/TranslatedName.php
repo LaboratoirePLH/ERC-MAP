@@ -50,4 +50,19 @@ trait TranslatedName
             return $this->nomEn;
         }
     }
+
+    public function getTranslatedName(): array
+    {
+        return [
+            'nomFr' => $this->getNomFr(),
+            'nomEn' => $this->getNomEn()
+        ];
+    }
+
+    public function setTranslatedName($data): self
+    {
+        $this->setNomFr($data['nomFr'] ?? null);
+        $this->setNomEn($data['nomEn'] ?? null);
+        return $this;
+    }
 }

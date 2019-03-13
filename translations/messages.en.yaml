@@ -63,6 +63,7 @@ generic:
         fiabilite: "Reliability"
         version: "Version"
         localisation: "Location"
+        localisation_reelle: "Real ?"
         quantite: "Quantity"
         est_datee: "Is Dated ?"
         est_localisee: "Location ?"
@@ -90,10 +91,8 @@ source:
     edit: "Edit Source #%id%"
     select: "Select Source"
     add_sourcebiblio: "Add Bibliographic Reference"
-    delete_sourcebiblio: "Remove Bibliographic Reference"
     add_attestation: "Add Testimony"
     view_attestation: "View Testimony"
-    remove_attestation: "Remove Testimony"
     messages:
         created: "Source created"
         edited: "Source edited"
@@ -212,6 +211,45 @@ attestation:
         commentaires: "Comments"
         elements: "Elements"
         formules: "Formulae"
+
+element:
+    fields:
+        extrait_sans_restitution: "Without restitution"
+        extrait_avec_restitution: "With restitution"
+        etat_absolu: "Absolute form"
+        etat_morphologique: "Morphological form"
+        beta_code: "Beta Code"
+        traductions: "Translations"
+        nature: "Nature"
+        categories_invariantes: "Out of Context Categories"
+        theonymes_enfants: "Implicit Theonyms"
+        theonyme_enfant_n: "Implicit Theonym #"
+        theonymes_parents: "Built on Theonym"
+        theonyme_parent_n: "Built on Theonym #"
+        a_reference: "Reference ?"
+        element_biblio: "Reference"
+        element_biblio_n: "Reference #"
+        reference_element: "Element Reference"
+    list: "Elements List"
+    view: "View Element #%id%"
+    create: "Create Element"
+    edit: "Edit Element #%id%"
+    add_elementbiblio: "Add Bibliographic Reference"
+    add_traduction: "Add Translation"
+    add_theonyme_enfant: "Add Implicit Theonym"
+    add_theonyme_parent: "Add Built on Theonym"
+    messages:
+        created: "Element created"
+        edited: "Element edited"
+        deleted: "Element deleted"
+        missing: "Element #%id% does not exists"
+    sections:
+        description_element : "Element Description"
+        references: "References to other Elements"
+        localisation: "Element Location"
+        bibliographie: "Bibliography"
+        commentaires: "Comments"
+
 
 agent:
     fields:

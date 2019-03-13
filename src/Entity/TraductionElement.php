@@ -18,7 +18,7 @@ class TraductionElement
     /**
      * @var \Element
      *
-     * @ORM\ManyToOne(targetEntity="Element")
+     * @ORM\ManyToOne(targetEntity="Element", inversedBy="traductions")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_element", referencedColumnName="id")
      * })

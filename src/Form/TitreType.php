@@ -4,6 +4,9 @@ namespace App\Form;
 
 use App\Entity\Auteur;
 use App\Entity\Titre;
+
+use App\Form\Type\TranslatedNameType;
+
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -18,12 +21,8 @@ class TitreType extends AbstractType
     {
         $locale = $options['locale'];
         $builder
-            ->add('nomFr', TextType::class, [
-                'label'    => 'source.fields.titre_fr',
-                'required' => false
-            ])
-            ->add('nomEn', TextType::class, [
-                'label'    => 'source.fields.titre_en',
+            ->add('translatedName', TranslatedNameType::class, [
+                'label'    => 'source.fields.titre',
                 'required' => false
             ])
             ->add('auteurs', EntityType::class, [

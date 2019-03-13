@@ -77,3 +77,28 @@
 </small>
 {%- endif -%}
 {%- endblock form_help %}
+
+{% block translatedname_widget %}
+<div class="row">
+    <div class="col-sm-6">
+        <div class="row">
+            <div class="col-sm-2">
+                {{ form_label(form.nomFr) }}
+            </div>
+            <div class="col-sm-10">
+                {{ form_widget(form.nomFr) }}
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="row">
+            <div class="col-sm-2">
+                {{ form_label(form.nomEn) }}
+            </div>
+            <div class="col-sm-10">
+                {{ form_widget(form.nomEn) }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock translatedname_widget %}

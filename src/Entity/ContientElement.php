@@ -35,6 +35,13 @@ class ContientElement
     private $element;
 
     /**
+     * @var string|null
+     *
+     * @ORM\Column(name="etat_morphologique", type="string", length=255, nullable=true)
+     */
+    private $etatMorphologique;
+
+    /**
      * @var int
      *
      * @ORM\Column(name="position_element", type="smallint", nullable=false)
@@ -91,6 +98,17 @@ class ContientElement
      * })
      */
     private $nombreElement;
+
+    public function getEtatMorphologique(): ?string
+    {
+        return $this->etatMorphologique;
+    }
+
+    public function setEtatMorphologique(?string $etatMorphologique): self
+    {
+        $this->etatMorphologique = $etatMorphologique;
+        return $this;
+    }
 
     public function getPositionElement(): ?int
     {

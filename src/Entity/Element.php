@@ -36,13 +36,6 @@ class Element
     /**
      * @var string|null
      *
-     * @ORM\Column(name="etat_morphologique", type="string", length=255, nullable=true)
-     */
-    private $etatMorphologique;
-
-    /**
-     * @var string|null
-     *
      * @ORM\Column(name="beta_code", type="string", length=255, nullable=true)
      */
     private $betaCode;
@@ -145,17 +138,6 @@ class Element
     public function setEtatAbsolu(?string $etatAbsolu): self
     {
         $this->etatAbsolu = $etatAbsolu;
-        return $this;
-    }
-
-    public function getEtatMorphologique(): ?string
-    {
-        return $this->etatMorphologique;
-    }
-
-    public function setEtatMorphologique(?string $etatMorphologique): self
-    {
-        $this->etatMorphologique = $etatMorphologique;
         return $this;
     }
 

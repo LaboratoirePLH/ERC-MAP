@@ -7,6 +7,9 @@
         <i class="fas fa-caret-right fa-fw {% if expanded %} fa-rotate-90 {% endif %}"></i>
     </button>
     {{ title|trans }}
+    {% if counter is defined %}
+    <span class="badge badge-light" id="counter-{{ counterId }}">{{ counter }}</span>
+    {% endif %}
     {% if precisionIndicator is defined %}
     {% include 'partials/_precision.html.twig' %}
     {% endif %}

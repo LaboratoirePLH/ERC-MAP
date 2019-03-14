@@ -145,6 +145,17 @@ class AttestationController extends AbstractController
                     $attestation->removeAgent($a);
                 }
             }
+            foreach($attestation->getContientElements() as $ce){
+                if($ce->getElement() !== null){
+                    if(!$em->contains($ce->getElement())){
+                        $em->persist($ce->getElement());
+                    }
+                    $ce->setAttestation($attestation);
+                    $em->persist($ce);
+                } else {
+                    $attestation->removeContientElement($ce);
+                }
+            }
             $em->flush();
 
             // Message de confirmation
@@ -251,6 +262,17 @@ class AttestationController extends AbstractController
                     if($em->contains($a)){
                         $em->remove($a);
                     }
+                }
+            }
+            foreach($attestation->getContientElements() as $ce){
+                if($ce->getElement() !== null){
+                    if(!$em->contains($ce->getElement())){
+                        $em->persist($ce->getElement());
+                    }
+                    $ce->setAttestation($attestation);
+                    $em->persist($ce);
+                } else {
+                    $attestation->removeContientElement($ce);
                 }
             }
             $em->flush();

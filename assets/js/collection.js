@@ -11,12 +11,14 @@
             },
             viewLinkGenerator: function () { return; },
             addListener: function () { return; },
+            deleteListener: function () { return; },
             confirmationModal: false,
             inline: false,
             addLink: null,
         }, options);
 
         var setupLinks = function (prototype) {
+            var me = this;
             var deleteLink = settings.deleteLinkGenerator.call(this, prototype);
             if (deleteLink !== "") {
                 deleteLink.click(function (e) {
@@ -25,6 +27,7 @@
                         settings.confirmationModal.on('show.bs.modal', function () {
                             settings.confirmationModal.find('.modal-accept-button').on('click', function () {
                                 prototype.remove();
+                                settings.deleteListener.call(me, prototype);
                                 settings.confirmationModal.modal('hide');
                                 settings.confirmationModal.find('.modal-accept-button').off('click');
                             });
@@ -33,6 +36,7 @@
                     }
                     else {
                         prototype.remove();
+                        settings.deleteListener.call(me, prototype);
                     }
                     return false;
                 });

@@ -215,6 +215,14 @@ class AttestationType extends AbstractType
                 'attr'        => ['rows' => 2],
                 'required'    => false
             ))
+            ->add('contientElements', CollectionType::class, [
+                'label'         => false,
+                'entry_type'    => ContientElementType::class,
+                'entry_options' => array_intersect_key($options, array_flip(["translations","locale"])),
+                'allow_add'     => true,
+                'allow_delete'  => true,
+                'required'      => false,
+            ])
         ;
     }
 

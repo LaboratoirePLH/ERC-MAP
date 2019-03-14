@@ -125,6 +125,12 @@ class Element
         $this->traductions = new ArrayCollection();
     }
 
+    // Hack for elementMini form
+    public function setId(int $id): self
+    {
+        return $this;
+    }
+
     public function getAffichage(): string
     {
         return sprintf("#%d : %s (%s)", $this->getId(), $this->getEtatAbsolu(), $this->getBetaCode());

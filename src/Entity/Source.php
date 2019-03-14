@@ -555,7 +555,7 @@ class Source
      * @ORM\PrePersist
      * @ORM\PreUpdate
      */
-    private function _updateFiabiliteLocalisation(){
+    public function _updateFiabiliteLocalisation(){
         $fiabLocalisation = 5;
         $lieu = $this->getInSitu() ? $this->getLieuDecouverte() : $this->getLieuOrigine();
         if(!is_null($lieu)){

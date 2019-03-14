@@ -96,7 +96,9 @@
     {% include 'partials/_sectiontitle.html.twig' with {
         'title'         : 'attestation.sections.agents',
         'collapseTarget': '#section-agents',
-        'expanded'      : true
+        'expanded'      : true,
+        'counterId'     : 'agents',
+        'counter'       : attestation.agents.count()|default(0)
     } only %}
     <div class="collapse show" id="section-agents">
         {{ form_errors(form.agents) }}
@@ -159,18 +161,21 @@
 <section>
     {% include 'partials/_sectiontitle.html.twig' with {
         'title'         : 'attestation.sections.elements',
-        'collapseTarget': '#section-elements'
+        'collapseTarget': '#section-elements',
+        'counterId'     : 'elements',
+        'counter'       : attestation.contientElements.count()|default(0)
     } only %}
     <div class="collapse" id="section-elements">
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
+        {{ form_errors(form.contientElements) }}
+        {{ form_widget(form.contientElements) }}
+        <div class="form-group row">
+            <div class="col-sm-10 offset-sm-2">
+                <a href="#" class="btn btn-primary collection-add-link">
+                    <i class="fa fa-plus"></i>&nbsp;
+                    {{ 'attestation.add_element'|trans }}
+                </a>
+            </div>
+        </div>
     </div>
 </section>
 
@@ -304,8 +309,38 @@
                 $(newEl).find('.grandeSousRegion').dependentSelects({
                     data_url: "{{ url('data_sous_region') }}"
                 });
+                $('#counter-agents').text(parseInt($('#counter-agents').text(), 10) + 1);
+            },
+            deleteListener: function (oldEl) {
+                $('#counter-agents').text(parseInt($('#counter-agents').text(), 10) - 1);
             }
         });
+
+        $('div#attestation_contientElements').collectionField({
+            blockTitle: '{{ "attestation.fields.element_n"|trans }}',
+            deleteLink: '{{ "generic.delete"|trans }}',
+            confirmationModal: $('#confirm_remove_item'),
+            addListener: function (newEl, idx) {
+                $('select.autocomplete').chosen(chosenSettings);
+                $(newEl).find('.selectorcreate').selectOrCreate();
+                $(newEl).find('input[type=number]').val(idx);
+                $('#counter-elements').text(parseInt($('#counter-elements').text(), 10) + 1);
+            },
+            deleteListener: function (oldEl) {
+                $('#counter-elements').text(parseInt($('#counter-elements').text(), 10) - 1);
+            },
+            viewLinkGenerator: function (entry) {
+                const entryId = $(entry).find('input[type=hidden]').val();
+                var url = "{{ url('element_show', {'id': '-ID-'}) }}";
+                if (!$.isNumeric(entryId)) {
+                    return "";
+                }
+                return $('<a href="' + url.replace('-ID-', entryId) + '" class="btn btn-sm btn-primary ml-2 mb-1" target="_blank" rel="noopener">{{ "attestation.view_element"|trans }}</a>');
+            }
+        });
+
+        // Gestion du champ "selectorcreate"
+        $('.selectorcreate').selectOrCreate();
         // Gestion des champs select avec filtres
         $('select.autocomplete').chosen(chosenSettings);
         // Gestion des champs dépendants

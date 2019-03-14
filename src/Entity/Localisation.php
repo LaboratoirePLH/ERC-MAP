@@ -341,7 +341,7 @@ class Localisation
      * @ORM\PrePersist
      * @ORM\PreUpdate
      */
-    public function updateGeometry(){
+    public function _updateGeometry(){
         if(($lon = $this->getLongitude()) !== null && ($lat = $this->getLatitude()) !== null){
             $this->setGeom("SRID=4326;POINT({$lon} {$lat})");
         }

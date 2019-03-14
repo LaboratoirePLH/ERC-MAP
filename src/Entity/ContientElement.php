@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * ContientElement
@@ -45,6 +46,8 @@ class ContientElement
      * @var int
      *
      * @ORM\Column(name="position_element", type="smallint", nullable=false)
+     * @Assert\NotBlank
+     * @Assert\GreaterThan(0)
      */
     private $positionElement;
 

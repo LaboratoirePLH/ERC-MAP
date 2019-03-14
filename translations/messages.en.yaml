@@ -182,7 +182,8 @@ attestation:
         materiel : "Material"
         materiel_n : "Connected Material #"
         agent_n : "Agent #"
-        nombre_agents: "Number of Agents"
+        element_n : "Element #"
+        element_invariant: "Element (Invariant)"
     fiabilite:
         niveau_1: "(1) Confident reading"
         niveau_2: "(2) Probable reading"
@@ -194,6 +195,8 @@ attestation:
     create_for_source: "Create Testimony for Source #%id%"
     edit: "Edit Testimony #%id%"
     add_agent: "Add Agent"
+    add_element: "Add Element"
+    view_element: "View Element"
     add_materiel: "Add Connected Material"
     choose_source: "Choose the source for which to create a Testimony"
     messages:
@@ -214,6 +217,7 @@ attestation:
 
 element:
     fields:
+        position: "Position"
         extrait_sans_restitution: "Without restitution"
         extrait_avec_restitution: "With restitution"
         etat_absolu: "Absolute form"
@@ -222,6 +226,10 @@ element:
         traductions: "Translations"
         nature: "Nature"
         categories_invariantes: "Out of Context Categories"
+        suffixe: "Suffix ?"
+        genre: "Gender"
+        nombre: "Number"
+        categorie_contextuelle: "Contextual Category"
         theonymes_enfants: "Implicit Theonyms"
         theonyme_enfant_n: "Implicit Theonym #"
         theonymes_parents: "Built on Theonym"

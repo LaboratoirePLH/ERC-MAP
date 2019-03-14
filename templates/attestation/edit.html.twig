@@ -330,7 +330,7 @@
                 $('#counter-elements').text(parseInt($('#counter-elements').text(), 10) - 1);
             },
             viewLinkGenerator: function (entry) {
-                const entryId = $(entry).find('input[type=hidden]').val();
+                const entryId = $(entry).find('.selectorcreate_selection').find('select').val();
                 var url = "{{ url('element_show', {'id': '-ID-'}) }}";
                 if (!$.isNumeric(entryId)) {
                     return "";

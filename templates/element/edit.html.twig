@@ -241,7 +241,7 @@
             confirmationModal: $('#confirm_remove_item'),
             deleteLinkGenerator: function () {
                 return $(
-                    '<a href="#" class="btn btn-danger ml-2 mb-1"><i class="fas fa-trash fa-fw"></i></a>'
+                    '<a href="#" class="btn btn-danger ml-2 mb-1" title="{{"generic.delete"|trans}}"><i class="fas fa-trash fa-fw"></i></a>'
                 )
             },
             inline: true
@@ -251,7 +251,7 @@
             confirmationModal: $('#confirm_remove_item'),
             deleteLinkGenerator: function () {
                 return $(
-                    '<a href="#" class="btn btn-danger ml-2 mb-1"><i class="fas fa-trash fa-fw"></i></a>'
+                    '<a href="#" class="btn btn-danger ml-2 mb-1" title="{{"generic.delete"|trans}}"><i class="fas fa-trash fa-fw"></i></a>'
                 )
             },
             inline: true,
@@ -262,7 +262,7 @@
                     confirmationModal: $('#confirm_remove_item'),
                     deleteLinkGenerator: function () {
                         return $(
-                            '<a href="#" class="btn btn-danger ml-2 mb-1"><i class="fas fa-trash fa-fw"></i></a>'
+                            '<a href="#" class="btn btn-danger ml-2 mb-1" title="{{"generic.delete"|trans}}"><i class="fas fa-trash fa-fw"></i></a>'
                         )
                     },
                     inline: true
@@ -270,6 +270,14 @@
                 $(newEl).find('.selectorcreate').selectOrCreate();
                 $(newEl).find('select.autocomplete:not(.autocomplete-max-3)').chosen(chosenSettings);
                 $(newEl).find('select.autocomplete.autocomplete-max-3').chosen(chosenSettings);
+            },
+            viewLinkGenerator: function (entry) {
+                const entryId = $(entry).find('.selectorcreate_selection').find('select').val();
+                var url = "{{ url('element_show', {'id': '-ID-'}) }}";
+                if (!$.isNumeric(entryId)) {
+                    return "";
+                }
+                return $('<a href="' + url.replace('-ID-', entryId) + '" class="btn btn-primary ml-2 mb-1" target="_blank" rel="noopener" title="{{ "attestation.view_element"|trans }}"><i class="fas fa-external-link-alt fa-fw"></i></a>');
             }
         });
         $('div#element_theonymesParents').collectionField({
@@ -277,7 +285,7 @@
             confirmationModal: $('#confirm_remove_item'),
             deleteLinkGenerator: function () {
                 return $(
-                    '<a href="#" class="btn btn-danger ml-2 mb-1"><i class="fas fa-trash fa-fw"></i></a>'
+                    '<a href="#" class="btn btn-danger ml-2 mb-1" title="{{"generic.delete"|trans}}"><i class="fas fa-trash fa-fw"></i></a>'
                 )
             },
             inline: true,
@@ -288,7 +296,7 @@
                     confirmationModal: $('#confirm_remove_item'),
                     deleteLinkGenerator: function () {
                         return $(
-                            '<a href="#" class="btn btn-danger ml-2 mb-1"><i class="fas fa-trash fa-fw"></i></a>'
+                            '<a href="#" class="btn btn-danger ml-2 mb-1" title="{{"generic.delete"|trans}}"><i class="fas fa-trash fa-fw"></i></a>'
                         )
                     },
                     inline: true
@@ -296,6 +304,14 @@
                 $(newEl).find('.selectorcreate').selectOrCreate();
                 $(newEl).find('select.autocomplete:not(.autocomplete-max-3)').chosen(chosenSettings);
                 $(newEl).find('select.autocomplete.autocomplete-max-3').chosen(chosenSettings);
+            },
+            viewLinkGenerator: function (entry) {
+                const entryId = $(entry).find('.selectorcreate_selection').find('select').val();
+                var url = "{{ url('element_show', {'id': '-ID-'}) }}";
+                if (!$.isNumeric(entryId)) {
+                    return "";
+                }
+                return $('<a href="' + url.replace('-ID-', entryId) + '" class="btn btn-primary ml-2 mb-1" target="_blank" rel="noopener" title="{{ "attestation.view_element"|trans }}"><i class="fas fa-external-link-alt fa-fw"></i></a>');
             }
         });
 

@@ -54,6 +54,7 @@
                 buttonContainer
                     .addClass('col-sm-1')
                     .append(deleteLink)
+                    .append(viewLink)
                     .appendTo(prototype);
             }
             else {

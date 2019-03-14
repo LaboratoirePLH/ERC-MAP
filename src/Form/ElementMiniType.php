@@ -12,7 +12,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Doctrine\ORM\EntityRepository;
 
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -23,9 +22,6 @@ class ElementMiniType extends AbstractType
     {
         $locale = $options['locale'];
         $builder
-            ->add('id', HiddenType::class, [
-                'required' => false
-            ])
             ->add('etatAbsolu', TextType::class, [
                 'label'    => 'element.fields.etat_absolu',
                 'required' => false

@@ -10,9 +10,11 @@ fos_ck_editor:
             toolbar: "basic_styles"
             uiColor: "#ffffff"
             height: '5rem'
-            removePlugins: 'elementspath,resize'
+            removePlugins: 'elementspath'
             blockless: true
             enterMode: 2
+            resize_enabled: true
+            resize_dir: 'vertical'
     toolbars:
         configs:
             basic_styles: [['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript']]

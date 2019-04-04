@@ -53,7 +53,8 @@
         <tr>
             <th scope="row" class="px-0" data-sort="{{ attestation.id }}">
                 <a href="{{ url('attestation_show', {'id': attestation.id}) }}">
-                    {{ attestation.source.projet.nom(locale) }} #{{ attestation.id }}
+                    {{ attestation.source.projet is not empty ? attestation.source.projet.nom(locale) : "" }}
+                    #{{ attestation.id }}
                 </a>
                 <br />
                 <small>{{ 'generic.fields.version'|trans }}&nbsp;{{ attestation.version|default("?") }}</small>

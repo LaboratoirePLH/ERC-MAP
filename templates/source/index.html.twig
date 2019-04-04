@@ -62,7 +62,7 @@
         <tr>
             <th scope="row" class="px-0" data-order="{{ source.id }}">
                 <a href="{{ url('source_show', {'id': source.id}) }}">
-                    {{ source.projet.nom(locale) }} #{{ source.id }}
+                    {{ source.projet is not empty ? source.projet.nom(locale) : "" }} #{{ source.id }}
                 </a>
                 <br />
                 <small>{{ 'generic.fields.version'|trans }}&nbsp;{{ source.version|default("?") }}</small>

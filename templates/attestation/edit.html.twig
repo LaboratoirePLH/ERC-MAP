@@ -295,6 +295,7 @@
                 $(newEl).find('.typeCategorieMateriel').dependentSelects({
                     data_url: "{{ url('data_materiel') }}"
                 });
+                $('select.autocomplete').chosen(chosenSettings);
             }
         });
 

@@ -75,8 +75,7 @@ class AttestationType extends AbstractType
                 'required' => false,
                 'data'     => $options['source']->getEditionPrincipaleBiblio()->getReferenceSource()
             ])
-            ->add('passage', CKEditorType::class, [
-                'config_name' => 'text_styling_only',
+            ->add('passage', TextType::class, [
                 'label'       => 'attestation.fields.passage',
                 'required'    => true
             ])

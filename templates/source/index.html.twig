@@ -84,7 +84,7 @@
                 {{ source.estDatee ? (source.datation.postQuem|default("?") ~ " / " ~ source.datation.anteQuem|default("?")) : "" }}
             </td>
             <td>
-                {{ source.sourceBiblios is not empty ? source.editionPrincipaleBiblio.biblio.titreAbrege : "" }}
+                {{ source.sourceBiblios is not empty ? source.editionPrincipaleBiblio.biblio.titreAbrege|raw : "" }}
             </td>
             <td>
                 {{ source.sourceBiblios is not empty ? source.editionPrincipaleBiblio.referenceSource : "" }}

@@ -60,17 +60,17 @@
             </th>
             <td>
                 {{ attestation.source.sourceBiblios is not empty ?
-                    attestation.source.editionPrincipaleBiblio.biblio.titreAbrege : "" }}
+                    attestation.source.editionPrincipaleBiblio.biblio.titreAbrege|raw : "" }}
             </td>
             <td>
                 {{ attestation.source.sourceBiblios is not empty ?
-                    attestation.source.editionPrincipaleBiblio.referenceSource : "" }}
+                    attestation.source.editionPrincipaleBiblio.referenceSource|raw : "" }}
             </td>
             <td>
-                {{ attestation.passage }}
+                {{ attestation.passage|raw }}
             </td>
             <td>
-                {{ attestation.translitteration }}
+                {{ attestation.translitteration|raw }}
             </td>
             <td data-order="{{ attestation.dateCreation|date('U') }}">
                 {{ attestation.dateCreation|date("locale_datetime"|trans) }}

@@ -306,6 +306,15 @@
                 targetFinder: function (name, main) {
                     return main.parents('.selectorcreate').find('.dependent_field_' + name);
                 }
+            },
+            auteurs: {
+                inputSelector: '.selectorcreate_decision input[type=radio]',
+                conditionCallback: function (main) {
+                    if ($(main).is(':checked')) {
+                        return $(main).val() === "";
+                    }
+                },
+                targetFinder: function (name, main) { return $('.dependent_field_' + name); }
             }
         });
         // Gestion des combobox liées

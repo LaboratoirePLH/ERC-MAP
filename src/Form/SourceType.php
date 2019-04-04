@@ -211,6 +211,9 @@ class SourceType extends AbstractType
                 'expanded'     => false,
                 'class'        => Auteur::class,
                 'choice_label' => 'nom'.ucfirst($locale),
+                'label_attr' => [
+                    'class' => 'dependent_field_auteurs'
+                ],
                 'attr'         => [
                     'class' => 'autocomplete',
                     'data-placeholder' => $options['translations']['autocomplete.select_multiple']
@@ -238,6 +241,9 @@ class SourceType extends AbstractType
             ])
             ->add('titrePrincipal', SelectOrCreateType::class, [
                 'label'                   => 'source.fields.titre_principal',
+                'label_attr' => [
+                    'class' => 'dependent_field_auteurs_main'
+                ],
                 'required'                => false,
                 'locale'                  => $options['locale'],
                 'translations'            => $options['translations'],

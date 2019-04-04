@@ -31,9 +31,13 @@
         {{ 'generic.fields.version'|trans }}&nbsp;{{ source.version }}&rarr;{{ source.version+1 }}
         {% endif %}
         <br />
-        {{ form_row(form.projet) }}
+        <div class="row justify-content-center">
+            <div class="col-sm-6">
+                {{ form_row(form.projet) }}
+            </div>
+        </div>
     </div>
-    <div class="col-sm-3 text-right">
+    <div class="col-sm-3">
         {{ 'generic.fields.to_translate'|trans }} :
         {{ form_widget(form.traduireFr) }}
         {{ form_widget(form.traduireEn) }}

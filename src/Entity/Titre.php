@@ -69,7 +69,8 @@ class Titre
         foreach($this->getAuteurs() as $a){
             $auteurs[] = $a->getNom($lang);
         }
-        return \sprintf("%s (%s)", $this->getNom($lang), implode(', ', $auteurs));
+        $auteurs = !empty($auteurs) ? implode(', ', $auteurs) : "?";
+        return \sprintf("%s (%s)", $this->getNom($lang), $auteurs);
     }
     public function getAffichageFr(): string
     {

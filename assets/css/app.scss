@@ -144,6 +144,17 @@ body {
     color: $body-color !important;
 }
 
+select:invalid {
+    height: 0px !important;
+    opacity: 0 !important;
+    position: absolute !important;
+    display: flex !important;
+}
+
+select:invalid[multiple] {
+   margin-top: 15px !important;
+}
+
 #back-to-top {
     position: fixed;
     bottom: 40px;

@@ -225,7 +225,7 @@ class SourceType extends AbstractType
             ])
             ->add('langues', EntityType::class, [
                 'label'        => 'source.fields.langues',
-                'required'     => false,
+                'required'     => true,
                 'multiple'     => true,
                 'expanded'     => false,
                 'class'        => Langue::class,

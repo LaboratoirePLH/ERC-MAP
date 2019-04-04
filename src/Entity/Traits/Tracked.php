@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 trait Tracked
 {
+    use Created;
     /**
      * @var \DateTime
      *

@@ -144,6 +144,13 @@ class Attestation
     /**
      * @var \Doctrine\Common\Collections\Collection
      *
+     * @ORM\OneToMany(targetEntity="Formule", mappedBy="attestation", orphanRemoval=true, cascade={"persist"})
+     */
+    private $formules;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     *
      * @ORM\OneToMany(targetEntity="ContientElement", mappedBy="attestation")
      * @ORM\OrderBy({"positionElement" = "ASC"})
      * @Assert\Valid
@@ -155,6 +162,7 @@ class Attestation
         $this->pratiques = new ArrayCollection();
         $this->attestationMateriels = new ArrayCollection();
         $this->agents = new ArrayCollection();
+        $this->formules = new ArrayCollection();
         $this->contientElements = new ArrayCollection();
     }
 
@@ -370,6 +378,31 @@ class Attestation
     {
         if ($this->agents->contains($agent)) {
             $this->agents->removeElement($agent);
+        }
+        return $this;
+    }
+
+    /**
+     * @return Collection|Formule[]
+     */
+    public function getFormules(): Collection
+    {
+        return $this->formules;
+    }
+
+    public function addFormule(Formule $formule): self
+    {
+        if (!$this->formules->contains($formule)) {
+            $this->formules[] = $formule;
+            $formule->setAttestation($this);
+        }
+        return $this;
+    }
+
+    public function removeFormule(Formule $formule): self
+    {
+        if ($this->formules->contains($formule)) {
+            $this->formules->removeElement($formule);
         }
         return $this;
     }

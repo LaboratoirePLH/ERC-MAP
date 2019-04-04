@@ -71,21 +71,21 @@
         {{ form_row(form.aReference) }}
         <div class="row">
             <div class="col-sm-12 dependent_field_areference">
-                {{ form_row(form.theonymesEnfants) }}
+                {{ form_row(form.theonymesImplicites) }}
                 <div class="form-group row">
                     <div class="col-sm-10 offset-sm-2">
-                        <a href="#" class="btn btn-primary collection-add-link" id="link-add-theonyme-enfant">
+                        <a href="#" class="btn btn-primary collection-add-link" id="link-add-theonyme-implicite">
                             <i class="fa fa-plus"></i>&nbsp;
-                            {{ 'element.add_theonyme_enfant'|trans }}
+                            {{ 'element.add_theonyme_implicite'|trans }}
                         </a>
                     </div>
                 </div>
-                {{ form_row(form.theonymesParents) }}
+                {{ form_row(form.theonymesConstruits) }}
                 <div class="form-group row">
                     <div class="col-sm-10 offset-sm-2">
-                        <a href="#" class="btn btn-primary collection-add-link" id="link-add-theonyme-parent">
+                        <a href="#" class="btn btn-primary collection-add-link" id="link-add-theonyme-construit">
                             <i class="fa fa-plus"></i>&nbsp;
-                            {{ 'element.add_theonyme_parent'|trans }}
+                            {{ 'element.add_theonyme_construit'|trans }}
                         </a>
                     </div>
                 </div>
@@ -246,8 +246,8 @@
             },
             inline: true
         });
-        $('div#element_theonymesEnfants').collectionField({
-            addLink: $('#link-add-theonyme-enfant'),
+        $('div#element_theonymesImplicites').collectionField({
+            addLink: $('#link-add-theonyme-implicite'),
             confirmationModal: $('#confirm_remove_item'),
             deleteLinkGenerator: function () {
                 return $(
@@ -280,8 +280,8 @@
                 return $('<a href="' + url.replace('-ID-', entryId) + '" class="btn btn-primary ml-2 mb-1" target="_blank" rel="noopener" title="{{ "attestation.view_element"|trans }}"><i class="fas fa-external-link-alt fa-fw"></i></a>');
             }
         });
-        $('div#element_theonymesParents').collectionField({
-            addLink: $('#link-add-theonyme-parent'),
+        $('div#element_theonymesConstruits').collectionField({
+            addLink: $('#link-add-theonyme-construit'),
             confirmationModal: $('#confirm_remove_item'),
             deleteLinkGenerator: function () {
                 return $(

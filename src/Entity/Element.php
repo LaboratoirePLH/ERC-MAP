@@ -98,8 +98,8 @@ class Element
     private $aReference;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Element", inversedBy="theonymesParents")
-     * @ORM\JoinTable(name="elements_theonymes",
+     * @ORM\ManyToMany(targetEntity="Element")
+     * @ORM\JoinTable(name="theonymes_implicites",
      *   joinColumns={
      *     @ORM\JoinColumn(name="id_parent", referencedColumnName="id")
      *   },
@@ -108,19 +108,27 @@ class Element
      *   }
      * )
      */
-    private $theonymesEnfants;
+    private $theonymesImplicites;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Element", mappedBy="theonymesEnfants", fetch="EAGER")
+     * @ORM\ManyToMany(targetEntity="Element")
+     * @ORM\JoinTable(name="theonymes_construits",
+     *   joinColumns={
+     *     @ORM\JoinColumn(name="id_parent", referencedColumnName="id")
+     *   },
+     *   inverseJoinColumns={
+     *     @ORM\JoinColumn(name="id_enfant", referencedColumnName="id")
+     *   }
+     * )
      */
-    private $theonymesParents;
+    private $theonymesConstruits;
 
     public function __construct()
     {
         $this->categories = new ArrayCollection();
         $this->elementBiblios = new ArrayCollection();
-        $this->theonymesEnfants = new ArrayCollection();
-        $this->theonymesParents = new ArrayCollection();
+        $this->theonymesImplicites = new ArrayCollection();
+        $this->theonymesConstruits = new ArrayCollection();
         $this->contientElements = new ArrayCollection();
         $this->traductions = new ArrayCollection();
     }
@@ -234,57 +242,6 @@ class Element
     }
 
     /**
-     * @return Collection|Element[]
-     */
-    public function getTheonymesEnfants(): Collection
-    {
-        return $this->theonymesEnfants;
-    }
-
-    public function addTheonymesEnfant(Element $theonymesEnfant): self
-    {
-        if (!$this->theonymesEnfants->contains($theonymesEnfant)) {
-            $this->theonymesEnfants[] = $theonymesEnfant;
-        }
-        return $this;
-    }
-
-    public function removeTheonymesEnfant(Element $theonymesEnfant): self
-    {
-        if ($this->theonymesEnfants->contains($theonymesEnfant)) {
-            $this->theonymesEnfants->removeElement($theonymesEnfant);
-        }
-        return $this;
-    }
-
-    /**
-     * @return Collection|Element[]
-     */
-    public function getTheonymesParents(): Collection
-    {
-        return $this->theonymesParents;
-    }
-
-    public function addTheonymesParent(Element $theonymesParent): self
-    {
-        if (!$this->theonymesParents->contains($theonymesParent)) {
-            $this->theonymesParents[] = $theonymesParent;
-            $theonymesParent->addTheonymesEnfant($this);
-            $theonymesParent->setAReference(true);
-        }
-        return $this;
-    }
-
-    public function removeTheonymesParent(Element $theonymesParent): self
-    {
-        if ($this->theonymesParents->contains($theonymesParent)) {
-            $this->theonymesParents->removeElement($theonymesParent);
-            $theonymesParent->removeTheonymesEnfant($this);
-        }
-        return $this;
-    }
-
-    /**
      * @return Collection|ContientElement[]
      */
     public function getContientElements(): Collection
@@ -376,5 +333,57 @@ class Element
             $this->getTheonymesEnfants()->clear();
             $this->getTheonymesParents()->clear();
         }
+    }
+
+    /**
+     * @return Collection|Element[]
+     */
+    public function getTheonymesImplicites(): Collection
+    {
+        return $this->theonymesImplicites;
+    }
+
+    public function addTheonymesImplicite(Element $theonymesImplicite): self
+    {
+        if (!$this->theonymesImplicites->contains($theonymesImplicite)) {
+            $this->theonymesImplicites[] = $theonymesImplicite;
+        }
+
+        return $this;
+    }
+
+    public function removeTheonymesImplicite(Element $theonymesImplicite): self
+    {
+        if ($this->theonymesImplicites->contains($theonymesImplicite)) {
+            $this->theonymesImplicites->removeElement($theonymesImplicite);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Element[]
+     */
+    public function getTheonymesConstruits(): Collection
+    {
+        return $this->theonymesConstruits;
+    }
+
+    public function addTheonymesConstruit(Element $theonymesConstruit): self
+    {
+        if (!$this->theonymesConstruits->contains($theonymesConstruit)) {
+            $this->theonymesConstruits[] = $theonymesConstruit;
+        }
+
+        return $this;
+    }
+
+    public function removeTheonymesConstruit(Element $theonymesConstruit): self
+    {
+        if ($this->theonymesConstruits->contains($theonymesConstruit)) {
+            $this->theonymesConstruits->removeElement($theonymesConstruit);
+        }
+
+        return $this;
     }
 }

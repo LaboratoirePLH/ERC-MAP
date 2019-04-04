@@ -88,13 +88,13 @@ class ElementType extends AbstractType
                 ],
                 'required' => false,
             ])
-            ->add('theonymesEnfants', CollectionType::class, [
-                'label'         => 'element.fields.theonymes_enfants',
+            ->add('theonymesImplicites', CollectionType::class, [
+                'label'         => 'element.fields.theonymes_implicites',
                 'entry_type'    => SelectOrCreateType::class,
                 'entry_options' => [
                     'locale'                  => $options['locale'],
                     'translations'            => $options['translations'],
-                    'field_name'              => 'theonymesEnfant',
+                    'field_name'              => 'theonymesImplicites',
                     'object_class'            => Element::class,
                     'creation_form_class'     => ElementMiniType::class,
                     'selection_choice_label'  => 'affichage',
@@ -110,13 +110,13 @@ class ElementType extends AbstractType
                 'allow_delete'  => true,
                 'required'      => false,
             ])
-            ->add('theonymesParents', CollectionType::class, [
-                'label'         => 'element.fields.theonymes_parents',
+            ->add('theonymesConstruits', CollectionType::class, [
+                'label'         => 'element.fields.theonymes_construits',
                 'entry_type'    => SelectOrCreateType::class,
                 'entry_options' => [
                     'locale'                  => $options['locale'],
                     'translations'            => $options['translations'],
-                    'field_name'              => 'theonymesParent',
+                    'field_name'              => 'theonymesConstruits',
                     'object_class'            => Element::class,
                     'creation_form_class'     => ElementMiniType::class,
                     'selection_choice_label'  => 'affichage',

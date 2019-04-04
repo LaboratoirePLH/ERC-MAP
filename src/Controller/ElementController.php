@@ -67,25 +67,25 @@ class ElementController extends AbstractController
                     $element->removeElementBiblio($eb);
                 }
             }
-            foreach($element->getTheonymesEnfants() as $te){
-                if(!$em->contains($te)){
-                    if($te->getEtatAbsolu() !== null){
-                        $te->setCreateur($user);
-                        $te->setDernierEditeur($user);
-                        $em->persist($te);
+            foreach($element->getTheonymesImplicites() as $ti){
+                if(!$em->contains($ti)){
+                    if($ti->getEtatAbsolu() !== null){
+                        $ti->setCreateur($user);
+                        $ti->setDernierEditeur($user);
+                        $em->persist($ti);
                     } else {
-                        $element->removeTheonymesEnfant($te);
+                        $element->removeTheonymesImplicite($ti);
                     }
                 }
             }
-            foreach($element->getTheonymesParents() as $tp){
-                if(!$em->contains($tp)){
-                    if($tp->getEtatAbsolu() !== null){
-                        $tp->setCreateur($user);
-                        $tp->setDernierEditeur($user);
-                        $em->persist($tp);
+            foreach($element->getTheonymesConstruits() as $tc){
+                if(!$em->contains($tc)){
+                    if($tc->getEtatAbsolu() !== null){
+                        $tc->setCreateur($user);
+                        $tc->setDernierEditeur($user);
+                        $em->persist($tc);
                     } else {
-                        $element->removeTheonymesParent($tp);
+                        $element->removeTheonymesConstruit($tc);
                     }
                 }
             }
@@ -183,29 +183,26 @@ class ElementController extends AbstractController
                     $element->removeElementBiblio($sb);
                 }
             }
-            foreach($element->getTheonymesEnfants() as $te){
-                if(!$em->contains($te)){
-                    if($te->getEtatAbsolu() !== null){
-                        $te->setCreateur($user);
-                        $te->setDernierEditeur($user);
-                        $em->persist($te);
+            foreach($element->getTheonymesImplicites() as $ti){
+                if(!$em->contains($ti)){
+                    if($ti->getEtatAbsolu() !== null){
+                        $ti->setCreateur($user);
+                        $ti->setDernierEditeur($user);
+                        $em->persist($ti);
                     } else {
-                        $element->removeTheonymesEnfant($te);
+                        $element->removeTheonymesImplicite($ti);
                     }
                 }
             }
-            foreach($element->getTheonymesParents() as $tp){
-                if(!$em->contains($tp)){
-                    if($tp->getEtatAbsolu() !== null){
-                        $tp->setCreateur($user);
-                        $tp->setDernierEditeur($user);
-                        $em->persist($tp);
+            foreach($element->getTheonymesConstruits() as $tc){
+                if(!$em->contains($tc)){
+                    if($tc->getEtatAbsolu() !== null){
+                        $tc->setCreateur($user);
+                        $tc->setDernierEditeur($user);
+                        $em->persist($tc);
                     } else {
-                        $element->removeTheonymesParent($tp);
+                        $element->removeTheonymesConstruit($tc);
                     }
-                } else {
-                    $tp->setAReference(true);
-                    $tp->addTheonymesEnfant($element);
                 }
             }
 

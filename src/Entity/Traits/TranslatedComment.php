@@ -9,7 +9,7 @@ trait TranslatedComment
     /**
      * @var string|null
      *
-     * @ORM\Column(name="commentaire_fr", type="string", length=255, nullable=true)
+     * @ORM\Column(name="commentaire_fr", type="text", nullable=true)
      */
     private $commentaireFr;
 
@@ -27,7 +27,7 @@ trait TranslatedComment
     /**
      * @var string|null
      *
-     * @ORM\Column(name="commentaire_en", type="string", length=255, nullable=true)
+     * @ORM\Column(name="commentaire_en", type="text", nullable=true)
      */
     private $commentaireEn;
 

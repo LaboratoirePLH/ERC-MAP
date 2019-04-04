@@ -49,7 +49,7 @@
                 {{ (biblio.estCorpus ? 'biblio.fields.corpus' : 'biblio.fields.bibliographique')|trans }}
             </td>
             <td>
-                {{ biblio.titreAbrege }}
+                {{ biblio.titreAbrege|raw }}
             </td>
             <td>
                 {{ biblio.auteurBiblio }}
@@ -59,7 +59,7 @@
             </td>
             <td>
                 {% set count_sources = biblio.getSourceBiblios()|length %}
-                {% set count_elements = 0 %}
+                {% set count_elements = biblio.getElementBiblios()|length %}
                 {{ 'biblio.fields.sources'|trans }}&nbsp;:&nbsp;
                 <span class="badge badge-{{ count_sources == 0 ? "danger" : "light"}}">{{ count_sources }}</span>
                 <br />

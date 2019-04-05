@@ -10,4 +10,3 @@ easy_admin:
        - App\Entity\Titre
        - App\Entity\Auteur
        - App\Entity\Langue
-       - App\Entity\Corpus

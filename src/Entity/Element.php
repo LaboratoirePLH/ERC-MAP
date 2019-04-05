@@ -123,6 +123,11 @@ class Element
      */
     private $theonymesConstruits;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\VerrouEntite", inversedBy="elements", fetch="EAGER")
+     */
+    private $verrou;
+
     public function __construct()
     {
         $this->categories = new ArrayCollection();
@@ -383,6 +388,18 @@ class Element
         if ($this->theonymesConstruits->contains($theonymesConstruit)) {
             $this->theonymesConstruits->removeElement($theonymesConstruit);
         }
+
+        return $this;
+    }
+
+    public function getVerrou(): ?VerrouEntite
+    {
+        return $this->verrou;
+    }
+
+    public function setVerrou(?VerrouEntite $verrou): self
+    {
+        $this->verrou = $verrou;
 
         return $this;
     }

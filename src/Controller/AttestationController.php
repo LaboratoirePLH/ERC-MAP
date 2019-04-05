@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Attestation;
 use App\Entity\EtatFiche;
 use App\Entity\Source;
+use App\Entity\VerrouEntite;
 use App\Form\AttestationType;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -14,6 +15,16 @@ use Symfony\Component\Translation\TranslatorInterface;
 
 class AttestationController extends AbstractController
 {
+        /**
+     * @var int
+     */
+    private $dureeVerrou;
+
+    public function __construct(int $dureeVerrou)
+    {
+        $this->dureeVerrou = $dureeVerrou;
+    }
+
     /**
      * @Route("/attestation", name="attestation_list")
      */
@@ -225,6 +236,22 @@ class AttestationController extends AbstractController
             );
             return $this->redirectToRoute('attestation_list');
         }
+        $verrou = $this->getDoctrine()->getRepository(VerrouEntite::class)->create($attestation, $user, $this->dureeVerrou);
+        if(!$verrou->isWritable($user))
+        {
+            $request->getSession()->getFlashBag()->add(
+                'error',
+                $translator->trans('generic.messages.error_locked', [
+                    '%type%' => $translator->trans('attestation.name'),
+                    '%id%' => $id,
+                    '%user%' => $verrou->getCreateur()->getPrenomNom(),
+                    '%time%' => $verrou->getDateFin()->format(
+                        $translator->trans('locale_datetime')
+                    )
+                ])
+            );
+            return $this->redirectToRoute('attestation_list');
+        }
 
         $form   = $this->get('form.factory')->create(AttestationType::class, $attestation, [
             'source'       => $attestation->getSource(),
@@ -275,6 +302,7 @@ class AttestationController extends AbstractController
                     $attestation->removeContientElement($ce);
                 }
             }
+            $this->getDoctrine()->getRepository(VerrouEntite::class)->remove($verrou);
             $em->flush();
 
             // Message de confirmation
@@ -302,7 +330,7 @@ class AttestationController extends AbstractController
     /**
      * @Route("/attestation/{id}/delete", name="attestation_delete")
      */
-    public function delete($id, Request $request)
+    public function delete($id, Request $request, TranslatorInterface $translator)
     {
         $submittedToken = $request->request->get('token');
 
@@ -310,11 +338,26 @@ class AttestationController extends AbstractController
             $repository = $this->getDoctrine()->getRepository(Attestation::class);
             $attestation = $repository->find($id);
             if($attestation instanceof Attestation){
-                $em = $this->getDoctrine()->getManager();
-                $em->remove($attestation);
-                $em->flush();
-
-                $request->getSession()->getFlashBag()->add('success', 'attestation.messages.deleted');
+                $user = $this->get('security.token_storage')->getToken()->getUser();
+                $verrou = $this->getDoctrine()->getRepository(VerrouEntite::class)->fetch($attestation);
+                if(!$verrou || !$verrou->isWritable($user)) {
+                    $request->getSession()->getFlashBag()->add(
+                        'error',
+                        $translator->trans('generic.messages.error_locked', [
+                            '%type%' => $translator->trans('attestation.name'),
+                            '%id%' => $id,
+                            '%user%' => $verrou->getCreateur()->getPrenomNom(),
+                            '%time%' => $verrou->getDateFin()->format(
+                                $translator->trans('locale_datetime')
+                            )
+                        ])
+                    );
+                } else {
+                    $em = $this->getDoctrine()->getManager();
+                    $em->remove($attestation);
+                    $em->flush();
+                    $request->getSession()->getFlashBag()->add('success', 'attestation.messages.deleted');
+                }
             } else {
                 $request->getSession()->getFlashBag()->add('error', 'generic.messages.deletion_failed_missing');
             }

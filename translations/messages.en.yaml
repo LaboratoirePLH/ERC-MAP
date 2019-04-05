@@ -77,6 +77,7 @@ generic:
         error_not_found: "Error : Not found"
         error_ambiguous: "Error : Ambiguous results"
         error_unknown: "Unknown error"
+        error_locked: "%type% #%id% is locked by %user% until %time%."
     help:
         edition_principale: "At least one reference must be specified as the Main Edition"
         city_search: "Enter a City name and/or a Pleiades number, then click the \"Search database\" button to search the database. If a single result is found, relevant fields will be populated according to its data"
@@ -85,6 +86,7 @@ generic:
             <a href="https://geoapps.huma-num.fr/adws/app/8cc4e1b9-3a92-11e9-8702-e571f836e404/index.html" target="_blank" rel="noopener">Regional data webmapping help</a>
 
 source:
+    name: "Source"
     list: "Sources List"
     view: "View Source #%id%"
     create: "Create Source"
@@ -166,6 +168,7 @@ biblio:
         elements: "Elements"
 
 attestation:
+    name: "Testimony"
     fields:
         source_id: "Source ID"
         etat_fiche: "Validation"
@@ -216,6 +219,7 @@ attestation:
         formules: "Formulae"
 
 element:
+    name: "Element"
     fields:
         position: "Position"
         extrait_sans_restitution: "Without restitution"

@@ -30,6 +30,7 @@ class AttestationType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $locale = $options['locale'];
+        $editionPrincipale = $options['source']->getEditionPrincipaleBiblio();
 
         $builder
             ->add('traduireFr', CheckboxType::class, [
@@ -66,14 +67,14 @@ class AttestationType extends AbstractType
                 'mapped'   => false,
                 'disabled' => true,
                 'required' => false,
-                'data'     => $options['source']->getEditionPrincipaleBiblio()->getBiblio()->getTitreAbrege()
+                'data'     => $editionPrincipale ? $editionPrincipale->getBiblio()->getTitreAbrege() : ""
             ])
             ->add('sourceBiblio', TextType::class, [
                 'label'    => 'source.fields.source_biblio',
                 'mapped'   => false,
                 'disabled' => true,
                 'required' => false,
-                'data'     => $options['source']->getEditionPrincipaleBiblio()->getReferenceSource()
+                'data'     => $editionPrincipale ? $editionPrincipale->getReferenceSource() : ""
             ])
             ->add('passage', TextType::class, [
                 'label'       => 'attestation.fields.passage',

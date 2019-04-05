@@ -157,6 +157,11 @@ class Attestation
      */
     private $contientElements;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\VerrouEntite", inversedBy="attestations", fetch="EAGER")
+     */
+    private $verrou;
+
     public function __construct()
     {
         $this->pratiques = new ArrayCollection();
@@ -433,6 +438,18 @@ class Attestation
                 $contientElement->setElement(null);
             }
         }
+        return $this;
+    }
+
+    public function getVerrou(): ?VerrouEntite
+    {
+        return $this->verrou;
+    }
+
+    public function setVerrou(?VerrouEntite $verrou): self
+    {
+        $this->verrou = $verrou;
+
         return $this;
     }
 }

@@ -208,6 +208,11 @@ class Source
     private $attestations;
 
     /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\VerrouEntite", inversedBy="sources", fetch="EAGER")
+     */
+    private $verrou;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -566,5 +571,17 @@ class Source
             else { $fiabLocalisation = 5; }
         }
         $this->setFiabiliteLocalisation($fiabLocalisation);
+    }
+
+    public function getVerrou(): ?VerrouEntite
+    {
+        return $this->verrou;
+    }
+
+    public function setVerrou(?VerrouEntite $verrou): self
+    {
+        $this->verrou = $verrou;
+
+        return $this;
     }
 }

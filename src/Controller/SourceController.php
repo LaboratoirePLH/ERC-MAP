@@ -11,10 +11,21 @@ use App\Entity\CategorieSource;
 use App\Entity\EtatFiche;
 use App\Entity\Source;
 use App\Entity\SourceBiblio;
+use App\Entity\VerrouEntite;
 use App\Form\SourceType;
 
 class SourceController extends AbstractController
 {
+    /**
+     * @var int
+     */
+    private $dureeVerrou;
+
+    public function __construct(int $dureeVerrou)
+    {
+        $this->dureeVerrou = $dureeVerrou;
+    }
+
     /**
      * @Route("/source", name="source_list")
      */
@@ -149,13 +160,31 @@ class SourceController extends AbstractController
      */
     public function edit($id, Request $request, TranslatorInterface $translator){
         $user = $this->get('security.token_storage')->getToken()->getUser();
+
         $source = $this->getDoctrine()
                        ->getRepository(Source::class)
                        ->find($id);
+
         if(is_null($source)){
             $request->getSession()->getFlashBag()->add(
                 'error',
                 $translator->trans('source.messages.missing', ['%id%' => $id])
+            );
+            return $this->redirectToRoute('source_list');
+        }
+        $verrou = $this->getDoctrine()->getRepository(VerrouEntite::class)->create($source, $user, $this->dureeVerrou);
+        if(!$verrou->isWritable($user))
+        {
+            $request->getSession()->getFlashBag()->add(
+                'error',
+                $translator->trans('generic.messages.error_locked', [
+                    '%type%' => $translator->trans('source.name'),
+                    '%id%' => $id,
+                    '%user%' => $verrou->getCreateur()->getPrenomNom(),
+                    '%time%' => $verrou->getDateFin()->format(
+                        $translator->trans('locale_datetime')
+                    )
+                ])
             );
             return $this->redirectToRoute('source_list');
         }
@@ -216,6 +245,7 @@ class SourceController extends AbstractController
             if($source->getEstDatee() !== true){
                 $source->setDatation(null);
             }
+            $this->getDoctrine()->getRepository(VerrouEntite::class)->remove($verrou);
             $em->flush();
 
             // Message de confirmation
@@ -243,13 +273,31 @@ class SourceController extends AbstractController
     /**
      * @Route("/source/{id}/delete", name="source_delete")
      */
-    public function delete($id, Request $request){
+    public function delete($id, Request $request, TranslatorInterface $translator){
         $submittedToken = $request->request->get('token');
 
         if ($this->isCsrfTokenValid('delete_source_'.$id, $submittedToken)) {
+            $user = $this->get('security.token_storage')->getToken()->getUser();
             $repository = $this->getDoctrine()->getRepository(Source::class);
             $source = $repository->find($id);
             if($source instanceof Source){
+                $verrou = $this->getDoctrine()->getRepository(VerrouEntite::class)->fetch($source);
+                if(!$verrou || !$verrou->isWritable($user))
+                {
+                    $request->getSession()->getFlashBag()->add(
+                        'error',
+                        $translator->trans('generic.messages.error_locked', [
+                            '%type%' => $translator->trans('source.name'),
+                            '%id%' => $id,
+                            '%user%' => $verrou->getCreateur()->getPrenomNom(),
+                            '%time%' => $verrou->getDateFin()->format(
+                                $translator->trans('locale_datetime')
+                            )
+                        ])
+                    );
+                    return $this->redirectToRoute('source_list');
+                }
+
                 $em = $this->getDoctrine()->getManager();
                 $em->remove($source);
                 $em->flush();

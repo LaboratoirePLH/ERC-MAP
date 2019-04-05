@@ -81,11 +81,17 @@ class Chercheur implements UserInterface
     private $projets;
 
     /**
+     * @ORM\OneToMany(targetEntity="App\Entity\VerrouEntite", mappedBy="createur", orphanRemoval=true)
+     */
+    private $verrous;
+
+    /**
      * Constructor
      */
     public function __construct()
     {
         $this->projets = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->verrous = new ArrayCollection();
     }
 
     public function getPrenomNom(): ?string
@@ -219,6 +225,37 @@ class Chercheur implements UserInterface
     public function setPreferenceLangue(?string $preferenceLangue): self
     {
         $this->preferenceLangue = $preferenceLangue;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|VerrouEntite[]
+     */
+    public function getVerrous(): Collection
+    {
+        return $this->verrous;
+    }
+
+    public function addVerrous(VerrouEntite $verrous): self
+    {
+        if (!$this->verrous->contains($verrous)) {
+            $this->verrous[] = $verrous;
+            $verrous->setCreateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVerrous(VerrouEntite $verrous): self
+    {
+        if ($this->verrous->contains($verrous)) {
+            $this->verrous->removeElement($verrous);
+            // set the owning side to null (unless already changed)
+            if ($verrous->getCreateur() === $this) {
+                $verrous->setCreateur(null);
+            }
+        }
 
         return $this;
     }

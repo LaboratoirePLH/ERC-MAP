@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Element;
+use App\Entity\VerrouEntite;
 use App\Form\ElementType;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -12,6 +13,16 @@ use Symfony\Component\Translation\TranslatorInterface;
 
 class ElementController extends AbstractController
 {
+    /**
+     * @var int
+     */
+    private $dureeVerrou;
+
+    public function __construct(int $dureeVerrou)
+    {
+        $this->dureeVerrou = $dureeVerrou;
+    }
+
     /**
      * @Route("/element", name="element_list")
      */

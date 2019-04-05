@@ -18,6 +18,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Doctrine\ORM\EntityRepository;
 
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -30,8 +31,12 @@ class LocalisationType extends AbstractType
     {
         $locale = $options['locale'];
         $builder
+            ->add('id', HiddenType::class, [
+                'required' => false
+            ])
             ->add('reel', CheckboxType::class, [
                 'label'    => 'generic.fields.localisation_reelle',
+                'attr'     => ['class' => 'real_location_checkbox'],
                 'required' => false,
             ])
             ->add('entitePolitique', EntityType::class, [

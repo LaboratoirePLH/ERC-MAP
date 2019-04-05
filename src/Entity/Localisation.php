@@ -142,6 +142,12 @@ class Localisation
         $this->fonctions = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
+    // Hack for localisation form
+    public function setId(int $id): self
+    {
+        return $this;
+    }
+
     public function getPleiadesVille(): ?int
     {
         return $this->pleiadesVille;

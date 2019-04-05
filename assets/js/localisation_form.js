@@ -5,7 +5,7 @@
             // These are the defaults.
             errorMessage: "Error",
             notFoundErrorMessage: "Not Found",
-            ambiguousErrorMassage: "Ambiguous Data"
+            ambiguousErrorMassage: "Ambiguous Data",
         }, settings);
         if (!settings.hasOwnProperty('dataUrl')) {
             throw "Data URL was not specified";
@@ -13,6 +13,10 @@
 
         return this.each(function () {
             var rootForm = $(this);
+
+            if (rootForm.find('#' + rootForm.prop('id') + '_id').val() === "") {
+                rootForm.find('.real_location_checkbox').prop('checked', true);
+            }
 
             rootForm.find('.pleiades_search').on('click', function (e) {
                 e.preventDefault();

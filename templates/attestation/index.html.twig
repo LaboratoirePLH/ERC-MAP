@@ -95,6 +95,11 @@
                 {{ attestation.traduireEn ? "languages.en"|trans : "" }}
             </td>
             <td class="py-0 px-1">
+                <a href="{{ url('element_attestation', {'attestation_id': attestation.id}) }}"
+                    class="btn btn-sm btn-block my-1 btn-success">
+                    <i class="fas fa-fw fa-atom"></i>
+                    {{ 'attestation.sections.elements'|trans }}
+                </a>
                 <a href="{{ url('attestation_show', {'id': attestation.id}) }}"
                     class="btn btn-sm btn-block my-1 btn-primary">
                     <i class="fas fa-eye"></i>
@@ -169,7 +174,7 @@
             columns: [null, null, null, null, null, null, null, null, {
                 searchable: false,
                 orderable: false,
-                width: 80
+                width: 90
             }],
             order: [
                 [0, 'desc']

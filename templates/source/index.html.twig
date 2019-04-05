@@ -138,12 +138,12 @@
                     {{ 'generic.delete'|trans }}
                 </button>
                 {% include "modals/confirmation.html.twig" with {
-                    'modalName': 'confirm_deletion',
-                    'uuid': uuid,
-                    'targetUrl': url('source_delete', {'id' : source.id}),
-                    'confirmationLabel': 'generic.delete',
-                    'csrfToken': 'delete_source_' ~ source.id,
-                } %}
+                        'modalName': 'confirm_deletion',
+                        'uuid': uuid,
+                        'targetUrl': url('source_delete', {'id' : source.id}),
+                        'confirmationLabel': 'generic.delete',
+                        'csrfToken': 'delete_source_' ~ source.id,
+                    } %}
                 {% endif %}
             </td>
         </tr>

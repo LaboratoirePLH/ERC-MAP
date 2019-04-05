@@ -243,6 +243,7 @@ element:
         element_biblio_n: "Reference #"
         reference_element: "Element Reference"
     list: "Elements List"
+    list_for_attestation: "Elements linked to Testimony #%id%"
     view: "View Element #%id%"
     create: "Create Element"
     edit: "Edit Element #%id%"

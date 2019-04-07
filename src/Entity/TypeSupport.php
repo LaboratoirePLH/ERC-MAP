@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="type_support")
  * @ORM\Entity
  */
-class TypeSupport
+class TypeSupport extends AbstractEntity
 {
     use Traits\EntityId;
     use Traits\TranslatedName;

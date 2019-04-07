@@ -12,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="biblio")
  * @ORM\Entity
  */
-class Biblio
+class Biblio extends AbstractEntity
 {
     use Traits\EntityId;
 
@@ -188,6 +188,11 @@ class Biblio
             $this->elementBiblios->removeElement($elementBiblio);
         }
         return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->getAffichage();
     }
 
 }

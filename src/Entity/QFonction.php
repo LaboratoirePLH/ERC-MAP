@@ -12,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="q_fonction")
  * @ORM\Entity
  */
-class QFonction
+class QFonction extends AbstractEntity
 {
     use Traits\EntityId;
     use Traits\TranslatedName;

@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="element_biblio")
  * @ORM\Entity
  */
-class ElementBiblio
+class ElementBiblio extends AbstractEntity
 {
     use Traits\TranslatedComment;
 
@@ -74,6 +74,11 @@ class ElementBiblio
     {
         $this->biblio = $biblio;
         return $this;
+    }
+
+    public function __toString(): string
+    {
+        return "Elément #" . $this->getElement()->getId() . " / Biblio #" . $this->getBiblio()->getId();
     }
 
 }

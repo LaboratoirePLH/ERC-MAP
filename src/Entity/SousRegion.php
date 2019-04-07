@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="sous_region")
  * @ORM\Entity
  */
-class SousRegion
+class SousRegion extends AbstractEntity
 {
     use Traits\EntityId;
     use Traits\TranslatedName;

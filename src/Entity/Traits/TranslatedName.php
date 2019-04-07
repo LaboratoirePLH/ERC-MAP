@@ -65,4 +65,9 @@ trait TranslatedName
         $this->setNomEn($data['nomEn'] ?? null);
         return $this;
     }
+
+    public function __toString(): string
+    {
+        return $this->getNomFr();
+    }
 }

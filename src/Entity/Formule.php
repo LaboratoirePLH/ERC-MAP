@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="formule")
  * @ORM\Entity
  */
-class Formule
+class Formule extends AbstractEntity
 {
     use Traits\EntityId;
     use Traits\Created;
@@ -73,6 +73,11 @@ class Formule
         $this->attestation = $attestation;
 
         return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->getFormule();
     }
 
 }

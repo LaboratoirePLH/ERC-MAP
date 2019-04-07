@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="source_biblio")
  * @ORM\Entity
  */
-class SourceBiblio
+class SourceBiblio extends AbstractEntity
 {
     use Traits\TranslatedComment;
 
@@ -93,5 +93,10 @@ class SourceBiblio
     {
         $this->referenceSource = $referenceSource;
         return $this;
+    }
+
+    public function __toString(): string
+    {
+        return "Source #" . $this->getSource()->getId() . " / Biblio #" . $this->getBiblio()->getId();
     }
 }

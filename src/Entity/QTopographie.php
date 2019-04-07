@@ -12,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="q_topographie")
  * @ORM\Entity
  */
-class QTopographie
+class QTopographie extends AbstractEntity
 {
     use Traits\EntityId;
     use Traits\TranslatedName;

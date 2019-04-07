@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="etat_fiche")
  * @ORM\Entity
  */
-class EtatFiche
+class EtatFiche extends AbstractEntity
 {
     use Traits\EntityId;
     use Traits\TranslatedName;

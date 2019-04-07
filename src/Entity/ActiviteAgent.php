@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="activite_agent")
  * @ORM\Entity
  */
-class ActiviteAgent
+class ActiviteAgent extends AbstractEntity
 {
     use Traits\EntityId;
     use Traits\TranslatedName;

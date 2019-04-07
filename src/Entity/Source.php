@@ -14,7 +14,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass="App\Repository\SourceRepository")
  * @ORM\HasLifecycleCallbacks()
  */
-class Source
+class Source extends AbstractEntity
 {
     use Traits\DatedWithFiability;
     use Traits\EntityId;

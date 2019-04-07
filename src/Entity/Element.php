@@ -14,17 +14,13 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks()
  */
-class Element
+class Element extends AbstractEntity
 {
     use Traits\EntityId;
     use Traits\Located;
     use Traits\Tracked;
     use Traits\Translatable;
     use Traits\TranslatedComment;
-
-    public function __toString(){
-        return 'toto';
-    }
 
     /**
      * @var string|null

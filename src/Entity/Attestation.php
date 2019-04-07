@@ -149,6 +149,10 @@ class Attestation
      * @ORM\OneToMany(targetEntity="ContientElement", mappedBy="attestation")
      * @ORM\OrderBy({"positionElement" = "ASC"})
      * @Assert\Valid
+     * @Assert\Expression(
+     *      "this.validateElements()",
+     *      message="unique_elements"
+     * )
      */
     private $contientElements;
 
@@ -439,5 +443,18 @@ class Attestation
         }
 
         return $this;
+    }
+
+    public function validateElements(): bool
+    {
+        $positions = [];
+        foreach($this->getContientElements() as $ce){
+            if(in_array($ce->getPositionElement(), $positions)) {
+                return false;
+            } else {
+                $positions[] = $ce->getPositionElement();
+            }
+        }
+        return true;
     }
 }

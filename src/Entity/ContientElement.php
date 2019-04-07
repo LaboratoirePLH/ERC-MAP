@@ -36,20 +36,22 @@ class ContientElement
     private $element;
 
     /**
+     * @var int
+     *
+     * @ORM\Id
+     * @ORM\Column(name="position_element", type="smallint", nullable=false)
+     * @Assert\NotBlank
+     * @Assert\GreaterThan(0)
+     */
+    private $positionElement;
+
+    /**
      * @var string|null
      *
      * @ORM\Column(name="etat_morphologique", type="string", length=255, nullable=true)
      */
     private $etatMorphologique;
 
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="position_element", type="smallint", nullable=false)
-     * @Assert\NotBlank
-     * @Assert\GreaterThan(0)
-     */
-    private $positionElement;
 
     /**
      * @var bool|null

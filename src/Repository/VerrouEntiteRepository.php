@@ -24,6 +24,7 @@ class VerrouEntiteRepository extends ServiceEntityRepository
     }
 
     public function fetch($entite){
+        $this->purge();
         $qb = $this->createQueryBuilder('verrou')
                    ->from('App\Entity\VerrouEntite', 'v');
 
@@ -67,7 +68,7 @@ class VerrouEntiteRepository extends ServiceEntityRepository
                 $source = $entite;
                 break;
             case $entite instanceof Attestation:
-                $source = $attestation->getSource();
+                $source = $entite->getSource();
                 break;
             case $entite instanceof Element:
                 // echo "Element";
@@ -86,5 +87,15 @@ class VerrouEntiteRepository extends ServiceEntityRepository
     public function remove(VerrouEntite $verrou) {
         $this->getEntityManager()->remove($verrou);
         $this->getEntityManager()->flush();
+        $this->purge();
+    }
+
+    public function purge(){
+        $this->createQueryBuilder('verrou')
+             ->delete('App\Entity\VerrouEntite', 'v')
+             ->where('v.date_fin < :date')
+             ->setParameter(':date', new \DateTime())
+             ->getQuery()
+             ->getResult();
     }
 }

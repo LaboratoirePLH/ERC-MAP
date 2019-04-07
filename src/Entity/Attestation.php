@@ -110,22 +110,17 @@ class Attestation
     /**
      * @var \Doctrine\Common\Collections\Collection
      *
-     * @ORM\ManyToOne(targetEntity="CategorieOccasion")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_categorie_occasion", referencedColumnName="id")
-     * })
+     * @ORM\ManyToMany(targetEntity="Occasion")
+     * @ORM\JoinTable(name="attestation_occasion",
+     *   joinColumns={
+     *     @ORM\JoinColumn(name="id_attestation", referencedColumnName="id")
+     *   },
+     *   inverseJoinColumns={
+     *     @ORM\JoinColumn(name="id_occasion", referencedColumnName="id")
+     *   }
+     * )
      */
-    private $categorieOccasion;
-
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     *
-     * @ORM\ManyToOne(targetEntity="Occasion")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_occasion", referencedColumnName="id")
-     * })
-     */
-    private $occasion;
+    private $occasions;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
@@ -159,6 +154,9 @@ class Attestation
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\VerrouEntite", inversedBy="attestations", fetch="EAGER")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="verrou_id", referencedColumnName="id", nullable=true, onDelete="SET NULL")
+     * })
      */
     private $verrou;
 
@@ -169,6 +167,7 @@ class Attestation
         $this->agents = new ArrayCollection();
         $this->formules = new ArrayCollection();
         $this->contientElements = new ArrayCollection();
+        $this->occasions = new ArrayCollection();
     }
 
     // Hack for attestationSource form
@@ -300,43 +299,6 @@ class Attestation
         return $this;
     }
 
-    public function getCategorieOccasion(): ?CategorieOccasion
-    {
-        return $this->categorieOccasion;
-    }
-
-    public function setCategorieOccasion(?CategorieOccasion $categorieOccasion): self
-    {
-        $this->categorieOccasion = $categorieOccasion;
-        return $this;
-    }
-
-    public function getOccasion(): ?Occasion
-    {
-        return $this->occasion;
-    }
-
-    public function setOccasion(?Occasion $occasion): self
-    {
-        $this->occasion = $occasion;
-        return $this;
-    }
-
-    public function setTypeCategorieOccasion($data): self
-    {
-        $this->setCategorieOccasion($data['categorieOccasion']);
-        $this->setOccasion($data['occasion']);
-        return $this;
-    }
-
-    public function getTypeCategorieOccasion(): array
-    {
-        return [
-            'occasion' => $this->getOccasion(),
-            'categorieOccasion' => $this->getCategorieOccasion(),
-        ];
-    }
-
     /**
      * @return Collection|AttestationMateriel[]
      */
@@ -449,6 +411,32 @@ class Attestation
     public function setVerrou(?VerrouEntite $verrou): self
     {
         $this->verrou = $verrou;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Occasion[]
+     */
+    public function getOccasions(): Collection
+    {
+        return $this->occasions;
+    }
+
+    public function addOccasion($occasion): self
+    {
+        if (!$this->occasions->contains($occasion)) {
+            $this->occasions[] = $occasion;
+        }
+
+        return $this;
+    }
+
+    public function removeOccasion(Occasion $occasion): self
+    {
+        if ($this->occasions->contains($occasion)) {
+            $this->occasions->removeElement($occasion);
+        }
 
         return $this;
     }

@@ -77,8 +77,17 @@
         'expanded'      : true
     } only %}
     <div class="collapse show" id="section-contexte">
-        {{ form_row(form.typeCategorieOccasion) }}
         {{ form_row(form.pratiques) }}
+        {{ form_errors(form.occasions) }}
+        {{ form_widget(form.occasions) }}
+        <div class="form-group row">
+            <div class="col-sm-10 offset-sm-2">
+                <a href="#" class="btn btn-primary collection-add-link">
+                    <i class="fa fa-plus"></i>&nbsp;
+                    {{ 'attestation.add_occasion'|trans }}
+                </a>
+            </div>
+        </div>
         {{ form_errors(form.attestationMateriels) }}
         {{ form_widget(form.attestationMateriels) }}
         <div class="form-group row">
@@ -286,6 +295,18 @@
         });
 
         // Gestion des champs collection
+        $('div#attestation_occasions').collectionField({
+            blockTitle: '{{ "attestation.fields.occasion_n"|trans }}',
+            deleteLink: '{{ "generic.delete"|trans }}',
+            confirmationModal: $('#confirm_remove_item'),
+            addListener: function (newEl, idx) {
+                // Gestion du champ "selectorcreate"
+                $(newEl).dependentSelects({
+                    data_url: "{{ url('data_type_occasion') }}"
+                });
+                $('select.autocomplete').chosen(chosenSettings);
+            }
+        });
         $('div#attestation_attestationMateriels').collectionField({
             blockTitle: '{{ "attestation.fields.materiel_n"|trans }}',
             deleteLink: '{{ "generic.delete"|trans }}',
@@ -351,7 +372,7 @@
 
 
         // Gestion des combobox liées
-        $('#attestation_typeCategorieOccasion').dependentSelects({
+        $('.typeCategorieOccasion').dependentSelects({
             data_url: "{{ url('data_type_occasion') }}"
         });
         $('#attestation_localisation_grandeSousRegion').dependentSelects({

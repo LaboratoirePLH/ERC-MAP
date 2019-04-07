@@ -115,37 +115,6 @@ class AttestationType extends AbstractType
                     'attestation.fiabilite.niveau_3' => 3
                 ]
             ])
-            ->add('typeCategorieOccasion', DependentSelectType::class, [
-                'locale'         => $options['locale'],
-                'translations'   => $options['translations'],
-                'name'           => 'categorieOccasion',
-                'secondary_name' => 'occasion',
-                'category_field' => 'categorieOccasion',
-                'field_options'  => [
-                    'label'        => 'attestation.fields.categorie_occasion',
-                    'required'     => false,
-                    'class'        => CategorieOccasion::class,
-                    'choice_label' => 'nom'.ucfirst($locale),
-                    'attr'         => [
-                        'class' => 'autocomplete',
-                        'data-placeholder' => $options['translations']['autocomplete.select_element']
-                    ],
-                    'query_builder' => function (EntityRepository $er) use ($locale) {
-                        return $er->createQueryBuilder('e')
-                            ->orderBy('e.nom'.ucfirst($locale), 'ASC');
-                    }
-                ],
-                'secondary_field_options' => [
-                    'label'        => 'attestation.fields.occasion',
-                    'required'     => false,
-                    'class'        => Occasion::class,
-                    'choice_label' => 'nom'.ucfirst($locale),
-                    'attr'         => [
-                        'class' => 'autocomplete',
-                        'data-placeholder' => $options['translations']['autocomplete.select_element']
-                    ]
-                ]
-            ])
             ->add('pratiques', EntityType::class, [
                 'label'        => 'attestation.fields.pratiques',
                 'required'     => false,
@@ -161,6 +130,14 @@ class AttestationType extends AbstractType
                     return $er->createQueryBuilder('e')
                         ->orderBy('e.nom'.ucfirst($locale), 'ASC');
                 }
+            ])
+            ->add('occasions', CollectionType::class, [
+                'label'         => false,
+                'entry_type'    => OccasionType::class,
+                'entry_options' => array_intersect_key($options, array_flip(["translations", "locale"])),
+                'allow_add'     => true,
+                'allow_delete'  => true,
+                'required'      => false,
             ])
             ->add('attestationMateriels', CollectionType::class, [
                 'label'         => false,

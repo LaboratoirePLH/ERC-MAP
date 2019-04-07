@@ -125,6 +125,9 @@ class Element
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\VerrouEntite", inversedBy="elements", fetch="EAGER")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="verrou_id", referencedColumnName="id", nullable=true, onDelete="SET NULL")
+     * })
      */
     private $verrou;
 

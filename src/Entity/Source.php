@@ -208,7 +208,10 @@ class Source
     private $attestations;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\VerrouEntite", inversedBy="sources", fetch="EAGER")
+     * @ORM\ManyToOne(targetEntity="VerrouEntite", inversedBy="sources", fetch="EAGER")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="verrou_id", referencedColumnName="id", nullable=true, onDelete="SET NULL")
+     * })
      */
     private $verrou;
 

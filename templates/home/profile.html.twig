@@ -1,0 +1,21 @@
+{% extends 'authenticated.html.twig' %}
+{% block title %}
+{{ 'chercheur.profile'|trans }}
+{% endblock %}
+{% block content %}
+<hr />
+
+{{ form_start(form, {'attr' : {'id': 'profile'}} ) }}
+{{ form_errors(form) }}
+{{ form_rest(form) }}
+<hr />
+<div class="form-group row">
+    <div class="col-sm-12 text-center">
+        {% include "partials/_formbuttons.html.twig" with {
+            'exitUrl'      : url('home'),
+            'showSaveClose': false
+        } %}
+    </div>
+</div>
+{{ form_end(form) }}
+{% endblock %}

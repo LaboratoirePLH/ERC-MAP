@@ -2,7 +2,10 @@
 
 namespace App\Controller;
 
+use App\Form\ChercheurType;
+
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 class HomeController extends AbstractController
@@ -29,6 +32,34 @@ class HomeController extends AbstractController
             'breadcrumbs'     => [
                 ['label' => 'nav.home', 'url' => $this->generateUrl('home')],
                 ['label' => 'nav.contact']
+            ]
+        ]);
+    }
+
+    /**
+     * @Route("/profile", name="profile")
+     */
+    public function profile(Request $request)
+    {
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        $form   = $this->get('form.factory')->create(ChercheurType::class, $user);
+
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()){
+            $this->getDoctrine()->getManager()->flush();
+
+            // Message de confirmation
+            $request->getSession()->getFlashBag()->add('success', 'chercheur.profile_edited');
+            return $this->redirectToRoute('home');
+        }
+
+        return $this->render('home/profile.html.twig', [
+            'controller_name' => 'HomeController',
+            'locale'          => $request->getLocale(),
+            'form'            => $form->createView(),
+            'breadcrumbs'     => [
+                ['label' => 'nav.home', 'url' => $this->generateUrl('home')],
+                ['label' => 'chercheur.profile']
             ]
         ]);
     }

@@ -6,6 +6,7 @@ languages:
     en: "English"
 
 nav:
+    profile: "Profile"
     logout: "Logout"
     go_to_showcase_website: "Showcase website"
     admin: "Administrator Section"
@@ -298,6 +299,16 @@ localisation:
         nom_site : "Name (Site)"
         topographie : "Topography"
         fonction: "Function"
+
+chercheur:
+    profile: "Update profile"
+    profile_edited: "Your profile has been updated."
+    fields:
+        username: "Username"
+        nom: "Full Name"
+        institution: "Institution"
+        mail: "Email Address"
+        langue: "Language Preference"
 
 
 modals:

@@ -3,10 +3,13 @@
 namespace App\Controller;
 
 use App\Form\ChercheurType;
+use App\Form\ChangePasswordType;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class HomeController extends AbstractController
 {
@@ -39,24 +42,55 @@ class HomeController extends AbstractController
     /**
      * @Route("/profile", name="profile")
      */
-    public function profile(Request $request)
+    public function profile(Request $request, TranslatorInterface $translator)
     {
         $user = $this->get('security.token_storage')->getToken()->getUser();
 
-        $form   = $this->get('form.factory')->create(ChercheurType::class, $user);
+        $accountForm = $this->get('form.factory')->create(ChercheurType::class, $user);
+        $accountForm->handleRequest($request);
+        $passwordForm = $this->get('form.factory')->create(ChangePasswordType::class, null, [
+            'repeat_error' => $translator->trans('chercheur.repeat_password_error')
+        ]);
+        $passwordForm->handleRequest($request);
 
-        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()){
-            $this->getDoctrine()->getManager()->flush();
+        if ($request->isMethod('POST')){
+            if($accountForm->isSubmitted() && $accountForm->isValid()){
+                $this->getDoctrine()->getManager()->flush();
 
-            // Message de confirmation
-            $request->getSession()->getFlashBag()->add('success', 'chercheur.profile_edited');
-            return $this->redirectToRoute('home');
+                // Message de confirmation
+                $request->getSession()->getFlashBag()->add('success', 'chercheur.profile_edited');
+                return $this->redirectToRoute('home');
+            }
+            if($passwordForm->isSubmitted() && $passwordForm->isValid()){
+                if (password_verify($passwordForm['password']->getData(), $user->getPassword()))
+                {
+                    $newPassword = password_hash(
+                        $passwordForm['new_password']->getData(),
+                        PASSWORD_BCRYPT,
+                        ['cost' => 15]
+                    );
+                    $user->setPassword($newPassword);
+                    $this->getDoctrine()->getManager()->flush();
+
+                    $request->getSession()->getFlashBag()->add('success', 'chercheur.password_edited');
+                    return $this->redirectToRoute('home');
+                }
+                else
+                {
+                    $passwordForm->get('password')
+                                 ->addError(
+                                     new FormError($translator->trans('chercheur.incorrect_password'))
+                                );
+                    $request->getSession()->getFlashBag()->add('error', 'chercheur.incorrect_password_error');
+                }
+            }
         }
 
         return $this->render('home/profile.html.twig', [
             'controller_name' => 'HomeController',
             'locale'          => $request->getLocale(),
-            'form'            => $form->createView(),
+            'accountForm'     => $accountForm->createView(),
+            'passwordForm'    => $passwordForm->createView(),
             'breadcrumbs'     => [
                 ['label' => 'nav.home', 'url' => $this->generateUrl('home')],
                 ['label' => 'chercheur.profile']

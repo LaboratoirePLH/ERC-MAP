@@ -303,13 +303,21 @@ localisation:
 
 chercheur:
     profile: "Update profile"
+    password: "Change password"
     profile_edited: "Your profile has been updated."
+    password_edited: "Your password has been updated."
+    repeat_password_error: "The password fields must match"
+    iconrrect_password: "Incorrect password"
+    incorrect_password_error: "You must enter the current password correctly to change it"
     fields:
         username: "Username"
         nom: "Full Name"
         institution: "Institution"
         mail: "Email Address"
         langue: "Language Preference"
+        old_password: "Old password"
+        new_password: "New password"
+        repeat_password: "Repeat new password"
 
 
 modals:

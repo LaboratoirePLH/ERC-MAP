@@ -29,9 +29,17 @@
                 </div>
                 <div class="row">
                     <div class="col-12">
+                        {% if is_granted('ROLE_ADMIN') %}
+                        <a href="/admin" class="btn w-100 mt-1" target="_blank" rel="noopener">
+                            <i class="fa fa-external-link-alt"></i>
+                            {{ 'nav.go_to_admin'|trans }}
+                        </a>
+                        {% else %}
                         <a href="{{ showcase_website_url }}" class="btn w-100 mt-1" target="_blank" rel="noopener">
+                            <i class="fa fa-external-link-alt"></i>
                             {{ 'nav.go_to_showcase_website'|trans }}
                         </a>
+                        {% endif %}
                     </div>
                 </div>
             </div>

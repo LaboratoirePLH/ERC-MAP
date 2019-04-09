@@ -13,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks()
  */
-class Localisation
+class Localisation extends AbstractEntity
 {
     use Traits\EntityId;
     use Traits\TranslatedComment;

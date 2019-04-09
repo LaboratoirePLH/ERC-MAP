@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="statut_affiche")
  * @ORM\Entity
  */
-class StatutAffiche
+class StatutAffiche extends AbstractEntity
 {
     use Traits\EntityId;
     use Traits\TranslatedName;

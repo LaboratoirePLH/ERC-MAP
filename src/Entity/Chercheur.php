@@ -13,7 +13,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @ORM\Table(name="chercheur")
  * @ORM\Entity
  */
-class Chercheur implements UserInterface
+class Chercheur extends AbstractEntity implements UserInterface
 {
     use Traits\EntityId;
 
@@ -258,5 +258,10 @@ class Chercheur implements UserInterface
         }
 
         return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->getPrenomNom();
     }
 }

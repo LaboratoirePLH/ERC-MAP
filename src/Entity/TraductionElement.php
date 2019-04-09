@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="traduction_element")
  * @ORM\Entity
  */
-class TraductionElement
+class TraductionElement extends AbstractEntity
 {
     use Traits\EntityId;
     use Traits\TranslatedName;
@@ -34,5 +34,10 @@ class TraductionElement
     {
         $this->element = $element;
         return $this;
+    }
+
+    public function __toString(): string
+    {
+        return parent::__toString() . $this->getNomFr() . '/' . $this->getNomEn();
     }
 }

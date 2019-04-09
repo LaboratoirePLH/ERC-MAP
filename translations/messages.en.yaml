@@ -8,6 +8,7 @@ languages:
 nav:
     profile: "Profile"
     logout: "Logout"
+    go_to_admin: "Administration"
     go_to_showcase_website: "Showcase website"
     admin: "Administrator Section"
     home: "Home"

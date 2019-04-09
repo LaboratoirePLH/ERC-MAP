@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="occasion")
  * @ORM\Entity
  */
-class Occasion
+class Occasion extends AbstractEntity
 {
     use Traits\EntityId;
     use Traits\TranslatedName;

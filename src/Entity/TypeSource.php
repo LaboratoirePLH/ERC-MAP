@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="type_source")
  * @ORM\Entity
  */
-class TypeSource
+class TypeSource extends AbstractEntity
 {
     use Traits\EntityId;
     use Traits\TranslatedName;

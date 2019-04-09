@@ -11,7 +11,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="datation")
  * @ORM\Entity
  */
-class Datation
+class Datation extends AbstractEntity
 {
     use Traits\EntityId;
     use Traits\TranslatedComment;

@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="App\Repository\VerrouEntiteRepository")
  * @ORM\HasLifecycleCallbacks()
  */
-class VerrouEntite
+class VerrouEntite extends AbstractEntity
 {
     use Traits\EntityId;
 

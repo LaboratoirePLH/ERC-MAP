@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="attestation_materiel")
  * @ORM\Entity
  */
-class AttestationMateriel
+class AttestationMateriel extends AbstractEntity
 {
     /**
      * @var \Attestation
@@ -86,5 +86,10 @@ class AttestationMateriel
     {
         $this->quantite = $quantite;
         return $this;
+    }
+
+    public function __toString(): string
+    {
+        return "Attestation #" . $this->getAttestation()->getId() . " / Matériel #" . $this->getMateriel()->getId();
     }
 }

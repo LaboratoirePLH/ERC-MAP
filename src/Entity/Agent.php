@@ -12,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="agent")
  * @ORM\Entity
  */
-class Agent
+class Agent extends AbstractEntity
 {
     use Traits\EntityId;
     use Traits\Located;

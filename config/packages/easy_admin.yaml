@@ -1,12 +1,152 @@
 easy_admin:
     site_name: 'ERC-MAP - Administration'
+    formats:
+        date:     'd/m/Y'
+        time:     'H:i'
+        datetime: 'd/m/Y H:i:s'
+    design:
+        menu:
+         - { label: 'Gestion' }
+         - Projet
+         - Chercheur
+         - VerrouEntite
+         - { label: 'Source' }
+         - Auteur
+         - CategorieMateriau
+         - CategorieSource
+         - CategorieSupport
+         - Langue
+         - Materiau
+         - Titre
+         - TypeSource
+         - TypeSupport
+         - { label: 'Attestation' }
+         - CategorieMateriel
+         - CategorieOccasion
+         - EtatFiche
+         - Formule
+         - Materiel
+         - Occasion
+         - Pratique
+         - { label: 'Agent'}
+         - ActiviteAgent
+         - Agentivite
+         - Genre
+         - Nature
+         - StatutAffiche
+         - { label: 'Elément'}
+         - CategorieElement
+         - GenreElement
+         - NatureElement
+         - NombreElement
+         - TraductionElement
+         - { label: 'Localisation'}
+         - EntitePolitique
+         - GrandeRegion
+         - QFonction
+         - QTopographie
+         - SousRegion
+
     entities:
-       - App\Entity\TypeSource
-       - App\Entity\CategorieSource
-       - App\Entity\TypeSupport
-       - App\Entity\CategorieSupport
-       - App\Entity\Materiau
-       - App\Entity\CategorieMateriau
-       - App\Entity\Titre
-       - App\Entity\Auteur
-       - App\Entity\Langue
+        ActiviteAgent:
+            class: App\Entity\ActiviteAgent
+            label: Activité (Agent)
+        Agentivite:
+            class: App\Entity\Agentivite
+            label: Agentivité
+        Auteur:
+            class: App\Entity\Auteur
+            label: Auteur
+        CategorieElement:
+            class: App\Entity\CategorieElement
+            label: Catégorie (Elément)
+        CategorieMateriau:
+            class: App\Entity\CategorieMateriau
+            label: Catégorie (Materiau)
+        CategorieMateriel:
+            class: App\Entity\CategorieMateriel
+            label: Catégorie (Materiel)
+        CategorieOccasion:
+            class: App\Entity\CategorieOccasion
+            label: Catégorie (Occasion)
+        CategorieSource:
+            class: App\Entity\CategorieSource
+            label: Catégorie (Source)
+        CategorieSupport:
+            class: App\Entity\CategorieSupport
+            label: Catégorie (Support)
+        Chercheur:
+            class: App\Entity\Chercheur
+            label: Chercheur
+        EntitePolitique:
+            class: App\Entity\EntitePolitique
+            label: Entité Politique
+        EtatFiche:
+            class: App\Entity\EtatFiche
+            label: Etat Fiche
+        Formule:
+            class: App\Entity\Formule
+            label: Formule
+        Genre:
+            class: App\Entity\Genre
+            label: Genre
+        GenreElement:
+            class: App\Entity\GenreElement
+            label: Genre (Elément)
+        GrandeRegion:
+            class: App\Entity\GrandeRegion
+            label: Grande Région
+        Langue:
+            class: App\Entity\Langue
+            label: Langue
+        Materiau:
+            class: App\Entity\Materiau
+            label: Matériau
+        Materiel:
+            class: App\Entity\Materiel
+            label: Matériel
+        Nature:
+            class: App\Entity\Nature
+            label: Nature
+        NatureElement:
+            class: App\Entity\NatureElement
+            label: Nature (Element)
+        NombreElement:
+            class: App\Entity\NombreElement
+            label: Nombre (Element)
+        Occasion:
+            class: App\Entity\Occasion
+            label: Occasion
+        Pratique:
+            class: App\Entity\Pratique
+            label: Pratique
+        Projet:
+            class: App\Entity\Projet
+            label: Projet
+        QFonction:
+            class: App\Entity\QFonction
+            label: Qualité Fonctionnnelle
+        QTopographie:
+            class: App\Entity\QTopographie
+            label: Qualité Topographique
+        SousRegion:
+            class: App\Entity\SousRegion
+            label: Sous Région
+        StatutAffiche:
+            class: App\Entity\StatutAffiche
+            label: Statut Affiché
+        Titre:
+            class: App\Entity\Titre
+            label: Titre
+        TraductionElement:
+            class: App\Entity\TraductionElement
+            label: Traduction (Elément)
+        TypeSource:
+            class: App\Entity\TypeSource
+            label: Type (Source)
+        TypeSupport:
+            class: App\Entity\TypeSupport
+            label: Type (Support)
+        VerrouEntite:
+            class: App\Entity\VerrouEntite
+            label: Verrou Entité

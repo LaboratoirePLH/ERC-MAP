@@ -11,7 +11,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="contient_element")
  * @ORM\Entity
  */
-class ContientElement
+class ContientElement extends AbstractEntity
 {
     /**
      * @var \Attestation
@@ -212,5 +212,10 @@ class ContientElement
     {
         $this->nombreElement = $nombreElement;
         return $this;
+    }
+
+    public function __toString(): string
+    {
+        return "Attestation #" . $this->getAttestation()->getId() . " / Elément #" . $this->getElement()->getId();
     }
 }

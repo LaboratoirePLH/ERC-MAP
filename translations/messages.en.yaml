@@ -76,6 +76,7 @@ generic:
     messages:
         deletion_failed_csrf: "Deletion failed, invalid CSRF Token"
         deletion_failed_missing: "Deletion failed, record not found"
+        error: "Error"
         error_not_found: "Error : Not found"
         error_ambiguous: "Error : Ambiguous results"
         error_unknown: "Unknown error"
@@ -307,7 +308,7 @@ chercheur:
     profile_edited: "Your profile has been updated."
     password_edited: "Your password has been updated."
     repeat_password_error: "The password fields must match"
-    iconrrect_password: "Incorrect password"
+    incorrect_password: "Incorrect password"
     incorrect_password_error: "You must enter the current password correctly to change it"
     fields:
         username: "Username"

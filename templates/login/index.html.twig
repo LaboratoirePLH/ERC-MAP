@@ -16,9 +16,12 @@
         </div>
     </div>
     <div class="row justify-content-center mt-4">
-        <div class="col-6">
+        <div class="col-8">
             {% if error %}
-            <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+            <div class="alert alert-danger" role="alert">
+                <span class="badge badge-danger text-uppercase">{{ 'generic.messages.error'|trans }}</span>
+                {{ error.messageKey|trans(error.messageData, 'security') }}
+            </div>
             {% endif %}
             {{ form_start(form, {'action': path('login_check'), 'method': 'POST'}) }}
             {{ form_row(form._username) }}

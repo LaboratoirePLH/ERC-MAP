@@ -4,28 +4,59 @@ easy_admin:
         date:     'd/m/Y'
         time:     'H:i'
         datetime: 'd/m/Y H:i:s'
+    design:
+        menu:
+         - { label: 'Gestion' }
+         - Projet
+         - Chercheur
+         - VerrouEntite
+         - { label: 'Source' }
+         - Auteur
+         - CategorieMateriau
+         - CategorieSource
+         - CategorieSupport
+         - Langue
+         - Materiau
+         - Titre
+         - TypeSource
+         - TypeSupport
+         - { label: 'Attestation' }
+         - CategorieMateriel
+         - CategorieOccasion
+         - EtatFiche
+         - Formule
+         - Materiel
+         - Occasion
+         - Pratique
+         - { label: 'Agent'}
+         - ActiviteAgent
+         - Agentivite
+         - Genre
+         - Nature
+         - StatutAffiche
+         - { label: 'Elément'}
+         - CategorieElement
+         - GenreElement
+         - NatureElement
+         - NombreElement
+         - TraductionElement
+         - { label: 'Localisation'}
+         - EntitePolitique
+         - GrandeRegion
+         - QFonction
+         - QTopographie
+         - SousRegion
+
     entities:
         ActiviteAgent:
             class: App\Entity\ActiviteAgent
             label: Activité (Agent)
-        Agent:
-            class: App\Entity\Agent
-            label: Agent
         Agentivite:
             class: App\Entity\Agentivite
             label: Agentivité
-        Attestation:
-            class: App\Entity\Attestation
-            label: Attestation
-        # AttestationMateriel:
-        #     class: App\Entity\AttestationMateriel
-        #     label: AttestationMateriel
         Auteur:
             class: App\Entity\Auteur
             label: Auteur
-        Biblio:
-            class: App\Entity\Biblio
-            label: Biblio
         CategorieElement:
             class: App\Entity\CategorieElement
             label: Catégorie (Elément)
@@ -47,18 +78,6 @@ easy_admin:
         Chercheur:
             class: App\Entity\Chercheur
             label: Chercheur
-        # ContientElement:
-        #     class: App\Entity\ContientElement
-        #     label: ContientElement
-        Datation:
-            class: App\Entity\Datation
-            label: Datation
-        Element:
-            class: App\Entity\Element
-            label: Element
-        # ElementBiblio:
-        #     class: App\Entity\ElementBiblio
-        #     label: ElementBiblio
         EntitePolitique:
             class: App\Entity\EntitePolitique
             label: Entité Politique
@@ -80,9 +99,6 @@ easy_admin:
         Langue:
             class: App\Entity\Langue
             label: Langue
-        Localisation:
-            class: App\Entity\Localisation
-            label: Localisation
         Materiau:
             class: App\Entity\Materiau
             label: Matériau
@@ -113,12 +129,6 @@ easy_admin:
         QTopographie:
             class: App\Entity\QTopographie
             label: Qualité Topographique
-        Source:
-            class: App\Entity\Source
-            label: Source
-        # SourceBiblio:
-        #     class: App\Entity\SourceBiblio
-        #     label: SourceBiblio
         SousRegion:
             class: App\Entity\SousRegion
             label: Sous Région

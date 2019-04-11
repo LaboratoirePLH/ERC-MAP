@@ -258,7 +258,6 @@ class Element extends AbstractEntity
         if (!$this->contientElements->contains($contientElement)) {
             $this->contientElements[] = $contientElement;
             $contientElement->setElement($this);
-            $theonymesEnfant->setAReference(true);
             $this->setAReference(true);
         }
         return $this;
@@ -334,8 +333,8 @@ class Element extends AbstractEntity
      */
     public function _clearTheonymes(){
         if(!$this->getAReference()){
-            $this->getTheonymesEnfants()->clear();
-            $this->getTheonymesParents()->clear();
+            $this->getTheonymesConstruits()->clear();
+            $this->getTheonymesImplicites()->clear();
         }
     }
 

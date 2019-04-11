@@ -40,6 +40,29 @@ class HomeController extends AbstractController
     }
 
     /**
+     * @Route("/language/{lang}", name="language")
+     */
+    public function language($lang, Request $request)
+    {
+        if(!in_array($lang, ["fr", "en"])){
+            $request->getSession()->getFlashBag()->add('error', 'generic.messages.invalid_locale');
+        }
+        else {
+            $user = $this->get('security.token_storage')->getToken()->getUser();
+            $user->setPreferenceLangue($lang);
+            $this->getDoctrine()->getManager()->flush();
+            $request->getSession()->set('_locale', $lang);
+        }
+        $referer = $request->headers->get('referer');
+        if ($referer == NULL) {
+            $url = $this->generateUrl('home');
+        } else {
+            $url = $referer;
+        }
+        return $this->redirect($url);
+    }
+
+    /**
      * @Route("/profile", name="profile")
      */
     public function profile(Request $request, TranslatorInterface $translator)

@@ -10,7 +10,6 @@ nav:
     logout: "Logout"
     go_to_admin: "Administration"
     go_to_showcase_website: "Showcase website"
-    admin: "Administrator Section"
     home: "Home"
     source_list: "Sources"
     attestation: "Testimonies"
@@ -25,6 +24,7 @@ login_page:
     form:
         username: "Username"
         password: "Password"
+        remember_me: "Remember me ?"
         login: "Login"
         reset_password: "Reset password"
 
@@ -76,6 +76,9 @@ generic:
     messages:
         deletion_failed_csrf: "Deletion failed, invalid CSRF Token"
         deletion_failed_missing: "Deletion failed, record not found"
+        unknown_user: "Unknown username"
+        invalid_password: "Invalid password"
+        invalid_locale: "Given language is not allowed"
         error: "Error"
         error_not_found: "Error : Not found"
         error_ambiguous: "Error : Ambiguous results"

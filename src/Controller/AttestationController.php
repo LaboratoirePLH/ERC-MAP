@@ -159,6 +159,8 @@ class AttestationController extends AbstractController
             foreach($attestation->getContientElements() as $ce){
                 if($ce->getElement() !== null){
                     if(!$em->contains($ce->getElement())){
+                        $ce->getElement()->setCreateur($user);
+                        $ce->getElement()->setDernierEditeur($user);
                         $em->persist($ce->getElement());
                     }
                     $ce->setAttestation($attestation);
@@ -294,6 +296,8 @@ class AttestationController extends AbstractController
             foreach($attestation->getContientElements() as $ce){
                 if($ce->getElement() !== null){
                     if(!$em->contains($ce->getElement())){
+                        $ce->getElement()->setCreateur($user);
+                        $ce->getElement()->setDernierEditeur($user);
                         $em->persist($ce->getElement());
                     }
                     $ce->setAttestation($attestation);

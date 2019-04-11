@@ -63,16 +63,9 @@ class ContientElement extends AbstractEntity
     /**
      * @var string|null
      *
-     * @ORM\Column(name="extrait_sans_restitution", type="text", nullable=true)
+     * @ORM\Column(name="en_contexte", type="text", nullable=true)
      */
-    private $extraitSansRestitution;
-
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="extrait_avec_restitution", type="text", nullable=true)
-     */
-    private $extraitAvecRestitution;
+    private $enContexte;
 
     /**
      * @var \CategorieElement
@@ -137,28 +130,6 @@ class ContientElement extends AbstractEntity
         return $this;
     }
 
-    public function getExtraitSansRestitution(): ?string
-    {
-        return $this->extraitSansRestitution;
-    }
-
-    public function setExtraitSansRestitution(?string $extraitSansRestitution): self
-    {
-        $this->extraitSansRestitution = $extraitSansRestitution;
-        return $this;
-    }
-
-    public function getExtraitAvecRestitution(): ?string
-    {
-        return $this->extraitAvecRestitution;
-    }
-
-    public function setExtraitAvecRestitution(?string $extraitAvecRestitution): self
-    {
-        $this->extraitAvecRestitution = $extraitAvecRestitution;
-        return $this;
-    }
-
     public function getAttestation(): ?Attestation
     {
         return $this->attestation;
@@ -217,5 +188,17 @@ class ContientElement extends AbstractEntity
     public function __toString(): string
     {
         return "Attestation #" . $this->getAttestation()->getId() . " / Elément #" . $this->getElement()->getId();
+    }
+
+    public function getEnContexte(): ?string
+    {
+        return $this->enContexte;
+    }
+
+    public function setEnContexte(?string $enContexte): self
+    {
+        $this->enContexte = $enContexte;
+
+        return $this;
     }
 }

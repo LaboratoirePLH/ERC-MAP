@@ -46,14 +46,9 @@ class ContientElementType extends AbstractType
                         ->orderBy('e.id', 'DESC');
                 }
             ])
-            ->add('extraitSansRestitution', CKEditorType::class, [
+            ->add('enContexte', CKEditorType::class, [
                 'config_name' => 'text_styling_only',
-                'label'       => 'element.fields.extrait_sans_restitution',
-                'required'    => false
-            ])
-            ->add('extraitAvecRestitution', CKEditorType::class, [
-                'config_name' => 'text_styling_only',
-                'label'       => 'element.fields.extrait_avec_restitution',
+                'label'       => 'element.fields.en_contexte',
                 'required'    => false
             ])
             ->add('suffixe', CheckboxType::class, [

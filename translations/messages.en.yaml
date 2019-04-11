@@ -161,7 +161,7 @@ biblio:
         deleted: "Bibliography deleted"
         missing: "Bibliography #%id% does not exists"
     fields:
-        titre_abrege: "Short Title"
+        titre_abrege: "Short Title / Title Words"
         titre_complet: "Full Title"
         annee: "Year"
         auteur: "Author"

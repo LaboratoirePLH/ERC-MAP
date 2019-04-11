@@ -21,13 +21,16 @@
                 {{ 'generic.fields.type'|trans }}
             </th>
             <th scope="col">
-                {{ 'biblio.fields.titre_abrege'|trans }}
-            </th>
-            <th scope="col">
                 {{ 'biblio.fields.auteur'|trans }}
             </th>
             <th scope="col">
                 {{ 'biblio.fields.annee'|trans }}
+            </th>
+            <th scope="col">
+                {{ 'biblio.fields.titre_abrege'|trans }}
+            </th>
+            <th scope="col">
+                {{ 'biblio.fields.titre_complet'|trans }}
             </th>
             <th scope="col">
                 {{ 'generic.fields.utilisation'|trans }}
@@ -49,13 +52,16 @@
                 {{ (biblio.estCorpus ? 'biblio.fields.corpus' : 'biblio.fields.bibliographique')|trans }}
             </td>
             <td>
-                {{ biblio.titreAbrege|raw }}
-            </td>
-            <td>
                 {{ biblio.auteurBiblio }}
             </td>
             <td>
                 {{ biblio.annee }}
+            </td>
+            <td>
+                {{ biblio.titreAbrege|raw }}
+            </td>
+            <td>
+                {{ biblio.titreComplet|raw }}
             </td>
             <td>
                 {% set count_sources = biblio.getSourceBiblios()|length %}
@@ -136,7 +142,7 @@
             scrollX: false,
             searching: true,
             ordering: true,
-            columns: [null, null, null, null, null, null, {
+            columns: [null, null, null, null, null, null, null, {
                 searchable: false,
                 orderable: false,
                 width: 80

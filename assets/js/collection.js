@@ -9,6 +9,18 @@
                     '<a href="#" class="btn btn-sm btn-danger ml-2 mb-1">Delete</a>'
                 )
             },
+            toggleButtonGenerator: function (childId, collapsed) {
+                return $(
+                    '<button class="btn btn-sm btn-outline-secondary expand-button float-left" type="button" data-toggle="collapse"' +
+                    'data-target="#' + childId + '" aria-expanded="' +
+                    (collapsed ? 'false' : 'true') + '"' +
+                    'onclick = "'+
+                    "$(this).children('i.fas').toggleClass('fa-rotate-90');"+
+                    '"><i class="fas fa-caret-right fa-fw' +
+                    (collapsed ? '' : ' fa-rotate-90') + '"></i>' +
+                    '</button>'
+                )
+            },
             viewLinkGenerator: function () { return; },
             addListener: function () { return; },
             deleteListener: function () { return; },
@@ -17,7 +29,7 @@
             addLink: null,
         }, options);
 
-        var setupLinks = function (prototype) {
+        var setupLinks = function (prototype, container, collapsed) {
             var me = this;
             var deleteLink = settings.deleteLinkGenerator.call(this, prototype);
             if (deleteLink !== "") {
@@ -45,10 +57,13 @@
 
             if (settings.inline === true) {
                 prototype
-                    .removeClass('form-group');
+                    .removeClass('form-group')
+                    .addClass('collection-inline-item');
                 prototype.children('legend')
                     .removeClass('col-sm-2')
                     .addClass('col-sm-1');
+                prototype.children('col-sm-10')
+                    .attr('id', container.attr('id') + '_item_' + prototype.index());
 
                 var buttonContainer = $('<div class="text-right">');
                 buttonContainer
@@ -58,19 +73,25 @@
                     .appendTo(prototype);
             }
             else {
+                prototype.addClass('collection-item');
                 var label = prototype.find('.remove_this_label');
                 label.siblings('.col-sm-10').removeClass('col-sm-10').addClass('col-sm-12');
                 label.hide();
 
+                var childId = container.attr('id') + '_item_' + prototype.index();
+                var toggleButton = settings.toggleButtonGenerator.call(this, childId, collapsed);
+
 
                 prototype.children('legend')
                     .removeClass('col-sm-2 col-form-label')
-                    .addClass('col-sm-12 text-center h4')
+                    .addClass('col-sm-12 text-center h5')
+                    .prepend(toggleButton)
                     .append(deleteLink)
                     .append(viewLink);
                 prototype.children('.col-sm-10')
                     .removeClass('col-sm-10')
-                    .addClass('col-sm-12');
+                    .addClass('col-sm-12 collapse' + (!collapsed ? ' show' : ''))
+                    .attr('id', childId);
             }
         };
 
@@ -82,8 +103,8 @@
 
             var prototype = $(template);
 
-            setupLinks(prototype);
             container.append(prototype);
+            setupLinks(prototype, container, false);
             index++;
             container.attr('data-index', index);
             settings.addListener.call(this, container.children(':last-child'), index);
@@ -94,6 +115,7 @@
             var index = container.children('.form-group').length;
 
             container.attr('data-index', index);
+            container.addClass('collection-block');
 
             (settings.addLink || container.next().find('.collection-add-link'))
                 .click(function (e) {
@@ -107,7 +129,7 @@
             } else {
                 container.children('.form-group').each(function (index) {
                     $(this).children('legend').text(settings.blockTitle + (index + 1));
-                    setupLinks($(this));
+                    setupLinks($(this), container, true);
                 });
             }
         });

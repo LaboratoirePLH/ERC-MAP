@@ -179,3 +179,20 @@ select:invalid[multiple] {
         opacity: 1;
     }
 }
+
+.collection-block {
+    margin: 0 ($spacer * .50);
+    .collection-item {
+        border: 1px solid $map-yellow;
+        border-radius: 10px;
+
+        &>legend {
+            padding: ($spacer * .50);
+            margin-bottom: 0;
+        }
+        &>div {
+            border-top: 1px solid $map-yellow;
+            padding: ($spacer * .50);
+        }
+    }
+}

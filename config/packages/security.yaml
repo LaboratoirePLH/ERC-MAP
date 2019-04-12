@@ -15,14 +15,17 @@ security:
             anonymous: true
             provider: user
             form_login:
-                #login_path: login
-                #check_path: login_check
                 default_target_path: home
-                #username_parameter: _username
-                #password_parameter: _password
             logout:
-                #path:   /logout
-                #target: /
+                path:   /logout
+                target: /login
+            guard:
+                authenticators:
+                    - App\Security\LoginFormAuthenticator
+            remember_me:
+                secret:   '%kernel.secret%'
+                lifetime: 604800 # 1 week in seconds
+                path:     /
 
             # activate different ways to authenticate
 

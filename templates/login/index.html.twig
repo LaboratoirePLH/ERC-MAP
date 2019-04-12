@@ -17,24 +17,66 @@
     </div>
     <div class="row justify-content-center mt-4">
         <div class="col-8">
-            {% if error %}
-            <div class="alert alert-danger" role="alert">
-                <span class="badge badge-danger text-uppercase">{{ 'generic.messages.error'|trans }}</span>
-                {{ error.messageKey|trans(error.messageData, 'security') }}
-            </div>
-            {% endif %}
-            {{ form_start(form, {'action': path('login_check'), 'method': 'POST'}) }}
-            {{ form_row(form._username) }}
-            {{ form_row(form._password) }}
-            <div class="form-group row">
-                <div class="col-sm-12 text-center">
-                    {{ form_widget(form.login) }}
+            <form method="post">
+                {% if error %}
+                <div class="alert alert-danger" role="alert">
+                    <span class="badge badge-danger text-uppercase">
+                        {{ 'generic.messages.error'|trans }}
+                    </span>
+                    {{ error.messageKey|trans(error.messageData, 'security') }}
                 </div>
-            </div>
-            {{ form_rest(form) }}
-            {{ form_end(form) }}
+                {% endif %}
+                <div class="form-group row">
+                    <label class="col-form-label col-2 required" for="_username">
+                        {{ 'login_page.form.username'|trans }}
+                    </label>
+                    <div class="col-10">
+                        <input type="text" id="_username" name="_username" required="required" class="form-control"
+                            value="{{ last_username }}" autocomplete="off">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-form-label col-2 required" for="_password">
+                        {{ 'login_page.form.password'|trans }}
+                    </label>
+                    <div class="col-10">
+                        <input type="password" id="_password" name="_password" required="required" class="form-control"
+                            autocomplete="off">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-10 offset-2">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" name="_remember_me"
+                                id="_remember_me">
+                            <label class="form-check-label" for="_remember_me">
+                                {{ 'login_page.form.remember_me'|trans }}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                <div class="form-group row">
+                    <div class="col-12 text-center">
+                        <button type="submit" id="login" name="login" class="btn-primary btn">
+                            {{ 'login_page.form.login'|trans }}
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+
+
+            {#
+                    Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
+                    See https://symfony.com/doc/current/security/remember_me.html
+
+
+                #}
+
+
             <div class="form-group row d-none">
-                <div class="col-sm-12 text-center">
+                <div class="col-12 text-center">
                     <a href="#" class="btn btn-sm btn-secondary">
                         {{ 'login_page.form.reset_password'|trans }}
                     </a>

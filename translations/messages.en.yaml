@@ -132,7 +132,7 @@ source:
         region_origine: "Original Region"
         lieu_origine: "Original Location"
         lieu_decouverte: "Discovery Location"
-        iconographie: "Iconography"
+        iconographie: "Iconography ?"
         source_biblio: "Reference"
         source_biblio_n: "Reference #"
         attestation_n: "Testimony #"
@@ -348,7 +348,6 @@ autocomplete:
 misc:
     back_to_top: "Back to top"
     copyright: "ERC-MAP - Laboratoire PLH - Université Toulouse - Jean Jaurès"
-    fold_unfold: "Fold and Unfold section"
 
 pages:
     home:

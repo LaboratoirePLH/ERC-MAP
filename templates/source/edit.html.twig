@@ -424,12 +424,12 @@
                         ? (data.source.hasOwnProperty("lieuDecouverte") ? data.source.lieuDecouverte : null)
                         : (data.source.hasOwnProperty("lieuOrigine") ? data.source.lieuOrigine : null);
 
-                if (lieu === null) { return 5; }
+                if (lieu === null) { return 0; }
                 if (lieu.nomSite !== "") { return 1; }
                 else if (lieu.nomVille !== "") { return 2; }
                 else if (lieu.grandeSousRegion.sousRegion !== "") { return 3; }
                 else if (lieu.grandeSousRegion.grandeRegion !== "") { return 4; }
-                else { return 5; }
+                else { return 0; }
             }
         });
     });

@@ -231,8 +231,7 @@ element:
     name: "Élément"
     fields:
         position: "Position"
-        extrait_sans_restitution: "Extrait sans restitution"
-        extrait_avec_restitution: "Extrait avec restitution"
+        en_contexte: "Élément en Contexte"
         etat_absolu: "Etat Absolu"
         etat_morphologique: "Etat Morphologique"
         beta_code: "Beta Code"

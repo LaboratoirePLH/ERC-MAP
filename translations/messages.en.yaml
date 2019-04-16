@@ -232,7 +232,6 @@ element:
     fields:
         position: "Position"
         en_contexte: "Element in Context"
-        extrait_avec_restitution: "With restitution"
         etat_absolu: "Absolute form"
         etat_morphologique: "Morphological form"
         beta_code: "Beta Code"

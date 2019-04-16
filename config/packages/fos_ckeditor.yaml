@@ -15,6 +15,22 @@ fos_ck_editor:
             enterMode: 2
             resize_enabled: true
             resize_dir: 'vertical'
+        styling_and_font:
+            toolbar: "extra_font"
+            uiColor: "#ffffff"
+            height: '5rem'
+            removePlugins: 'elementspath,a11y,a11yhelp'
+            blockless: true
+            enterMode: 2
+            resize_enabled: true
+            resize_dir: 'vertical'
+            font_defaultLabel: 'Arial'
+            font_names: 'Arial/Arial;IFAOGreek'
+            contentsCss: '/build/ckeditor.css'
     toolbars:
         configs:
-            basic_styles: [['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript']]
+            basic_styles: ['@styles']
+            extra_font: ['@styles', '-', '@font']
+        items:
+            styles: ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript']
+            font: ['Font', 'FontSize']

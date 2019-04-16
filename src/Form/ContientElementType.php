@@ -17,7 +17,6 @@ use Doctrine\ORM\EntityRepository;
 
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use FOS\CKEditorBundle\Form\Type\CKEditorType;
 
@@ -47,7 +46,7 @@ class ContientElementType extends AbstractType
                 }
             ])
             ->add('enContexte', CKEditorType::class, [
-                'config_name' => 'text_styling_only',
+                'config_name' => 'styling_and_font',
                 'label'       => 'element.fields.en_contexte',
                 'required'    => false
             ])
@@ -55,7 +54,8 @@ class ContientElementType extends AbstractType
                 'label'      => 'element.fields.suffixe',
                 'required'   => false,
             ])
-            ->add('etatMorphologique', TextType::class, [
+            ->add('etatMorphologique', CKEditorType::class, [
+                'config_name' => 'styling_and_font',
                 'label'    => 'element.fields.etat_morphologique',
                 'required' => false
             ])

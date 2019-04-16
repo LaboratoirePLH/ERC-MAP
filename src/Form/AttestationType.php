@@ -89,17 +89,17 @@ class AttestationType extends AbstractType
                 'required' => false
             ])
             ->add('extraitSansRestitution', CKEditorType::class, [
-                'config_name' => 'text_styling_only',
+                'config_name' => 'styling_and_font',
                 'label'       => 'attestation.fields.extrait_sans_restitution',
                 'required'    => false
             ])
             ->add('extraitAvecRestitution', CKEditorType::class, [
-                'config_name' => 'text_styling_only',
+                'config_name' => 'styling_and_font',
                 'label'       => 'attestation.fields.extrait_avec_restitution',
                 'required'    => false
             ])
             ->add('translitteration', CKEditorType::class, [
-                'config_name' => 'text_styling_only',
+                'config_name' => 'styling_and_font',
                 'label'       => 'attestation.fields.translitteration',
                 'required'    => false
             ])

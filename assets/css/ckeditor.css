@@ -1,0 +1,6 @@
+@import "./../../vendor/friendsofsymfony/ckeditor-bundle/src/Resources/public/contents.css";
+
+@font-face {
+    font-family: 'IFAOGreek'; /*a name to be used later*/
+    src: url('../fonts/IFAOGrec.ttf') format('truetype');
+}

@@ -1,6 +1,7 @@
 $breadcrumb-bg: darken(lightgray, 10%);
 $breadcrumb-active-color: #343a40;
 
+@import "./fonts.css";
 @import "~bootstrap/scss/bootstrap";
 @import '~@fortawesome/fontawesome-free/css/all.css';
 @import "~datatables.net-bs4/css/dataTables.bootstrap4.min.css";
@@ -14,7 +15,7 @@ body {
     background-color: lightgray;
 
     &.login-page {
-        background-image: url('images/bkg-ercmap.jpg');
+        background-image: url('../images/bkg-ercmap.jpg');
 
         form div.form-group {
             margin-bottom: 2rem;
@@ -26,7 +27,7 @@ body {
     }
 
     header#site-header {
-        background-image: url('images/bkg-ercmap.jpg');
+        background-image: url('../images/bkg-ercmap.jpg');
 
         #site-logo {
             width: 100%;

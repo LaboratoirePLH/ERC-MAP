@@ -7,8 +7,9 @@ twig:
 fos_ck_editor:
     configs:
         text_styling_only:
-            toolbar: "basic_styles"
-            uiColor: "#ffffff"
+            plugins: "toolbar,button,enterkey,basicstyles,font,entities,floatingspace,wysiwygarea,resize"
+            toolbar: [['Bold', 'Italic', 'Underline', 'Strike'], '-', ['Subscript', 'Superscript']]
+            removeButtons: ''
             height: '5rem'
             removePlugins: 'elementspath'
             blockless: true
@@ -16,21 +17,16 @@ fos_ck_editor:
             resize_enabled: true
             resize_dir: 'vertical'
         styling_and_font:
-            toolbar: "extra_font"
-            uiColor: "#ffffff"
+            plugins: "toolbar,button,enterkey,basicstyles,font,entities,floatingspace,wysiwygarea,resize"
+            toolbar: [['Bold', 'Italic', 'Underline', 'Strike'], '-', ['Subscript', 'Superscript'], '-', ['Font']]
+            removeButtons: ''
             height: '5rem'
-            removePlugins: 'elementspath,a11y,a11yhelp'
             blockless: true
             enterMode: 2
             resize_enabled: true
             resize_dir: 'vertical'
             font_defaultLabel: 'Arial'
             font_names: 'Arial/Arial;IFAOGreek'
-            contentsCss: '/build/ckeditor.css'
-    toolbars:
-        configs:
-            basic_styles: ['@styles']
-            extra_font: ['@styles', '-', '@font']
-        items:
-            styles: ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript']
-            font: ['Font', 'FontSize']
+            contentsCss: ['/build/ckeditor/contents.css','/build/fonts.css']
+    base_path: "build/ckeditor"
+    js_path:   "build/ckeditor/ckeditor.js"

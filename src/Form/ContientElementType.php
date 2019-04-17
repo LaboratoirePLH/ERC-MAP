@@ -47,6 +47,7 @@ class ContientElementType extends AbstractType
             ])
             ->add('enContexte', CKEditorType::class, [
                 'config_name' => 'styling_and_font',
+                'attr'        => ['class' => 'semitic_keyboard'],
                 'label'       => 'element.fields.en_contexte',
                 'required'    => false
             ])
@@ -56,6 +57,7 @@ class ContientElementType extends AbstractType
             ])
             ->add('etatMorphologique', CKEditorType::class, [
                 'config_name' => 'styling_and_font',
+                'attr'        => ['class' => 'semitic_keyboard'],
                 'label'    => 'element.fields.etat_morphologique',
                 'required' => false
             ])

@@ -11,6 +11,7 @@ require('../css/app.scss');
 var $ = require('jquery');
 global.$ = global.jQuery = $;
 
+require('./jquery.ui.position.js');
 require('bootstrap');
 require('datatables.net-bs4')(window, $);
 require('datatables.net-buttons/js/buttons.html5')(window, $);
@@ -19,6 +20,7 @@ require('datatables.net-responsive')(window, $);
 require('datatables.net-responsive-bs4')(window, $);
 require('chosen-js');
 require('form-serializer');
+require('virtual-keyboard');
 
 (function ($) {
     if ($('#back-to-top').length) {
@@ -50,3 +52,4 @@ require('./dependent_selects.js');
 require('./localisation_form.js');
 require('./selectorcreate.js');
 require('./precision_indicator.js');
+require('./semitic_keyboard');

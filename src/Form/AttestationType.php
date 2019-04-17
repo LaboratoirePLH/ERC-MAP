@@ -90,16 +90,19 @@ class AttestationType extends AbstractType
             ])
             ->add('extraitSansRestitution', CKEditorType::class, [
                 'config_name' => 'styling_and_font',
+                'attr'        => ['class' => 'semitic_keyboard'],
                 'label'       => 'attestation.fields.extrait_sans_restitution',
                 'required'    => false
             ])
             ->add('extraitAvecRestitution', CKEditorType::class, [
                 'config_name' => 'styling_and_font',
+                'attr'        => ['class' => 'semitic_keyboard'],
                 'label'       => 'attestation.fields.extrait_avec_restitution',
                 'required'    => false
             ])
             ->add('translitteration', CKEditorType::class, [
                 'config_name' => 'styling_and_font',
+                'attr'        => ['class' => 'semitic_keyboard'],
                 'label'       => 'attestation.fields.translitteration',
                 'required'    => false
             ])

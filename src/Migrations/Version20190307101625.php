@@ -18,11 +18,13 @@ final class Version20190307101625 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
+        // Agentivité
         $this->addSql("INSERT INTO public.agentivite (id, nom_fr, nom_en) VALUES (1, 'Énonciateur', 'Utterer');");
         $this->addSql("INSERT INTO public.agentivite (id, nom_fr, nom_en) VALUES (2, 'Bénéficiaire / Cible', 'Beneficiary / Target');");
         $this->addSql("INSERT INTO public.agentivite (id, nom_fr, nom_en) VALUES (3, 'Opérateur rituel', 'Ritual operator');");
         $this->addSql("INSERT INTO public.agentivite (id, nom_fr, nom_en) VALUES (4, 'Autre', 'Other');");
 
+        // Catégorie Occasion
         $this->addSql("INSERT INTO public.categorie_occasion (id, nom_fr, nom_en) VALUES (1, 'Vie collective', 'Collective life');");
         $this->addSql("INSERT INTO public.categorie_occasion (id, nom_fr, nom_en) VALUES (2, 'Vie personnelle', 'Personal life');");
         $this->addSql("INSERT INTO public.categorie_occasion (id, nom_fr, nom_en) VALUES (3, 'Mobilité', 'Mobility');");
@@ -32,6 +34,7 @@ final class Version20190307101625 extends AbstractMigration
         $this->addSql("INSERT INTO public.categorie_occasion (id, nom_fr, nom_en) VALUES (7, 'Signe divin', 'Divine sign');");
         $this->addSql("INSERT INTO public.categorie_occasion (id, nom_fr, nom_en) VALUES (8, 'Phénomène naturel', 'Natural phenomenon');");
 
+        // Catégorie Matériel
         $this->addSql("INSERT INTO public.categorie_materiel (id, nom_fr, nom_en) VALUES (2, 'Animal', 'Animal');");
         $this->addSql("INSERT INTO public.categorie_materiel (id, nom_fr, nom_en) VALUES (3, 'Architecture', 'Architecture');");
         $this->addSql("INSERT INTO public.categorie_materiel (id, nom_fr, nom_en) VALUES (4, 'Armement', 'Weaponry');");
@@ -54,6 +57,7 @@ final class Version20190307101625 extends AbstractMigration
         $this->addSql("INSERT INTO public.categorie_materiel (id, nom_fr, nom_en) VALUES (15, 'Parure / Habillement', 'Finery');");
         $this->addSql("INSERT INTO public.categorie_materiel (id, nom_fr, nom_en) VALUES (17, 'Stèle / Cippe', 'Stele / Cippus');");
 
+        // Matériel
         $this->addSql("INSERT INTO public.materiel(id, nom_fr, nom_en, categorie_materiel_id) VALUES (1, 'Boisson', 'Drink', 1);");
         $this->addSql("INSERT INTO public.materiel(id, nom_fr, nom_en, categorie_materiel_id) VALUES (2, 'Épice / Aromata', 'Spice / Aromata', 1);");
         $this->addSql("INSERT INTO public.materiel(id, nom_fr, nom_en, categorie_materiel_id) VALUES (3, 'Gâteau / Pâtisserie', 'Cake / Pastry', 1);");
@@ -229,6 +233,7 @@ final class Version20190307101625 extends AbstractMigration
         $this->addSql("INSERT INTO public.materiel(id, nom_fr, nom_en, categorie_materiel_id) VALUES (173, 'Indéterminé', 'Undetermined', 20);");
         $this->addSql("INSERT INTO public.materiel(id, nom_fr, nom_en, categorie_materiel_id) VALUES (174, 'Indéterminé', 'Undetermined', 21);");
 
+        // Occasion
         $this->addSql("INSERT INTO public.occasion (id, nom_fr, nom_en, categorie_occasion_id) VALUES (1, 'Diplomatie', 'Diplomacy', 1);");
         $this->addSql("INSERT INTO public.occasion (id, nom_fr, nom_en, categorie_occasion_id) VALUES (2, 'Visite de souverain', 'Sovereign’s visit', 1);");
         $this->addSql("INSERT INTO public.occasion (id, nom_fr, nom_en, categorie_occasion_id) VALUES (3, 'Entrée en charge', 'Assumption of office', 1);");
@@ -280,6 +285,7 @@ final class Version20190307101625 extends AbstractMigration
         $this->addSql("INSERT INTO public.occasion (id, nom_fr, nom_en, categorie_occasion_id) VALUES (49, 'Incendie', 'Fire', 8);");
         $this->addSql("INSERT INTO public.occasion (id, nom_fr, nom_en, categorie_occasion_id) VALUES (50, 'Épidémie / Fléau', 'Epidemic / Plague', 8);");
 
+        // Pratique
         $this->addSql("INSERT INTO public.pratique (id, nom_fr, nom_en) VALUES (1, 'Onction', 'Ointment');");
         $this->addSql("INSERT INTO public.pratique (id, nom_fr, nom_en) VALUES (2, 'Arétalogie', 'Aretalogy');");
         $this->addSql("INSERT INTO public.pratique (id, nom_fr, nom_en) VALUES (3, 'Aspersion', 'Aspersion');");
@@ -322,13 +328,15 @@ final class Version20190307101625 extends AbstractMigration
         $this->addSql("INSERT INTO public.pratique (id, nom_fr, nom_en) VALUES (40, 'Vœu', 'Vow');");
         $this->addSql("INSERT INTO public.pratique (id, nom_fr, nom_en) VALUES (41, 'Action de grâce', 'Thanksgiving');");
 
+        // Statut affiché
         $this->addSql("INSERT INTO public.statut_affiche (id, nom_fr, nom_en) VALUES (2, 'Esclave', 'Slave');");
         $this->addSql("INSERT INTO public.statut_affiche (id, nom_fr, nom_en) VALUES (1, 'Affranchi', 'Freedman');");
         $this->addSql("INSERT INTO public.statut_affiche (id, nom_fr, nom_en) VALUES (3, 'Étranger', 'Foreigner');");
         $this->addSql("INSERT INTO public.statut_affiche (id, nom_fr, nom_en) VALUES (4, 'Citoyen', 'Citizen');");
-        $this->addSql("INSERT INTO public.statut_affiche (id, nom_fr, nom_en) VALUES (5, 'Membre d''une famille', 'Family member');");
+        $this->addSql("INSERT INTO public.statut_affiche (id, nom_fr, nom_en) VALUES (5, 'Familial', 'Family');");
+        $this->addSql("INSERT INTO public.statut_affiche (id, nom_fr, nom_en) VALUES (6, 'Associatif', 'Associative');");
 
-        $this->addSql("INSERT INTO public.activite_agent (id, nom_fr, nom_en) VALUES (1, 'Exploitation des ressources', 'Resource exploitation');");
+        // Activité Agent
         $this->addSql("INSERT INTO public.activite_agent (id, nom_fr, nom_en) VALUES (2, 'Artisanat', 'Craft');");
         $this->addSql("INSERT INTO public.activite_agent (id, nom_fr, nom_en) VALUES (3, 'Commerce', 'Trade');");
         $this->addSql("INSERT INTO public.activite_agent (id, nom_fr, nom_en) VALUES (4, 'Culte', 'Cult');");
@@ -342,12 +350,18 @@ final class Version20190307101625 extends AbstractMigration
         $this->addSql("INSERT INTO public.activite_agent (id, nom_fr, nom_en) VALUES (12, 'Savoir', 'Knowledge');");
         $this->addSql("INSERT INTO public.activite_agent (id, nom_fr, nom_en) VALUES (13, 'Sport', 'Sport');");
         $this->addSql("INSERT INTO public.activite_agent (id, nom_fr, nom_en) VALUES (14, 'Navigation', 'Navigation');");
+        $this->addSql("INSERT INTO public.activite_agent (id, nom_fr, nom_en) VALUES (1, 'Agriculture', 'Agriculture');");
+        $this->addSql("INSERT INTO public.activite_agent (id, nom_fr, nom_en) VALUES (15, 'Elevage', 'Animal husbandry');");
+        $this->addSql("INSERT INTO public.activite_agent (id, nom_fr, nom_en) VALUES (16, 'Extraction', 'Extraction');");
+        $this->addSql("INSERT INTO public.activite_agent (id, nom_fr, nom_en) VALUES (17, 'Pêche / Chasse', 'Fishing / Hunting');");
 
+        // Genre Agent
         $this->addSql("INSERT INTO public.genre (id, nom_fr, nom_en) VALUES (1, 'Masculin', 'Male');");
         $this->addSql("INSERT INTO public.genre (id, nom_fr, nom_en) VALUES (2, 'Féminin', 'Female');");
         $this->addSql("INSERT INTO public.genre (id, nom_fr, nom_en) VALUES (3, 'Non binaire', 'Non binary');");
         $this->addSql("INSERT INTO public.genre (id, nom_fr, nom_en) VALUES (4, 'Indéterminé', 'Undetermined');");
 
+        // Nature Agent
         $this->addSql("INSERT INTO public.nature (id, nom_fr, nom_en) VALUES (1, 'Humain', 'Human');");
         $this->addSql("INSERT INTO public.nature (id, nom_fr, nom_en) VALUES (2, 'Non-humain', 'Non-Human');");
         $this->addSql("INSERT INTO public.nature (id, nom_fr, nom_en) VALUES (3, 'Surhumain', 'Superhuman');");

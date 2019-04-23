@@ -1,5 +1,8 @@
 {% extends 'base.html.twig' %}
 {% block body %}
+{% if env != "prod" %}
+{{ include('partials/_test_banner.html.twig')}}
+{% endif %}
 {{ include('partials/_navigation.html.twig') }}
 {{ include('partials/_breadcrumbs.html.twig') }}
 <main class="container-fluid mb-5">

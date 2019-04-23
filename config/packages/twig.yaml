@@ -5,3 +5,4 @@ twig:
     form_themes: ['form/custom.html.twig']
     globals:
         showcase_website_url: '%showcase_website_url%'
+        env: '%env(APP_ENV)%'

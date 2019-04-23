@@ -27,6 +27,13 @@ body {
         }
     }
 
+    #test-banner {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 10000;
+    }
+
     header#site-header {
         background-image: url('../images/bkg-ercmap.jpg');
 

@@ -4,6 +4,7 @@ locale_datetime: "Y-m-d H:i:s"
 languages:
     fr: "French"
     en: "English"
+test_database : "Test Environment"
 
 nav:
     profile: "Profile"

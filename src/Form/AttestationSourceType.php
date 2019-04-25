@@ -9,8 +9,8 @@ use Symfony\Component\Form\DataMapperInterface;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-use Symfony\Component\Form\Extension\Core\Type\ButtonType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use FOS\CKEditorBundle\Form\Type\CKEditorType;
 
 
@@ -22,15 +22,15 @@ class AttestationSourceType extends AbstractType
             ->add('id', HiddenType::class, [
                 'required' => false
             ])
-            ->add('passage', CKEditorType::class, [
-                'config_name' => 'text_styling_only',
+            ->add('passage', TextType::class, [
                 'label'       => 'attestation.fields.passage',
                 'required'    => true
             ])
             ->add('extraitAvecRestitution', CKEditorType::class, [
-                'config_name' => 'text_styling_only',
+                'config_name' => 'styling_and_font',
+                'attr'        => ['class' => 'semitic_keyboard'],
                 'label'       => 'attestation.fields.extrait_avec_restitution',
-                'required'    => true
+                'required'    => false
             ])
         ;
     }

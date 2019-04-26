@@ -140,6 +140,7 @@ class Attestation extends AbstractEntity
      * @var \Doctrine\Common\Collections\Collection
      *
      * @ORM\OneToMany(targetEntity="Formule", mappedBy="attestation", orphanRemoval=true, cascade={"persist"})
+     * @ORM\OrderBy({"positionFormule" = "ASC"})
      */
     private $formules;
 
@@ -456,5 +457,15 @@ class Attestation extends AbstractEntity
             }
         }
         return true;
+    }
+
+    public function elementsFormule(): array
+    {
+        $elements = [];
+        foreach($this->getContientElements() as $ce){
+            $el = $ce->getElement();
+            $elements[$el->getId()] = $el->getEtatAbsolu();
+        }
+        return $elements;
     }
 }

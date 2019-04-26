@@ -158,7 +158,6 @@ class AttestationType extends AbstractType
                 'allow_delete'  => true,
                 'required'      => false,
             ])
-
             ->add('estDatee', CheckboxType::class, [
                 'label'      => 'generic.fields.est_datee',
                 'label_attr' => [
@@ -199,6 +198,13 @@ class AttestationType extends AbstractType
                 'label'         => false,
                 'entry_type'    => ContientElementType::class,
                 'entry_options' => array_intersect_key($options, array_flip(["translations","locale"])),
+                'allow_add'     => true,
+                'allow_delete'  => true,
+                'required'      => false,
+            ])
+            ->add('formules', CollectionType::class, [
+                'label'         => false,
+                'entry_type'    => FormuleType::class,
                 'allow_add'     => true,
                 'allow_delete'  => true,
                 'required'      => false,

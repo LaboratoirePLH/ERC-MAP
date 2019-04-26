@@ -211,12 +211,14 @@ attestation:
     view_element: "Visualiser l'Élément"
     add_occasion: "Ajouter une Occasion"
     add_materiel: "Ajouter une Matériel Associé"
+    add_formule: "Ajouter une Formule"
     choose_source: "Choisir la Source pour laquelle créer une Attestation"
     messages:
         created: "L'Attestation a été créée"
         edited: "L'Attestation a été modifiée"
         deleted: "L'Attestation a été supprimée"
         missing: "L'Attestation #%id% n'existe pas"
+        formules_unavailable: "Les Formules ne sont pas disponibles tant que l'Attestation n'a pas été sauvegardée avec au moins 1 Élément"
     sections:
         informations_source: "Informations de la Source"
         texte_attestation: "Texte de l'Attestation"

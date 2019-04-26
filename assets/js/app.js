@@ -53,3 +53,4 @@ require('./localisation_form.js');
 require('./selectorcreate.js');
 require('./precision_indicator.js');
 require('./semitic_keyboard');
+require('./formulae');

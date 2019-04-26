@@ -211,12 +211,14 @@ attestation:
     view_element: "View Element"
     add_occasion: "Add Occasion"
     add_materiel: "Add Connected Material"
+    add_formule: "Add Formule"
     choose_source: "Choose the source for which to create a Testimony"
     messages:
         created: "Testimony created"
         edited: "Testimony edited"
         deleted: "Testimony deleted"
         missing: "Testimony #%id% does not exists"
+        formules_unavailable: "Formulae are not available until you save the Testimony with at least 1 element"
     sections:
         informations_source: "Source information"
         texte_attestation: "Testimony Text"

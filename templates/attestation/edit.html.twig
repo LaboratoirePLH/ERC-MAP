@@ -191,18 +191,21 @@
 <section>
     {% include 'partials/_sectiontitle.html.twig' with {
         'title'         : 'attestation.sections.formules',
-        'collapseTarget': '#section-formules'
+        'collapseTarget': '#section-formules',
+        'counterId'     : 'formules',
+        'counter'       : attestation.formules.count()|default(0)
     } only %}
-    <div class="collapse" id="section-formules">
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
+    <div class="collapse show" id="section-formules">
+        {{ form_errors(form.formules) }}
+        {{ form_widget(form.formules) }}
+        <div class="form-group row">
+            <div class="col-sm-10 offset-sm-2">
+                <a href="#" class="btn btn-primary collection-add-link">
+                    <i class="fa fa-plus"></i>&nbsp;
+                    {{ 'attestation.add_formule'|trans }}
+                </a>
+            </div>
+        </div>
     </div>
 </section>
 
@@ -366,6 +369,37 @@
                 return $('<a href="' + url.replace('-ID-', entryId) + '" class="btn btn-sm btn-primary ml-2 mb-1" target="_blank" rel="noopener">{{ "attestation.view_element"|trans }}</a>');
             }
         });
+        const action = "{{ action }}";
+        const elements = $.parseJSON('{{ attestation.elementsFormule|json_encode()|raw }}');
+        if (action == "edit" && Object.keys(elements).length > 0) {
+            $('div#attestation_formules').collectionField({
+                confirmationModal: $('#confirm_remove_item'),
+                deleteLinkGenerator: function (el) {
+                    if ($(el).find("input[name$='[createurId]']").val() == "{{ app.user.id }}"
+                        || $(el).find("input[name$='[id]']").val() == "") {
+                        return $(
+                            '<a href="#" class="btn btn-danger ml-2 mb-1" title="{{"generic.delete"|trans}}"><i class="fas fa-trash fa-fw"></i></a>'
+                        )
+                    }
+                    return '<span class="text-center">' + $(el).find("input[name$='[createur]']").val() + '</span>';
+                },
+                inline: true,
+                setupListener: function (el) {
+                    $(el).formulaEditor({
+                        elements: elements
+                    });
+                },
+                addListener: function (newEl, idx) {
+                    $('#counter-elements').text(parseInt($('#counter-elements').text(), 10) + 1);
+                },
+                deleteListener: function (oldEl) {
+                    $('#counter-elements').text(parseInt($('#counter-elements').text(), 10) - 1);
+                },
+            });
+        }
+        else {
+            $('div#section-formules').html('<h4 class="text-center text-danger">{{"attestation.messages.formules_unavailable"|trans}}</h4>')
+        }
 
         // Gestion du champ "selectorcreate"
         $('.selectorcreate').selectOrCreate();

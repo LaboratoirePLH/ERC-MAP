@@ -18,12 +18,22 @@ trait Created
      */
     private $createur;
 
-    public function getCreateur(): ?Chercheur
+    /**
+     * @var int
+     */
+    private $createurId;
+
+    public function getCreateur(): Chercheur
     {
         return $this->createur;
     }
 
-    public function setCreateur(?Chercheur $createur): self
+    public function getCreateurId(): int
+    {
+        return $this->getCreateur()->getId();
+    }
+
+    public function setCreateur(Chercheur $createur): self
     {
         $this->createur = $createur;
         return $this;

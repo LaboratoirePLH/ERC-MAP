@@ -14,8 +14,8 @@
                     '<button class="btn btn-sm btn-outline-secondary expand-button float-left" type="button" data-toggle="collapse"' +
                     'data-target="#' + childId + '" aria-expanded="' +
                     (collapsed ? 'false' : 'true') + '"' +
-                    'onclick = "'+
-                    "$(this).children('i.fas').toggleClass('fa-rotate-90');"+
+                    'onclick = "' +
+                    "$(this).children('i.fas').toggleClass('fa-rotate-90');" +
                     '"><i class="fas fa-caret-right fa-fw' +
                     (collapsed ? '' : ' fa-rotate-90') + '"></i>' +
                     '</button>'
@@ -24,15 +24,17 @@
             viewLinkGenerator: function () { return; },
             addListener: function () { return; },
             deleteListener: function () { return; },
+            setupListener: function () { return; },
             confirmationModal: false,
             inline: false,
             addLink: null,
+            persistedClass: "collection-persisted-item",
         }, options);
 
         var setupLinks = function (prototype, container, collapsed) {
             var me = this;
             var deleteLink = settings.deleteLinkGenerator.call(this, prototype);
-            if (deleteLink !== "") {
+            if (deleteLink !== "" && $(deleteLink).prop('tagName') == 'A') {
                 deleteLink.click(function (e) {
                     e.preventDefault();
                     if (settings.confirmationModal !== null && settings.confirmationModal.length) {
@@ -93,6 +95,7 @@
                     .addClass('col-sm-12 collapse' + (!collapsed ? ' show' : ''))
                     .attr('id', childId);
             }
+            settings.setupListener.call(this, prototype);
         };
 
         var addEntry = function (container) {
@@ -128,6 +131,7 @@
                 addEntry(container);
             } else {
                 container.children('.form-group').each(function (index) {
+                    $(this).addClass(settings.persistedClass);
                     $(this).children('legend').text(settings.blockTitle + (index + 1));
                     setupLinks($(this), container, true);
                 });

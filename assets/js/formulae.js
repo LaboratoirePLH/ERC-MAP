@@ -158,7 +158,7 @@
                 );
             }
             editor.append(
-                blockRenderer(settings.labels.formule, 'formula-visualizer', formulaButtons)
+                blockRenderer(settings.labels.formule, 'formula-visualizer w-100', formulaButtons)
             );
 
             if ($(this).find("input[name$='[id]']").val() == "") {
@@ -201,7 +201,11 @@
                     group: {
                         name: uuid,
                         pull: 'clone',
-                        put: false
+                        put: true
+                    },
+                    onAdd: function (evt) {
+                        var el = evt.item;
+                        el.parentNode.removeChild(el);
                     }
                 });
                 sortableElements = new Sortable($(this).find('.formula-elements').get(0), {
@@ -210,7 +214,11 @@
                     group: {
                         name: uuid,
                         pull: 'clone',
-                        put: false
+                        put: true
+                    },
+                    onAdd: function (evt) {
+                        var el = evt.item;
+                        el.parentNode.removeChild(el);
                     }
                 });
                 sortableFormula = new Sortable($(this).find('.formula-visualizer').get(0), {
@@ -218,6 +226,8 @@
                     sort: true,
                     group: {
                         name: uuid,
+                        pull: true,
+                        put: true,
                     }
                 })
 

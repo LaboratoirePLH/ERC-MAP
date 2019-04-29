@@ -1,24 +1,44 @@
 (function ($) {
     const parenthesisStyles = [
-        'IndianRed', 'Crimson', 'DarkRed',
-        'DeepPink', 'PaleVioletRed',
-        'OrangeRed', 'DarkOrange',
-        'Gold', 'DarkKhaki',
-        'Orchid', 'MediumPurple', 'DarkMagenta', 'Indigo', 'SlateBlue',
-        'GreenYellow', 'Lime', 'MediumSpringGreen', 'MediumSeaGreen', 'ForestGreen', 'DarkGreen', 'Olive', 'MediumAquamarine', 'Teal',
-        'Cyan', 'CadetBlue', 'SteelBlue', 'RoyalBlue', 'MidnightBlue',
-        'RosyBrown', 'Sienna', 'Maroon',
-        'DimGray', 'SlateGray', 'DarkSlateGray', 'Black'
+        'Black',
+        'CadetBlue',
+        'Crimson',
+        'Cyan',
+        'DarkGreen',
+        'DarkKhaki',
+        'DarkMagenta',
+        'DarkOrange',
+        'DarkRed',
+        'DarkSlateGray',
+        'DeepPink',
+        'DimGray',
+        'ForestGreen',
+        'GreenYellow',
+        'IndianRed',
+        'Indigo',
+        'Lime',
+        'Maroon',
+        'MediumAquamarine',
+        'MediumPurple',
+        'MediumSeaGreen',
+        'MediumSpringGreen',
+        'MidnightBlue',
+        'Olive',
+        'OrangeRed',
+        'Orchid',
+        'PaleVioletRed',
+        'RosyBrown',
+        'RoyalBlue',
+        'Sienna',
+        'SlateBlue',
+        'SlateGray',
+        'SteelBlue',
+        'Teal',
     ].sort(function () { return 0.5 - Math.random(); });
-    const operatorStyles = {
-        '+': 'btn-success',
-        '/': 'btn-danger',
-        '#': 'btn-warning',
-        '=': 'btn-info'
-    };
 
     $.fn.parseFormula = function (formula) {
         var formulaElements = [];
+        var elementCpt = {};
         var parenthesisIndex = 0;
         for (var i = 0; i < formula.length; i++) {
             const chr = formula.charAt(i);
@@ -49,27 +69,38 @@
                 while (formula.charAt(++i) != ']') {
                     id.push(formula.charAt(i));
                 }
+                const elementId = parseInt(id.join(''), 10);
+                if (!elementCpt.hasOwnProperty(elementId)) { elementCpt[elementId] = 0; }
                 formulaElements.push({
                     type: 'element',
-                    id: parseInt(id.join(''), 10)
+                    id: elementId,
+                    index: ++elementCpt[elementId]
                 });
+            }
+        }
+        for (var e of formulaElements) {
+            if (e.type == 'element' && elementCpt[e.id] <= 1) {
+                e.index = null;
             }
         }
         return formulaElements;
     }
-    $.fn.formulaElementRenderer = function (formulaEl, elements) {
+    $.fn.formulaElementRenderer = function (formulaEl, settings) {
         var btn = $('<button type="button">').addClass("btn mx-1 btn-outline-dark");
         if (formulaEl.type == 'element') {
             var id = null, text = "???";
-            if (elements.hasOwnProperty(formulaEl.id)) {
+            if (settings.elements.hasOwnProperty(formulaEl.id)) {
                 id = formulaEl.id;
-                text = elements[formulaEl.id];
+                text = settings.elements[formulaEl.id];
+                if (formulaEl.index != null) {
+                    text += " <small><i>(" + formulaEl.index + ")</i></small>";
+                }
             }
-            btn.addClass('btn-primary')
+            btn.addClass(settings.elementCls)
                 .data('element-id', id)
-                .text(text);
+                .html(text);
         } else if (formulaEl.type == 'operator') {
-            btn.addClass(operatorStyles[formulaEl.display])
+            btn.addClass(settings.operatorCls)
                 .text(formulaEl.display);
         } else if (formulaEl.type == 'parenthesis') {
             const color = Number.isInteger(formulaEl.id) ? parenthesisStyles[formulaEl.id % parenthesisStyles.length] : 'Black';
@@ -80,10 +111,10 @@
         return btn;
     }
 
-    $.fn.formulaRenderer = function (formula, elements) {
+    $.fn.formulaRenderer = function (formula, settings) {
         var formula = $.fn.parseFormula(formula);
         return formula.map(function (formulaEl) {
-            return $.fn.formulaElementRenderer(formulaEl, elements)
+            return $.fn.formulaElementRenderer(formulaEl, settings)
         });
     }
 
@@ -93,7 +124,9 @@
                 formule: "Formula",
                 elements: "Elements",
                 operateurs: "Operators"
-            }
+            },
+            elementCls: 'btn-info',
+            operatorCls: 'btn-warning'
             // These are the defaults.
         }, settings);
 
@@ -118,7 +151,7 @@
             const formule = $(this).find("input[name$='[formule]']").val();
             if (formule != "") {
                 formulaButtons = $.fn.formulaRenderer(
-                    formule, settings.elements
+                    formule, settings
                 );
             }
             editor.append(
@@ -128,12 +161,12 @@
             if ($(this).find("input[name$='[id]']").val() == "") {
                 // Operators / Parenthesis
                 var operatorButtons = [
-                    $.fn.formulaElementRenderer({ type: 'parenthesis', display: '(' }),
-                    $.fn.formulaElementRenderer({ type: 'parenthesis', display: ')' }),
-                    $.fn.formulaElementRenderer({ type: 'operator', display: '+' }),
-                    $.fn.formulaElementRenderer({ type: 'operator', display: '/' }),
-                    $.fn.formulaElementRenderer({ type: 'operator', display: '#' }),
-                    $.fn.formulaElementRenderer({ type: 'operator', display: '=' }),
+                    $.fn.formulaElementRenderer({ type: 'parenthesis', display: '(' }, settings),
+                    $.fn.formulaElementRenderer({ type: 'parenthesis', display: ')' }, settings),
+                    $.fn.formulaElementRenderer({ type: 'operator', display: '+' }, settings),
+                    $.fn.formulaElementRenderer({ type: 'operator', display: '/' }, settings),
+                    $.fn.formulaElementRenderer({ type: 'operator', display: '#' }, settings),
+                    $.fn.formulaElementRenderer({ type: 'operator', display: '=' }, settings),
                 ];
                 editor.append(
                     blockRenderer(settings.labels.operateurs, 'formula-operators', operatorButtons)
@@ -147,7 +180,7 @@
                         $.fn.formulaElementRenderer({
                             type: 'element',
                             id: elementId
-                        }, settings.elements)
+                        }, settings)
                     );
                 }
                 editor.append(

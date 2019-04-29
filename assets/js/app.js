@@ -10,6 +10,8 @@ require('../css/app.scss');
 
 var $ = require('jquery');
 global.$ = global.jQuery = $;
+var Sortable = require('sortablejs');
+global.Sortable = Sortable;
 
 require('./jquery.ui.position.js');
 require('bootstrap');

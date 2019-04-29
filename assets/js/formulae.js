@@ -1,4 +1,5 @@
 (function ($) {
+    FORMULA_EDITOR_UUID = 0;
     const parenthesisStyles = [
         'Black',
         'CadetBlue',
@@ -141,8 +142,10 @@
         }
 
         return this.each(function () {
+            const uuid = "formula-editor-" + (++FORMULA_EDITOR_UUID);
             // Create overall wrapper
             var editor = $('<div class="formula-editor"></div>');
+            editor.prop('id', uuid);
 
             // Display existing formule if any
             // or an empty div
@@ -190,9 +193,36 @@
 
             editor.insertAfter($(this).find('input[type=hidden]').last());
 
-            // Setup drag & drop
+            if ($(this).find("input[name$='[id]']").val() == "") {
+                // Setup drag & drop
+                sortableOperators = new Sortable($(this).find('.formula-operators').get(0), {
+                    draggable: '.btn',
+                    sort: false,
+                    group: {
+                        name: uuid,
+                        pull: 'clone',
+                        put: false
+                    }
+                });
+                sortableElements = new Sortable($(this).find('.formula-elements').get(0), {
+                    draggable: '.btn',
+                    sort: false,
+                    group: {
+                        name: uuid,
+                        pull: 'clone',
+                        put: false
+                    }
+                });
+                sortableFormula = new Sortable($(this).find('.formula-visualizer').get(0), {
+                    draggable: '.btn',
+                    sort: true,
+                    group: {
+                        name: uuid,
+                    }
+                })
 
-            // Setup validation
+                // Setup validation
+            }
         });
     }
 })(jQuery);

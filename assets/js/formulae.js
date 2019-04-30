@@ -1,5 +1,5 @@
+FORMULA_EDITOR_UUID = 0;
 (function ($) {
-    FORMULA_EDITOR_UUID = 0;
     const parenthesisStyles = [
         'Black',
         'CadetBlue',
@@ -49,20 +49,23 @@
                         formulaElements.push({
                             type: 'parenthesis',
                             id: parenthesisIndex++,
-                            display: '('
+                            display: chr,
+                            raw: chr
                         });
                         break;
                     case ')':
                         formulaElements.push({
                             type: 'parenthesis',
                             id: --parenthesisIndex,
-                            display: ')'
+                            display: chr,
+                            raw: chr
                         });
                         break;
                     default:
                         formulaElements.push({
                             type: 'operator',
-                            display: chr
+                            display: chr,
+                            raw: chr
                         });
                 }
             } else {
@@ -75,7 +78,8 @@
                 formulaElements.push({
                     type: 'element',
                     id: elementId,
-                    index: ++elementCpt[elementId]
+                    index: ++elementCpt[elementId],
+                    raw: '[' + elementId + ']'
                 });
             }
         }
@@ -109,6 +113,7 @@
                 .css('color', 'White')
                 .text(formulaEl.display);
         }
+        btn.data('raw', formulaEl.raw);
         return btn;
     }
 
@@ -117,6 +122,11 @@
         return formula.map(function (formulaEl) {
             return $.fn.formulaElementRenderer(formulaEl, settings)
         });
+    }
+
+    $.fn.formulaValidator = function (formulaElements, settings) {
+
+        return true;
     }
 
     $.fn.formulaEditor = function (settings) {
@@ -151,7 +161,8 @@
             // or an empty div
 
             var formulaButtons = [];
-            const formule = $(this).find("input[name$='[formule]']").val();
+            var me = this;
+            const formule = $(me).find("input[name$='[formule]']").val();
             if (formule != "") {
                 formulaButtons = $.fn.formulaRenderer(
                     formule, settings
@@ -161,15 +172,15 @@
                 blockRenderer(settings.labels.formule, 'formula-visualizer w-100', formulaButtons)
             );
 
-            if ($(this).find("input[name$='[id]']").val() == "") {
+            if ($(me).find("input[name$='[id]']").val() == "") {
                 // Operators / Parenthesis
                 var operatorButtons = [
-                    $.fn.formulaElementRenderer({ type: 'parenthesis', display: '(' }, settings),
-                    $.fn.formulaElementRenderer({ type: 'parenthesis', display: ')' }, settings),
-                    $.fn.formulaElementRenderer({ type: 'operator', display: '+' }, settings),
-                    $.fn.formulaElementRenderer({ type: 'operator', display: '/' }, settings),
-                    $.fn.formulaElementRenderer({ type: 'operator', display: '#' }, settings),
-                    $.fn.formulaElementRenderer({ type: 'operator', display: '=' }, settings),
+                    $.fn.formulaElementRenderer({ type: 'parenthesis', display: '(', raw: '(' }, settings),
+                    $.fn.formulaElementRenderer({ type: 'parenthesis', display: ')', raw: ')' }, settings),
+                    $.fn.formulaElementRenderer({ type: 'operator', display: '+', raw: '+' }, settings),
+                    $.fn.formulaElementRenderer({ type: 'operator', display: '/', raw: '/' }, settings),
+                    $.fn.formulaElementRenderer({ type: 'operator', display: '#', raw: '#' }, settings),
+                    $.fn.formulaElementRenderer({ type: 'operator', display: '=', raw: '=' }, settings),
                 ];
                 editor.append(
                     blockRenderer(settings.labels.operateurs, 'formula-operators', operatorButtons)
@@ -182,7 +193,8 @@
                     elementButtons.push(
                         $.fn.formulaElementRenderer({
                             type: 'element',
-                            id: elementId
+                            id: elementId,
+                            raw: '[' + elementId + ']'
                         }, settings)
                     );
                 }
@@ -191,47 +203,65 @@
                 );
             }
 
-            editor.insertAfter($(this).find('input[type=hidden]').last());
+            editor.insertAfter($(me).find('input[type=hidden]').last());
 
-            if ($(this).find("input[name$='[id]']").val() == "") {
+            if ($(me).find("input[name$='[id]']").val() == "") {
                 // Setup drag & drop
-                sortableOperators = new Sortable($(this).find('.formula-operators').get(0), {
+                sortableOperators = new Sortable($(me).find('.formula-operators').get(0), {
                     draggable: '.btn',
                     sort: false,
                     group: {
                         name: uuid,
                         pull: 'clone',
-                        put: true
+                        put: [uuid]
                     },
                     onAdd: function (evt) {
                         var el = evt.item;
                         el.parentNode.removeChild(el);
                     }
                 });
-                sortableElements = new Sortable($(this).find('.formula-elements').get(0), {
+                sortableElements = new Sortable($(me).find('.formula-elements').get(0), {
                     draggable: '.btn',
                     sort: false,
                     group: {
                         name: uuid,
                         pull: 'clone',
-                        put: true
+                        put: [uuid]
                     },
                     onAdd: function (evt) {
                         var el = evt.item;
                         el.parentNode.removeChild(el);
                     }
                 });
-                sortableFormula = new Sortable($(this).find('.formula-visualizer').get(0), {
+                sortableFormula = new Sortable($(me).find('.formula-visualizer').get(0), {
                     draggable: '.btn',
                     sort: true,
                     group: {
                         name: uuid,
-                        pull: true,
-                        put: true,
+                        pull: [uuid],
+                        put: [uuid],
+                    },
+                    onSort: function (evt) {
+                        var formule = [];
+                        $(evt.to).find('.btn').each(function (i, b) {
+                            formule.push($(b).data('raw'));
+                        });
+                        $(me).find("input[name$='[formule]']").val(formule.join('')).trigger('change');
+
                     }
                 })
 
                 // Setup validation
+                $(me).find("input[name$='[formule]']").on('change', function (e) {
+                    const formula = $(this).val();
+                    const validation = $.fn.formulaValidator(formula, settings);
+                    if (validation !== true) {
+                        alert('formula error');
+                    } else {
+                        var buttons = $.fn.formulaRenderer(formula, settings);
+                        $(me).find('.formula-visualizer').empty().append(buttons);
+                    }
+                });
             }
         });
     }

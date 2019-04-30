@@ -306,6 +306,18 @@ class AttestationController extends AbstractController
                     $attestation->removeContientElement($ce);
                 }
             }
+
+            foreach($attestation->getFormules() as $f){
+                if($f->getFormule() !== ""){
+                    if(!$em->contains($f)){
+                        $f->setCreateur($user);
+                        $f->setAttestation($attestation);
+                        $em->persist($f);
+                    }
+                } else {
+                    $attestation->removeFormule($f);
+                }
+            }
             $this->getDoctrine()->getRepository(VerrouEntite::class)->remove($verrou);
             $em->flush();
 

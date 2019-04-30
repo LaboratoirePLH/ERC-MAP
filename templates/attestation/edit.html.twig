@@ -390,10 +390,11 @@
                     });
                 },
                 addListener: function (newEl, idx) {
-                    $('#counter-elements').text(parseInt($('#counter-elements').text(), 10) + 1);
+                    $('#counter-formules').text(parseInt($('#counter-formules').text(), 10) + 1);
+                    $(newEl).find("input[name$='[positionFormule]']").val("" + idx);
                 },
                 deleteListener: function (oldEl) {
-                    $('#counter-elements').text(parseInt($('#counter-elements').text(), 10) - 1);
+                    $('#counter-formules').text(parseInt($('#counter-formules').text(), 10) - 1);
                 },
             });
         }

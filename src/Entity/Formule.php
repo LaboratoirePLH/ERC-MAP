@@ -39,6 +39,12 @@ class Formule extends AbstractEntity
      */
     private $attestation;
 
+    /* Hack to allow the id field to be present in the form */
+    public function setId(int $id): self
+    {
+        return $this;
+    }
+
     public function getFormule(): ?string
     {
         return $this->formule;

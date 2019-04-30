@@ -136,6 +136,7 @@ FORMULA_EDITOR_UUID = 0;
                 elements: "Elements",
                 operateurs: "Operators"
             },
+            help: 'Help',
             elementCls: 'btn-info',
             operatorCls: 'btn-warning'
             // These are the defaults.
@@ -161,15 +162,19 @@ FORMULA_EDITOR_UUID = 0;
             // or an empty div
 
             var formulaButtons = [];
+            var help = "";
             var me = this;
             const formule = $(me).find("input[name$='[formule]']").val();
             if (formule != "") {
                 formulaButtons = $.fn.formulaRenderer(
                     formule, settings
                 );
+            } else {
+                help = '&nbsp; <i class="fas fa-question-circle" data-toggle="tooltip" data-placement="top" data-html="true" title="' + settings.help + '"></i>';
             }
+
             editor.append(
-                blockRenderer(settings.labels.formule, 'formula-visualizer w-100', formulaButtons)
+                blockRenderer(settings.labels.formule + help, 'formula-visualizer w-100', formulaButtons)
             );
 
             if ($(me).find("input[name$='[id]']").val() == "") {
@@ -262,6 +267,9 @@ FORMULA_EDITOR_UUID = 0;
                         $(me).find('.formula-visualizer').empty().append(buttons);
                     }
                 });
+
+                // Setup tooltip for help
+                $(me).find('[data-toggle="tooltip"]').tooltip();
             }
         });
     }

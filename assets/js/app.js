@@ -8,6 +8,7 @@
 // any CSS you require will output into a single css file (app.css in this case)
 require('../css/app.scss');
 
+window.Popper = require("popper.js").default;
 var $ = require('jquery');
 global.$ = global.jQuery = $;
 var Sortable = require('sortablejs');
@@ -46,6 +47,8 @@ require('virtual-keyboard');
             }, 700);
         });
     }
+
+    $('[data-toggle="tooltip"]').tooltip();
 })(jQuery);
 
 require('./collection.js');

@@ -325,6 +325,17 @@ chercheur:
         new_password: "New password"
         repeat_password: "Repeat new password"
 
+formule:
+    fields:
+        formule: "Formula"
+        operateurs: "Operators"
+    help: >
+        Drag and drop the elements and operators
+        <ul>
+            <li>from their original zone to the formula zone to add them</li>
+            <li>inside the formula zone to reorder them</li>
+            <li>from the formula zone to their original zone to remove them</li>
+        </ul>
 
 modals:
     confirm_deletion:

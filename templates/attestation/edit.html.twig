@@ -193,9 +193,10 @@
         'title'         : 'attestation.sections.formules',
         'collapseTarget': '#section-formules',
         'counterId'     : 'formules',
-        'counter'       : attestation.formules.count()|default(0)
+        'counter'       : attestation.formules.count()|default(0),
+        'help'          : 'formule.help'
     } only %}
-    <div class="collapse show" id="section-formules">
+    <div class="collapse" id="section-formules">
         {{ form_errors(form.formules) }}
         {{ form_widget(form.formules) }}
         <div class="form-group row">
@@ -386,7 +387,13 @@
                 inline: true,
                 setupListener: function (el) {
                     $(el).formulaEditor({
-                        elements: elements
+                        elements: elements,
+                        labels: {
+                            formule: "{{ 'formule.fields.formule'|trans }}",
+                            elements: "{{ 'attestation.sections.elements'|trans }}",
+                            operateurs: "{{ 'formule.fields.operateurs'|trans }}"
+                        },
+                        help: "{{ 'formule.help'|trans|replace({'\n': '', '\r\n': '', '\t': '', '\n\r': ''}) }}"
                     });
                 },
                 addListener: function (newEl, idx) {

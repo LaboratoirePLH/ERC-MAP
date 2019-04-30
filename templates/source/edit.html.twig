@@ -185,35 +185,10 @@
 <script type="text/javascript">
     $(document).ready(function () {
 
-        var form_old = $("form#source").serialize(),
-            modal_visible = false,
-            isFormDirty = function (form) { return $(form).serialize() !== form_old; },
-            promptConfirmation = function (e) {
-                if (!modal_visible && isFormDirty($("form#source"))) {
-                    // Cancel the event
-                    e.preventDefault();
-                    // Chrome requires returnValue to be set
-                    e.returnValue = "{{ 'modals.confirm_exit_dirty.body'|trans }}";
-                    return "{{ 'modals.confirm_exit_dirty.body'|trans }}";
-                }
-            };
-
-        $('.exit-form-link').click(function (e) {
-            e.preventDefault();
-            if (isFormDirty($("form#source"))) {
-                $(".modal#confirm_exit_dirty").modal();
-                $(".modal#confirm_exit_dirty").on('shown.bs.modal', function () { modal_visible = true; });
-                $(".modal#confirm_exit_dirty").on('hidden.bs.modal', function () { modal_visible = false; });
-                return false;
-            } else {
-                window.location = $('.exit-form-link').attr('href');
-            }
-        });
-        window.addEventListener('beforeunload', promptConfirmation);
-        window.addEventListener('unload', promptConfirmation);
-        $("form#source").on('submit', function () {
-            window.removeEventListener('beforeunload', promptConfirmation);
-            window.removeEventListener('unload', promptConfirmation);
+        $('form#biblio').watchFormDirty({
+            message: "{{ 'modals.confirm_exit_dirty.body'|trans }}",
+            modal: $(".modal#confirm_exit_dirty"),
+            exitLink: $('.exit-form-link')
         });
 
         // Gestion des champs collection

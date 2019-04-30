@@ -37,27 +37,11 @@
 <script type="text/javascript">
     $(document).ready(function () {
 
-        var form_old = $("form#biblio").serialize(),
-            modal_visible = false;
-        function isFormDirty(form) { return $(form).serialize() !== form_old; }
-
-        $('.exit-form-link').click(function (e) {
-            e.preventDefault();
-            if (isFormDirty($("form#biblio"))) {
-                $(".modal#confirm_exit_dirty").modal();
-                $(".modal#confirm_exit_dirty").on('shown.bs.modal', function () { modal_visible = true; });
-                $(".modal#confirm_exit_dirty").on('hidden.bs.modal', function () { modal_visible = false; });
-                return false;
-            } else {
-                window.location = $('.exit-form-link').attr('href');
-            }
+        $('form#biblio').watchFormDirty({
+            message: "{{ 'modals.confirm_exit_dirty.body'|trans }}",
+            modal: $(".modal#confirm_exit_dirty"),
+            exitLink: $('.exit-form-link')
         });
-        window.onbeforeunload = function () {
-            if (!modal_visible && isFormDirty($("form#biblio"))) {
-                return "{{ 'modals.confirm_exit_dirty.body'|trans }}";
-            }
-        }
-        $("form#biblio").on('submit', function () { window.onbeforeunload = null; })
 
         // Gestion des champs dépendants
         $.fn.dependentFields({

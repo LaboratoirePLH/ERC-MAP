@@ -101,8 +101,8 @@
         var addEntry = function (container) {
             var index = parseInt(container.attr('data-index'), 10),
                 template = container.attr('data-prototype')
-                    .replace(/__name__label__/g, settings.blockTitle + (index + 1))
-                    .replace(/__name__/g, index);
+                    .replace(/__name__label__/, settings.blockTitle + (index + 1))
+                    .replace(/__name__/, index);
 
             var prototype = $(template);
 

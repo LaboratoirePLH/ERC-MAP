@@ -198,9 +198,8 @@
                 )
             },
             confirmationModal: $('#confirm_remove_item'),
-            addListener: function (newEl, idx) {
-                // Gestion du champ "selectorcreate"
-                $(newEl).find('.selectorcreate').selectOrCreate();
+            setupListener: function (el) {
+                $(el).find('.selectorcreate').selectOrCreate();
                 $.fn.dependentFields({
                     corpus: {
                         conditionCallback: function (main) { return $(main).is(':checked'); },
@@ -230,10 +229,10 @@
                 )
             },
             inline: true,
-            addListener: function (newEl, idx) {
-                $(newEl).find('.element_traductions').after($('<div class="form-group row"><div class="col-sm-11 offset-sm-1"><a href="#" class="btn btn-primary collection-add-link"><i class="fa fa-plus"></i>&nbsp;{{ "element.add_traduction"| trans }}</a></div></div>'));
-                $(newEl).find('.element_traductions').collectionField({
-                    addLink: $(newEl).find('.collection-add-link'),
+            setupListener: function (el) {
+                $(el).find('.element_traductions').after($('<div class="form-group row"><div class="col-sm-11 offset-sm-1"><a href="#" class="btn btn-primary collection-add-link"><i class="fa fa-plus"></i>&nbsp;{{ "element.add_traduction"| trans }}</a></div></div>'));
+                $(el).find('.element_traductions').collectionField({
+                    addLink: $(el).find('.collection-add-link'),
                     confirmationModal: $('#confirm_remove_item'),
                     deleteLinkGenerator: function () {
                         return $(
@@ -242,9 +241,9 @@
                     },
                     inline: true
                 });
-                $(newEl).find('.selectorcreate').selectOrCreate();
-                $(newEl).find('select.autocomplete:not(.autocomplete-max-3)').chosen(chosenSettings);
-                $(newEl).find('select.autocomplete.autocomplete-max-3').chosen(chosenSettings);
+                $(el).find('.selectorcreate').selectOrCreate();
+                $(el).find('select.autocomplete:not(.autocomplete-max-3)').chosen(chosenSettings);
+                $(el).find('select.autocomplete.autocomplete-max-3').chosen(chosenSettings);
             },
             viewLinkGenerator: function (entry) {
                 const entryId = $(entry).find('.selectorcreate_selection').find('select').val();
@@ -264,10 +263,10 @@
                 )
             },
             inline: true,
-            addListener: function (newEl, idx) {
-                $(newEl).find('.element_traductions').after($('<div class="form-group row"><div class="col-sm-11 offset-sm-1"><a href="#" class="btn btn-primary collection-add-link"><i class="fa fa-plus"></i>&nbsp;{{ "element.add_traduction"| trans }}</a></div></div>'));
-                $(newEl).find('.element_traductions').collectionField({
-                    addLink: $(newEl).find('.collection-add-link'),
+            setupListener: function (el) {
+                $(el).find('.element_traductions').after($('<div class="form-group row"><div class="col-sm-11 offset-sm-1"><a href="#" class="btn btn-primary collection-add-link"><i class="fa fa-plus"></i>&nbsp;{{ "element.add_traduction"| trans }}</a></div></div>'));
+                $(el).find('.element_traductions').collectionField({
+                    addLink: $(el).find('.collection-add-link'),
                     confirmationModal: $('#confirm_remove_item'),
                     deleteLinkGenerator: function () {
                         return $(
@@ -276,9 +275,9 @@
                     },
                     inline: true
                 });
-                $(newEl).find('.selectorcreate').selectOrCreate();
-                $(newEl).find('select.autocomplete:not(.autocomplete-max-3)').chosen(chosenSettings);
-                $(newEl).find('select.autocomplete.autocomplete-max-3').chosen(chosenSettings);
+                $(el).find('.selectorcreate').selectOrCreate();
+                $(el).find('select.autocomplete:not(.autocomplete-max-3)').chosen(chosenSettings);
+                $(el).find('select.autocomplete.autocomplete-max-3').chosen(chosenSettings);
             },
             viewLinkGenerator: function (entry) {
                 const entryId = $(entry).find('.selectorcreate_selection').find('select').val();
@@ -290,12 +289,10 @@
             }
         });
 
-        // Gestion du champ "selectorcreate"
-        $('.selectorcreate').selectOrCreate();
-        // Gestion des champs select avec filtres
+
         $('select.autocomplete:not(.autocomplete-max-3)').chosen(chosenSettings);
         $('select.autocomplete.autocomplete-max-3').chosen(chosenSettings);
-        // Gestion des champs dépendants
+
         $.fn.dependentFields({
             areference: {
                 conditionCallback: function (main) { return $(main).is(':checked'); },
@@ -312,7 +309,7 @@
                 }
             },
         });
-        // Gestion des recherches Pleiades
+
         $('.localisation_form').localisationForm({
             errorMessage: "{{'generic.messages.error_unknown'|trans}}",
             notFoundErrorMessage: "{{'generic.messages.error_not_found'|trans}}",

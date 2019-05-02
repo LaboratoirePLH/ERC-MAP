@@ -22,6 +22,7 @@
     </div>
 </div>
 {{ form_end(form) }}
+
 {% include "modals/confirmation.html.twig" with {
     'modalName': 'confirm_exit_dirty',
     'uuid': 'confirm_exit_dirty',
@@ -43,7 +44,6 @@
             exitLink: $('.exit-form-link')
         });
 
-        // Gestion des champs dépendants
         $.fn.dependentFields({
             corpus: {
                 conditionCallback: function (main) { return $(main).is(':checked'); },

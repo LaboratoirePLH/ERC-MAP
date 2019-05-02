@@ -191,7 +191,6 @@
             exitLink: $('.exit-form-link')
         });
 
-        // Gestion des champs collection
         $('div#source_sourceBiblios').collectionField({
             blockTitle: '{{ "source.fields.source_biblio_n"|trans }}',
             deleteLinkGenerator: function () {
@@ -200,10 +199,10 @@
                 )
             },
             confirmationModal: $('#confirm_remove_item'),
-            addListener: function (newEl, idx) {
-                // Gestion du champ "selectorcreate"
-                $(newEl).find('.selectorcreate').selectOrCreate();
-                // Gestion du champ "main source"
+            setupListener: function (el) {
+                $(el).find('.selectorcreate').selectOrCreate();
+
+                // Add listener to uncheck other "main source" fields if one is checked
                 $('label.mainsource_field').siblings('input[type=checkbox]').off('change');
                 $('label.mainsource_field').siblings('input[type=checkbox]').on('change', function (e) {
                     if ($(this).is(':checked')) {
@@ -212,9 +211,7 @@
                             .prop('checked', false);
                     }
                 });
-                if (idx == 1) {
-                    $(newEl).find('label.mainsource_field').siblings('input[type=checkbox]').prop('checked', true);
-                }
+
                 $.fn.dependentFields({
                     corpus: {
                         conditionCallback: function (main) { return $(main).is(':checked'); },
@@ -223,6 +220,12 @@
                         }
                     }
                 });
+            },
+            addListener: function (newEl, idx) {
+                // If we are adding the first reference (i.e. source creation) we check the "main source" field
+                if (idx == 1) {
+                    $(newEl).find('label.mainsource_field').siblings('input[type=checkbox]').prop('checked', true);
+                }
             }
         });
         $('div#source_attestations').collectionField({
@@ -243,15 +246,15 @@
                 const entryId = $(entry).find('input[type=hidden]').val();
                 var url = "{{ url('attestation_show', {'id': '-ID-'}) }}";
                 if (!$.isNumeric(entryId)) {
+                    // Don't add a view link if attestation does not have an ID
+                    // (meaning it's not persisted in the database)
                     return "";
                 }
                 return $('<a href="' + url.replace('-ID-', entryId) + '" class="btn btn-sm btn-primary ml-2 mb-1" target="_blank" rel="noopener">{{ "source.view_attestation"|trans }}</a>');
             }
         });
 
-        // Gestion du champ "selectorcreate"
         $('.selectorcreate').selectOrCreate();
-        // Gestion des champs select avec filtres
         $('select.autocomplete').chosen({
             disable_search_threshold: 10,
             no_results_text: "{{ 'autocomplete.no_matches'|trans }}",
@@ -260,7 +263,6 @@
             display_selected_options: false,
             include_group_label_in_selected: true
         });
-        // Gestion des champs dépendants
         $.fn.dependentFields({
             iconography: {
                 conditionCallback: function (main) { return $(main).is(':checked'); },
@@ -280,12 +282,6 @@
                     return main.parents('.localisation_form').find('.dependent_field_' + name);
                 }
             },
-            corpus: {
-                conditionCallback: function (main) { return $(main).is(':checked'); },
-                targetFinder: function (name, main) {
-                    return main.parents('.selectorcreate').find('.dependent_field_' + name);
-                }
-            },
             auteurs: {
                 inputSelector: '.selectorcreate_decision input[type=radio]',
                 conditionCallback: function (main) {
@@ -296,7 +292,7 @@
                 targetFinder: function (name, main) { return $('.dependent_field_' + name); }
             }
         });
-        // Gestion des combobox liées
+        // Linked combobox
         $('#source_typeCategorieSource').dependentSelects({
             data_url: "{{ url('data_type_source') }}"
         });
@@ -313,26 +309,20 @@
             data_url: "{{ url('data_sous_region') }}"
         });
 
-        // Gestion des recherches Pleiades
+        // Pleiades search
         $('.localisation_form').localisationForm({
             errorMessage: "{{'generic.messages.error_unknown'|trans}}",
             notFoundErrorMessage: "{{'generic.messages.error_not_found'|trans}}",
             ambiguousErrorMessage: "{{'generic.messages.error_ambiguous'|trans}}",
             dataUrl: "{{ url('city_search') }}"
         });
-        // Gestion de la copie du lieu de découverte vers le lieu d'origine
+        // Copy discovery location field data to origin location
         $('#copy_location').on('click', function (e) {
             e.preventDefault();
 
-            var copyPath = ['lieuDecouverte', 'lieuOrigine'],
-                fields = [
-                    "source_lieuDecouverte_grandeSousRegion_grandeRegion",
-                    "source_lieuDecouverte_grandeSousRegion_sousRegion",
-                    "source_lieuDecouverte_entitePolitique",
-                    "source_lieuDecouverte_pleiadesVille",
-                ];
-
             $('#source_inSitu').prop('checked', false).trigger('change');
+
+            // Copy region data and wait for subregion combobox to be loaded before seleting the entry
             $("#source_lieuOrigine_grandeSousRegion_grandeRegion").val(
                 $("#source_lieuDecouverte_grandeSousRegion_grandeRegion").val()
             ).on('dependent:updated', function () {
@@ -340,6 +330,7 @@
                     $("#source_lieuDecouverte_grandeSousRegion_sousRegion").val()
                 ).trigger('chosen:updated');
             }).trigger('chosen:updated').trigger('change');
+
             $("#source_lieuOrigine_entitePolitique").val(
                 $("#source_lieuDecouverte_entitePolitique").val()
             ).trigger('chosen:updated');
@@ -352,7 +343,7 @@
             return false;
         });
 
-        // Indicateurs de fiabilité
+        // Fiability indicator
         var displayPrecisionIndicator = function (el, value) {
             $(el).text("{{ 'generic.fields.precision'|trans }} : " + value);
             var newClass;

@@ -282,24 +282,22 @@
             blockTitle: '{{ "attestation.fields.occasion_n"|trans }}',
             deleteLink: '{{ "generic.delete"|trans }}',
             confirmationModal: $('#confirm_remove_item'),
-            addListener: function (newEl, idx) {
-                // Gestion du champ "selectorcreate"
-                $(newEl).dependentSelects({
+            setupListener: function (el) {
+                $(el).find('.typeCategorieOccasion').dependentSelects({
                     data_url: "{{ url('data_type_occasion') }}"
                 });
-                $('select.autocomplete').chosen(chosenSettings);
+                $(el).find('select.autocomplete').chosen(chosenSettings);
             }
         });
         $('div#attestation_attestationMateriels').collectionField({
             blockTitle: '{{ "attestation.fields.materiel_n"|trans }}',
             deleteLink: '{{ "generic.delete"|trans }}',
             confirmationModal: $('#confirm_remove_item'),
-            addListener: function (newEl, idx) {
-                // Gestion du champ "selectorcreate"
-                $(newEl).find('.typeCategorieMateriel').dependentSelects({
+            setupListener: function (el) {
+                $(el).find('.typeCategorieMateriel').dependentSelects({
                     data_url: "{{ url('data_materiel') }}"
                 });
-                $('select.autocomplete').chosen(chosenSettings);
+                $(el).find('select.autocomplete').chosen(chosenSettings);
             }
         });
 
@@ -307,13 +305,15 @@
             blockTitle: '{{ "attestation.fields.agent_n"|trans }}',
             deleteLink: '{{ "generic.delete"|trans }}',
             confirmationModal: $('#confirm_remove_item'),
-            addListener: function (newEl, idx) {
+            setupListener: function (el) {
                 $.fn.dependentFields(dependentFieldsSettings);
-                $('.localisation_form').localisationForm(localisationFormSettings);
-                $('select.autocomplete').chosen(chosenSettings);
-                $(newEl).find('.grandeSousRegion').dependentSelects({
+                $(el).find('.localisation_form').localisationForm(localisationFormSettings);
+                $(el).find('select.autocomplete').chosen(chosenSettings);
+                $(el).find('.grandeSousRegion').dependentSelects({
                     data_url: "{{ url('data_sous_region') }}"
                 });
+            },
+            addListener: function (newEl, idx) {
                 $('#counter-agents').text(parseInt($('#counter-agents').text(), 10) + 1);
             },
             deleteListener: function (oldEl) {
@@ -325,9 +325,23 @@
             blockTitle: '{{ "attestation.fields.element_n"|trans }}',
             deleteLink: '{{ "generic.delete"|trans }}',
             confirmationModal: $('#confirm_remove_item'),
+            setupListener: function (el) {
+                $(el).find('select.autocomplete').chosen(chosenSettings);
+                $(el).find('.selectorcreate').selectOrCreate();
+                $(el).find('.element_traductions').after($('<a href="#" class="btn btn-primary collection-add-link link-add-traduction"><i class="fa fa-plus"></i>&nbsp;{{ "element.add_traduction"|trans }}</a>'));
+                $(el).find('.element_traductions').collectionField({
+                    addLink: $(el).find('.link-add-traduction'),
+                    blockTitle: "#",
+                    confirmationModal: $('#confirm_remove_item'),
+                    deleteLinkGenerator: function () {
+                        return $(
+                            '<a href="#" class="btn btn-danger ml-2 mb-1" title="{{"generic.delete"|trans}}"><i class="fas fa-trash fa-fw"></i></a>'
+                        )
+                    },
+                    inline: true
+                });
+            },
             addListener: function (newEl, idx) {
-                $('select.autocomplete').chosen(chosenSettings);
-                $(newEl).find('.selectorcreate').selectOrCreate();
                 $(newEl).find('input[type=number]').val(idx);
                 $('#counter-elements').text(parseInt($('#counter-elements').text(), 10) + 1);
             },
@@ -343,9 +357,9 @@
                 return $('<a href="' + url.replace('-ID-', entryId) + '" class="btn btn-sm btn-primary ml-2 mb-1" target="_blank" rel="noopener">{{ "attestation.view_element"|trans }}</a>');
             }
         });
-        const action = "{{ action }}";
+
         const elements = $.parseJSON('{{ attestation.elementsFormule|json_encode()|raw }}');
-        if (action == "edit" && Object.keys(elements).length > 0) {
+        if ("{{ action }}" == "edit" && Object.keys(elements).length > 0) {
             $('div#attestation_formules').collectionField({
                 confirmationModal: $('#confirm_remove_item'),
                 deleteLinkGenerator: function (el) {
@@ -382,27 +396,18 @@
             $('div#section-formules').html('<h4 class="text-center text-danger">{{"attestation.messages.formules_unavailable"|trans}}</h4>')
         }
 
-        // Gestion du champ "selectorcreate"
+
         $('.selectorcreate').selectOrCreate();
-        // Gestion des champs select avec filtres
+
         $('select.autocomplete').chosen(chosenSettings);
-        // Gestion des champs dépendants
+
         $.fn.dependentFields(dependentFieldsSettings);
-        // Gestion des recherches Pleiades
+
         $('.localisation_form').localisationForm(localisationFormSettings);
 
-
-        // Gestion des combobox liées
-        $('.typeCategorieOccasion').dependentSelects({
-            data_url: "{{ url('data_type_occasion') }}"
-        });
         $('#attestation_localisation_grandeSousRegion').dependentSelects({
             data_url: "{{ url('data_sous_region') }}"
         });
-        $('.typeCategorieMateriel').dependentSelects({
-            data_url: "{{ url('data_materiel') }}"
-        });
-
 
     });
 </script>

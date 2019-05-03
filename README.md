@@ -10,6 +10,7 @@ ERC-MAP
 * jQuery 3
 * [ChosenJS for jQuery](https://harvesthq.github.io/chosen/) (autocomplete combo box)
 * [DataTables for jQuery](https://datatables.net/) (improved data tables)
+* [SortableJS](https://github.com/SortableJS/Sortable) (drag&drop)
 
 ## Installation notes
 
@@ -22,5 +23,8 @@ ERC-MAP
 
     # Apply migrations and load seed data
     php bin/console doctrine:migrations:migrate --no-interaction
+
+    # Compile front-end resources
+    npm run build
 ```
 * Start (or restart) web server

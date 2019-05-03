@@ -366,3 +366,10 @@ pages:
     home:
         title: "Accueil"
         logged_as: "Vous êtes connecté en tant que"
+        tools: "Outils"
+        bibliography: "Bibliographie"
+        publications: "Publications"
+        online_resources: "Ressources en ligne"
+        display: "Afficher"
+        network_analysis: "Analyse de Réseaux"
+        webmapping: "Webmapping"

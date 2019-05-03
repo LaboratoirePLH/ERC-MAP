@@ -75,6 +75,26 @@ body {
     main {
         padding-top: 40px;
 
+        #homepage {
+            .homeblock {
+                background-color: $jumbotron-bg;
+                @include border-radius($border-radius-lg);
+
+                &:hover{
+                    background-color: $map-yellow;
+                }
+
+                .btn {
+                    background-color: rgba(67, 67, 67, 0.4);
+                    color: #fff;
+
+                    &:hover {
+                        background-color: rgba(67, 67, 67, 1);
+                    }
+                }
+            }
+        }
+
         form {
             .col-form-label {
                 font-weight: bold;

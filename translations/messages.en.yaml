@@ -366,3 +366,10 @@ pages:
     home:
         title: "Homepage"
         logged_as: "You are logged in as"
+        tools: "Tools"
+        bibliography: "Bibliography"
+        publications: "Publications"
+        online_resources: "Online Resources"
+        display: "Display"
+        network_analysis: "Network Analysis"
+        webmapping: "Webmapping"

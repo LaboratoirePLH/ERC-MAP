@@ -344,6 +344,21 @@ class AttestationController extends AbstractController
     }
 
     /**
+     * @Route("/attestation/{id}/canceledit", name="attestation_canceledit")
+     */
+    public function canceledit($id, Request $request){
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $attestation = $this->getDoctrine()
+                            ->getRepository(Attestation::class)
+                            ->find($id);
+        $verrou = $this->getDoctrine()->getRepository(VerrouEntite::class)->fetch($attestation);
+        if($verrou !== null && $verrou->isWritable($user)){
+            $this->getDoctrine()->getRepository(VerrouEntite::class)->remove($verrou);
+        }
+        return $this->redirectToRoute('attestation_list');
+    }
+
+    /**
      * @Route("/attestation/{id}/delete", name="attestation_delete")
      */
     public function delete($id, Request $request, TranslatorInterface $translator)

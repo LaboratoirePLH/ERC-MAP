@@ -32,10 +32,10 @@ class VerrouEntiteRepository extends ServiceEntityRepository
             case $entite instanceof Source:
                 $qb = $qb->where(":e MEMBER OF v.sources");
                 break;
-                case $entite instanceof Attestation:
+            case $entite instanceof Attestation:
                 $qb = $qb->where(":e MEMBER OF v.attestations");
                 break;
-                case $entite instanceof Element:
+            case $entite instanceof Element:
                 $qb = $qb->where(":e MEMBER OF v.elements");
                 break;
         }
@@ -86,8 +86,8 @@ class VerrouEntiteRepository extends ServiceEntityRepository
 
     public function remove(VerrouEntite $verrou) {
         $this->getEntityManager()->remove($verrou);
-        $this->getEntityManager()->flush();
         $this->purge();
+        $this->getEntityManager()->flush();
     }
 
     public function purge(){

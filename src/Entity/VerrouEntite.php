@@ -14,7 +14,6 @@ class VerrouEntite extends AbstractEntity
 {
     use Traits\EntityId;
 
-
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Source", mappedBy="verrou")
      */

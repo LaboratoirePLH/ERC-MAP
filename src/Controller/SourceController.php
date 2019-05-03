@@ -271,6 +271,21 @@ class SourceController extends AbstractController
     }
 
     /**
+     * @Route("/source/{id}/canceledit", name="source_canceledit")
+     */
+    public function canceledit($id, Request $request){
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $source = $this->getDoctrine()
+                       ->getRepository(Source::class)
+                       ->find($id);
+        $verrou = $this->getDoctrine()->getRepository(VerrouEntite::class)->fetch($source);
+        if($verrou !== null && $verrou->isWritable($user)){
+            $this->getDoctrine()->getRepository(VerrouEntite::class)->remove($verrou);
+        }
+        return $this->redirectToRoute('source_list');
+    }
+
+    /**
      * @Route("/source/{id}/delete", name="source_delete")
      */
     public function delete($id, Request $request, TranslatorInterface $translator){

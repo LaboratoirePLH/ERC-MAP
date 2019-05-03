@@ -21,6 +21,7 @@
             $(settings.exitLink).click(function (e) {
                 e.preventDefault();
                 if (isFormDirty($(this))) {
+                    $(settings.modal).find('form').attr('action', $(settings.exitLink).attr('href'));
                     $(settings.modal).modal();
                     $(settings.modal).on('shown.bs.modal', function () { modal_visible = true; });
                     $(settings.modal).on('hidden.bs.modal', function () { modal_visible = false; });

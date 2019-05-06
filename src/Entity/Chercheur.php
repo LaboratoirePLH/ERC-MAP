@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoder;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
@@ -57,7 +58,7 @@ class Chercheur extends AbstractEntity implements UserInterface
      *
      * @ORM\Column(name="preference_langue", type="string", length=2, nullable=true)
      */
-    private $preferenceLangue;
+    private $preferenceLangue = "fr";
 
     /**
      * @var \DateTime|null
@@ -92,6 +93,8 @@ class Chercheur extends AbstractEntity implements UserInterface
     {
         $this->projets = new \Doctrine\Common\Collections\ArrayCollection();
         $this->verrous = new ArrayCollection();
+
+        $this->setDateAjout(new \DateTime());
     }
 
     public function getPrenomNom(): ?string
@@ -149,6 +152,19 @@ class Chercheur extends AbstractEntity implements UserInterface
         return $this;
     }
 
+    private $newPassword;
+
+    public function getNewPassword(): ?string
+    {
+        return $this->newPassword;
+    }
+
+    public function setNewPassword(?string $newPassword): self
+    {
+        $this->newPassword = $newPassword;
+        return $this;
+    }
+
     public function getDateAjout(): ?\DateTimeInterface
     {
         return $this->dateAjout;
@@ -192,7 +208,7 @@ class Chercheur extends AbstractEntity implements UserInterface
     {
         if (!$this->projets->contains($projet)) {
             $this->projets[] = $projet;
-            $projets->addChercheur($this);
+            $projet->addChercheur($this);
         }
 
         return $this;
@@ -202,10 +218,19 @@ class Chercheur extends AbstractEntity implements UserInterface
     {
         if ($this->projets->contains($projet)) {
             $this->projets->removeElement($projet);
-            $projets->removeChercheur($this);
+            $projet->removeChercheur($this);
         }
 
         return $this;
+    }
+
+    public function getNomsProjets(): string
+    {
+        $projets = [];
+        foreach($this->getProjets() as $p){
+            $projets[] = $p->getNomFr();
+        }
+        return implode(', ', $projets);
     }
 
     public function getSalt()

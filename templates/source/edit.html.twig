@@ -12,7 +12,7 @@
 
 <div class="row justify-content-center">
     <div class="col-sm-3">
-        {% include "partials/_formbuttons.html.twig" with {'exitUrl' : url('source_canceledit', {'id': source.id})} %}
+        {% include "partials/_formbuttons.html.twig" with {'exitUrl' : action == "edit" ? url('source_canceledit', {'id': source.id}) : url('source_list')} %}
     </div>
     <div class="col-sm-6 text-center">
         {% if action == 'edit' %}
@@ -157,7 +157,7 @@
 <hr />
 <div class="form-group row">
     <div class="col-sm-12 text-center">
-        {% include "partials/_formbuttons.html.twig" with {'exitUrl' : url('source_canceledit', {'id': source.id})} %}
+        {% include "partials/_formbuttons.html.twig" with {'exitUrl' : action == "edit" ? url('source_canceledit', {'id': source.id}) : url('source_list')} %}
     </div>
 </div>
 {{ form_rest(form) }}

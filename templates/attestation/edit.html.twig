@@ -12,7 +12,7 @@
 
 <div class="row justify-content-center">
     <div class="col-sm-3">
-        {% include "partials/_formbuttons.html.twig" with {'exitUrl' : url('attestation_canceledit', {'id': attestation.id})} %}
+        {% include "partials/_formbuttons.html.twig" with {'exitUrl' : action == 'edit' ? url('attestation_canceledit', {'id': attestation.id}) : url('attestation_list')} %}
     </div>
     <div class="col-sm-6 text-center">
         {% if action == 'edit' %}
@@ -213,7 +213,7 @@
 <hr />
 <div class="form-group row">
     <div class="col-sm-12 text-center">
-        {% include "partials/_formbuttons.html.twig" with {'exitUrl' : url('attestation_canceledit', {'id': attestation.id})} %}
+        {% include "partials/_formbuttons.html.twig" with {'exitUrl' : action == 'edit' ? url('attestation_canceledit', {'id': attestation.id}) : url('attestation_list')} %}
     </div>
 </div>
 {{ form_rest(form) }}
@@ -358,7 +358,7 @@
             }
         });
 
-        const elements = $.parseJSON('{{ attestation.elementsFormule|json_encode()|raw }}');
+        const elements = $.parseJSON('{{ attestation.elementsFormule|default([])|json_encode()|raw }}');
         if ("{{ action }}" == "edit" && Object.keys(elements).length > 0) {
             $('div#attestation_formules').collectionField({
                 confirmationModal: $('#confirm_remove_item'),

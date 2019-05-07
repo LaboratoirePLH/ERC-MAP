@@ -23,6 +23,20 @@
             </h2>
         </div>
     </div>
+    {% set bags = {'error' : 'danger', 'warning' : 'warning', 'success': 'success'} %}
+    {% for bag, color in bags %}
+    {% for flashMessage in app.session.flashbag.get(bag) %}
+    <div class="row justify-content-center">
+        <div class="col-sm-6 alert alert-{{color}}" role="alert">
+            <span class="badge badge-{{color}} text-uppercase">{{bag}}</span>
+            {{ flashMessage|trans }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </div>
+    {% endfor %}
+    {% endfor %}
     <div class="row justify-content-center mt-4">
         <div class="col-6">
             <form method="post">
@@ -73,19 +87,9 @@
                 </div>
             </form>
 
-
-
-            {#
-                    Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
-                    See https://symfony.com/doc/current/security/remember_me.html
-
-
-                #}
-
-
-            <div class="form-group row d-none">
+            <div class="form-group row">
                 <div class="col-12 text-center">
-                    <a href="#" class="btn btn-sm btn-secondary">
+                    <a href="{{ url('forgotten_password') }}" class="btn btn-sm btn-secondary">
                         {{ 'login_page.form.reset_password'|trans }}
                     </a>
                 </div>

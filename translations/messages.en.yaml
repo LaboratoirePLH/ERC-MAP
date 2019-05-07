@@ -22,12 +22,22 @@ nav:
 login_page:
     login_required: "Login required"
     access_database: "Access the database"
+    reset_password: "Reset your password"
+    input_username: "Input your username or email address to receive a reset link"
+    input_new_password: "Input your new password"
     form:
         username: "Username"
+        username_email: "Username or Email Address"
         password: "Password"
         remember_me: "Remember me ?"
         login: "Login"
         reset_password: "Reset password"
+        send_link: "Send link"
+    message:
+        unknown_user: "Could not find user"
+        reset_link_sent: "Reset link sent"
+        unknown_token: "Invalid reset link"
+        password_reset: "Password has been updated"
 
 generic:
     actions: "Actions"
@@ -373,3 +383,10 @@ pages:
         display: "Display"
         network_analysis: "Network Analysis"
         webmapping: "Webmapping"
+
+mails:
+    password_reset:
+        title: "ERC-MAP - Password reset"
+        intro: "Please click the following link to reset your password on the ERC-MAP database"
+        action: "Reset my password"
+        outro: "You received this e-mail because someone asked to reset your password. If you were not the one asking, please ignore this email."

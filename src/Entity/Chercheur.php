@@ -75,6 +75,13 @@ class Chercheur extends AbstractEntity implements UserInterface
     private $role = "user";
 
     /**
+     * @var string|null
+     *
+     * @ORM\Column(name="reset_token", type="string", length=255, nullable=true)
+     */
+    private $resetToken;
+
+    /**
      * @var \Doctrine\Common\Collections\Collection
      *
      * @ORM\ManyToMany(targetEntity="Projet", mappedBy="chercheurs")
@@ -184,6 +191,17 @@ class Chercheur extends AbstractEntity implements UserInterface
     public function setRole(?string $role): self
     {
         $this->role = $role;
+        return $this;
+    }
+
+    public function getResetToken(): ?string
+    {
+        return $this->resetToken;
+    }
+
+    public function setResetToken(?string $resetToken): self
+    {
+        $this->resetToken = $resetToken;
         return $this;
     }
 

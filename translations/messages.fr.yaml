@@ -22,12 +22,22 @@ nav:
 login_page:
     login_required: "Identification requise"
     access_database: "Accès à la base de données"
+    reset_password: "Réinitialiser votre mot de passe"
+    input_username: "Saisissez votre nom d'utilisateur ou adresse e-mail pour recevoir un lien de réinitialisation"
+    input_new_password: "Saisissez votre nouveau mot de passe"
     form:
         username: "Nom d'utilisateur"
+        username_email: "Nom d'utilisateur ou Adresse e-mail"
         password: "Mot de passe"
         remember_me: "Se souvenir de moi ?"
         login: "Connexion"
         reset_password: "Réinitialiser le mot de passe"
+        send_link: "Envoyer le lien"
+    message:
+        unknown_user: "Impossible de trouver l'utilisateur"
+        reset_link_sent: "Lien de réinitialisation envoyé"
+        unknown_token: "Lien de réinitialisation invalide"
+        password_reset: "Mot de passe réinitialisé"
 
 generic:
     actions: "Actions"
@@ -373,3 +383,10 @@ pages:
         display: "Afficher"
         network_analysis: "Analyse de Réseaux"
         webmapping: "Webmapping"
+
+mails:
+    password_reset:
+        title: "ERC-MAP - Réinitialisation du mot de passe"
+        intro: "Veuillez cliquer sur le lien suivant afin de réinitialiser votre mot de passe à la base de données ERC-MAP"
+        action: "Réinitialiser mon mot de passe"
+        outro: "Vous avez reçu ce mail car quelqu'un a demandé la réinitialisation de votre mot de passe. Si ce n'est pas vous, veuillez ignorer ce mail."

@@ -79,6 +79,7 @@ class SelectOrCreateType extends AbstractType implements DataMapperInterface
         $resolver->setDefault('locale', 'en');
         $resolver->setDefault('allow_none', false);
         $resolver->setDefault('default_decision', null);
+        $resolver->setDefault('action', null);
     }
 
     public function buildView(FormView $view, FormInterface $form, array $options)
@@ -117,13 +118,18 @@ class SelectOrCreateType extends AbstractType implements DataMapperInterface
 
         // initialize form field values
         // there is no data yet, set decision to default choice
-        if (null === $data) {
+        $action = $forms['decision']->getParent()->getConfig()->getOption('action');
+        if (null === $data && $action === "create") {
             $forms['decision']->setData(
                 $forms['decision']->getParent()->getConfig()->getOption('default_decision')
             );
             return;
         }
-        $forms['decision']->setData("select");
+        $decision = "select";
+        if($forms['decision']->getParent()->getConfig()->getOption('allow_none') === true && $data === null){
+            $decision = null;
+        }
+        $forms['decision']->setData($decision);
         $forms['selection']->setData($data);
         $forms['creation']->setData(null);
     }

@@ -252,6 +252,7 @@ class SourceType extends AbstractType
                 'selection_choice_label'  => 'affichage'.ucfirst($locale),
                 'allow_none'              => true,
                 'default_decision'        => 'select',
+                'action'                  => $options['action'],
                 'selection_query_builder' => function (EntityRepository $er) use ($locale) {
                     return $er->createQueryBuilder('e')
                         ->orderBy('e.nom'.ucfirst($locale), 'ASC');

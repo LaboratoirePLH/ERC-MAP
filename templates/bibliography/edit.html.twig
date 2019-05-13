@@ -1,6 +1,6 @@
 {% extends 'authenticated.html.twig' %}
 {% block title %}
-{{ ('biblio.' ~ action)|trans }}{{ biblio is defined ? ' #'~biblio.id : ''}}
+{{ ('biblio.' ~ action)|trans((biblio is defined ? {'%id%': biblio.id} : {})) }}
 {% endblock %}
 {% block content %}
 

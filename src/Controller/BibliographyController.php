@@ -140,6 +140,7 @@ class BibliographyController extends AbstractController
 
         return $this->render('bibliography/edit.html.twig', [
             'controller_name' => 'BibliographyController',
+            'biblio'          => $biblio,
             'action'          => 'edit',
             'locale'          => $request->getLocale(),
             'form'            => $form->createView(),

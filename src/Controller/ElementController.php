@@ -86,7 +86,7 @@ class ElementController extends AbstractController
         $user = $this->get('security.token_storage')->getToken()->getUser();
 
         $element = new Element();
-        $element->setAReference(true);
+        // $element->setAReference(true);
 
         $form   = $this->get('form.factory')->create(ElementType::class, $element, [
             'element'      => $element,

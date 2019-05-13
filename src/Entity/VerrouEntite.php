@@ -15,17 +15,17 @@ class VerrouEntite extends AbstractEntity
     use Traits\EntityId;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Source", mappedBy="verrou")
+     * @ORM\OneToMany(targetEntity="App\Entity\Source", mappedBy="verrou", fetch="EAGER")
      */
     private $sources;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Attestation", mappedBy="verrou")
+     * @ORM\OneToMany(targetEntity="App\Entity\Attestation", mappedBy="verrou", fetch="EAGER")
      */
     private $attestations;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Element", mappedBy="verrou")
+     * @ORM\OneToMany(targetEntity="App\Entity\Element", mappedBy="verrou", fetch="EAGER")
      */
     private $elements;
 

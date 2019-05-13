@@ -39,13 +39,10 @@ class VerrouEntiteRepository extends ServiceEntityRepository
                 $qb = $qb->where(":e MEMBER OF v.elements");
                 break;
         }
-        $qb = $qb->setParameter('e', $entite);
+        $qb = $qb->setParameter('e', $entite)
+                 ->setMaxResults(1);
         $verrou = $qb->getQuery()
                      ->getOneOrNullResult();
-        if($verrou !== null && $verrou->getDateFin() <= new \DateTime()){
-            $this->remove($verrou);
-            $verrou = null;
-        }
 
         return $verrou;
     }
@@ -86,8 +83,8 @@ class VerrouEntiteRepository extends ServiceEntityRepository
 
     public function remove(VerrouEntite $verrou) {
         $this->getEntityManager()->remove($verrou);
-        $this->purge();
         $this->getEntityManager()->flush();
+        $this->purge();
     }
 
     public function purge(){
@@ -97,5 +94,6 @@ class VerrouEntiteRepository extends ServiceEntityRepository
              ->setParameter(':date', new \DateTime())
              ->getQuery()
              ->getResult();
+        $this->getEntityManager()->flush();
     }
 }

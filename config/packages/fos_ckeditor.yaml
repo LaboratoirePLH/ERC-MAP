@@ -16,6 +16,7 @@ fos_ck_editor:
             enterMode: 2
             resize_enabled: true
             resize_dir: 'vertical'
+            contentsCss: ['/build/ckeditor/contents.css','/build/ckeditorcustom.css']
         styling_and_font:
             plugins: "toolbar,button,enterkey,basicstyles,font,entities,floatingspace,wysiwygarea,resize"
             toolbar: [['Bold', 'Italic', 'Underline', 'Strike'], '-', ['Subscript', 'Superscript'], '-', ['Font']]
@@ -27,7 +28,7 @@ fos_ck_editor:
             resize_dir: 'vertical'
             font_defaultLabel: 'Arial'
             font_names: 'Arial/Arial;IFAOGreek'
-            contentsCss: ['/build/ckeditor/contents.css','/build/fonts.css']
+            contentsCss: ['/build/ckeditor/contents.css','/build/ckeditorcustom.css']
     base_path: "build/ckeditor"
     js_path:   "build/ckeditor/ckeditor.js"
     autoload:  false

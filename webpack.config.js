@@ -20,6 +20,7 @@ Encore
     .addEntry('app', './assets/js/app.js')
     //.addEntry('page2', './assets/js/page2.js')
     .addStyleEntry('fonts', './assets/css/fonts.css')
+    .addStyleEntry('ckeditorcustom', './assets/css/ckeditorcustom.css')
 
     // will require an extra script tag for runtime.js
     // but, you probably want this, unless you're building a single-page app

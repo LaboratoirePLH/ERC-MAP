@@ -30,3 +30,4 @@ fos_ck_editor:
             contentsCss: ['/build/ckeditor/contents.css','/build/fonts.css']
     base_path: "build/ckeditor"
     js_path:   "build/ckeditor/ckeditor.js"
+    autoload:  false

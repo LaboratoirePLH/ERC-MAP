@@ -98,12 +98,42 @@
             settings.setupListener.call(this, prototype);
         };
 
+        var replacePlaceholders = function (prototype, label, name) {
+            // Check if string contains "data-prototype" :
+            if (prototype.match(/data-prototype="[^"]+"/) === null) {
+                // If it doesn't, do it the simple way, global replace
+                return prototype.replace(/__name__label__/g, label)
+                    .replace(/__name__/g, name);
+            }
+            // Else :
+            else {
+                // Replace the first __name__label__
+                prototype = prototype.replace(/__name__label__/, label);
+                // Then look for the field name with brackets, e.g. element[theonymesImplicites][__name__]
+                // (it's the first occurence of [__name__] after replacing the label)
+                // Use a REGEX to get the part of the field before "[__name__]",
+                // because we will also need to replace those in the sub-prototype
+                var matches = prototype.match(/"([^"]+\[__name__\])[^"]+"/);
+                if (matches === null || matches.length < 2) {
+                    throw "Regex Error";
+                }
+                var strToReplace1 = matches[1];
+                // Then deduce the field name with underscores, e.g. element_theonymesImplicites___name__
+                strToReplace2 = strToReplace1.replace(/\[/g, '_').replace(/\]/g, '');
+                // In those, replace the __name__
+                var replacement1 = strToReplace1.replace(/__name__/g, name),
+                    replacement2 = strToReplace1.replace(/__name__/g, name);
+                // Then replace the corresponding string in the prototype
+                return prototype.replace(new RegExp(strToReplace1, 'g'), replacement1)
+                    .replace(new RegExp(strToReplace2, 'g'), replacement2);
+            }
+        }
+
         var addEntry = function (container) {
             var index = parseInt(container.attr('data-index'), 10),
-                template = container.attr('data-prototype')
-                    .replace(/__name__label__/, settings.blockTitle + (index + 1))
-                    .replace(/__name__/, index);
+                template = container.attr('data-prototype');
 
+            template = replacePlaceholders(template, settings.blockTitle + (index + 1), index);
             var prototype = $(template);
 
             container.append(prototype);

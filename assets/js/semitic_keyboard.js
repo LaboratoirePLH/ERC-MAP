@@ -50,6 +50,7 @@ SEMITIC_KEYS = [
                     keyboardTarget.data('keyboard').accept();
                 });
             }
+            return true;
         });
     }
 })(jQuery);

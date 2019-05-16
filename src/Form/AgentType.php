@@ -26,7 +26,8 @@ class AgentType extends AbstractType
         $builder
             ->add('designation', CKEditorType::class, [
                 'label'       => 'agent.fields.designation',
-                'config_name' => 'text_styling_only',
+                'config_name' => 'styling_and_font',
+                'attr'        => ['class' => 'semitic_keyboard'],
                 'required'    => false
             ])
             ->add('agentivites', EntityType::class, [

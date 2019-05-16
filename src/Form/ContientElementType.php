@@ -15,6 +15,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Doctrine\ORM\EntityRepository;
 
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -55,11 +56,21 @@ class ContientElementType extends AbstractType
                 'label'      => 'element.fields.suffixe',
                 'required'   => false,
             ])
-            ->add('etatMorphologique', CKEditorType::class, [
-                'config_name' => 'styling_and_font',
-                'attr'        => ['class' => 'semitic_keyboard'],
-                'label'    => 'element.fields.etat_morphologique',
-                'required' => false
+            ->add('etatMorphologique', ChoiceType::class, [
+                'label'       => 'element.fields.etat_morphologique',
+                'expanded'    => false,
+                'multiple'    => false,
+                'required'    => false,
+                'placeholder' => false,
+                'choices'     => [
+                    'element.etat_morphologique.indetermine' => "Indéterminé",
+                    'element.etat_morphologique.nominatif'   => "Nominatif",
+                    'element.etat_morphologique.vocatif'     => "Vocatif",
+                    'element.etat_morphologique.accusatif'   => "Accusatif",
+                    'element.etat_morphologique.genitif'     => "Génitif",
+                    'element.etat_morphologique.datif'       => "Datif",
+                    'element.etat_morphologique.ablatif'     => "Ablatif",
+                ]
             ])
             ->add('genreElement', EntityType::class, [
                 'label'        => 'element.fields.genre',

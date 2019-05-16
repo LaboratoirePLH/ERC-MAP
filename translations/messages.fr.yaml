@@ -283,6 +283,14 @@ element:
         localisation: "Localisation de l'Élément"
         bibliographie: "Bibliographie"
         commentaires: "Commentaires"
+    etat_morphologique:
+        nominatif: "Nominatif"
+        vocatif: "Vocatif"
+        accusatif: "Accusatif"
+        genitif: "Génitif"
+        datif: "Datif"
+        ablatif: "Ablatif"
+        indetermine: "Indéterminé"
 
 
 agent:

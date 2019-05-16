@@ -37,6 +37,12 @@ class ElementType extends AbstractType
                 'label'    => 'element.fields.etat_absolu',
                 'required' => false
             ])
+            ->add('etatAbsolu', CKEditorType::class, [
+                'config_name' => 'styling_and_font',
+                'attr'        => ['class' => 'semitic_keyboard'],
+                'label'       => 'element.fields.etat_absolu',
+                'required'    => false
+            ])
             ->add('betaCode', TextType::class, [
                 'label'    => 'element.fields.beta_code',
                 'required' => false

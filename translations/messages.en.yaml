@@ -283,7 +283,14 @@ element:
         localisation: "Element Location"
         bibliographie: "Bibliography"
         commentaires: "Comments"
-
+    etat_morphologique:
+        nominatif: "Nominative"
+        vocatif: "Vocative"
+        accusatif: "Accusative"
+        genitif: "Genitive"
+        datif: "Dative"
+        ablatif: "Ablative"
+        indetermine: "Undetermined"
 
 agent:
     fields:

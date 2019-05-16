@@ -11,7 +11,7 @@ trait Translatable
      *
      * @ORM\Column(name="traduire_fr", type="boolean", nullable=true)
      */
-    private $traduireFr;
+    private $traduireFr = true;
 
     public function getTraduireFr(): ?bool
     {
@@ -29,7 +29,7 @@ trait Translatable
      *
      * @ORM\Column(name="traduire_en", type="boolean", nullable=true)
      */
-    private $traduireEn;
+    private $traduireEn = true;
 
     public function getTraduireEn(): ?bool
     {

@@ -165,10 +165,10 @@ source_biblio:
         biblio_creation: "Créer Reference"
 
 biblio:
-    list: "Liste des Bibliographies"
-    view: "Visualiser la Bibliographie #%id%"
-    create: "Créer une Bibliographie"
-    edit: "Modifier la Bibliographie #%id%"
+    list: "Bibliographie"
+    view: "Visualiser la Référence Bibliographique #%id%"
+    create: "Créer une Référence Bibliographique"
+    edit: "Modifier la Référence Bibliographique #%id%"
     messages:
         created: "La Bibliographie a été créée"
         edited: "La Bibliographie a été modifiée"

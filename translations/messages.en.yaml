@@ -165,10 +165,10 @@ source_biblio:
         biblio_creation: "Create Reference"
 
 biblio:
-    list: "Bibliography list"
-    view: "View Bibliography #%id%"
-    create: "Create Bibliography"
-    edit: "Edit Bibliography #%id%"
+    list: "Bibliography"
+    view: "View Bibliographic Record #%id%"
+    create: "Create Bibliographic Record"
+    edit: "Edit Bibliographic Record #%id%"
     messages:
         created: "Bibliography created"
         edited: "Bibliography edited"

@@ -276,12 +276,6 @@
                 conditionCallback: function (main) { return $(main).is(':checked'); },
                 targetFinder: function (name, main) { return $('.dependent_field_' + name); }
             },
-            sitename: {
-                conditionCallback: function (main) { return $(main).val() != ""; },
-                targetFinder: function (name, main) {
-                    return main.parents('.localisation_form').find('.dependent_field_' + name);
-                }
-            },
             auteurs: {
                 inputSelector: '.selectorcreate_decision input[type=radio]',
                 conditionCallback: function (main) {

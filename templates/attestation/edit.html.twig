@@ -257,12 +257,6 @@
                 conditionCallback: function (main) { return $(main).is(':checked'); },
                 targetFinder: function (name, main) { return $(main).parent().parent().parent().siblings().find('.dependent_field_' + name); }
             },
-            sitename: {
-                conditionCallback: function (main) { return $(main).val() != ""; },
-                targetFinder: function (name, main) {
-                    return main.parents('.localisation_form').find('.dependent_field_' + name);
-                }
-            },
         };
         const localisationFormSettings = {
             errorMessage: "{{'generic.messages.error_unknown'|trans}}",

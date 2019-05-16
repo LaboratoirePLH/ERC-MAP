@@ -133,12 +133,10 @@ class LocalisationType extends AbstractType
             ->add('nomSite', TextType::class, [
                 'label_attr' => ['id' => 'localisation_site_nom', 'class' => 'pleiades_field'],
                 'label'      => 'localisation.fields.nom_site',
-                'attr'       => ['class' => 'dependent_field_sitename_main'],
                 'required'   => false
             ])
             ->add('topographies', EntityType::class, [
                 'label'        => 'localisation.fields.topographie',
-                'label_attr'   => ['class' => 'dependent_field_sitename'],
                 'required'     => false,
                 'multiple'     => true,
                 'expanded'     => false,
@@ -155,7 +153,6 @@ class LocalisationType extends AbstractType
             ])
             ->add('fonctions', EntityType::class, [
                 'label'        => 'localisation.fields.fonction',
-                'label_attr'   => ['class' => 'dependent_field_sitename'],
                 'required'     => false,
                 'multiple'     => true,
                 'expanded'     => false,

@@ -1,5 +1,5 @@
 @import 'fonts.css';
 
-* {
-    font-size: 150%;
+.cke_editable {
+    font-size: 20px;
 }

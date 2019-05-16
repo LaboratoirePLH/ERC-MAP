@@ -391,7 +391,7 @@ class Attestation extends AbstractEntity
     {
         if (!$this->contientElements->contains($contientElement)) {
             $this->contientElements[] = $contientElement;
-            $contientElement->setElement($this);
+            $contientElement->setAttestation($this);
         }
         return $this;
     }
@@ -402,7 +402,7 @@ class Attestation extends AbstractEntity
             $this->contientElements->removeElement($contientElement);
             // set the owning side to null (unless already changed)
             if ($contientElement->getElement() === $this) {
-                $contientElement->setElement(null);
+                $contientElement->setAttestation(null);
             }
         }
         return $this;

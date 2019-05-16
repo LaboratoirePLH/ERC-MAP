@@ -119,12 +119,12 @@
                 }
                 var strToReplace1 = matches[1];
                 // Then deduce the field name with underscores, e.g. element_theonymesImplicites___name__
-                strToReplace2 = strToReplace1.replace(/\[/g, '_').replace(/\]/g, '');
+                var strToReplace2 = matches[1].replace(/\[/g, '_').replace(/\]/g, '');
                 // In those, replace the __name__
                 var replacement1 = strToReplace1.replace(/__name__/g, name),
-                    replacement2 = strToReplace1.replace(/__name__/g, name);
+                    replacement2 = strToReplace2.replace(/__name__/g, name);
                 // Then replace the corresponding string in the prototype
-                return prototype.replace(new RegExp(strToReplace1, 'g'), replacement1)
+                return prototype.replace(new RegExp(strToReplace1.replace(/[[\]]/g, '\\$&'), 'g'), replacement1)
                     .replace(new RegExp(strToReplace2, 'g'), replacement2);
             }
         }

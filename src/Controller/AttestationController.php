@@ -308,7 +308,7 @@ class AttestationController extends AbstractController
             }
 
             foreach($attestation->getFormules() as $f){
-                if($f->getFormule() !== ""){
+                if(!empty($f->getFormule())){
                     if(!$em->contains($f)){
                         $f->setCreateur($user);
                         $f->setAttestation($attestation);

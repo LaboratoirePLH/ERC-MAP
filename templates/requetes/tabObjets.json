@@ -1,0 +1,294 @@
+{
+    "attestation": [
+        {
+            "nom": "{{ 'attestation.fields.prose' |trans }}",
+            "type": 0,
+            "nomBDD": "prose",
+            "table": "attestation"
+        }, {
+            "nom": "{{ 'attestation.fields.poesie' |trans }}",
+            "type": 0,
+            "nomBDD": "poesie",
+            "table": "attestation"
+        }, {
+            "nom": "{{ 'attestation.fields.translitteration' |trans }}",
+            "type": 1,
+            "nomBDD": "translitteration",
+            "table": "attestation"
+        }, {
+            "nom": "{{ 'generic.fields.commentaire_fr' |trans }}",
+            "type": 1,
+            "nomBDD": "commentaire_fr",
+            "table": "attestation"
+        }, {
+            "nom": "{{ 'generic.fields.commentaire_en' |trans }}",
+            "type": 1,
+            "nomBDD": "commentaire_en",
+            "table": "attestation"
+        }, {
+            "nom": "{{ 'attestation.fields.etat_fiche' |trans }}",
+            "type": 2,
+            "nomBDD": "{{ 'requetes.nomBDD' | trans }}",
+            "table": "etat_fiche"
+        }, {
+            "nom": "{{ 'attestation.fields.categorie_occasion' |trans }}",
+            "type": 2,
+            "nomBDD": "{{'requetes.nomBDD' |trans}}",
+            "table": "categorie_occasion"
+        }, {
+            "nom": "{{ 'attestation.fields.occasion' |trans }}",
+            "type": 2,
+            "nomBDD": "{{'requetes.nomBDD' |trans}}",
+            "table": "occasion"
+        }, {
+            "nom": "{{ 'attestation.fields.categorie_materiel' |trans }}",
+            "type": 2,
+            "nomBDD": "{{'requetes.nomBDD' |trans}}",
+            "table": "categorie_materiel"
+        }, {
+            "nom": "{{ 'attestation.fields.materiel' |trans }}",
+            "type": 2,
+            "nomBDD": "{{'requetes.nomBDD' |trans}}",
+            "table": "materiel"
+        }
+    ],
+
+    "agent": [
+        {
+            "nom": "{{ 'agent.fields.designation' |trans }}",
+            "type": 1,
+            "nomBDD": "designation",
+            "table": "agent"
+        }, {
+            "nom": "{{ 'generic.fields.commentaire_fr' |trans }}",
+            "type": 1,
+            "nomBDD": "commentaire_fr",
+            "table": "agent"
+        }, {
+            "nom": "{{ 'generic.fields.commentaire_en' |trans }}",
+            "type": 1,
+            "nomBDD": "commentaire_en",
+            "table": "agent"
+        }, {
+            "nom": "{{ 'agent.fields.agentivite' |trans }}",
+            "type": 1,
+            "nomBDD": "{{'requetes.nomBDD' |trans}}",
+            "table": "agentivite"
+        }, {
+            "nom": "{{ 'agent.fields.nature' |trans }}",
+            "type": 2,
+            "nomBDD": "{{'requetes.nomBDD' |trans}}",
+            "table": "nature"
+        }, {
+            "nom": "{{ 'agent.fields.genre' |trans }}",
+            "type": 2,
+            "nomBDD": "{{'requetes.nomBDD' |trans}}",
+            "table": "genre"
+        }, {
+            "nom": "{{ 'agent.fields.statut_affiche' |trans }}",
+            "type": 2,
+            "nomBDD": "{{'requetes.nomBDD' |trans}}",
+            "table": "statut_affiche"
+        }, {
+            "nom": "{{ 'agent.fields.activite' |trans }}",
+            "type": 2,
+            "nomBDD": "{{'requetes.nomBDD' |trans}}",
+            "table": "activite_agent"
+        }
+    ],
+
+    "localisation": [
+        {
+            "nom": "{{ 'generic.fields.localisation_reelle' |trans }}",
+            "type": 0,
+            "nomBDD": "reel",
+            "table": "localisation"
+        }, {
+            "nom": "{{ 'localisation.fields.nom_ville' |trans }}",
+            "type": 2,
+            "nomBDD": "nomVille",
+            "table": "localisation"
+        }, {
+            "nom": "{{ 'localisation.fields.nom_site' |trans }}",
+            "type": 2,
+            "nomBDD": "nomSite",
+            "table": "localisation"
+        }, {
+            "nom": "{{ 'generic.fields.commentaire_fr' |trans }}",
+            "type": 1,
+            "nomBDD": "commentaire_fr",
+            "table": "localisation"
+        }, {
+            "nom": "{{ 'generic.fields.commentaire_en' |trans }}",
+            "type": 1,
+            "nomBDD": "commentaire_en",
+            "table": "localisation"
+        }, {
+            "nom": "{{ 'localisation.fields.entite_politique' |trans }}",
+            "type": 2,
+            "nomBDD": "{{'requetes.nomBDD' |trans}}",
+            "table": "entite_politique"
+        }, {
+            "nom": "{{ 'localisation.fields.grande_region' |trans }}",
+            "type": 2,
+            "nomBDD": "{{'requetes.nomBDD' |trans}}",
+            "table": "grande_region"
+        }, {
+            "nom": "{{ 'localisation.fields.sous_region' |trans }}",
+            "type": 2,
+            "nomBDD": "{{'requetes.nomBDD' |trans}}",
+            "table": "sous_region"
+        }, {
+            "nom": "{{ 'localisation.fields.topographie' |trans }}",
+            "type": 2,
+            "nomBDD": "{{'requetes.nomBDD' |trans}}",
+            "table": "q_topographie"
+        }, {
+            "nom": "{{ 'localisation.fields.fonction' |trans }}",
+            "type": 2,
+            "nomBDD": "{{'requetes.nomBDD' |trans}}",
+            "table": "q_fonction"
+        }
+    ],
+
+    "element": [
+        {
+            "nom": "{{ 'element.fields.etat_absolu' |trans }}",
+            "type": 1,
+            "nomBDD": "etat_absolu",
+            "table": "element"
+        }, {
+            "nom": "{{ 'generic.fields.commentaire_fr' |trans }}",
+            "type": 1,
+            "nomBDD": "commentaire_fr",
+            "table": "element"
+        }, {
+            "nom": "{{ 'generic.fields.commentaire_en' |trans }}",
+            "type": 1,
+            "nomBDD": "commentaire_en",
+            "table": "element"
+        }, {
+            "nom": "{{ 'element.fields.etat_morphologique' |trans }}",
+            "type": 2,
+            "nomBDD": "etatMorphologique",
+            "table": "contient_element"
+        }, {
+            "nom": "{{ 'element.fields.beta_code' |trans }}",
+            "type": 1,
+            "nomBDD": "beta_code",
+            "table": "element"
+        }, {
+            "nom": "{{ 'element.fields.suffixe' |trans }}",
+            "type": 0,
+            "nomBDD": "suffixe",
+            "table": "contient_element"
+        }, {
+            "nom": "{{ 'element.fields.genre' |trans }}",
+            "type": 2,
+            "nomBDD": "{{'requetes.nomBDD' |trans}}",
+            "table": "genre_element"
+        }, {
+            "nom": "{{ 'element.fields.nombre' |trans }}",
+            "type": 2,
+            "nomBDD": "{{'requetes.nomBDD' |trans}}",
+            "table": "nombre_element"
+        }, {
+            "nom": "{{ 'element.fields.reference_element' |trans }}",
+            "type": 1,
+            "nomBDD": "reference_element",
+            "table": "element_biblio"
+        }
+    ],
+
+    "source": [
+        {
+            "nom": "{{ 'source.fields.categorie_source' |trans }}",
+            "type": 2,
+            "nomBDD": "{{'requetes.nomBDD' |trans}}",
+            "table": "categorie_source"
+        }, {
+            "nom": "{{ 'source.fields.type_source' |trans }}",
+            "type": 2,
+            "nomBDD": "{{'requetes.nomBDD' |trans}}",
+            "table": "type_source"
+        }, {
+            "nom": "{{ 'source.fields.langues' |trans }}",
+            "type": 2,
+            "nomBDD": "{{'requetes.nomBDD' |trans}}",
+            "table": "langue"
+        }, {
+            "nom": "{{ 'source.fields.titre' |trans }}",
+            "type": 2,
+            "nomBDD": "{{'requetes.nomBDD' |trans}}",
+            "table": "titre"
+        }, {
+            "nom": "{{ 'source.fields.auteurs' |trans }}",
+            "type": 2,
+            "nomBDD": "{{'requetes.nomBDD' |trans}}",
+            "table": "auteur"
+        }, {
+            "nom": "{{ 'source.fields.categorie_materiau' |trans }}",
+            "type": 2,
+            "nomBDD": "{{'requetes.nomBDD' |trans}}",
+            "table": "categorie_materiau"
+        }, {
+            "nom": "{{ 'source.fields.materiau' |trans }}",
+            "type": 2,
+            "nomBDD": "{{'requetes.nomBDD' |trans}}",
+            "table": "materiau"
+        }, {
+            "nom": "{{ 'source.fields.support' |trans }}",
+            "type": 2,
+            "nomBDD": "{{'requetes.nomBDD' |trans}}",
+            "table": "type_support"
+        }, {
+            "nom": "{{ 'source.fields.categorie_support' |trans }}",
+            "type": 2,
+            "nomBDD": "{{'requetes.nomBDD' |trans}}",
+            "table": "categorie_support"
+        }, {
+            "nom": "{{ 'source.fields.iconographie' |trans }}",
+            "type": 0,
+            "nomBDD": "iconographie",
+            "table": "source"
+        }, {
+            "nom": "{{ 'generic.fields.commentaire_fr' |trans }}",
+            "type": 1,
+            "nomBDD": "commentaire_fr",
+            "table": "source"
+        }, {
+            "nom": "{{ 'generic.fields.commentaire_en' |trans }}",
+            "type": 1,
+            "nomBDD": "commentaire_en",
+            "table": "source"
+        }
+    ],
+    "datation": [
+        {
+            "nom": "{{ 'datation.fields.post_quem' |trans }}",
+            "type": 3,
+            "nomBDD": "post_quem",
+            "table": "datation"
+        }, {
+            "nom": "{{ 'datation.fields.ante_quem' |trans }}",
+            "type": 3,
+            "nomBDD": "ante_quem",
+            "table": "datation"
+        }, {
+            "nom": "{{ 'datation.fields.post_quem' |trans }}",
+            "type": 3,
+            "nomBDD": "post_quem",
+            "table": "datation"
+        }, {
+            "nom": "{{ 'generic.fields.commentaire_fr' |trans }}",
+            "type": 1,
+            "nomBDD": "commentaire_fr",
+            "table": "datation"
+        }, {
+            "nom": "{{ 'generic.fields.commentaire_en' |trans }}",
+            "type": 1,
+            "nomBDD": "commentaire_en",
+            "table": "datation"
+        }
+    ]
+}

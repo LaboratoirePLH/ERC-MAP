@@ -68,8 +68,8 @@
                 <li class="nav-item {{ controller_name == 'BibliographyController' ? 'active' : '' }}">
                     <a class="nav-link" href="{{ url('bibliography_list') }}">{{ 'nav.bibliography'|trans }}</a>
                 </li>
-                <li class="nav-item {{ controller_name == 'RequeteController' ? 'active' : '' }}">
-                    <a class="nav-link" href="#">{{ 'nav.requete'|trans }}</a>
+                <li class="nav-item {{ controller_name == 'RequetesController' ? 'active' : '' }}">
+                    <a class="nav-link" href="{{ url('requetes_list') }}">{{ 'nav.requete'|trans }}</a>
                 </li>
                 <li class="nav-item {{ app.request.uri == url('contact') ? 'active' : '' }}">
                     <a class="nav-link" href="{{ url('contact') }}">

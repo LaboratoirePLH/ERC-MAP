@@ -1,6 +1,6 @@
 app_name: "ERC MAP"
 locale: "fr"
-locale_datetime: "d/m/Y H:i:s"
+locale_datetime: "d/m/Y H:i:s (e)"
 languages:
     fr: "Français"
     en: "Anglais"

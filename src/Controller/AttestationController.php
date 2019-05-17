@@ -105,10 +105,9 @@ class AttestationController extends AbstractController
     {
         $user = $this->get('security.token_storage')->getToken()->getUser();
 
-        $attestation = new Attestation();
         $source = $this->getDoctrine()
-                        ->getRepository(Source::class)
-                        ->find($source_id);
+        ->getRepository(Source::class)
+        ->find($source_id);
         if(is_null($source)){
             $request->getSession()->getFlashBag()->add(
                 'error',
@@ -116,6 +115,25 @@ class AttestationController extends AbstractController
             );
             return $this->redirectToRoute('attestation_list');
         }
+
+        $verrou = $this->getDoctrine()->getRepository(VerrouEntite::class)->create($source, $user, $this->dureeVerrou);
+        if(!$verrou->isWritable($user))
+        {
+            $request->getSession()->getFlashBag()->add(
+                'error',
+                $translator->trans('generic.messages.error_locked', [
+                    '%type%' => $translator->trans('source.name'),
+                    '%id%' => $source_id,
+                    '%user%' => $verrou->getCreateur()->getPrenomNom(),
+                    '%time%' => $verrou->getDateFin()->format(
+                        $translator->trans('locale_datetime')
+                    )
+                ])
+            );
+            return $this->redirectToRoute('attestation_create');
+        }
+
+        $attestation = new Attestation();
         $attestation->setSource($source);
         $etatFiche = $this->getDoctrine()
                         ->getRepository(EtatFiche::class)

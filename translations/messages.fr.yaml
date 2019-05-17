@@ -58,6 +58,7 @@ generic:
     choose: "Choisir"
     toggle_section: "Afficher/Cacher la section"
     export_csv: "Exporter en CSV"
+    locked: "Verrouillé"
     fields:
         id: "ID"
         date_creation: "Création"

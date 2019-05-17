@@ -39,7 +39,8 @@ class SourceRepository extends ServiceEntityRepository
                 'partial regionOrigine.{id, nomFr, nomEn}',
                 'datation',
                 'partial sourceBiblios.{source, biblio, editionPrincipale, referenceSource}',
-                'partial biblio.{id, titreAbrege}'
+                'partial biblio.{id, titreAbrege}',
+                'verrou'
             ])
             ->from('App\Entity\Source', 's')
             ->leftJoin('s.projet', 'projet')
@@ -55,6 +56,7 @@ class SourceRepository extends ServiceEntityRepository
             ->leftJoin('s.datation', 'datation')
             ->leftJoin('s.sourceBiblios', 'sourceBiblios', 'WITH', 'sourceBiblios.editionPrincipale = true')
             ->leftJoin('sourceBiblios.biblio', 'biblio')
+            ->leftJoin('s.verrou', 'verrou')
             ->orderBy('s.dateModification', 'DESC')
             ->getQuery();
 

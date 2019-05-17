@@ -112,11 +112,18 @@
             </td>
             <td class="py-0 px-1">
                 {% if action == 'select' %}
+                {% if source.verrou != null %}
+                <a href="#" class="btn btn-sm btn-block my-1 btn-danger disabled">
+                    <i class="fas fa-fw fa-lock"></i>
+                    {{ 'generic.locked'|trans }}
+                </a>
+                {% else %}
                 <a href="{{ url(selectionRoute, {'source_id': source.id}) }}"
                     class="btn btn-sm btn-block my-1 btn-success">
                     <i class="fas fa-fw fa-check"></i>
                     {{ 'generic.choose'|trans }}
                 </a>
+                {% endif %}
                 {% else %}
                 <a href="{{ url('attestation_source', {'source_id': source.id}) }}"
                     class="btn btn-sm btn-block my-1 btn-success">

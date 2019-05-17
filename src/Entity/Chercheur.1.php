@@ -5,7 +5,6 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoder;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
@@ -58,7 +57,7 @@ class Chercheur extends AbstractEntity implements UserInterface
      *
      * @ORM\Column(name="preference_langue", type="string", length=2, nullable=true)
      */
-    private $preferenceLangue = "fr";
+    private $preferenceLangue;
 
     /**
      * @var \DateTime|null
@@ -73,13 +72,6 @@ class Chercheur extends AbstractEntity implements UserInterface
      * @ORM\Column(name="role", type="string", length=50, nullable=true)
      */
     private $role = "user";
-
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="reset_token", type="string", length=255, nullable=true)
-     */
-    private $resetToken;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
@@ -97,6 +89,7 @@ class Chercheur extends AbstractEntity implements UserInterface
      * @ORM\OneToMany(targetEntity="App\Entity\Requetes", mappedBy="id_chercheur", orphanRemoval=true)
      */
     private $requetes; //Ici ça va être un tableau de requêtes en fait
+
     /**
      * Constructor
      */
@@ -105,7 +98,6 @@ class Chercheur extends AbstractEntity implements UserInterface
         $this->projets = new \Doctrine\Common\Collections\ArrayCollection();
         $this->verrous = new ArrayCollection();
         $this->requetes = new ArrayCollection();
-        $this->setDateAjout(new \DateTime());
     }
 
     public function getPrenomNom(): ?string
@@ -163,19 +155,6 @@ class Chercheur extends AbstractEntity implements UserInterface
         return $this;
     }
 
-    private $newPassword;
-
-    public function getNewPassword(): ?string
-    {
-        return $this->newPassword;
-    }
-
-    public function setNewPassword(?string $newPassword): self
-    {
-        $this->newPassword = $newPassword;
-        return $this;
-    }
-
     public function getDateAjout(): ?\DateTimeInterface
     {
         return $this->dateAjout;
@@ -198,21 +177,10 @@ class Chercheur extends AbstractEntity implements UserInterface
         return $this;
     }
 
-    public function getResetToken(): ?string
-    {
-        return $this->resetToken;
-    }
-
-    public function setResetToken(?string $resetToken): self
-    {
-        $this->resetToken = $resetToken;
-        return $this;
-    }
-
     public function getRoles(): array
     {
         $roles = ['ROLE_USER'];
-        if (strtolower($this->getRole()) === "admin") {
+        if(strtolower($this->getRole()) === "admin"){
             $roles[] = 'ROLE_ADMIN';
         }
         return $roles;
@@ -230,7 +198,7 @@ class Chercheur extends AbstractEntity implements UserInterface
     {
         if (!$this->projets->contains($projet)) {
             $this->projets[] = $projet;
-            $projet->addChercheur($this);
+            $projets->addChercheur($this);
         }
 
         return $this;
@@ -240,19 +208,10 @@ class Chercheur extends AbstractEntity implements UserInterface
     {
         if ($this->projets->contains($projet)) {
             $this->projets->removeElement($projet);
-            $projet->removeChercheur($this);
+            $projets->removeChercheur($this);
         }
 
         return $this;
-    }
-
-    public function getNomsProjets(): string
-    {
-        $projets = [];
-        foreach ($this->getProjets() as $p) {
-            $projets[] = $p->getNomFr();
-        }
-        return implode(', ', $projets);
     }
 
     public function getSalt()
@@ -261,7 +220,8 @@ class Chercheur extends AbstractEntity implements UserInterface
     }
 
     public function eraseCredentials()
-    { }
+    {
+    }
 
     public function getPreferenceLangue(): ?string
     {
@@ -310,7 +270,8 @@ class Chercheur extends AbstractEntity implements UserInterface
     {
         return $this->getPrenomNom();
     }
-/**
+
+     /**
      * @return Collection|Requetes[]
      */
     public function getRequetes(): Collection

@@ -146,7 +146,7 @@ class RequetesController extends AbstractController
             //Requête DQL portant sur l'id
             $repo = $this->getDoctrine()->getManager()->getRepository(Requetes::class);
             $corpsReq = $repo->createQueryBuilder("e")
-                ->from('')
+                //->from('')
                 ->where("e.id = ?1")
                 ->setParameter(1, $idReq)
                 ->getQuery()

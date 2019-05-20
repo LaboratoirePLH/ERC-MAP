@@ -95,8 +95,7 @@ class RequetesController extends AbstractController
             $em->persist($reqSave);
             $em->flush();
 
-            $reqSaveCorps = json_encode($reqSaveCorps, JSON_HEX_APOS); //Encodage en json car sinon je ne peux pas envoyer de variable twig à la vue
-            //Il faut laisser le APOS, car ça encode les apostrophes. Si on l'enlève ça casse tout
+            $reqSaveCorps = 18; //Renvoie l'id de la requête
         }
 
         return $this->render('requetes/index.html.twig', [
@@ -146,7 +145,6 @@ class RequetesController extends AbstractController
             //Requête DQL portant sur l'id
             $repo = $this->getDoctrine()->getManager()->getRepository(Requetes::class);
             $corpsReq = $repo->createQueryBuilder("e")
-                //->from('')
                 ->where("e.id = ?1")
                 ->setParameter(1, $idReq)
                 ->getQuery()

@@ -62,30 +62,13 @@
 
 {% block typeDonnee %}
     <br/>
-    <div class="div_type_donnee">
+    <div class="div_type_donnee" id="div_type_donnee">
         <form class="form_afficher">
             <select class="select_type_donnee" id="select_type_donnee" name="select_type_donnee" onchange="changerSelected(this)">
-                <option disabled="disabled" selected="selected" value="">
-                    {{ 'requetes.selection_vide' | trans }}
-                </option>
-                <option value="attestation">
-                    {{ 'attestation.name' | trans }}
-                </option>
-                <option value="agent">
-                    {{ 'requetes.agent_name' | trans }}
-                </option>
-                <option value="datation">
-                    {{ 'source.sections.datation' | trans }}
-                </option>
-                <option value="element">
-                    {{ 'element.name' | trans }}
-                </option>
-                <option value="localisation">
-                    {{ 'source.sections.localisation' | trans }}
-                </option>
-                <option value="source">
-                    {{ 'source.name' | trans }}
-                </option>
+                <option disabled="disabled" selected="selected" value="">{{ 'requetes.selection_vide' | trans }}</option>
+                <option value="attestation">{{ 'attestation.name' | trans }}</option>
+                <option value="element">{{ 'element.name' | trans }}</option>
+                <option value="source">{{ 'source.name' | trans }}</option>
             </select>
         </form>
     </div>
@@ -96,54 +79,32 @@
     <div class="select_div">
         <span class="span_box1">
             <select class="select_box1" name="select_box1" onchange="secondeBox(this)">
-                <option disabled="disabled" selected="selected" value="">
-                    {{ 'requetes.selection_vide' | trans }}
-                </option>
-                <option value="attestation">
-                    {{ 'attestation.name' | trans }}
-                </option>
-                <option value="agent">
-                    {{ 'requetes.agent_name' | trans }}
-                </option>
-                <option value="datation">
-                    {{ 'source.sections.datation' | trans }}
-                </option>
-                <option value="element">
-                    {{ 'element.name' | trans }}
-                </option>
-                <option value="localisation">
-                    {{ 'source.sections.localisation' | trans }}
-                </option>
-                <option value="source">
-                    {{ 'source.name' | trans }}
-                </option>
+                <option disabled="disabled" selected="selected" value="">{{ 'requetes.selection_vide' | trans }}</option>
+                <option value="attestation">{{ 'attestation.name' | trans }}</option>
+                <option value="agent">{{ 'requetes.agent_name' | trans }}</option>
+                <option value="datation">{{ 'source.sections.datation' | trans }}</option>
+                <option value="element">{{ 'element.name' | trans }}</option>
+                <option value="localisation">{{ 'source.sections.localisation' | trans }}</option>
+                <option value="source">{{ 'source.name' | trans }}</option>
             </select>
         </span>
         <span class="span_box2">
             <select class="select_box2" name="select_box2" onchange="troisiemeBox(this)" style="visibility:hidden">
-                <option disabled="disabled" selected="selected" value="">
-                    {{ 'requetes.selection_vide' | trans }}
-                </option>
+                <option disabled="disabled" selected="selected" value="">{{ 'requetes.selection_vide' | trans }}</option>
             </select>
         </span>
         <span class="span_box3">
             <select class="select_box3" name="select_box3" onchange="quatriemeBox(this)" style="visibility:hidden">
-                <option disabled="disabled" selected="selected" value="">
-                    {{ 'requetes.selection_vide' | trans }}
-                </option>
+                <option disabled="disabled" selected="selected" value="">{{ 'requetes.selection_vide' | trans }}</option>
             </select>
         </span>
         <span class="span_box4"></span>
-        <button class="btn_suppr_critere btn btn-danger" onclick="removeFiltre(this)" type="button">
-            {{ 'generic.delete' | trans }}
-        </button>
-        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+        <button class="btn_suppr_critere btn btn-danger" onclick="removeFiltre(this)" type="button">{{ 'generic.delete' | trans }}</button>
+        <div class="btn-group btn-group-toggle boutonsEtOu" data-toggle="buttons">
             <label checked class="btn btn-secondary active buttonEt">
-                <input autocomplete="off" name="options" type="radio">
-                {{ 'requetes.et' |trans }}</label>
+                <input autocomplete="off" name="options" type="radio">{{ 'requetes.et' |trans }}</label>
             <label class="btn btn-secondary buttonOu">
-                <input autocomplete="off" name="options" type="radio">
-                {{ 'requetes.ou' |trans }}</label>
+                <input autocomplete="off" name="options" type="radio">{{ 'requetes.ou' |trans }}</label>
         </div>
     </div>
     <br/>
@@ -152,31 +113,15 @@
 {% block champAffiche %}
     <div class="div_champ_affiche">
         <span class="span_box_champAffiche_1">
-            <select class="select_champ_affiche" name="select_champ_affiche" onchange="secondeBoxChampAffiche(this)">
-                <option disabled="disabled" selected="selected" value="">
-                    {{ 'requetes.selection_vide' | trans }}
-                </option>
-                <option value="attestation">
-                    {{ 'attestation.name' | trans }}
-                </option>
-                <option value="agent">
-                    {{ 'requetes.agent_name' | trans }}
-                </option>
-                <option value="attestation">
-                    {{ 'nav.bibliography' | trans }}
-                </option>
-                <option value="datation">
-                    {{ 'source.sections.datation' | trans }}
-                </option>
-                <option value="element">
-                    {{ 'element.name' | trans }}
-                </option>
-                <option value="localisation">
-                    {{ 'source.sections.localisation' | trans }}
-                </option>
-                <option value="source">
-                    {{ 'source.name' | trans }}
-                </option>
+            <select class="select_box_champAffiche_1" name="select_box_champAffiche_1" onchange="secondeBoxChampAffiche(this)">
+                <option disabled="disabled" selected="selected" value="">{{ 'requetes.selection_vide' | trans }}</option>
+                <option value="attestation">{{ 'attestation.name' | trans }}</option>
+                <option value="agent">{{ 'requetes.agent_name' | trans }}</option>
+                <option value="attestation">{{ 'nav.bibliography' | trans }}</option>
+                <option value="datation">{{ 'source.sections.datation' | trans }}</option>
+                <option value="element">{{ 'element.name' | trans }}</option>
+                <option value="localisation">{{ 'source.sections.localisation' | trans }}</option>
+                <option value="source">{{ 'source.name' | trans }}</option>
             </select>
         </span>
         <span class="span_box_champAffiche_2">
@@ -185,9 +130,7 @@
         <span class="span_box_champAffiche_3">
             <select class="select_box_champAffiche_3" name="select_box3" onchange="changerSelected(this)" style="visibility:hidden"></select>
         </span>
-        <button class="btn_suppr btn btn-danger btn_suppr_champAffiche" onclick="removeFiltre(this)" type="button">
-            {{ 'generic.delete' | trans }}
-        </button>
+        <button class="btn_suppr btn btn-danger btn_suppr_champAffiche" onclick="removeFiltre(this)" type="button">{{ 'generic.delete' | trans }}</button>
     </div>
     <br/>
 {% endblock %}
@@ -207,8 +150,8 @@
                 <input type="text" required class="text_input input_req" id="input_modal" style="margin-left: auto; margin-right: auto; display: block;">
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ 'requetes.modal_fermer' | trans }} </button> <!-- A mettre en variable twig -->
-                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="sauvegarderRequete()" >{{ 'requetes.modal_sauvegarder' | trans }}</button> <!-- A mettre en variable twig -->
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ 'requetes.modal_fermer' | trans }}</button> <!-- A mettre en variable twig -->
+                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="sauvegarderRequete()">{{ 'requetes.modal_sauvegarder' | trans }}</button> <!-- A mettre en variable twig -->
             </div>
             </div>
         </div>

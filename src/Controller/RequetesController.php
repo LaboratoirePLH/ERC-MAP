@@ -7,7 +7,6 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
-
 use App\Entity \ {
     Chercheur,
     Requetes,
@@ -119,9 +118,9 @@ class RequetesController extends AbstractController
         if ($request->isXmlHttpRequest()) {
             $nomBDD = $request->request->get('nomBDD');
             $nomTable = $request->request->get('nomTable');
-            $nomTableClass = $this->_stringToClass($nomTable);
+            $nomTableClass = "App\\Entity\\".$nomTable; //On le traduit en Symfony pour qu'il comprenne où aller
 
-            //Requête DQL
+            //Requête QB
             $repo = $this->getDoctrine()->getManager()->getRepository($nomTableClass);
             $rows = $repo->createQueryBuilder("e")
                 ->getQuery()
@@ -142,7 +141,7 @@ class RequetesController extends AbstractController
         if ($request->isXmlHttpRequest()) {
             $idReq = $request->request->get('idReq');
 
-            //Requête DQL portant sur l'id
+            //Requête QB portant sur l'id
             $repo = $this->getDoctrine()->getManager()->getRepository(Requetes::class);
             $corpsReq = $repo->createQueryBuilder("e")
                 ->where("e.id = ?1")
@@ -162,11 +161,24 @@ class RequetesController extends AbstractController
      */
     public function executerRequete(Request $request){
         if ($request->isXmlHttpRequest()) {
-            $typeDonnee = $request->request->get('typeDonnee');
-            $tabRequete = $request->request->get('tabRequete');
-            $tabAffiche = $request->request->get('tabAffiche');
+          //  $typeDonnee = $request->request->get('typeDonnee');
+            //$tabRequete = $request->request->get('tabRequete');
+           // $tabAffiche = $request->request->get('tabAffiche');
+            //$typeDonneeTable = "App\\Entity\\".$typeDonnee; //On le traduit en Symfony pour qu'il comprenne où aller
+
+            $typeDonneeTable = "App\\Entity\\Requetes";
+            //QB
+            $query = $this->getDoctrine()->getManager()->createQueryBuilder();
+            $query->select([
+                
+                
+            ])
+            ->from($typeDonneeTable, 's')
+            
+            ->getQuery();
+
             $tmp="oui";
-            return new JsonResponse($tmp);
+            return new JsonResponse($query);
         }
     }
 
@@ -214,124 +226,5 @@ class RequetesController extends AbstractController
                 }
         }
         return $responseArray;
-    }
-
-
-    private function _stringToClass($var)
-    {
-        switch ($var) {
-            case "etat_fiche":
-                $tmp = EtatFiche::class;
-                break;
-
-            case "attestation":
-                $tmp = Attestation::class;
-                break;
-
-            case "categorie_occasion":
-                $tmp = CategorieOccasion::class;
-                break;
-
-            case "occasion":
-                $tmp = Occasion::class;
-                break;
-
-            case "categorie_materiel":
-                $tmp = CategorieMateriel::class;
-                break;
-
-            case "materiel":
-                $tmp = Materiel::class;
-                break;
-
-            case "nature":
-                $tmp = Nature::class;
-                break;
-
-            case "genre":
-                $tmp = Genre::Class;
-                break;
-
-            case "statut_affiche":
-                $tmp = StatutAffiche::class;
-                break;
-
-            case "activite_agent":
-                $tmp = ActiviteAgent::Class;
-                break;
-
-            case "localisation":
-                $tmp = Localisation::class;
-                break;
-
-            case "entite_politique":
-                $tmp = EntitePolitique::class;
-                break;
-
-            case "grande_region":
-                $tmp = GrandeRegion::class;
-                break;
-
-            case "sous_region":
-                $tmp = SousRegion::class;
-                break;
-
-            case "q_topographie":
-                $tmp = QTopographie::class;
-                break;
-
-            case "q_fonction":
-                $tmp = QFonction::class;
-                break;
-
-            case "contient_element":
-                $tmp = ContientElement::class;
-                break;
-
-            case "genre_element":
-                $tmp = GenreElement::class;
-                break;
-
-            case "nombre_element":
-                $tmp = NombreElement::class;
-                break;
-
-            case "categorie_source":
-                $tmp = CategorieSource::class;
-                break;
-
-            case "type_source":
-                $tmp = TypeSource::class;
-                break;
-
-            case "langue":
-                $tmp = Langue::class;
-                break;
-
-            case "titre":
-                $tmp = Titre::class;
-                break;
-
-            case "auteur":
-                $tmp = Auteur::class;
-                break;
-
-            case "categorie_materiau":
-                $tmp = CategorieMateriau::class;
-                break;
-
-            case "materiau":
-                $tmp = Materiau::class;
-                break;
-
-            case "type_support":
-                $tmp = TypeSupport::class;
-                break;
-
-            case "categorie_support":
-                $tmp = CategorieSupport::class;
-                break;
-        }
-        return $tmp;
     }
 }

@@ -65,11 +65,11 @@
         creerTableAfficherEtCritere();
         $("#exampleModal").css("display","none"); //On cache le modal
         $("#input_modal").val(''); //On lui met un input vide
-        enleverBoutonEtOu();
     });
 
     //C'est la première box
-    var formulaire_critere = $("#liste_critere").html();// Variable qui prend le formulaire.
+    var formulaire_critere = null;// Variable qui prend le formulaire.
+    var formulaire_critere_vide = null; //Variable qui prend le formulaire vide, utilisé dans afficheListeCritere
 
     /*Variables pour les bouttons AND/OR, voir partial.html.twig
 Je n'ai pas pu invoquer le block twig dans le js*/
@@ -85,6 +85,8 @@ Je n'ai pas pu invoquer le block twig dans le js*/
 
     function creerTableAfficherEtCritere() {
         var reqSaveCorps = '{{ reqSaveCorps}}';
+        enleverBoutonEtOu();
+        formulaire_critere_vide =  $("#liste_critere").html();
         if(reqSaveCorps != "" )
         {
             //Affichage du message qui dit que la requête est bien enregistrée
@@ -112,19 +114,31 @@ Je n'ai pas pu invoquer le block twig dans le js*/
         var typeDonnee = $("#select_type_donnee").children("option:selected").val(); //Je récupère le type donnée
         var tabRequete = {}; //Objet qui va être envoyé au controller
         var quit = false;
-        
+
+        if(typeDonnee == "") //Si le type de donnée n'est pas mis
+        {
+            $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">Veuillez mettre un type de donnée.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
+            console.log ("Type donnée non renseigné");
+            quit = true;
+            return false;
+        }
+
         $(".select_div").each(function(index) //Pour chaque div de condition pour la requête
         {
-            var tmp = {};
-            //Les valeurs dans tabObjets (On se place sur select_box2) 
-            var tabObjetValeur = $(this).find(".select_box2").children("option:selected").val(); // le valeur
-            var tabObjetI = $(this).find(".select_box2").children("option:selected").attr('label'); // le i de tabObjets['valeur'][i]
-            if(tabObjetI === undefined){
+            //Je vérifie que les 3 premières box sont bien remplies
+            if( $(this).find(".select_box1").children("option:selected").attr("label") == "-1" || $(this).find(".select_box2").children("option:selected").attr("label") == "-1"  || $(this).find(".select_box3").children("option:selected").attr("label") == "-1" || quit ){
                 $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">Vous devez compléter les critères.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
                 console.log ("Un des critère n'est pas complet");
                 quit = true;
                 return false;
             }
+
+            var tmp = {};
+
+            //Les valeurs dans tabObjets (On se place sur select_box2) 
+            var tabObjetValeur = $(this).find(".select_box2").children("option:selected").val(); // le valeur
+            var tabObjetI = $(this).find(".select_box2").children("option:selected").attr('label'); // le i de tabObjets['valeur'][i]
+
             tmp["table"] = tabObjets[tabObjetValeur][tabObjetI].table;
             tmp["nomBDD"] = tabObjets[tabObjetValeur][tabObjetI].nomBDD;
 
@@ -132,7 +146,8 @@ Je n'ai pas pu invoquer le block twig dans le js*/
             var tabChoixValeur =  $(this).find(".select_box3").children("option:selected").val();  // le valeur (type de l'objet)
             var tabChoixI = $(this).find(".select_box3").children("option:selected").attr('label'); // le i de tabChoix['valeur'][i]
             tmp["operator"] = tabChoix[tabChoixValeur][tabChoixI].operator;
-            //S'il n'y a pas de 4ème box (Ou boolean). Au pire je peux le changer en vérifiant si la box4 est en hidden ou non : $(this).find(".span_box4").children().length
+            
+            //S'il n'y a pas de 4ème box (Ou boolean).
             if(tabChoix[tabChoixValeur][tabChoixI].id == 2 || tabChoix[tabChoixValeur][tabChoixI].id == 7 || tabChoix[tabChoixValeur][tabChoixI].id == 13)
             {
                  tmp["value"] = "null";
@@ -153,20 +168,44 @@ Je n'ai pas pu invoquer le block twig dans le js*/
                         tmp["value"] = $(this).find(".span_box4").children().val();
                         break;
                 }
+                
+                if(tmp["value"] == "" || tmp["value"] == -1) //Si la box4 n'est pas remplie/choisie (Si == -1 c'est le label de veuillez selectionner)
+                {
+                    $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">Vous devez compléter les critères.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
+                    console.log ("Un des critère n'est pas complet");
+                    quit = true;
+                    return false;
+                }
             }
-            alert(JSON.stringify(tmp));
             tabRequete["where"+index]=tmp;
         });
-        
-        var tabAffiche = new Object();
-        tabAffiche[0]=99999;
+
+        var tabAffiche = new Object(); //Tableau qui va contenir les critères d'affichage
+        tabAffiche[0]= "" ;
+
         $(".div_champ_affiche").each(function(index){
+
+            if(quit)
+            {
+                return false;
+            }
+
+            //Je vérifie que toutes les box d'affichage soient remplies
+            if($(this).find(".select_box_champAffiche_1").children("option:selected").attr("label") == "-1" || $(this).find(".select_box_champAffiche_2").children("option:selected").attr("label") == "-1" || $(this).find(".select_box_champAffiche_3").children("option:selected").attr("label") == "-1")
+            {
+                $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">Vous devez compléter les champs à afficher.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
+                console.log ("Un des critère n'est pas complet");
+                quit = true;
+                return false;
+            }
+
             var tmp = new Object();
-            //Faire en sorte d'aller récup le nom BDD, le nom de la table et l'ordre
+            //Faire en sorte d'aller récup le nomBDD, le nom de la table et l'ordre
 
             valOrdre = $(this).find(".select_box_champAffiche_3").children("option:selected").val();
 
             $(tabAffiche).each(function(key){
+
                 if(this[key]["ordre"] == valOrdre && !(valOrdre === undefined))//Si un ordre est égal à un autre
                 {
                     if(quit == false)
@@ -223,7 +262,7 @@ Je n'ai pas pu invoquer le block twig dans le js*/
        if($("#select_type_donnee").children("option:selected").val() == "") //Si le type de donnée n'est pas mis
         {
                 $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">Veuillez mettre un type de donnée.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
-                console.log ("Un des critère n'est pas complet");
+                console.log ("Type donnée non renseigné");
                 quit = true;
                 return false;
         }
@@ -320,7 +359,7 @@ Je n'ai pas pu invoquer le block twig dans le js*/
     }
 
     function chargerRequete(){
-        var idReq = 31;
+        var idReq = 32;
          $.ajax({
                     url:'{{path('requetes_charger_requete')}}',
                     type: "POST",
@@ -347,13 +386,13 @@ Je n'ai pas pu invoquer le block twig dans le js*/
         //Pour le type donnee
         $("#select_type_donnee").find(`[selected="selected"]`).removeAttr("selected");//Je chope celui qui à l'attribut "selected" et je le vire
         $("#select_type_donnee").find(`[value="`+tabCorps[0]+`"]`).attr("selected","selected");
+        afficheListeCritere($("#select_type_donnee"));
 
         //Pour les critères
         $("#liste_critere").empty();
         for(var i = 0;i < tabCorps[1].length; i++){//J'ajoute autant de div qu'il y a de critères
             $("#liste_critere").append(formulaire_critere);
         }
-
 
         $(".select_div").each(function(index){//Je remplis les divs avec ce qui a été sauvegardé
             var tabBox1 = tabCorps[1][index]["box1"].toLowerCase().replace(/é|è|ê/g,"e");
@@ -375,9 +414,7 @@ Je n'ai pas pu invoquer le block twig dans le js*/
             //Box 4
             var valeur =  $(this).find(".select_box3").find(`[selected="selected"]`).val();//Le val correspond à la valeur de l'élément (String, number, liste...)
             var idTabChoix = tabChoix[valeur][tabCorps[1][index]["box3"]].id;
-            iValeurTabObjet = $(this).find(".select_box2").find(`[selected="selected"]`).attr('label'); // Je suis obligé de le mettre à jour ici. /!\ A changer /!\
-            valeurTabObjet = $(this).find(".select_box2").find(`[selected="selected"]`).val(); // Je suis obligé de le mettre à jour ici. /!\ A changer /!\
-            remplirQuatriemeBox(valeur, idTabChoix, $(this).find(".span_box4"));
+            remplirQuatriemeBox(valeur, idTabChoix, $(this).find(".span_box4"), $(this).find(".select_box3"));
                 
                 //Traitement en fonction de la box4
             if(valeur == "1" || valeur =="3") //Si c'est un input
@@ -387,7 +424,7 @@ Je n'ai pas pu invoquer le block twig dans le js*/
             else if(valeur =="2") //Si c'est une liste
             {
                 $(this).find(".select_box4").find(`[selected="selected"]`).removeAttr("selected");
-                alert("Votre requête est chargée"); //Je suis obligé de mettre un alert pour laisser le temps à la page de process
+               // alert("Votre requête est chargée"); //Je suis obligé de mettre un alert pour laisser le temps à la page de process
                 $(this).find(".select_box4").find(`[label="`+tabCorps[1][index]["box4"]+`"]`).attr("selected","selected"); //Problème : Ajax est trop long donc ça le fait avant
             }
         });
@@ -422,10 +459,19 @@ Je n'ai pas pu invoquer le block twig dans le js*/
     }
 
     function ajouterFiltre() {
+        if(formulaire_critere == null) //Si un type de donnée est sélectionné
+        {                      
+            $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">Veuillez remplir le type de donnée.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
+            console.log("Type donnée incomplet");
+            return;
+        }
+        else
+        {
         remettreBoutonEtOu();
         $("#liste_critere").append(formulaire_critere);
         enleverBoutonEtOu();
         return;
+        }
     }
 
     function ajouterChampAffiche(){
@@ -442,6 +488,40 @@ Je n'ai pas pu invoquer le block twig dans le js*/
             changerTroisiemeBoxChampAffiche();
         }
         return;
+    }
+
+    function selectTypeDonnee(currentElement){
+        $("#liste_critere").empty(); //Je vide les critères
+        $("#liste_critere").append(formulaire_critere_vide); //Je remets simplement une box vide
+        changerSelected(currentElement); //On change le select de typeDonnee
+        afficheListeCritere(currentElement);
+    }
+
+    function afficheListeCritere(currentElement){
+        //Change les critères en fonction de la sélection
+        var typeDonnee = $(currentElement).children("option:selected").attr("value"); //Je récupère le typeDonnee
+        var selectBox1 = $("#liste_critere").find(".select_box1"); //Je récupère la première selectBox
+
+        switch(typeDonnee){
+            case "Attestation":
+                $(selectBox1).append("<option value=\"agent\">{{ 'requetes.agent_name' | trans }}</option>");
+                $(selectBox1).append("<option value=\"attestation\">{{ 'attestation.name' | trans }}</option>");
+                $(selectBox1).append("<option value=\"datation\">{{ 'source.sections.datation' | trans }}</option>");
+                $(selectBox1).append("<option value=\"element\">{{ 'element.name' | trans }}</option>");
+                break;
+            
+            case "Element":
+                $(selectBox1).append("<option value=\"element\">{{ 'element.name' | trans }}</option>");
+                break;
+
+            case "Source":        
+                $(selectBox1).append("<option value=\"attestation\">{{ 'attestation.name' | trans }}</option>");
+                $(selectBox1).append("<option value=\"datation\">{{ 'source.sections.datation' | trans }}</option>");
+                $(selectBox1).append("<option value=\"source\">{{ 'source.name' | trans }}</option>");
+                break;
+        }
+        $(selectBox1).append("<option value=\"localisation\">{{ 'source.sections.localisation' | trans }}</option>"); //Est commun aux trois
+        formulaire_critere = $("#liste_critere").html();
     }
 
     function changerSelected(currentElement){//Permet de changer le selected. Est appelé dans toutes les box, y compris dans le select de la requête ajax de la quatriemeBox
@@ -528,8 +608,8 @@ Je n'ai pas pu invoquer le block twig dans le js*/
     }
 
     function troisiemeBox(currentElement) { // Pour le onchange de la seconde box
-        valeurTabObjet = $(currentElement).children("option:selected").val(); // le valeur
-        iValeurTabObjet = $(currentElement).children("option:selected").attr('label'); // le i de tabObjets['valeur'][i]
+        var valeurTabObjet = $(currentElement).children("option:selected").val(); // le valeur
+        var iValeurTabObjet = $(currentElement).children("option:selected").attr('label'); // le i de tabObjets['valeur'][i]
         changerSelected(currentElement);
         var box3 = $(currentElement).parent().next().find(".select_box3");
         var box4 = $(box3).parent().next(); // On doit aussi vider la 4ème box (Input text, liste ou input number)
@@ -558,19 +638,24 @@ Je n'ai pas pu invoquer le block twig dans le js*/
         var idTabChoix = tabChoix[valeur][tmp].id;
         changerSelected(currentElement);
         var box4 = $(currentElement).parent().next();//On se place sur le span
-        remplirQuatriemeBox(valeur, idTabChoix, box4);
+        remplirQuatriemeBox(valeur, idTabChoix, box4, currentElement);
     }
 
-    function remplirQuatriemeBox(valeur, id, box) {
+    function remplirQuatriemeBox(valeur, id, box, currentElement) {
         $(box).empty();//On le vide avant d'ajouter quoi que ce soit
+        var valeurTabObjet = $(currentElement).parent().parent().find(".select_box2").children("option:selected").val();
+        var iValeurTabObjet = $(currentElement).parent().parent().find(".select_box2").children("option:selected").attr('label'); // le i de tabObjets['valeur'][i]
         switch (valeur) {
 
             case "1":
                 if (id != 7) { // estNul
                     $(box).append("<input type=\"text\" required class=\"text_input input_req\">"); // Text input classique (String)
+
+                    if(tabObjets[valeurTabObjet][iValeurTabObjet].nomBDD == "extraitAvecRestitution"){ //Pour implémenter le semeitic Keyboard
+                        $(box).find(".text_input").semiticKeyboard();
+                    }
                 }
                 break;
-
 
             case "2":
                 var reqSaveCorps = '{{ reqSaveCorps}}';
@@ -578,6 +663,7 @@ Je n'ai pas pu invoquer le block twig dans le js*/
                 {
                     break;
                 }
+
                 $(box).append("<select name=\"select_box4\" class=\"select_box4\" onchange=\"changerSelected(this)\"> </select>"); // On ajout le select
                 var selectBox4 = $(box).children();// Le select_box4
                 $(selectBox4).append("<option value=\"\" label=\"-1\" selected=\"selected\" disabled=\"disabled\">{{ 'requetes.selection_vide' | trans }}</option>");
@@ -603,6 +689,7 @@ Je n'ai pas pu invoquer le block twig dans le js*/
                     {
                         $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">Erreur serveur.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
                         console.log("An error ocurred while loading data ...");
+                        console.log(err);
                     }
                 })
                 break;

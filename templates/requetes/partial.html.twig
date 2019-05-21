@@ -64,11 +64,11 @@
     <br/>
     <div class="div_type_donnee" id="div_type_donnee">
         <form class="form_afficher">
-            <select class="select_type_donnee" id="select_type_donnee" name="select_type_donnee" onchange="changerSelected(this)">
+            <select class="select_type_donnee" id="select_type_donnee" name="select_type_donnee" onchange="selectTypeDonnee(this)">
                 <option disabled="disabled" selected="selected" value="">{{ 'requetes.selection_vide' | trans }}</option>
-                <option value="attestation">{{ 'attestation.name' | trans }}</option>
-                <option value="element">{{ 'element.name' | trans }}</option>
-                <option value="source">{{ 'source.name' | trans }}</option>
+                <option value="Attestation">{{ 'attestation.name' | trans }}</option>
+                <option value="Element">{{ 'element.name' | trans }}</option>
+                <option value="Source">{{ 'source.name' | trans }}</option>
             </select>
         </form>
     </div>
@@ -79,23 +79,17 @@
     <div class="select_div">
         <span class="span_box1">
             <select class="select_box1" name="select_box1" onchange="secondeBox(this)">
-                <option disabled="disabled" selected="selected" value="">{{ 'requetes.selection_vide' | trans }}</option>
-                <option value="attestation">{{ 'attestation.name' | trans }}</option>
-                <option value="agent">{{ 'requetes.agent_name' | trans }}</option>
-                <option value="datation">{{ 'source.sections.datation' | trans }}</option>
-                <option value="element">{{ 'element.name' | trans }}</option>
-                <option value="localisation">{{ 'source.sections.localisation' | trans }}</option>
-                <option value="source">{{ 'source.name' | trans }}</option>
+                <option disabled="disabled" label="-1" selected="selected" value="">{{ 'requetes.selection_vide' | trans }}</option>
             </select>
         </span>
         <span class="span_box2">
             <select class="select_box2" name="select_box2" onchange="troisiemeBox(this)" style="visibility:hidden">
-                <option disabled="disabled" selected="selected" value="">{{ 'requetes.selection_vide' | trans }}</option>
+                <option disabled="disabled" label="-1" selected="selected" value="">{{ 'requetes.selection_vide' | trans }}</option>
             </select>
         </span>
         <span class="span_box3">
             <select class="select_box3" name="select_box3" onchange="quatriemeBox(this)" style="visibility:hidden">
-                <option disabled="disabled" selected="selected" value="">{{ 'requetes.selection_vide' | trans }}</option>
+                <option disabled="disabled" label="-1" selected="selected" value="">{{ 'requetes.selection_vide' | trans }}</option>
             </select>
         </span>
         <span class="span_box4"></span>
@@ -114,7 +108,7 @@
     <div class="div_champ_affiche">
         <span class="span_box_champAffiche_1">
             <select class="select_box_champAffiche_1" name="select_box_champAffiche_1" onchange="secondeBoxChampAffiche(this)">
-                <option disabled="disabled" selected="selected" value="">{{ 'requetes.selection_vide' | trans }}</option>
+                <option disabled="disabled" label="-1" selected="selected" value="">{{ 'requetes.selection_vide' | trans }}</option>
                 <option value="attestation">{{ 'attestation.name' | trans }}</option>
                 <option value="agent">{{ 'requetes.agent_name' | trans }}</option>
                 <option value="attestation">{{ 'nav.bibliography' | trans }}</option>

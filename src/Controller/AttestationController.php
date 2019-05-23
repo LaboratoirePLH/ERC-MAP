@@ -150,9 +150,6 @@ class AttestationController extends AbstractController
         ]);
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()){
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($attestation);
-
             $attestation->setCreateur($user);
             $attestation->setDernierEditeur($user);
             // Sauvegarde

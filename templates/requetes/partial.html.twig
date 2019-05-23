@@ -47,19 +47,6 @@
     </div>
 {% endblock %}
 
-{% block buttonAndOr %}
-    <div class="btn-group btn-group-toggle" data-toggle="buttons">
-        <label class="btn btn-secondary active">
-            <input autocomplete="off" checked id="option1" name="options" type="radio">
-            {{ 'requetes.et' |trans }}
-        </label>
-        <label class="btn btn-secondary">
-            <input autocomplete="off" id="option2" name="options" type="radio">
-            {{ 'requetes.ou' |trans }}
-        </label>
-    </div>
-{% endblock %}
-
 {% block typeDonnee %}
     <br/>
     <div class="div_type_donnee" id="div_type_donnee">
@@ -95,9 +82,9 @@
         <span class="span_box4"></span>
         <button class="btn_suppr_critere btn btn-danger" onclick="removeFiltre(this)" type="button">{{ 'generic.delete' | trans }}</button>
         <div class="btn-group btn-group-toggle boutonsEtOu" data-toggle="buttons">
-            <label checked class="btn btn-secondary active buttonEt">
+            <label checked class="btn btn-secondary active Et">
                 <input autocomplete="off" name="options" type="radio">{{ 'requetes.et' |trans }}</label>
-            <label class="btn btn-secondary buttonOu">
+            <label class="btn btn-secondary Ou">
                 <input autocomplete="off" name="options" type="radio">{{ 'requetes.ou' |trans }}</label>
         </div>
     </div>

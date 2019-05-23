@@ -409,7 +409,7 @@ requetes:
     champs_afficher: "Champs à afficher"
     et: "Et"
     ou: "Ou"
-    nomBDD: "fr"
+    nomBDD: "nom_fr"
     charger: "Charger"
     modal_fermer: "Fermer"
     modal_sauvegarder: "Sauvegarder"

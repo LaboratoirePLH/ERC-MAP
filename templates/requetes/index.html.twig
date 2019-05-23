@@ -76,7 +76,7 @@ Je n'ai pas pu invoquer le block twig dans le js*/
     var champAffiche = $("#liste_affiche").html();
 
     function enleverBoutonEtOu(){
-        $(".select_div").last().find(".boutonsEtOu").css("visibility","hidden");
+        $(".select_div").first().find(".boutonsEtOu").css("visibility","hidden");
     }
 
     function remettreBoutonEtOu(currentElement){
@@ -85,7 +85,6 @@ Je n'ai pas pu invoquer le block twig dans le js*/
 
     function creerTableAfficherEtCritere() {
         var reqSaveCorps = '{{ reqSaveCorps}}';
-        enleverBoutonEtOu();
         formulaire_critere_vide =  $("#liste_critere").html();
         if(reqSaveCorps != "" )
         {
@@ -139,7 +138,7 @@ Je n'ai pas pu invoquer le block twig dans le js*/
             var tabObjetValeur = $(this).find(".select_box2").children("option:selected").val(); // le valeur
             var tabObjetI = $(this).find(".select_box2").children("option:selected").attr('label'); // le i de tabObjets['valeur'][i]
 
-            tmp["table"] = tabObjets[tabObjetValeur][tabObjetI].table;
+            tmp["table"] = tabObjets[tabObjetValeur][tabObjetI].tableSQL;
             tmp["nomBDD"] = tabObjets[tabObjetValeur][tabObjetI].nomBDD;
 
             //Les valeurs dans tabChoix (On se place sur select_box3)
@@ -150,7 +149,7 @@ Je n'ai pas pu invoquer le block twig dans le js*/
             //S'il n'y a pas de 4ème box (Ou boolean).
             if(tabChoix[tabChoixValeur][tabChoixI].id == 2 || tabChoix[tabChoixValeur][tabChoixI].id == 7 || tabChoix[tabChoixValeur][tabChoixI].id == 13)
             {
-                 tmp["value"] = "null";
+                 tmp["value"] = "IS NULL ";
             }
             else
             {
@@ -230,9 +229,6 @@ Je n'ai pas pu invoquer le block twig dans le js*/
             return false;
         }
         
-        tabAffiche = JSON.stringify(tabAffiche);
-        tabRequete = JSON.stringify(tabRequete);
-
         //Ajax
         $.ajax({
             url:'{{path('requetes_executer')}}',
@@ -244,7 +240,7 @@ Je n'ai pas pu invoquer le block twig dans le js*/
             },
             success: function(rep)
             {
-                console.log(rep);
+                console.log(JSON.stringify(rep));
             },
             error: function (err)
             {
@@ -308,10 +304,26 @@ Je n'ai pas pu invoquer le block twig dans le js*/
                     return false;
                 }
             }
+            //Bouton ET/OU, s'il est visible (Donc on peut le changer)
+            if($(this).find(".boutonsEtOu").attr("style") == "visibility: visible;")
+            {
+               if($(this).find(".boutonsEtOu").find(".active").hasClass("Et")){ //Si c'est le boutton "Et"
+                   tmp["box5"] = "Et";
+               }
+               else if($(this).find(".boutonsEtOu").find(".active").hasClass("Ou")){ //Si c'est le boutton "Ou"
+                   tmp["box5"] = "Ou";
+               }
+            }
+            else
+            {
+                tmp["box5"] = null;
+            }
+
             tabTmp[index] = tmp;
         });
 
         var tabTmp2 = [];
+
         $(".div_champ_affiche").each(function(index){
             var tmp = {};
             tmp["box1"] = $(this).find(".select_box_champAffiche_1").children("option:selected").text();
@@ -326,8 +338,6 @@ Je n'ai pas pu invoquer le block twig dans le js*/
             {
                 $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">Vous devez compléter les champs à afficher.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
                 console.log ("Un des critère n'est pas complet");
-                quit = true;
-                return false;
             }
             tabTmp2[index] = tmp;
         });
@@ -359,7 +369,7 @@ Je n'ai pas pu invoquer le block twig dans le js*/
     }
 
     function chargerRequete(){
-        var idReq = 32;
+        var idReq = 42;
          $.ajax({
                     url:'{{path('requetes_charger_requete')}}',
                     type: "POST",
@@ -427,6 +437,12 @@ Je n'ai pas pu invoquer le block twig dans le js*/
                // alert("Votre requête est chargée"); //Je suis obligé de mettre un alert pour laisser le temps à la page de process
                 $(this).find(".select_box4").find(`[label="`+tabCorps[1][index]["box4"]+`"]`).attr("selected","selected"); //Problème : Ajax est trop long donc ça le fait avant
             }
+
+            //Les bouttons ET/OU
+            if(tabCorps[1][index]["box5"] != null){
+                $(this).find(".boutonsEtOu").find("."+tabCorps[1][index]["box5"]+"").addClass("active");
+                $(this).find(".boutonsEtOu").css("visibility","visible");
+            }
         });
 
         //Pour les champ affiche
@@ -459,7 +475,7 @@ Je n'ai pas pu invoquer le block twig dans le js*/
     }
 
     function ajouterFiltre() {
-        if(formulaire_critere == null) //Si un type de donnée est sélectionné
+        if(formulaire_critere == null) //Si un type de donnée n'est pas sélectionné
         {                      
             $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">Veuillez remplir le type de donnée.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
             console.log("Type donnée incomplet");
@@ -467,7 +483,6 @@ Je n'ai pas pu invoquer le block twig dans le js*/
         }
         else
         {
-        remettreBoutonEtOu();
         $("#liste_critere").append(formulaire_critere);
         enleverBoutonEtOu();
         return;
@@ -482,11 +497,11 @@ Je n'ai pas pu invoquer le block twig dans le js*/
     function removeFiltre(currentElement) { // Par rapport au bouton supprimer
         $(currentElement).parent().next().remove(); // Le br
         $(currentElement).parent().remove(); // La div
-        enleverBoutonEtOu();
         if($(currentElement).hasClass("btn_suppr_champAffiche"))
         {
             changerTroisiemeBoxChampAffiche();
         }
+        enleverBoutonEtOu();
         return;
     }
 
@@ -498,30 +513,36 @@ Je n'ai pas pu invoquer le block twig dans le js*/
     }
 
     function afficheListeCritere(currentElement){
-        //Change les critères en fonction de la sélection
-        var typeDonnee = $(currentElement).children("option:selected").attr("value"); //Je récupère le typeDonnee
-        var selectBox1 = $("#liste_critere").find(".select_box1"); //Je récupère la première selectBox
 
-        switch(typeDonnee){
-            case "Attestation":
-                $(selectBox1).append("<option value=\"agent\">{{ 'requetes.agent_name' | trans }}</option>");
-                $(selectBox1).append("<option value=\"attestation\">{{ 'attestation.name' | trans }}</option>");
-                $(selectBox1).append("<option value=\"datation\">{{ 'source.sections.datation' | trans }}</option>");
-                $(selectBox1).append("<option value=\"element\">{{ 'element.name' | trans }}</option>");
-                break;
-            
-            case "Element":
-                $(selectBox1).append("<option value=\"element\">{{ 'element.name' | trans }}</option>");
-                break;
+            //Change les critères en fonction de la sélection
+            var typeDonnee = $(currentElement).children("option:selected").attr("value"); //Je récupère le typeDonnee
+            var selectBox1 = $("#liste_critere").find(".select_box1"); //Je récupère la première selectBox
 
-            case "Source":        
-                $(selectBox1).append("<option value=\"attestation\">{{ 'attestation.name' | trans }}</option>");
-                $(selectBox1).append("<option value=\"datation\">{{ 'source.sections.datation' | trans }}</option>");
-                $(selectBox1).append("<option value=\"source\">{{ 'source.name' | trans }}</option>");
-                break;
-        }
-        $(selectBox1).append("<option value=\"localisation\">{{ 'source.sections.localisation' | trans }}</option>"); //Est commun aux trois
-        formulaire_critere = $("#liste_critere").html();
+            switch(typeDonnee){
+                case "Attestation":
+                    $(selectBox1).append("<option value=\"agent\">{{ 'requetes.agent_name' | trans }}</option>");
+                    $(selectBox1).append("<option value=\"attestation\">{{ 'attestation.name' | trans }}</option>");
+                    $(selectBox1).append("<option value=\"datation\">{{ 'source.sections.datation' | trans }}</option>");
+                    $(selectBox1).append("<option value=\"element\">{{ 'element.name' | trans }}</option>");
+                    $(selectBox1).append("<option value=\"source\">{{ 'source.name' | trans }}</option>");
+                    break;
+                
+                case "Element":
+                    $(selectBox1).append("<option value=\"attestation\">{{ 'attestation.name' | trans }}</option>");
+                    $(selectBox1).append("<option value=\"element\">{{ 'element.name' | trans }}</option>");
+                    $(selectBox1).append("<option value=\"source\">{{ 'source.name' | trans }}</option>");
+                    break;
+
+                case "Source":        
+                    $(selectBox1).append("<option value=\"attestation\">{{ 'attestation.name' | trans }}</option>");
+                    $(selectBox1).append("<option value=\"datation\">{{ 'source.sections.datation' | trans }}</option>");
+                    $(selectBox1).append("<option value=\"element\">{{ 'element.name' | trans }}</option>");
+                    $(selectBox1).append("<option value=\"source\">{{ 'source.name' | trans }}</option>");
+                    break;
+            }
+            $(selectBox1).append("<option value=\"localisation\">{{ 'source.sections.localisation' | trans }}</option>"); //Est commun aux trois
+            formulaire_critere = $("#liste_critere").html();
+            enleverBoutonEtOu();
     }
 
     function changerSelected(currentElement){//Permet de changer le selected. Est appelé dans toutes les box, y compris dans le select de la requête ajax de la quatriemeBox
@@ -651,13 +672,14 @@ Je n'ai pas pu invoquer le block twig dans le js*/
                 if (id != 7) { // estNul
                     $(box).append("<input type=\"text\" required class=\"text_input input_req\">"); // Text input classique (String)
 
-                    if(tabObjets[valeurTabObjet][iValeurTabObjet].nomBDD == "extraitAvecRestitution"){ //Pour implémenter le semeitic Keyboard
+                    if(tabObjets[valeurTabObjet][iValeurTabObjet].nomBDD == "extrait_avec_restitution"){ //Pour implémenter le semeitic Keyboard
                         $(box).find(".text_input").semiticKeyboard();
                     }
                 }
                 break;
 
-            case "2":
+            case "4" :
+            case "2" :
                 var reqSaveCorps = '{{ reqSaveCorps}}';
                 if(reqSaveCorps != "" )//Si c'est une sauvegarde de requête
                 {
@@ -682,8 +704,9 @@ Je n'ai pas pu invoquer le block twig dans le js*/
                     success: function(rows)
                     {
                         $.each(rows, function (key, row) {
-                            $(selectBox4).append("<option label=\""+key+"\">" + row.nom + "</option>");//On met les options avec le nom 
+                                $(selectBox4).append("<option label=\""+key+"\">" + row.nom + "</option>"); //On met les options avec le nom 
                         });
+                        //console.log(rows);
                     },
                     error: function (err)
                     {
@@ -703,8 +726,8 @@ Je n'ai pas pu invoquer le block twig dans le js*/
                              return /^-?\d*$/.test(value);
                         });
                     }
-                    break;
                 }
+                break;
         }
     }
   

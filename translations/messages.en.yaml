@@ -408,7 +408,7 @@ requetes:
     champs_afficher: "Fields to display"
     et: "And"
     ou: "Or"
-    nomBDD: "en"
+    nomBDD: "nom_en"
     charger: "Load"
     modal_fermer: "Close"
     modal_sauvegarder: "Save"

@@ -4,278 +4,372 @@
             "nom": "{{ 'attestation.fields.prose' |trans }}",
             "type": 0,
             "nomBDD": "prose",
-            "table": "Attestation"
-        }, {
+            "table": "Attestation",
+            "tableSQL": "attestation"
+        },
+        {
             "nom": "{{ 'attestation.fields.poesie' |trans }}",
             "type": 0,
             "nomBDD": "poesie",
-            "table": "Attestation"
-        }, {
+            "table": "Attestation",
+            "tableSQL": "attestation"
+        },
+        {
             "nom": "{{ 'attestation.fields.extrait_avec_restitution' |trans }}",
             "type": 1,
-            "nomBDD": "extraitAvecRestitution",
-            "table": "Attestation"
-        },{
+            "nomBDD": "extrait_avec_restitution",
+            "table": "Attestation",
+            "tableSQL": "attestation"
+        },
+        {
             "nom": "{{ 'attestation.fields.translitteration' |trans }}",
             "type": 1,
             "nomBDD": "translitteration",
-            "table": "Attestation"
-        }, {
+            "table": "Attestation",
+            "tableSQL": "attestation"
+        },
+        {
             "nom": "{{ 'generic.fields.commentaire_fr' |trans }}",
             "type": 1,
-            "nomBDD": "commentaireFr",
-            "table": "Attestation"
-        }, {
+            "nomBDD": "commentaire_fr",
+            "table": "Attestation",
+            "tableSQL": "attestation"
+        },
+        {
             "nom": "{{ 'generic.fields.commentaire_en' |trans }}",
             "type": 1,
-            "nomBDD": "commentaireEn",
-            "table": "Attestation"
-        }, {
+            "nomBDD": "commentaire_en",
+            "table": "Attestation",
+            "tableSQL": "attestation"
+        },
+        {
             "nom": "{{ 'attestation.fields.etat_fiche' |trans }}",
             "type": 2,
             "nomBDD": "{{ 'requetes.nomBDD' | trans }}",
-            "table": "EtatFiche"
-        }, {
+            "table": "EtatFiche",
+            "tableSQL": "etat_fiche"
+        },
+        {
             "nom": "{{ 'attestation.fields.categorie_occasion' |trans }}",
             "type": 2,
             "nomBDD": "{{'requetes.nomBDD' |trans}}",
-            "table": "CategorieOccasion"
-        }, {
+            "table": "CategorieOccasion",
+            "tableSQL": "categorie_occasion"
+        },
+        {
             "nom": "{{ 'attestation.fields.occasion' |trans }}",
             "type": 2,
             "nomBDD": "{{'requetes.nomBDD' |trans}}",
-            "table": "Occasion"
-        }, {
+            "table": "Occasion",
+            "tableSQL": "occasion"
+        },
+        {
             "nom": "{{ 'attestation.fields.categorie_materiel' |trans }}",
             "type": 2,
             "nomBDD": "{{'requetes.nomBDD' |trans}}",
-            "table": "CategorieMateriel"
-        }, {
+            "table": "CategorieMateriel",
+            "tableSQL": "categorie_materiel"
+        },
+        {
             "nom": "{{ 'attestation.fields.materiel' |trans }}",
             "type": 2,
             "nomBDD": "{{'requetes.nomBDD' |trans}}",
-            "table": "Materiel"
+            "table": "Materiel",
+            "tableSQL": "materiel"
         }
     ],
-
     "agent": [
         {
             "nom": "{{ 'agent.fields.designation' |trans }}",
             "type": 1,
             "nomBDD": "designation",
-            "table": "Agent"
-        }, {
+            "table": "Agent",
+            "tableSQL": "agent"
+        },
+        {
             "nom": "{{ 'generic.fields.commentaire_fr' |trans }}",
             "type": 1,
-            "nomBDD": "commentaireFr",
-            "table": "Agent"
-        }, {
+            "nomBDD": "commentaire_fr",
+            "table": "Agent",
+            "tableSQL": "agent"
+        },
+        {
             "nom": "{{ 'generic.fields.commentaire_en' |trans }}",
             "type": 1,
-            "nomBDD": "commentaireEn",
-            "table": "Agent"
-        }, {
+            "nomBDD": "commentaire_en",
+            "table": "Agent",
+            "tableSQL": "agent"
+        },
+        {
             "nom": "{{ 'agent.fields.agentivite' |trans }}",
             "type": 2,
             "nomBDD": "{{'requetes.nomBDD' |trans}}",
-            "table": "Agentivite"
-        }, {
+            "table": "Agentivite",
+            "tableSQL": "agentivite"
+        },
+        {
             "nom": "{{ 'agent.fields.nature' |trans }}",
             "type": 2,
             "nomBDD": "{{'requetes.nomBDD' |trans}}",
-            "table": "Nature"
-        }, {
+            "table": "Nature",
+            "tableSQL": "nature"
+        },
+        {
             "nom": "{{ 'agent.fields.genre' |trans }}",
             "type": 2,
             "nomBDD": "{{'requetes.nomBDD' |trans}}",
-            "table": "Genre"
-        }, {
+            "table": "Genre",
+            "tableSQL": "genre"
+        },
+        {
             "nom": "{{ 'agent.fields.statut_affiche' |trans }}",
             "type": 2,
             "nomBDD": "{{'requetes.nomBDD' |trans}}",
-            "table": "StatutAffiche"
-        }, {
+            "table": "StatutAffiche",
+            "tableSQL": "statut_affiche"
+        },
+        {
             "nom": "{{ 'agent.fields.activite' |trans }}",
             "type": 2,
             "nomBDD": "{{'requetes.nomBDD' |trans}}",
-            "table": "ActiviteAgent"
+            "table": "ActiviteAgent",
+            "tableSQL": "statut_affiche"
         }
     ],
-
     "localisation": [
         {
             "nom": "{{ 'generic.fields.localisation_reelle' |trans }}",
             "type": 0,
             "nomBDD": "reel",
-            "table": "Localisation"
-        }, {
+            "table": "Localisation",
+            "tableSQL": "localisation"
+        },
+        {
             "nom": "{{ 'localisation.fields.nom_ville' |trans }}",
             "type": 2,
-            "nomBDD": "nomVille",
-            "table": "Localisation"
-        }, {
+            "nomBDD": "nom_ville",
+            "table": "Localisation",
+            "tableSQL": "localisation"
+        },
+        {
             "nom": "{{ 'localisation.fields.nom_site' |trans }}",
             "type": 2,
-            "nomBDD": "nomSite",
-            "table": "Localisation"
-        }, {
+            "nomBDD": "nom_site",
+            "table": "Localisation",
+            "tableSQL": "localisation"
+        },
+        {
             "nom": "{{ 'generic.fields.commentaire_fr' |trans }}",
             "type": 1,
-            "nomBDD": "commentaireFr",
-            "table": "Localisation"
-        }, {
+            "nomBDD": "commentaire_fr",
+            "table": "Localisation",
+            "tableSQL": "localisation"
+        },
+        {
             "nom": "{{ 'generic.fields.commentaire_en' |trans }}",
             "type": 1,
-            "nomBDD": "commentaireEn",
-            "table": "Localisation"
-        }, {
+            "nomBDD": "commentaire_en",
+            "table": "Localisation",
+            "tableSQL": "localisation"
+        },
+        {
             "nom": "{{ 'localisation.fields.entite_politique' |trans }}",
             "type": 2,
             "nomBDD": "{{'requetes.nomBDD' |trans}}",
-            "table": "EntitePolitique"
-        }, {
+            "table": "EntitePolitique",
+            "tableSQL": "entite_politique"
+        },
+        {
             "nom": "{{ 'localisation.fields.grande_region' |trans }}",
             "type": 2,
             "nomBDD": "{{'requetes.nomBDD' |trans}}",
-            "table": "GrandeRegion"
-        }, {
+            "table": "GrandeRegion",
+            "tableSQL": "grande_region"
+        },
+        {
             "nom": "{{ 'localisation.fields.sous_region' |trans }}",
             "type": 2,
             "nomBDD": "{{'requetes.nomBDD' |trans}}",
-            "table": "SousRegion"
-        }, {
+            "table": "SousRegion",
+            "tableSQL": "sous_region"
+        },
+        {
             "nom": "{{ 'localisation.fields.topographie' |trans }}",
             "type": 2,
             "nomBDD": "{{'requetes.nomBDD' |trans}}",
-            "table": "QTopographie"
-        }, {
+            "table": "QTopographie",
+            "tableSQL": "q_topographie"
+        },
+        {
             "nom": "{{ 'localisation.fields.fonction' |trans }}",
             "type": 2,
             "nomBDD": "{{'requetes.nomBDD' |trans}}",
-            "table": "QFonction"
+            "table": "QFonction",
+            "tableSQL": "q_fonction"
         }
     ],
-
     "element": [
         {
             "nom": "{{ 'element.fields.etat_absolu' |trans }}",
             "type": 1,
-            "nomBDD": "etatAbsolu",
-            "table": "Element"
-        }, {
+            "nomBDD": "etat_absolu",
+            "table": "Element",
+            "tableSQL": "element"
+        },
+        {
             "nom": "{{ 'generic.fields.commentaire_fr' |trans }}",
             "type": 1,
-            "nomBDD": "commentaireFr",
-            "table": "Element"
-        }, {
+            "nomBDD": "commentaire_fr",
+            "table": "Element",
+            "tableSQL": "element"
+        },
+        {
             "nom": "{{ 'generic.fields.commentaire_en' |trans }}",
             "type": 1,
-            "nomBDD": "commentaireEn",
-            "table": "Element"
-        }, {
+            "nomBDD": "commentaire_en",
+            "table": "Element",
+            "tableSQL": "element"
+        },
+        {
             "nom": "{{ 'element.fields.theonymes_implicites' |trans }}",
-            "type": 2,
-            "nomBDD": "theonymesImplicites",
-            "table": "Element"
-        }, {
+            "type": 4,
+            "nomBDD": "theonymes_implicites",
+            "table": "Element",
+            "tableSQL": "theonymes_implicites"
+        },
+        {
             "nom": "{{ 'element.fields.etat_morphologique' |trans }}",
-            "type": 2,
-            "nomBDD": "etatMorphologique",
-            "table": "ContientElement"
-        }, {
+            "type": 4,
+            "nomBDD": "etat_morphologique",
+            "table": "ContientElement",
+            "tableSQL": "contient_element"
+        },
+        {
             "nom": "{{ 'element.fields.beta_code' |trans }}",
             "type": 1,
             "nomBDD": "betaCode",
-            "table": "Element"
-        }, {
+            "table": "Element",
+            "tableSQL": "agent"
+        },
+        {
             "nom": "{{ 'element.fields.categorie_contextuelle' |trans }}",
-            "type": 2,
+            "type": 4,
             "nomBDD": "categories",
             "table": "Element"
-        },{
+        },
+        {
             "nom": "{{ 'element.fields.suffixe' |trans }}",
             "type": 0,
             "nomBDD": "suffixe",
-            "table": "ContientElement"
-        }, {
+            "table": "ContientElement",
+            "tableSQL": "agent"
+        },
+        {
             "nom": "{{ 'element.fields.genre' |trans }}",
             "type": 2,
             "nomBDD": "{{'requetes.nomBDD' |trans}}",
-            "table": "GenreElement"
-        }, {
+            "table": "GenreElement",
+            "tableSQL": "agent"
+        },
+        {
             "nom": "{{ 'element.fields.nombre' |trans }}",
             "type": 2,
             "nomBDD": "{{'requetes.nomBDD' |trans}}",
-            "table": "NombreElement"
-        }, {
+            "table": "NombreElement",
+            "tableSQL": "agent"
+        },
+        {
             "nom": "{{ 'element.fields.reference_element' |trans }}",
             "type": 1,
             "nomBDD": "referenceElement",
-            "table": "ElementBiblio"
+            "table": "ElementBiblio",
+            "tableSQL": "statut_affiche"
         }
     ],
-
     "source": [
         {
             "nom": "{{ 'source.fields.categorie_source' |trans }}",
             "type": 2,
             "nomBDD": "{{'requetes.nomBDD' |trans}}",
-            "table": "CategorieSource"
-        }, {
+            "table": "CategorieSource",
+            "tableSQL": "agent"
+        },
+        {
             "nom": "{{ 'source.fields.type_source' |trans }}",
             "type": 2,
             "nomBDD": "{{'requetes.nomBDD' |trans}}",
-            "table": "TypeSource"
-        }, {
+            "table": "TypeSource",
+            "tableSQL": "agent"
+        },
+        {
             "nom": "{{ 'source.fields.langues' |trans }}",
             "type": 2,
             "nomBDD": "{{'requetes.nomBDD' |trans}}",
-            "table": "Langue"
-        }, {
+            "table": "Langue",
+            "tableSQL": "agent"
+        },
+        {
             "nom": "{{ 'source.fields.titre' |trans }}",
             "type": 2,
             "nomBDD": "{{'requetes.nomBDD' |trans}}",
-            "table": "Titre"
-        }, {
+            "table": "Titre",
+            "tableSQL": "agent"
+        },
+        {
             "nom": "{{ 'source.fields.auteurs' |trans }}",
             "type": 2,
             "nomBDD": "{{'requetes.nomBDD' |trans}}",
-            "table": "Auteur"
-        }, {
+            "table": "Auteur",
+            "tableSQL": "agent"
+        },
+        {
             "nom": "{{ 'source.fields.categorie_materiau' |trans }}",
             "type": 2,
             "nomBDD": "{{'requetes.nomBDD' |trans}}",
-            "table": "CategorieMateriau"
-        }, {
+            "table": "CategorieMateriau",
+            "tableSQL": "agent"
+        },
+        {
             "nom": "{{ 'source.fields.materiau' |trans }}",
             "type": 2,
             "nomBDD": "{{'requetes.nomBDD' |trans}}",
-            "table": "Materiau"
-        }, {
+            "table": "Materiau",
+            "tableSQL": "agent"
+        },
+        {
             "nom": "{{ 'source.fields.support' |trans }}",
             "type": 2,
             "nomBDD": "{{'requetes.nomBDD' |trans}}",
-            "table": "TypeSupport"
-        }, {
+            "table": "TypeSupport",
+            "tableSQL": "agent"
+        },
+        {
             "nom": "{{ 'source.fields.categorie_support' |trans }}",
             "type": 2,
             "nomBDD": "{{'requetes.nomBDD' |trans}}",
-            "table": "CategorieSupport"
-        }, {
+            "table": "CategorieSupport",
+            "tableSQL": "agent"
+        },
+        {
             "nom": "{{ 'source.fields.iconographie' |trans }}",
             "type": 0,
             "nomBDD": "iconographie",
-            "table": "Source"
-        }, {
+            "table": "Source",
+            "tableSQL": "source"
+        },
+        {
             "nom": "{{ 'generic.fields.commentaire_fr' |trans }}",
             "type": 1,
-            "nomBDD": "commentaireFr",
-            "table": "Source"
-        }, {
+            "nomBDD": "commentaire_fr",
+            "table": "Source",
+            "tableSQL": "agent"
+        },
+        {
             "nom": "{{ 'generic.fields.commentaire_en' |trans }}",
             "type": 1,
-            "nomBDD": "commentaireEn",
-            "table": "Source"
+            "nomBDD": "commentaire_en",
+            "table": "Source",
+            "tableSQL": "statut_affiche"
         }
     ],
     "datation": [
@@ -283,22 +377,29 @@
             "nom": "{{ 'datation.fields.post_quem' |trans }}",
             "type": 3,
             "nomBDD": "postQuem",
-            "table": "Datation"
-        }, {
+            "table": "Datation",
+            "tableSQL": "agent"
+        },
+        {
             "nom": "{{ 'datation.fields.ante_quem' |trans }}",
             "type": 3,
             "nomBDD": "anteQuem",
-            "table": "Datation"
-        }, {
+            "table": "Datation",
+            "tableSQL": "agent"
+        },
+        {
             "nom": "{{ 'generic.fields.commentaire_fr' |trans }}",
             "type": 1,
-            "nomBDD": "commentaireFr",
-            "table": "Datation"
-        }, {
+            "nomBDD": "commentaire_fr",
+            "table": "Datation",
+            "tableSQL": "agent"
+        },
+        {
             "nom": "{{ 'generic.fields.commentaire_en' |trans }}",
             "type": 1,
-            "nomBDD": "commentaireEn",
-            "table": "Datation"
+            "nomBDD": "commentaire_en",
+            "table": "Datation",
+            "tableSQL": "statut_affiche"
         }
     ]
 }

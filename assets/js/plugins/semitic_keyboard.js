@@ -1,3 +1,5 @@
+require('./jquery.ui.position.js');
+
 // "n(a):title_or_tooltip"; n = new key, (a) = actual key (optional), ":label" = title_or_tooltip (use an underscore "_" in place of a space " ")
 SEMITIC_KEYS = [
     't\u0323:Tet',

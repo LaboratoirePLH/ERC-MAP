@@ -92,7 +92,8 @@ Je n'ai pas pu invoquer le block twig dans le js*/
             $('#alert_bootstrap').append("<div class=\"alert alert-success alert-dismissible fade show\" role=\"alert\">Requête enregistrée.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
 
             //Affichage du reste (Corps de la requête)
-            chargerRequete(); //Rajouter l'id qui est envoyé dans reqSaveCorps
+            //chargerRequete(); //Rajouter l'id qui est envoyé dans reqSaveCorps
+            //$("#exampleModal").css("display","none"); //On cache le prompt
         }
     }
 
@@ -337,7 +338,7 @@ Je n'ai pas pu invoquer le block twig dans le js*/
             if(tmp["box1"] == "{{ 'requetes.selection_vide' | trans }}" || tmp["box2"] == "{{ 'requetes.selection_vide' | trans }}") //Si une des trois box n'est pas complétée
             {
                 $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">Vous devez compléter les champs à afficher.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
-                console.log ("Un des critère n'est pas complet");
+                console.log ("Vous devez compléter les champs à afficher.");
             }
             tabTmp2[index] = tmp;
         });
@@ -379,7 +380,6 @@ Je n'ai pas pu invoquer le block twig dans le js*/
                     success: function(corps)
                     {
                         afficherRequete(corps);
-                        $("#exampleModal").css("display","none"); //On cache le prompt
                     },
                     error: function (err)
                     {
@@ -396,6 +396,8 @@ Je n'ai pas pu invoquer le block twig dans le js*/
         //Pour le type donnee
         $("#select_type_donnee").find(`[selected="selected"]`).removeAttr("selected");//Je chope celui qui à l'attribut "selected" et je le vire
         $("#select_type_donnee").find(`[value="`+tabCorps[0]+`"]`).attr("selected","selected");
+        $("#liste_critere").empty();
+        $("#liste_critere").append(formulaire_critere_vide); //Je remet un select_box1 pour le afficheListeCritere
         afficheListeCritere($("#select_type_donnee"));
 
         //Pour les critères

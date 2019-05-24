@@ -247,43 +247,44 @@
         {
             "nom": "{{ 'element.fields.beta_code' |trans }}",
             "type": 1,
-            "nomBDD": "betaCode",
+            "nomBDD": "beta_code",
             "table": "Element",
-            "tableSQL": "agent"
+            "tableSQL": "element"
         },
         {
             "nom": "{{ 'element.fields.categorie_contextuelle' |trans }}",
             "type": 4,
             "nomBDD": "categories",
-            "table": "Element"
+            "table": "Element",
+            "tableSQL": "categorie_element"
         },
         {
             "nom": "{{ 'element.fields.suffixe' |trans }}",
             "type": 0,
             "nomBDD": "suffixe",
             "table": "ContientElement",
-            "tableSQL": "agent"
+            "tableSQL": "contient_element"
         },
         {
             "nom": "{{ 'element.fields.genre' |trans }}",
             "type": 2,
             "nomBDD": "{{'requetes.nomBDD' |trans}}",
             "table": "GenreElement",
-            "tableSQL": "agent"
+            "tableSQL": "genre_element"
         },
         {
             "nom": "{{ 'element.fields.nombre' |trans }}",
             "type": 2,
             "nomBDD": "{{'requetes.nomBDD' |trans}}",
             "table": "NombreElement",
-            "tableSQL": "agent"
+            "tableSQL": "nombre_element"
         },
         {
             "nom": "{{ 'element.fields.reference_element' |trans }}",
             "type": 1,
-            "nomBDD": "referenceElement",
+            "nomBDD": "reference_element",
             "table": "ElementBiblio",
-            "tableSQL": "statut_affiche"
+            "tableSQL": "element_biblio"
         }
     ],
     "source": [
@@ -292,35 +293,35 @@
             "type": 2,
             "nomBDD": "{{'requetes.nomBDD' |trans}}",
             "table": "CategorieSource",
-            "tableSQL": "agent"
+            "tableSQL": "categorie_source"
         },
         {
             "nom": "{{ 'source.fields.type_source' |trans }}",
             "type": 2,
             "nomBDD": "{{'requetes.nomBDD' |trans}}",
             "table": "TypeSource",
-            "tableSQL": "agent"
+            "tableSQL": "type_source"
         },
         {
             "nom": "{{ 'source.fields.langues' |trans }}",
             "type": 2,
             "nomBDD": "{{'requetes.nomBDD' |trans}}",
             "table": "Langue",
-            "tableSQL": "agent"
+            "tableSQL": "langue"
         },
         {
             "nom": "{{ 'source.fields.titre' |trans }}",
             "type": 2,
             "nomBDD": "{{'requetes.nomBDD' |trans}}",
             "table": "Titre",
-            "tableSQL": "agent"
+            "tableSQL": "titre"
         },
         {
             "nom": "{{ 'source.fields.auteurs' |trans }}",
             "type": 2,
             "nomBDD": "{{'requetes.nomBDD' |trans}}",
             "table": "Auteur",
-            "tableSQL": "agent"
+            "tableSQL": "auteur"
         },
         {
             "nom": "{{ 'source.fields.categorie_materiau' |trans }}",
@@ -341,14 +342,14 @@
             "type": 2,
             "nomBDD": "{{'requetes.nomBDD' |trans}}",
             "table": "TypeSupport",
-            "tableSQL": "agent"
+            "tableSQL": "type_support"
         },
         {
             "nom": "{{ 'source.fields.categorie_support' |trans }}",
             "type": 2,
             "nomBDD": "{{'requetes.nomBDD' |trans}}",
             "table": "CategorieSupport",
-            "tableSQL": "agent"
+            "tableSQL": "categorie_support"
         },
         {
             "nom": "{{ 'source.fields.iconographie' |trans }}",
@@ -362,44 +363,44 @@
             "type": 1,
             "nomBDD": "commentaire_fr",
             "table": "Source",
-            "tableSQL": "agent"
+            "tableSQL": "source"
         },
         {
             "nom": "{{ 'generic.fields.commentaire_en' |trans }}",
             "type": 1,
             "nomBDD": "commentaire_en",
             "table": "Source",
-            "tableSQL": "statut_affiche"
+            "tableSQL": "source"
         }
     ],
     "datation": [
         {
             "nom": "{{ 'datation.fields.post_quem' |trans }}",
             "type": 3,
-            "nomBDD": "postQuem",
+            "nomBDD": "post_quem",
             "table": "Datation",
-            "tableSQL": "agent"
+            "tableSQL": "datation"
         },
         {
             "nom": "{{ 'datation.fields.ante_quem' |trans }}",
             "type": 3,
-            "nomBDD": "anteQuem",
+            "nomBDD": "ante_quem",
             "table": "Datation",
-            "tableSQL": "agent"
+            "tableSQL": "datation"
         },
         {
             "nom": "{{ 'generic.fields.commentaire_fr' |trans }}",
             "type": 1,
             "nomBDD": "commentaire_fr",
             "table": "Datation",
-            "tableSQL": "agent"
+            "tableSQL": "datation"
         },
         {
             "nom": "{{ 'generic.fields.commentaire_en' |trans }}",
             "type": 1,
             "nomBDD": "commentaire_en",
             "table": "Datation",
-            "tableSQL": "statut_affiche"
+            "tableSQL": "datation"
         }
     ]
 }

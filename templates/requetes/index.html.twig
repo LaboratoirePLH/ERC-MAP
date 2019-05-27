@@ -71,9 +71,8 @@
     var formulaire_critere = null;// Variable qui prend le formulaire.
     var formulaire_critere_vide = null; //Variable qui prend le formulaire vide, utilisé dans afficheListeCritere
 
-    /*Variables pour les bouttons AND/OR, voir partial.html.twig
-Je n'ai pas pu invoquer le block twig dans le js*/
-    var champAffiche = $("#liste_affiche").html();
+    var champAfficheVide = $("#liste_affiche").html();
+    var champAffiche = null;
 
     function enleverBoutonEtOu(){
         $(".select_div").first().find(".boutonsEtOu").css("visibility","hidden");
@@ -180,8 +179,7 @@ Je n'ai pas pu invoquer le block twig dans le js*/
             tabRequete["where"+index]=tmp;
         });
 
-        var tabAffiche = new Object(); //Tableau qui va contenir les critères d'affichage
-        tabAffiche[0]= "" ;
+        var tabAfficheExec = new Object(); //Tableau qui va contenir les critères d'affichage
 
         $(".div_champ_affiche").each(function(index){
 
@@ -194,36 +192,34 @@ Je n'ai pas pu invoquer le block twig dans le js*/
             if($(this).find(".select_box_champAffiche_1").children("option:selected").attr("label") == "-1" || $(this).find(".select_box_champAffiche_2").children("option:selected").attr("label") == "-1" || $(this).find(".select_box_champAffiche_3").children("option:selected").attr("label") == "-1")
             {
                 $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">Vous devez compléter les champs à afficher.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
-                console.log ("Un des critère n'est pas complet");
+                console.log ("Un des champs à afficher n'est pas complet");
                 quit = true;
                 return false;
             }
 
             var tmp = new Object();
+            var tabAfficheValeur =  $(this).find(".select_box_champAffiche_2").children("option:selected").val();  // le valeur (type de l'objet)
+            var tabAfficheI = $(this).find(".select_box_champAffiche_2").children("option:selected").attr('label'); // le i de tabChoix['valeur'][i]
+            tmp["table"] = tabAffiche[tabAfficheValeur][tabAfficheI].tableSQL;
+            tmp["nomBDD"] = tabAffiche[tabAfficheValeur][tabAfficheI].nomBDD;
             //Faire en sorte d'aller récup le nomBDD, le nom de la table et l'ordre
 
             valOrdre = $(this).find(".select_box_champAffiche_3").children("option:selected").val();
+            tmp["ordre"] = valOrdre;
 
-            $(tabAffiche).each(function(key){
-
-                if(this[key]["ordre"] == valOrdre && !(valOrdre === undefined))//Si un ordre est égal à un autre
-                {
-                    if(quit == false)
+           /* $(tabAfficheExec).each(function(key){
+                    if($(this)["select"+key]["ordre"] == valOrdre && $(this)["ordre"] != tmp["ordre"]) //Si un ordre est égal à un autre
                     {
-                    $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">Vous avez deux ou plusieurs ordres identiques.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
+                        $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">Vous avez deux ou plusieurs ordres identiques.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
+                        quit = true;
+                        console.log ("Deux ou plusieurs champs ont le même ordre");
+                        return false;
                     }
-                    quit = true;
-                    console.log ("Deux ou plusieurs champs ont le même ordre");
-                    return false;
-                }
-                else
-                {
-                    tmp["ordre"] = valOrdre;  
-                    tabAffiche[index]=tmp;
-                }
-            });
-
+            });*/
+            tabAfficheExec["select"+index]=tmp;
         });
+
+        //Vérification qu'il n'y ait pas deux ordres différents
 
         if(quit) //Si les critères ne sont pas complets ou qu'il y a deux ordres identiques
         {
@@ -237,7 +233,7 @@ Je n'ai pas pu invoquer le block twig dans le js*/
             data: {
                 "typeDonnee": typeDonnee,
                 "tabRequete": tabRequete,
-                "tabAffiche": tabAffiche
+                "tabAffiche": tabAfficheExec
             },
             success: function(rep)
             {
@@ -492,6 +488,11 @@ Je n'ai pas pu invoquer le block twig dans le js*/
     }
 
     function ajouterChampAffiche(){
+        if($("#select_type_donnee").children("option:selected").attr("label") == -1){
+            $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">Veuillez remplir le type de donnée.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
+            console.log("Type donnée incomplet");
+            return;
+        }
         $("#liste_affiche").append(champAffiche);
         return;
     }
@@ -509,9 +510,40 @@ Je n'ai pas pu invoquer le block twig dans le js*/
 
     function selectTypeDonnee(currentElement){
         $("#liste_critere").empty(); //Je vide les critères
+        $("#liste_affiche").empty(); //Je vide l'affichage
         $("#liste_critere").append(formulaire_critere_vide); //Je remets simplement une box vide
+        $("#liste_affiche").append(champAfficheVide); //Je remets simplement une box vide
         changerSelected(currentElement); //On change le select de typeDonnee
         afficheListeCritere(currentElement);
+        afficherListeChampAffiche(currentElement);
+    }
+
+    function afficherListeChampAffiche(currentElement){
+
+            //Change l'affichage en fonction de la sélection
+            var typeDonnee = $(currentElement).children("option:selected").attr("value"); //Je récupère le typeDonnee
+            var selectChampAffiche1 = $("#liste_affiche").find(".select_box_champAffiche_1");
+
+            $(selectChampAffiche1).append("<option value=\"attestation\">{{ 'attestation.name' | trans }}</option>"); //Ce qui est commun aux trois
+            $(selectChampAffiche1).append("<option value=\"element\">{{ 'element.name' | trans }}</option>"); //Ce qui est commun aux trois
+            switch(typeDonnee){
+                case "Attestation":
+                        $(selectChampAffiche1).append("<option value=\"agent\">{{ 'requetes.agent_name' | trans }}</option>");
+                        $(selectChampAffiche1).append("<option value=\"biblio\">{{ 'nav.bibliography' | trans }}</option>");
+                        $(selectChampAffiche1).append("<option value=\"datation\">{{ 'source.sections.datation' | trans }}</option>");
+                        $(selectChampAffiche1).append(" <option value=\"localisation_agent\">{{ 'requetes.localisation_agent' | trans }}</option>"); //Ce qui est commun aux trois
+                    break;
+       
+                case "Element":
+                        $(selectChampAffiche1).append("<option value=\"biblio\">{{ 'nav.bibliography' | trans }}</option>");
+                    break;
+                case "Source":
+                    $(selectChampAffiche1).append("<option value=\"datation\">{{ 'source.sections.datation' | trans }}</option>");
+                    break;
+            }
+            $(selectChampAffiche1).append(" <option value=\"localisation\">{{ 'source.sections.localisation' | trans }}</option>"); //Ce qui est commun aux trois
+            $(selectChampAffiche1).append("<option value=\"source\">{{ 'source.name' | trans }}</option>"); //Ce qui est commun aux trois
+            champAffiche = $("#liste_affiche").html();
     }
 
     function afficheListeCritere(currentElement){
@@ -589,11 +621,23 @@ Je n'ai pas pu invoquer le block twig dans le js*/
     }
 
     function secondeBoxChampAffiche(currentElement){
+        changerSelected(currentElement);
         var box2 = $(currentElement).parent().next().find(".select_box_champAffiche_2");
         $(box2).empty(); // Il faut vider le HTML de la seconde box sinon ça ajoute
         $(box2).append("<option class=\"disabled_selected\" value=\"\" label=\"-1\" selected=\"selected\" disabled=\"disabled\">{{ 'requetes.selection_vide' | trans }}</option>");
-        $(box2).append("<option class=\"option_done\"value=\"\" label=\"0\" > Oui </option>");
-        $(box2).css("visibility","visible");    
+        $(box2).css("visibility","visible");
+        var valeurSelect = $(currentElement).children("option:selected").val();
+        remplirSecondeBoxChampAffiche(valeurSelect,box2);
+    }
+
+    function remplirSecondeBoxChampAffiche(valeur,box){
+        $.each(tabAffiche, function (j, obj) { // On parcourt le tableau JSON
+            if (j == valeur) { // On vérifie que ça corresponde bien à ce qu'il y a dans la box 1
+                for (var i = 0; i < obj.length; i++) { // Boucle for pour afficher tous les objets
+                    $(box).append("<option value=\"" + valeur + "\" label=\"" + i + "\">" + obj[i].nom + " </option>"); // value="valeur", label="i". J'envoie ça pour pouvoir récupérer les valeurs dans le tabObjetsaprès
+                }
+            }
+        })
     }
 
     function troisiemeBoxChampAffiche(currentElement){
@@ -625,7 +669,7 @@ Je n'ai pas pu invoquer le block twig dans le js*/
                     $(box).append("<option value=\"" + valeur + "\" label=\"" + i + "\">" + obj[i].nom + " </option>"); // value="valeur", label="i". J'envoie ça pour pouvoir récupérer les valeurs dans le tabObjetsaprès
                 }
             }
-        })
+        }),
         box.css("visibility", "visible"); // On affiche le second select
         return;
     }
@@ -650,7 +694,7 @@ Je n'ai pas pu invoquer le block twig dans le js*/
                     $(box).append("<option value=\"" + valeur + "\" label=\"" + i + "\">" + obj[i].nom + " </option>"); // <option value="valeur"> obj[i].nom </option>
                 }
             }
-        })
+        });
         box.css("visibility", "visible"); // On affiche le second select
         return;
     }
@@ -772,6 +816,14 @@ Je n'ai pas pu invoquer le block twig dans le js*/
     {% endset %}
 
     var tabObjets = JSON.parse('{{ tabObjets|replace({"\n": "", "\r\n": "", "\t": "", "\n\r": ""})|raw }}');
+
+    // Type : Booléen(0), String/Text(1), Liste(2), Number(3),Lien existe(4) -> Si le lien existe entre telle et telle table, en soi juste une jointure
+    //Tableau pour le box2
+    {% set tabAffiche %}
+        {% include "requetes/tabAffiche.json" %}
+    {% endset %}
+
+    var tabAffiche = JSON.parse('{{ tabAffiche|replace({"\n": "", "\r\n": "", "\t": "", "\n\r": ""})|raw }}');
 
 </script>
 {% endblock %}

@@ -428,3 +428,4 @@ requetes:
         plus_grand: "Plus grand que"
         plus_petit: "Plus petit que"
         egal_a: "Égal à"
+    localisation_agent: "Localisation de l'agent"

@@ -173,8 +173,7 @@ class RequetesController extends AbstractController
         if ($request->isXmlHttpRequest()) {
             $typeDonnee = strtolower($request->request->get('typeDonnee')); //Je le formate pour que ça corresponde aux tables de la BDD
             $tabRequete = $request->request->get('tabRequete');
-            //$tabAffiche = $request->request->get('tabAffiche');
-            //$typeDonneeTable = "App\\Entity\\".$typeDonnee; //On le traduit en Symfony pour qu'il comprenne où aller
+            $tabAffiche = $request->request->get('tabAffiche');
 
             $nbCriteres = sizeof($tabRequete);
 
@@ -190,6 +189,10 @@ class RequetesController extends AbstractController
                 $tabOperator[$i] = $tabRequete["where" . $i]["operator"];
             }
 
+            $tabTableAffiche = array(); //Le tableau qui va prendre les tables requises pour le SELECT
+            for($i = 0; $i <sizeof($tabAffiche); $i++){
+                $tabTableAffiche[$i] = $tabAffiche["select" . $i]["table"];
+            }
 
             //Pour le FROM WHERE
             $condition = ""; //Where
@@ -200,6 +203,7 @@ class RequetesController extends AbstractController
             }
 
             //Je suis obligé de mettre ça ici car si je le met avant, il ne prend pas les conditions sur une même table. Ex : Element qui a un nom qui commence par x, et element qui a un nom qui finit par y
+            $tabTable = array_merge($tabTable,$tabTableAffiche); //J'ajoute les tables du SELECT pour les jointures et le FROM
             $tabTable = array_unique($tabTable, SORT_REGULAR); //J'enlève les doublons
 
             $from = "";
@@ -209,12 +213,17 @@ class RequetesController extends AbstractController
             $jointures = " WHERE 1=1 ";
             $jointures .= $this->_faireJointure($typeDonnee, $tabTable);
 
-            $sql = "SELECT * ";
+            //Pour le select;
+            $select = "SELECT ";
+            $select .= $this->_faireSelect($tabAffiche);
+
+            $sql = "";
+            $sql .= $select;
             $sql .= $from;
             $sql .= $jointures;
             $sql .= $condition;
 
-            //return new JsonResponse($sql);
+            return new JsonResponse($sql);
 
             //Requête
             $conn = $this->getDoctrine()->getEntityManager()->getConnection();
@@ -231,6 +240,20 @@ class RequetesController extends AbstractController
             }
             return new JsonResponse($tmp2);
         }
+    }
+
+    private function _faireSelect($tab){
+        $select = "";
+        for($i = 0;$i < sizeof($tab); $i++){
+            $select .= $tab["select" . $i]["table"] . "." . $tab["select" . $i]["nomBDD"]; //Ex : "attestation.id"
+            if ($i + 1 != sizeof($tab)) { //Pour ne pas mettre la virgule au dernier
+                $select .= ", ";
+            }
+            else{
+                $select .= " "; //J'ajoute un espace pour le FROM après
+            }
+        }
+        return $select;
     }
 
     private function _faireFrom($from, $tabTable, $typeDonnee)
@@ -351,6 +374,12 @@ class RequetesController extends AbstractController
                         $from .= "contient_element, ";
                     }
                     break;
+
+                case "pratique":
+                    if(!in_array("attestation_pratique",$tabTable)){
+                        $from .= "attestation_pratique, ";
+                    }
+                    break;
             }//End switch
                 
             $from .= $tabTable[$i];
@@ -462,6 +491,12 @@ class RequetesController extends AbstractController
                                     $jointures .= "AND agent.id = agent_statut.id_agent AND agent_statut.id_statut = ". $table .".id ";
                                     break;
        
+                                case "pratique":
+                                    if(!in_array("attestation_pratique",$tabTable)){
+                                        $jointures .= "AND attestation.id = attestation_pratique.id_attestation AND attestation_pratique.id_pratique = pratique.id ";
+                                    }
+                                    break;
+
                                 case "source":
                                     $jointures .= "AND attestation.id_source = source.id ";
                                     break;

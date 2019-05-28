@@ -29,14 +29,14 @@
             "tableSQL": "pratique"
         },
         {
-            "nom": "{{ 'attestation.fields.extrait_sans_restitution' |trans }}",
+            "nom": "{{ 'attestation.fields.extrait_avec_restitution' |trans }}",
             "type": 1,
             "nomBDD": "extrait_avec_restitution",
             "table": "Attestation",
             "tableSQL": "attestation"
         },
         {
-            "nom": "{{ 'attestation.fields.extrait_avec_restitution' |trans }}",
+            "nom": "{{ 'attestation.fields.extrait_sans_restitution' |trans }}",
             "type": 1,
             "nomBDD": "extrait_sans_restitution",
             "table": "Attestation",

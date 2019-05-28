@@ -127,6 +127,11 @@ class RequetesController extends AbstractController
             }
 
             $nomTable = $request->request->get('nomTable');
+            //Cas particuluier : pour categorie_element
+            if($nomTable == "Element" && ($nomBDD == "fr" || $nomBDD == "en")){
+                $nomTable = "CategorieElement";
+            }
+
             $nomTableClass = "App\\Entity\\" . $nomTable; //On le traduit en Symfony pour qu'il comprenne où aller
 
             //Requête QB
@@ -135,7 +140,7 @@ class RequetesController extends AbstractController
                 ->getQuery()
                 ->getResult();
 
-            return new JsonResponse($this->_traiterRetour($rows, $nomBDD));
+            return new JsonResponse($this->_traiterRetour($rows, $nomBDD, $nomTable));
         }
     }
 
@@ -190,8 +195,10 @@ class RequetesController extends AbstractController
             }
 
             $tabTableAffiche = array(); //Le tableau qui va prendre les tables requises pour le SELECT
-            for($i = 0; $i <sizeof($tabAffiche); $i++){
+            $tabOrdreAffiche = array(); //Pour l'ordre d'affichage des select
+            for ($i = 0; $i < sizeof($tabAffiche); $i++) {
                 $tabTableAffiche[$i] = $tabAffiche["select" . $i]["table"];
+                $tabOrdreAffiche[$tabAffiche["select" . $i]["ordre"]] = $tabAffiche["select" . $i];
             }
 
             //Pour le FROM WHERE
@@ -202,9 +209,9 @@ class RequetesController extends AbstractController
                 $condition .= $this->_operatorValue($tabOperator[$i], $tabValue[$i]);
             }
 
-            //Je suis obligé de mettre ça ici car si je le met avant, il ne prend pas les conditions sur une même table. Ex : Element qui a un nom qui commence par x, et element qui a un nom qui finit par y
-            $tabTable = array_merge($tabTable,$tabTableAffiche); //J'ajoute les tables du SELECT pour les jointures et le FROM
-            $tabTable = array_unique($tabTable, SORT_REGULAR); //J'enlève les doublons
+            //Je suis obligé de mettre ça ici car si je le met avant, il ne prend pas les conditions sur une même table à cause du array_unique. Ex : Element qui a un nom qui commence par x, et element qui a un nom qui finit par y
+            $tabTable = array_merge($tabTable, $tabTableAffiche); //J'ajoute les tables du SELECT pour les jointures et le FROM
+            $tabTable = array_values(array_unique($tabTable, SORT_REGULAR)); //J'enlève les doublons, le array_values est là pour éviter les erreurs d'index dûes au array_unique
 
             $from = "";
             $from .= $this->_faireFrom($from, $tabTable, $typeDonnee);
@@ -223,7 +230,7 @@ class RequetesController extends AbstractController
             $sql .= $jointures;
             $sql .= $condition;
 
-            return new JsonResponse($sql);
+            //return new JsonResponse($sql);
 
             //Requête
             $conn = $this->getDoctrine()->getEntityManager()->getConnection();
@@ -235,21 +242,23 @@ class RequetesController extends AbstractController
             $tmp2 = [];
             $i = 0;
             while ($data = $stmt->fetch()) {
-                $tmp2[$i]["id"] = $data["id"];
+                for ($j = 0; $j < sizeof($tabAffiche); $j++) { //Boucle pour récupérer tous les champs SELECT
+                    $tmp2[$i]["select".$j] = strip_tags($data["select".$j]); //Affectation des champs à une variable
+                }
                 $i++;
             }
             return new JsonResponse($tmp2);
         }
     }
 
-    private function _faireSelect($tab){
+    private function _faireSelect($tab)
+    {
         $select = "";
-        for($i = 0;$i < sizeof($tab); $i++){
-            $select .= $tab["select" . $i]["table"] . "." . $tab["select" . $i]["nomBDD"]; //Ex : "attestation.id"
+        for ($i = 0; $i < sizeof($tab); $i++) {
+            $select .= $tab["select" . $i]["table"] . "." . $tab["select" . $i]["nomBDD"] . " as select" . $i; //Ex : "attestation.id as 0"
             if ($i + 1 != sizeof($tab)) { //Pour ne pas mettre la virgule au dernier
                 $select .= ", ";
-            }
-            else{
+            } else {
                 $select .= " "; //J'ajoute un espace pour le FROM après
             }
         }
@@ -296,18 +305,18 @@ class RequetesController extends AbstractController
                     }
                     break;
 
-                //Pour tous les périphériques de Localisation
+                    //Pour tous les périphériques de Localisation
                 case "sous_region":
                 case "grande_region":
                 case "entite_politique":
-                    if(!in_array(array("localisation"),$tabTable)){
+                    if (!in_array(array("localisation"), $tabTable)) {
                         $from .= "localisation, ";
                     }
                     break;
                 case "q_topographie":
                 case "q_fonction":
-                    if(!in_array("localisation",$tabTable)){
-                        $from .= "localisation_".$tabTable[$i] . ", "; //La table intermédiaire (Ex : localisation_q_topographie)
+                    if (!in_array("localisation", $tabTable)) {
+                        $from .= "localisation_" . $tabTable[$i] . ", "; //La table intermédiaire (Ex : localisation_q_topographie)
                         $from .= "localisation, ";
                     }
                     break;
@@ -315,8 +324,8 @@ class RequetesController extends AbstractController
                 case "nature":
                 case "genre":
                 case "agentivite":
-                    if(!in_array("agent",$tabTable)){ //S'il n'y a pas agent on l'ajoute
-                        $from .= "agent_".$tabTable[$i].", "; //La table intermédiaire (Ex: agent_genre)
+                    if (!in_array("agent", $tabTable)) { //S'il n'y a pas agent on l'ajoute
+                        $from .= "agent_" . $tabTable[$i] . ", "; //La table intermédiaire (Ex: agent_genre)
                         $from .= "agent, ";
                     }
                     break;
@@ -326,62 +335,62 @@ class RequetesController extends AbstractController
                     $from .= "agent, ";
                     break;
 
-                //Element
+                    //Element
                 case "genre_element":
                 case "nombre_element":
-                    if(!in_array("contient_element",$tabTable)){
+                    if (!in_array("contient_element", $tabTable)) {
                         $from .= "contient_element, ";
                     }
-                    if($typeDonnee == "attestation"){ //Quand je veux passer de attestation à un périphérique de element
-                        if(!in_array("element",$tabTable)){
-                            $from .= "element, ";  
+                    if ($typeDonnee == "attestation") { //Quand je veux passer de attestation à un périphérique de element
+                        if (!in_array("element", $tabTable)) {
+                            $from .= "element, ";
                         }
                     }
                     break;
 
                 case "categorie_element":
-                    if(!in_array("element_categorie",$tabTable)){
+                    if (!in_array("element_categorie", $tabTable)) {
                         $from .= "element_categorie, ";
                     }
-                    if($typeDonnee == "attestation"){ //Quand je veux passer de attestation à un périphérique de element
-                        if(!in_array("element",$tabTable)){
-                            $from .= "element, ";  
+                    if ($typeDonnee == "attestation") { //Quand je veux passer de attestation à un périphérique de element
+                        if (!in_array("element", $tabTable)) {
+                            $from .= "element, ";
                         }
                     }
                     break;
-                
+
                 case "contient_element":
-                    if($typeDonnee == "attestation"){ //Quand je veux passer de attestation à un périphérique de element
-                        if(!in_array("element",$tabTable)){
-                            $from .= "element, ";  
+                    if ($typeDonnee == "attestation") { //Quand je veux passer de attestation à un périphérique de element
+                        if (!in_array("element", $tabTable)) {
+                            $from .= "element, ";
                         }
                     }
                     break;
 
                 case "element_biblio":
-                    if($typeDonnee == "attestation"){ //Quand je veux passer de attestation à un périphérique de element
-                        if(!in_array("element",$tabTable)){
-                            $from .= "element, ";  
+                    if ($typeDonnee == "attestation") { //Quand je veux passer de attestation à un périphérique de element
+                        if (!in_array("element", $tabTable)) {
+                            $from .= "element, ";
                         }
-                        if(!in_array("contient_element",$tabTable)){ //S'il il n'y a pas contient_element, car sinon il n'apparaît pas dans le from
+                        if (!in_array("contient_element", $tabTable)) { //S'il il n'y a pas contient_element, car sinon il n'apparaît pas dans le from
                             $from .= "contient_element, ";
                         }
                     }
                     break;
 
                 case "element":
-                    if($typeDonnee == "attestation"){ //Quand je veux passer de attestation à element
+                    if ($typeDonnee == "attestation") { //Quand je veux passer de attestation à element
                         $from .= "contient_element, ";
                     }
                     break;
 
                 case "pratique":
-                    if(!in_array("attestation_pratique",$tabTable)){
+                    if (!in_array("attestation_pratique", $tabTable)) {
                         $from .= "attestation_pratique, ";
                     }
                     break;
-            }//End switch
-                
+            } //End switch
+
             $from .= $tabTable[$i];
             if ($i + 1 != sizeof($tabTable)) { //Pour ne pas mettre la virgule au dernier
                 $from .= ", ";
@@ -391,47 +400,46 @@ class RequetesController extends AbstractController
     }
     private function _faireJointure($typeDonnee, $tabTable)
     {
-        $tabElement = array("theonymes_implicites","contient_element","categorie_element","contient_element","genre_element","nombre_element","element_biblio");
-        $tabAttestation = array("etat_fiche","categorie_occasion","occasion","categorie_materiel","materiel","agent","nature","genre","agentivite","statut_affiche");
+        $tabElement = array("theonymes_implicites", "contient_element", "categorie_element", "contient_element", "genre_element", "nombre_element", "element_biblio");
+        $tabAttestation = array("etat_fiche", "categorie_occasion", "occasion", "categorie_materiel", "materiel", "agent", "nature", "genre", "agentivite", "statut_affiche");
         //$tabSource: Mettre tout ce qui est en rapport avec la source
         //$tabAttestation :
         $jointures = "";
         foreach ($tabTable as $table) {
             switch ($table) { //Tout ce qui est générique
-                
+
                 case "localisation": //Pour la table localisation
-                if(!in_array(array("entite_politique","grande_region","sous_region","q_topographie","q_fonction"),$tabTable)){ //S'il y a un champ qui demande obligatoirement une jointure à localisation, alors on ne fait rien
-                    if ($typeDonnee == "source") { //Si c'est sur la source, c'est un traitement différent
-                        $jointures .= "AND source.localisation_origine_id = localisation.id ";
-                    } 
-                    else { //Pour l'élément et l'attestation
-                        $jointures .= "AND " . $typeDonnee . ".localisation_id = localisation.id ";
+                    if (!in_array(array("entite_politique", "grande_region", "sous_region", "q_topographie", "q_fonction"), $tabTable)) { //S'il y a un champ qui demande obligatoirement une jointure à localisation, alors on ne fait rien
+                        if ($typeDonnee == "source") { //Si c'est sur la source, c'est un traitement différent
+                            $jointures .= "AND source.localisation_origine_id = localisation.id ";
+                        } else { //Pour l'élément et l'attestation
+                            $jointures .= "AND " . $typeDonnee . ".localisation_id = localisation.id ";
+                        }
                     }
-                }
                     break;
 
                 case "entite_politique":
                     $tabFaireJointureTmp[0] = "localisation";
-                    $jointures .= $this->_faireJointure($typeDonnee,$tabFaireJointureTmp);
+                    $jointures .= $this->_faireJointure($typeDonnee, $tabFaireJointureTmp);
                     $jointures .= "AND localisation.entite_politique = entite_politique.id ";
                     break;
 
                 case "grande_region":
                 case "sous_region":
                     $tabFaireJointureTmp[0] = "localisation";
-                    $jointures .= $this->_faireJointure($typeDonnee,$tabFaireJointureTmp);
+                    $jointures .= $this->_faireJointure($typeDonnee, $tabFaireJointureTmp);
                     $jointures .= "AND localisation." . $table . "_id = " . $table . ".id "; //AND localisation.grnade_region_id = grande_region.id
                     break;
 
                 case "q_topographie":
                 case "q_fonction":
                     $tabFaireJointureTmp[0] = "localisation";
-                    $jointures .= $this->_faireJointure($typeDonnee,$tabFaireJointureTmp);
+                    $jointures .= $this->_faireJointure($typeDonnee, $tabFaireJointureTmp);
                     $jointures .= "AND localisation.id = localisation_" . $table . ".id_localisation AND localisation_" . $table . ".id_" . $table . " = " . $table . ".id "; // Ex : AND localisation.id = localisation_q_topographie.id_localisation AND localisation_q_topographie.id_q_topographie = q_topographie.id
                     break;
-                
+
                 case "datation": //Pour la datation : attestation et source
-                    $jointures .= "AND " . $typeDonnee .".datation_id = datation.id "; //AND source.datation_id = datation.id
+                    $jointures .= "AND " . $typeDonnee . ".datation_id = datation.id "; //AND source.datation_id = datation.id
                     break;
 
                 default:
@@ -461,7 +469,7 @@ class RequetesController extends AbstractController
                                 case "categorie_materiel":
                                     $tabFaireJointureTmp[0] = "materiel";
                                     $jointures .= $this->_faireJointure($typeDonnee, $tabFaireJointureTmp);
-                                    $jointures .= "AND materiel.id = categorie_materiel.id ";
+                                    $jointures .= "AND materiel.categorie_materiel_id = categorie_materiel.id ";
                                     break;
 
                                 case "materiel":
@@ -470,9 +478,9 @@ class RequetesController extends AbstractController
                                     }
                                     break;
 
-                                //Agent et ses périphériques
+                                    //Agent et ses périphériques
                                 case "agent":
-                                    if(!in_array(array("agentivite","nature","genre","statut_affiche"),$tabTable)){
+                                    if (!in_array(array("agentivite", "nature", "genre", "statut_affiche"), $tabTable)) {
                                         $jointures .= "AND attestation.id = agent.id_attestation ";
                                     }
                                     break;
@@ -482,17 +490,17 @@ class RequetesController extends AbstractController
                                 case "agentivite":
                                     $tabFaireJointureTmp[0] = "agent";
                                     $jointures .= $this->_faireJointure($typeDonnee, $tabFaireJointureTmp);
-                                    $jointures .= "AND agent.id = agent_" . $table .".id_agent AND agent_" . $table . ".id_" . $table ." = ". $table .".id ";//AND agent.id = agent_agentivite.id_agent AND agent_agentivite.id_agentivite = agentivite.id
+                                    $jointures .= "AND agent.id = agent_" . $table . ".id_agent AND agent_" . $table . ".id_" . $table . " = " . $table . ".id "; //AND agent.id = agent_agentivite.id_agent AND agent_agentivite.id_agentivite = agentivite.id
                                     break;
 
                                 case "statut_affiche":
                                     $tabFaireJointureTmp[0] = "agent";
                                     $jointures .= $this->_faireJointure($typeDonnee, $tabFaireJointureTmp);
-                                    $jointures .= "AND agent.id = agent_statut.id_agent AND agent_statut.id_statut = ". $table .".id ";
+                                    $jointures .= "AND agent.id = agent_statut.id_agent AND agent_statut.id_statut = " . $table . ".id ";
                                     break;
-       
+
                                 case "pratique":
-                                    if(!in_array("attestation_pratique",$tabTable)){
+                                    if (!in_array("attestation_pratique", $tabTable)) {
                                         $jointures .= "AND attestation.id = attestation_pratique.id_attestation AND attestation_pratique.id_pratique = pratique.id ";
                                     }
                                     break;
@@ -500,20 +508,19 @@ class RequetesController extends AbstractController
                                 case "source":
                                     $jointures .= "AND attestation.id_source = source.id ";
                                     break;
-                                
+
                                 case "element":
                                     $jointures .= "AND contient_element.id_element = element.id AND contient_element.id_attestation = attestation.id ";
-                                    break;                           
+                                    break;
 
                                 default:
-                                    if (in_array($table,$tabElement)){ 
+                                    if (in_array($table, $tabElement)) {
                                         $jointures .= "AND contient_element.id_element = element.id AND contient_element.id_attestation = attestation.id "; //Je fais la liaison entre attestation et element
                                         $tmpTypeDonnee = "element";
                                     }
-                                   /* elseif(in_array($table,$tabSource)){
+                                    /* elseif(in_array($table,$tabSource)){
                                         $tmpTypeDonnee = "source";
-                                    }*/
-                                    else{
+                                    }*/ else {
                                         throw new NoFileException('Champ non pris en compte');
                                     }
                                     $tabFaireJointureTmp[0] = array($table);
@@ -533,11 +540,11 @@ class RequetesController extends AbstractController
                                 case "theonymes_implicites":
                                     // SELECT * FROM element e1, element e2, theonymes_implicites t WHERE e1.id = t.id_parent AND e2.id = t.id_enfant 	and e2.etat_absolu like '<div>eeeeezrzefššsd</div>'
                                     //Penser à le rajouter dans le $from avec le  if($typeDonnee == "attestation"){ if(!in_array("element",$tabTable)){ $from .= "element, ";   } break;
-                                
+
                                 case "contient_element":
-                                    if (!in_array(array("nombre_element","genre_element"), $tabTable)) { //Pour éviter de le mettre deux fois
+                                    if (!in_array(array("nombre_element", "genre_element"), $tabTable)) { //Pour éviter de le mettre deux fois
                                         $jointures .= "AND element.id = contient_element.id_element ";
-                                    }                                    
+                                    }
                                     break;
 
                                 case "categorie_element":
@@ -561,21 +568,20 @@ class RequetesController extends AbstractController
                                     break;
 
                                 case "attestation":
-                                        $jointures .= "AND contient_element.id_element = element.id AND contient_element.id_attestation = attestation.id ";
+                                    $jointures .= "AND contient_element.id_element = element.id AND contient_element.id_attestation = attestation.id ";
                                     break;
 
                                 case "source":
                                     break;
 
                                 default:
-                                    if (in_array($table,$tabAttestation)){ 
+                                    if (in_array($table, $tabAttestation)) {
                                         $jointures .= "AND contient_element.id_element = element.id AND contient_element.id_attestation = attestation.id "; //Je fais la liaison entre attestation et element
                                         $tmpTypeDonnee = "attestation";
                                     }
                                     /* elseif(in_array($table,$tabSource)){
                                         $tmpTypeDonnee = "source";
-                                    }*/
-                                    else{
+                                    }*/ else {
                                         throw new NoFileException('Champ non pris en compte');
                                     }
                                     $tabFaireJointureTmp[0] = array($table);
@@ -595,7 +601,7 @@ class RequetesController extends AbstractController
 
     private function _operatorValue($op, $value)
     {
-        $value = str_replace("'","''",$value); //Je remplace les ' par des '' : Je les banalise pour les requêtes SQL
+        $value = str_replace("'", "''", $value); //Je remplace les ' par des '' : Je les banalise pour les requêtes SQL
         $operator = "";
         switch ($op) {
 
@@ -660,7 +666,7 @@ class RequetesController extends AbstractController
         return $operator;
     }
 
-    private function _traiterRetour($rows, $nomBDD)
+    private function _traiterRetour($rows, $nomBDD, $nomTable)
     { //Pour ceux à qui la méthode getNom() ne peut s'appliquer
         switch ($nomBDD) {
             case "nom_ville":
@@ -729,11 +735,11 @@ class RequetesController extends AbstractController
                 break;
 
             default:
-                foreach ($rows as $row) {
-                    $responseArray[] = array(
-                        "nom" => $row->getNom($nomBDD)
-                    );
-                }
+                    foreach ($rows as $row) {
+                        $responseArray[] = array(
+                            "nom" => $row->getNom($nomBDD)
+                        );
+                    }
         }
         return $responseArray;
     }

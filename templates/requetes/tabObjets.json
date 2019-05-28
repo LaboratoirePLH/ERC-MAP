@@ -254,7 +254,7 @@
         {
             "nom": "{{ 'element.fields.categorie_contextuelle' |trans }}",
             "type": 4,
-            "nomBDD": "categories",
+            "nomBDD": "{{'requetes.nomBDD' |trans}}",
             "table": "Element",
             "tableSQL": "categorie_element"
         },

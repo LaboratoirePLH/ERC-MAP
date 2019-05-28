@@ -50,6 +50,17 @@
     <br/> <br/>
     {{ block('buttonGeneric', 'requetes/partial.html.twig')}} 
 
+    <div id="tableauResultat">
+        <table class="table table-hover table-striped text-center table-bordered">
+        <thead>
+            <tr id="libelleTableau" class="odd">
+            </tr>
+        </thead>
+        <tbody id="tbodyTableau">
+        </tbody>
+    </table>
+    </div>
+
     {{ block("modal_bootstrap", "requetes/partial.html.twig") }}
 
     {% endblock %}
@@ -73,6 +84,9 @@
 
     var champAfficheVide = $("#liste_affiche").html();
     var champAffiche = null;
+
+    var divTypeDonnee = $("#type_donnee").html();
+    var tableauResultat = $("#tableauResultat").html();
 
     function enleverBoutonEtOu(){
         $(".select_div").first().find(".boutonsEtOu").css("visibility","hidden");
@@ -202,24 +216,24 @@
             var tabAfficheI = $(this).find(".select_box_champAffiche_2").children("option:selected").attr('label'); // le i de tabChoix['valeur'][i]
             tmp["table"] = tabAffiche[tabAfficheValeur][tabAfficheI].tableSQL;
             tmp["nomBDD"] = tabAffiche[tabAfficheValeur][tabAfficheI].nomBDD;
-            //Faire en sorte d'aller récup le nomBDD, le nom de la table et l'ordre
 
             valOrdre = $(this).find(".select_box_champAffiche_3").children("option:selected").val();
             tmp["ordre"] = valOrdre;
 
-           /* $(tabAfficheExec).each(function(key){
-                    if($(this)["select"+key]["ordre"] == valOrdre && $(this)["ordre"] != tmp["ordre"]) //Si un ordre est égal à un autre
-                    {
-                        $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">Vous avez deux ou plusieurs ordres identiques.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
-                        quit = true;
-                        console.log ("Deux ou plusieurs champs ont le même ordre");
-                        return false;
-                    }
-            });*/
             tabAfficheExec["select"+index]=tmp;
         });
-
+ 
         //Vérification qu'il n'y ait pas deux ordres différents
+        var tabTmpOrdreCheck = [999999]; //Déclaration du tableau
+        $(".select_box_champAffiche_3").each(function(key){
+            if(tabTmpOrdreCheck.indexOf($(this).children("option:selected").val()) != -1){ //Je récupère l'ordre mis, et s'il est dans le tableau j'affiche l'erreur
+                $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">Vous avez deux ou plusieurs ordres identiques.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
+                quit = true;
+                console.log ("Deux ou plusieurs champs ont le même ordre");
+                return false;
+            }
+            tabTmpOrdreCheck.push($(this).children("option:selected").val()); //Sinon j'ajotue la valeur
+        });
 
         if(quit) //Si les critères ne sont pas complets ou qu'il y a deux ordres identiques
         {
@@ -236,8 +250,9 @@
                 "tabAffiche": tabAfficheExec
             },
             success: function(rep)
-            {
+            {        
                 console.log(JSON.stringify(rep));
+                afficherExecRequete(rep);
             },
             error: function (err)
             {
@@ -245,6 +260,43 @@
                 console.log("An error ocurred while loading data ...");
             }
         })
+    }
+
+    function afficherExecRequete(rep){
+
+        tabChampAffiche = new Object();
+        var i =0;
+
+        $("#tableauResultat").empty(); //Je vide la div du tableau
+        $("#tableauResultat").append(tableauResultat); //Je remet un tableau "vide"
+
+        $(".div_champ_affiche").each(function(index){
+            tmp = new Object();
+            var tabAfficheValeur =  $(this).find(".select_box_champAffiche_2").children("option:selected").val();  // le valeur (type de l'objet)
+            var tabAfficheI = $(this).find(".select_box_champAffiche_2").children("option:selected").attr('label'); // le i de tabChoix['valeur'][i]
+
+            //Je récupère ce qui a été recherché afin de pouvoir récupérer les données
+            tmp["nomBDD"] = tabAffiche[tabAfficheValeur][tabAfficheI].nomBDD;
+
+            //Je récupère aussi le nom pour mettre un libelé correct sur le tableau
+            tmp["nom"] = tabAffiche[tabAfficheValeur][tabAfficheI].nom;
+            tabChampAffiche[i] = tmp;
+            i++;
+        });
+
+        $("#libelleTableau").append("<th scope=\"col\">#</th>"); //Pour l'esthétique
+        for(var j = 0; j < i; j++){ //Je met les libellés dans le tableau
+            $("#libelleTableau").append("<th scope=\"col\">" + tabChampAffiche[j]["nom"] + "</th>");
+        }
+
+        for(var j = 0; j < rep.length; j++){
+            $("#tbodyTableau").append("<tr class=\"odd\" id=\"td" + j + "\"></tr>");
+            $("#td" + j).append("<th scope=\"row\">" + j + "</th>"); //Je met le numéro correspondant à l'occurence (Genre 4ème ligne)
+            for(var k = 0; k < i; k++){ //Parcours du tabChampAffiche : Pour chaque rep, je récupère toutes ses données
+                var donnee = rep[j]["select"+k];
+                $("#td" + j).append("<td>" + donnee + "</td>"); //Données que j'insère dans le tableau
+            }
+        }
     }
 
     function sauvegarderRequete(){
@@ -267,9 +319,9 @@
             tmp["box3"] = $(this).find(".select_box3").children("option:selected").attr("label");
             if(tmp["box1"] == "{{ 'requetes.selection_vide' | trans }}" || tmp["box2"] == "-1" || tmp["box3"] == "-1" || quit) //Si une des trois box n'est pas complétée
             {
-                $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">Vous devez compléter les critères.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
-                console.log ("Un des critère n'est pas complet");
-                quit = true;
+                tmp["box1"] == null;
+                tmp["box2"] == null;
+                tmp["box3"] == null;
                 return false;
             }
 
@@ -295,12 +347,11 @@
                 }
                 if(tmp["box4"] == "" || tmp["box4"] == -1) //Si la box4 n'est pas remplie/choisie (Si == -1 c'est le label de veuillez selectionner)
                 {
-                    $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">Vous devez compléter les critères.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
-                    console.log ("Un des critère n'est pas complet");
-                    quit = true;
+                    tmp["box4"] = null;
                     return false;
                 }
             }
+
             //Bouton ET/OU, s'il est visible (Donc on peut le changer)
             if($(this).find(".boutonsEtOu").attr("style") == "visibility: visible;")
             {
@@ -333,8 +384,10 @@
 
             if(tmp["box1"] == "{{ 'requetes.selection_vide' | trans }}" || tmp["box2"] == "{{ 'requetes.selection_vide' | trans }}") //Si une des trois box n'est pas complétée
             {
-                $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">Vous devez compléter les champs à afficher.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
-                console.log ("Vous devez compléter les champs à afficher.");
+                tmp["box1"] = null;
+                tmp["box2"] = null;
+                tmp["box3"] = null;
+                return false;
             }
             tabTmp2[index] = tmp;
         });
@@ -366,7 +419,7 @@
     }
 
     function chargerRequete(){
-        var idReq = 42;
+        var idReq = 62;
          $.ajax({
                     url:'{{path('requetes_charger_requete')}}',
                     type: "POST",
@@ -375,7 +428,7 @@
                     },
                     success: function(corps)
                     {
-                        afficherRequete(corps);
+                        afficherChargerRequete(corps);
                     },
                     error: function (err)
                     {
@@ -386,90 +439,113 @@
                 })
     }
 
-    function afficherRequete(corps){
+    function afficherChargerRequete(corps){
         var tabCorps = JSON.parse(corps);
         
         //Pour le type donnee
+        $("#typeDonnee").empty();
+        $("#typeDonnee").append(divTypeDonnee);
         $("#select_type_donnee").find(`[selected="selected"]`).removeAttr("selected");//Je chope celui qui à l'attribut "selected" et je le vire
         $("#select_type_donnee").find(`[value="`+tabCorps[0]+`"]`).attr("selected","selected");
-        $("#liste_critere").empty();
-        $("#liste_critere").append(formulaire_critere_vide); //Je remet un select_box1 pour le afficheListeCritere
-        afficheListeCritere($("#select_type_donnee"));
-
+        
         //Pour les critères
-        $("#liste_critere").empty();
-        for(var i = 0;i < tabCorps[1].length; i++){//J'ajoute autant de div qu'il y a de critères
-            $("#liste_critere").append(formulaire_critere);
+        if(tabCorps[1].length == 0){ 
+            $("#liste_critere").empty(); //Je vide la selection en cours
+            $("#liste_critere").append(formulaire_critere_vide); //Je met un truc vide
+            afficheListeCritere("#select_type_donnee");
         }
+        else{ //Si l'utilisateur a rempli au moins un critère
 
-        $(".select_div").each(function(index){//Je remplis les divs avec ce qui a été sauvegardé
-            var tabBox1 = tabCorps[1][index]["box1"].toLowerCase().replace(/é|è|ê/g,"e");
+            //Je fais ça une première fois ici pour sauvegarder le champAffiche, sinon il me prend autant de div qu'il y en a
+            $("#liste_critere").empty();
+            $("#liste_critere").append(formulaire_critere_vide); //Je remet un select_box1 pour le afficheListeCritere
+            afficheListeCritere($("#select_type_donnee"));
 
-            //Box1
-            $(this).find(".select_box1").find(`[selected="selected"]`).removeAttr("selected");//Je chope celui qui à l'attribut "selected" et je le vire
-            $(this).find(".select_box1").find(`[value="`+tabBox1+`"]`).attr("selected","selected"); //Je mets le selected sur le bon
-
-            //Box2
-            remplirSecondeBox(tabBox1, $(this).find(".select_box2")); //Je remplis la seconde box avec les termes qui correspondent
-            $(this).find(".select_box2").find(`[selected="selected"]`).removeAttr("selected"); //Je chope celui qui à l'attribut "selected" et je le vire
-            $(this).find(".select_box2").find(`[label="`+tabCorps[1][index]["box2"]+`"]`).attr("selected","selected"); //Je mets le selected sur le bon, par rapport au label
-
-            //Box 3 
-            remplirTroisiemeBox(tabObjets[tabBox1][tabCorps[1][index]["box2"]].type, $(this).find(".select_box3"));
-            $(this).find(".select_box3").find(`[selected="selected"]`).removeAttr("selected"); //Je chope celui qui à l'attribut "selected" et je le vire
-            $(this).find(".select_box3").find(`[label="`+tabCorps[1][index]["box3"]+`"]`).attr("selected","selected"); //Je mets le selected sur le bon
-
-            //Box 4
-            var valeur =  $(this).find(".select_box3").find(`[selected="selected"]`).val();//Le val correspond à la valeur de l'élément (String, number, liste...)
-            var idTabChoix = tabChoix[valeur][tabCorps[1][index]["box3"]].id;
-            remplirQuatriemeBox(valeur, idTabChoix, $(this).find(".span_box4"), $(this).find(".select_box3"));
-                
-                //Traitement en fonction de la box4
-            if(valeur == "1" || valeur =="3") //Si c'est un input
-            {
-                $(this).find(".input_req").val(tabCorps[1][index]["box4"]);
-            }
-            else if(valeur =="2") //Si c'est une liste
-            {
-                $(this).find(".select_box4").find(`[selected="selected"]`).removeAttr("selected");
-               // alert("Votre requête est chargée"); //Je suis obligé de mettre un alert pour laisser le temps à la page de process
-                $(this).find(".select_box4").find(`[label="`+tabCorps[1][index]["box4"]+`"]`).attr("selected","selected"); //Problème : Ajax est trop long donc ça le fait avant
+            for(var i = 0;i < tabCorps[1].length-1; i++){//J'ajoute autant de div qu'il y a de critères
+                $("#liste_critere").append(formulaire_critere);
             }
 
-            //Les bouttons ET/OU
-            if(tabCorps[1][index]["box5"] != null){
-                $(this).find(".boutonsEtOu").find("."+tabCorps[1][index]["box5"]+"").addClass("active");
-                $(this).find(".boutonsEtOu").css("visibility","visible");
-            }
-        });
+            $(".select_div").each(function(index){//Je remplis les divs avec ce qui a été sauvegardé
+                var tabBox1 = tabCorps[1][index]["box1"].toLowerCase().replace(/é|è|ê/g,"e");
+
+                //Box1
+                $(this).find(".select_box1").find(`[selected="selected"]`).removeAttr("selected");//Je chope celui qui à l'attribut "selected" et je le vire
+                $(this).find(".select_box1").find(`[value="`+tabBox1+`"]`).attr("selected","selected"); //Je mets le selected sur le bon
+
+                //Box2
+                remplirSecondeBox(tabBox1, $(this).find(".select_box2")); //Je remplis la seconde box avec les termes qui correspondent
+                $(this).find(".select_box2").find(`[selected="selected"]`).removeAttr("selected"); //Je chope celui qui à l'attribut "selected" et je le vire
+                $(this).find(".select_box2").find(`[label="`+tabCorps[1][index]["box2"]+`"]`).attr("selected","selected"); //Je mets le selected sur le bon, par rapport au label
+
+                //Box 3 
+                remplirTroisiemeBox(tabObjets[tabBox1][tabCorps[1][index]["box2"]].type, $(this).find(".select_box3"));
+                $(this).find(".select_box3").find(`[selected="selected"]`).removeAttr("selected"); //Je chope celui qui à l'attribut "selected" et je le vire
+                $(this).find(".select_box3").find(`[label="`+tabCorps[1][index]["box3"]+`"]`).attr("selected","selected"); //Je mets le selected sur le bon
+
+                //Box 4
+                var valeur =  $(this).find(".select_box3").find(`[selected="selected"]`).val();//Le val correspond à la valeur de l'élément (String, number, liste...)
+                var idTabChoix = tabChoix[valeur][tabCorps[1][index]["box3"]].id;
+                remplirQuatriemeBox(valeur, idTabChoix, $(this).find(".span_box4"), $(this).find(".select_box3"));
+                    
+                    //Traitement en fonction de la box4
+                if(valeur == "1" || valeur =="3") //Si c'est un input
+                {
+                    $(this).find(".input_req").val(tabCorps[1][index]["box4"]);
+                }
+                else if(valeur =="2") //Si c'est une liste
+                {
+                    $(this).find(".select_box4").find(`[selected="selected"]`).removeAttr("selected");
+                // alert("Votre requête est chargée"); //Je suis obligé de mettre un alert pour laisser le temps à la page de process
+                    $(this).find(".select_box4").find(`[label="`+tabCorps[1][index]["box4"]+`"]`).attr("selected","selected"); //Problème : Ajax est trop long donc ça le fait avant
+                }
+
+                //Les bouttons ET/OU
+                if(tabCorps[1][index]["box5"] != null){
+                    $(this).find(".boutonsEtOu").find("."+tabCorps[1][index]["box5"]+"").addClass("active");
+                    $(this).find(".boutonsEtOu").css("visibility","visible");
+                }
+            });
+        }
 
         //Pour les champ affiche
-        $("#liste_affiche").empty();
-        for(var i = 0;i < tabCorps[2].length; i++){//J'ajoute autant de div qu'il y a de critères
-            $("#liste_affiche").append(champAffiche);
+
+        if(tabCorps[2].length == 0 ) { //Si l'utilisateur a mis au moins un champAffiche
+            $("#liste_affiche").empty();
+            $("#liste_affiche").append(champAfficheVide);
+            afficherListeChampAffiche($("#select_type_donnee"));
         }
+        else{
 
-        $(".div_champ_affiche").each(function(index){
+            //Je fais ça une première fois ici pour sauvegarder le champAffiche, sinon il me prend autant de div qu'il y en a
+            $("#liste_affiche").empty();
+            $("#liste_affiche").append(champAfficheVide);
+            afficherListeChampAffiche($("#select_type_donnee"));
 
-            //Box 1
-            var tabBox1 = tabCorps[2][index]["box1"].toLowerCase().replace(/é|è|ê/g,"e");
-            $(this).find(".select_box_champAffiche_1").find(`[selected="selected"]`).removeAttr("selected");//Je chope celui qui à l'attribut "selected" et je le vire
-            $(this).find(".select_box_champAffiche_1").find(`[value="`+tabBox1+`"]`).attr("selected","selected"); //Je mets le selected sur le bon
-
-            //Box 2
-            secondeBoxChampAffiche($(this).find(".select_box_champAffiche_1"));
-            $(this).find(".select_box_champAffiche_2").find(`[selected="selected"]`).removeAttr("selected");//Je chope celui qui à l'attribut "selected" et je le vire
-            $(this).find(".select_box_champAffiche_2").find(`[label="`+tabCorps[2][index]["box2"]+`"]`).attr("selected","selected"); //Je mets le selected sur le bon
-
-            //Box 3
-            $(this).find(".select_box_champAffiche_3").append("<option selected=\"selected\" value="+tabCorps[2][index]["box3"]+">"+tabCorps[2][index]["box3"]+"</option>");
-            for(var i =0;i < tabCorps[2].length; i++){
-                $(this).find(".select_box_champAffiche_3").append("<option value=" + i +">" + i + "</option>");
+            for(var i = 0;i < tabCorps[2].length-1; i++){//J'ajoute autant de div qu'il y a de critères
+                $("#liste_affiche").append(champAffiche);
             }
-            $(this).find(".select_box_champAffiche_3").find(`[selected="selected"]`).removeAttr("selected");//Je chope celui qui à l'attribut "selected" et je le vire
-            $(this).find(".select_box_champAffiche_3").find(`[value="`+tabCorps[2][index]["box3"]+`"]`).attr("selected","selected"); //Je mets le selected sur le bon
-            $(this).find(".select_box_champAffiche_3").css("visibility","visible"); 
-        });
+
+            $(".div_champ_affiche").each(function(index){
+
+                //Box 1
+                var tabBox1 = tabCorps[2][index]["box1"].toLowerCase().replace(/é|è|ê/g,"e");
+                $(this).find(".select_box_champAffiche_1").find(`[selected="selected"]`).removeAttr("selected");//Je chope celui qui à l'attribut "selected" et je le vire
+                $(this).find(".select_box_champAffiche_1").find(`[value="`+tabBox1+`"]`).attr("selected","selected"); //Je mets le selected sur le bon
+
+                //Box 2
+                remplirSecondeBoxChampAffiche(tabBox1,$(this).find(".select_box_champAffiche_2"))
+                $(this).find(".select_box_champAffiche_2").find(`[selected="selected"]`).removeAttr("selected");//Je chope celui qui à l'attribut "selected" et je le vire
+                $(this).find(".select_box_champAffiche_2").find(`[label="`+tabCorps[2][index]["box2"]+`"]`).attr("selected","selected"); //Je mets le selected sur le bon
+
+                //Box 3
+                for(var i = 1;i < tabCorps[2].length+1; i++){
+                    $(this).find(".select_box_champAffiche_3").append("<option value=" + i +">" + i + "</option>");
+                }
+                $(this).find(".select_box_champAffiche_3").find(`[selected="selected"]`).removeAttr("selected");//Je chope celui qui à l'attribut "selected" et je le vire
+                $(this).find(".select_box_champAffiche_3").find(`[value="`+tabCorps[2][index]["box3"]+`"]`).attr("selected","selected"); //Je mets le selected sur le bon
+                $(this).find(".select_box_champAffiche_3").css("visibility","visible");
+            });
+        }
     }
 
     function ajouterFiltre() {
@@ -624,13 +700,15 @@
         changerSelected(currentElement);
         var box2 = $(currentElement).parent().next().find(".select_box_champAffiche_2");
         $(box2).empty(); // Il faut vider le HTML de la seconde box sinon ça ajoute
-        $(box2).append("<option class=\"disabled_selected\" value=\"\" label=\"-1\" selected=\"selected\" disabled=\"disabled\">{{ 'requetes.selection_vide' | trans }}</option>");
-        $(box2).css("visibility","visible");
+        var box3 = $(box2).parent().next().find(".select_box_champAffiche_3");
+        $(box3).css("visibility","hidden");
         var valeurSelect = $(currentElement).children("option:selected").val();
         remplirSecondeBoxChampAffiche(valeurSelect,box2);
     }
 
     function remplirSecondeBoxChampAffiche(valeur,box){
+        $(box).append("<option class=\"disabled_selected\" value=\"\" label=\"-1\" selected=\"selected\" disabled=\"disabled\">{{ 'requetes.selection_vide' | trans }}</option>");
+        $(box).css("visibility","visible");
         $.each(tabAffiche, function (j, obj) { // On parcourt le tableau JSON
             if (j == valeur) { // On vérifie que ça corresponde bien à ce qu'il y a dans la box 1
                 for (var i = 0; i < obj.length; i++) { // Boucle for pour afficher tous les objets
@@ -644,7 +722,6 @@
         changerSelected(currentElement);
         var box3 = $(currentElement).parent().next().find(".select_box_champAffiche_3");
         changerTroisiemeBoxChampAffiche();
-
     }
 
     function secondeBox(currentElement) { // Pour le onchange de la première box
@@ -749,10 +826,10 @@
                     },
                     success: function(rows)
                     {
+                        console.log(rows);
                         $.each(rows, function (key, row) {
                                 $(selectBox4).append("<option label=\""+key+"\">" + row.nom + "</option>"); //On met les options avec le nom 
                         });
-                        //console.log(rows);
                     },
                     error: function (err)
                     {

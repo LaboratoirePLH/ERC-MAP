@@ -198,7 +198,8 @@ class RequetesController extends AbstractController
             $tabOrdreAffiche = array(); //Pour l'ordre d'affichage des select
             for ($i = 0; $i < sizeof($tabAffiche); $i++) {
                 $tabTableAffiche[$i] = $tabAffiche["select" . $i]["table"];
-                $tabOrdreAffiche[$tabAffiche["select" . $i]["ordre"]] = $tabAffiche["select" . $i];
+                $ordreTmp = $tabAffiche["select" . $i]["ordre"] -1;
+                $tabOrdreAffiche[$ordreTmp] = $tabAffiche["select" . $i];
             }
 
             //Pour le FROM WHERE
@@ -222,7 +223,7 @@ class RequetesController extends AbstractController
 
             //Pour le select;
             $select = "SELECT ";
-            $select .= $this->_faireSelect($tabAffiche);
+            $select .= $this->_faireSelect($tabOrdreAffiche);
 
             $sql = "";
             $sql .= $select;
@@ -255,7 +256,7 @@ class RequetesController extends AbstractController
     {
         $select = "";
         for ($i = 0; $i < sizeof($tab); $i++) {
-            $select .= $tab["select" . $i]["table"] . "." . $tab["select" . $i]["nomBDD"] . " as select" . $i; //Ex : "attestation.id as 0"
+            $select .= $tab[$i]["table"] . "." . $tab[$i]["nomBDD"] . " as select" . $i; //Ex : "attestation.id as 0"
             if ($i + 1 != sizeof($tab)) { //Pour ne pas mettre la virgule au dernier
                 $select .= ", ";
             } else {

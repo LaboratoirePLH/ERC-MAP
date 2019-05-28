@@ -272,7 +272,7 @@
 
         $(".div_champ_affiche").each(function(index){
             tmp = new Object();
-            var tabAfficheValeur =  $(this).find(".select_box_champAffiche_2").children("option:selected").val();  // le valeur (type de l'objet)
+            var tabAfficheValeur = $(this).find(".select_box_champAffiche_2").children("option:selected").val();  // le valeur (type de l'objet)
             var tabAfficheI = $(this).find(".select_box_champAffiche_2").children("option:selected").attr('label'); // le i de tabChoix['valeur'][i]
 
             //Je récupère ce qui a été recherché afin de pouvoir récupérer les données
@@ -280,7 +280,8 @@
 
             //Je récupère aussi le nom pour mettre un libelé correct sur le tableau
             tmp["nom"] = tabAffiche[tabAfficheValeur][tabAfficheI].nom;
-            tabChampAffiche[i] = tmp;
+            ordreTmp = $(this).find(".select_box_champAffiche_3").children("option:selected").val();
+            tabChampAffiche[ordreTmp-1] = tmp;
             i++;
         });
 

@@ -105,8 +105,10 @@
             $('#alert_bootstrap').append("<div class=\"alert alert-success alert-dismissible fade show\" role=\"alert\">Requête enregistrée.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
 
             //Affichage du reste (Corps de la requête)
-            //chargerRequete(); //Rajouter l'id qui est envoyé dans reqSaveCorps
-            //$("#exampleModal").css("display","none"); //On cache le prompt
+            chargerRequete(); //Rajouter l'id qui est envoyé dans reqSaveCorps
+        }
+        else{
+            enleverBoutonEtOu(); //Pour ne pas qu'ils apparaissent sur le premièr critère
         }
     }
 
@@ -280,8 +282,8 @@
 
             //Je récupère aussi le nom pour mettre un libelé correct sur le tableau
             tmp["nom"] = tabAffiche[tabAfficheValeur][tabAfficheI].nom;
-            ordreTmp = $(this).find(".select_box_champAffiche_3").children("option:selected").val();
-            tabChampAffiche[ordreTmp-1] = tmp;
+            ordreTmp = $(this).find(".select_box_champAffiche_3").children("option:selected").val(); //Je récupère l'ordre
+            tabChampAffiche[ordreTmp-1] = tmp; //Je met les élements dans l'ordre, avec un -1 car l'ordre commence à 1 et non à 0
             i++;
         });
 
@@ -352,9 +354,9 @@
                     return false;
                 }
             }
-
+ 
             //Bouton ET/OU, s'il est visible (Donc on peut le changer)
-            if($(this).find(".boutonsEtOu").attr("style") == "visibility: visible;")
+            if($(this).find(".boutonsEtOu").attr("style") == undefined) //Pas de style = le style "visibility: hidden;" a été enlevé
             {
                if($(this).find(".boutonsEtOu").find(".active").hasClass("Et")){ //Si c'est le boutton "Et"
                    tmp["box5"] = "Et";
@@ -420,7 +422,7 @@
     }
 
     function chargerRequete(){
-        var idReq = 62;
+        var idReq = 78;
          $.ajax({
                     url:'{{path('requetes_charger_requete')}}',
                     type: "POST",
@@ -502,7 +504,8 @@
 
                 //Les bouttons ET/OU
                 if(tabCorps[1][index]["box5"] != null){
-                    $(this).find(".boutonsEtOu").find("."+tabCorps[1][index]["box5"]+"").addClass("active");
+                    $(this).find(".boutonsEtOu").find(".active").removeClass("active"); //J'enlève l'active actuel
+                    $(this).find(".boutonsEtOu").find("."+tabCorps[1][index]["box5"]+"").addClass("active"); //Je le remplace par celui de l'user
                     $(this).find(".boutonsEtOu").css("visibility","visible");
                 }
             });
@@ -827,7 +830,6 @@
                     },
                     success: function(rows)
                     {
-                        console.log(rows);
                         $.each(rows, function (key, row) {
                                 $(selectBox4).append("<option label=\""+key+"\">" + row.nom + "</option>"); //On met les options avec le nom 
                         });

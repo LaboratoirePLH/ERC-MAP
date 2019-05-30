@@ -129,6 +129,7 @@
         var typeDonnee = $("#select_type_donnee").children("option:selected").val(); //Je récupère le type donnée
         var tabRequete = {}; //Objet qui va être envoyé au controller
         var quit = false;
+        var listeNull = " "; //Variable qui va servir de critère si une liste est nulle, pour les cas spéciaux
 
         if(typeDonnee == "") //Si le type de donnée n'est pas mis
         {
@@ -165,7 +166,27 @@
             //S'il n'y a pas de 4ème box (Ou boolean).
             if(tabChoix[tabChoixValeur][tabChoixI].id == 2 || tabChoix[tabChoixValeur][tabChoixI].id == 7 || tabChoix[tabChoixValeur][tabChoixI].id == 13)
             {
-                 tmp["value"] = "IS NULL ";
+                 tmp["value"] = "IS NULL";
+                 tmp["etOu"] = "AND";
+            }
+            else if(tabChoix[tabChoixValeur][tabChoixI].id == 14 && tabObjets[tabObjetValeur][tabObjetI].tableNull2 == undefined){ //Le est null d'une liste
+                tmp["table"] = tabObjets[tabObjetValeur][tabObjetI].tableNull;
+                tmp["nomBDD"] = tabObjets[tabObjetValeur][tabObjetI].nomBDDNull;
+                tmp["value"] = "IS NULL";
+                tmp["etOu"] = "AND";
+            }
+            else if(tabChoix[tabChoixValeur][tabChoixI].id == 14 && tabObjets[tabObjetValeur][tabObjetI].tableNull2 != undefined){ //Si ça doit passer par une table intermédiaire, les cas spéciaux
+                    tmp["table"] = tabObjets[tabObjetValeur][tabObjetI].tableNull;
+                    tmp["nomBDD"] = tabObjets[tabObjetValeur][tabObjetI].nomBDDNull;
+                    tmp["table2"] = tabObjets[tabObjetValeur][tabObjetI].tableNull2;
+                    tmp["nomBDD2"] = tabObjets[tabObjetValeur][tabObjetI].nomBDDNull2;
+                    //AND NOT EXIST (SELECT  * FROM source, source_langue WHERE source.id = source_langue.id_source)
+                    listeNull = "NOT EXISTS (SELECT * FROM " + tmp["table2"] + ", " + tmp["table"] + " WHERE " + tmp["table"] + "." + tmp["nomBDD"] + " = " + tmp["table2"] + "." + tmp["nomBDD2"] + ")";
+                    tmp["table"] = tabObjets[tabObjetValeur][tabObjetI].tableNull2;
+                    tmp["nomBDD"] = tabObjets[tabObjetValeur][tabObjetI].nomBDDNull2;
+                    tmp["operator"] = "NULL";
+                    tmp["value"] = "NULL";
+                    tmp["etOu"] = "AND";
             }
             else
             {
@@ -174,7 +195,7 @@
                     case "0"://Si booleen
                         tmp["value"] = tabChoix[tabChoixValeur][tabChoixI].value;
                         break;
-
+            
                     case "2"://Si liste
                         tmp["value"] = $(this).find(".select_box4").children("option:selected").val();
                         break;
@@ -190,6 +211,12 @@
                     console.log ("Un des critère n'est pas complet");
                     quit = true;
                     return false;
+                }
+                if($(this).find(".boutonsEtOu").find(".active").hasClass("Et")){ //Si c'est le boutton "Et"
+                    tmp["etOu"] = "AND";
+                }
+                else if($(this).find(".boutonsEtOu").find(".active").hasClass("Ou")){ //Si c'est le boutton "Ou"
+                    tmp["etOu"] = "OR";
                 }
             }
             tabRequete["where"+index]=tmp;
@@ -241,7 +268,7 @@
         {
             return false;
         }
-        
+
         //Ajax
         $.ajax({
             url:'{{path('requetes_executer')}}',
@@ -249,7 +276,8 @@
             data: {
                 "typeDonnee": typeDonnee,
                 "tabRequete": tabRequete,
-                "tabAffiche": tabAfficheExec
+                "tabAffiche": tabAfficheExec,
+                "listeNull": listeNull
             },
             success: function(rep)
             {        
@@ -291,7 +319,7 @@
         for(var j = 0; j < i; j++){ //Je met les libellés dans le tableau
             $("#libelleTableau").append("<th scope=\"col\">" + tabChampAffiche[j]["nom"] + "</th>");
         }
-
+        
         for(var j = 0; j < rep.length; j++){
             $("#tbodyTableau").append("<tr class=\"odd\" id=\"td" + j + "\"></tr>");
             $("#td" + j).append("<th scope=\"row\">" + j + "</th>"); //Je met le numéro correspondant à l'occurence (Genre 4ème ligne)
@@ -438,6 +466,7 @@
                         //Affichage d'une erreur à l'utilisateur
                         $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">Erreur serveur.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
                         console.log("An error ocurred while loading data ...");
+                        console.log(rep);
                     }
                 })
     }
@@ -805,10 +834,9 @@
                 }
                 break;
 
-            case "4" :
             case "2" :
                 var reqSaveCorps = '{{ reqSaveCorps}}';
-                if(reqSaveCorps != "" )//Si c'est une sauvegarde de requête
+                if(reqSaveCorps != "" || id == 14 )//Si c'est une sauvegarde de requête ou que est null
                 {
                     break;
                 }

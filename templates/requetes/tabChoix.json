@@ -48,6 +48,10 @@
             "nom": "{{ 'requetes.tab_choix.est_different' |trans }}",
             "operator": "NOT LIKE",
             "id": 9
+        }, {
+            "nom": "{{ 'requetes.tab_choix.est_nul' |trans }}",
+            "operator": "IS NULL",
+            "id": 14
         }
     ],
     "3": [

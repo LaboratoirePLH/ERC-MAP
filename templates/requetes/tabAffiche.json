@@ -275,7 +275,7 @@
         {
             "nom": "{{ 'element.fields.categorie_contextuelle' |trans }}",
             "type": 4,
-            "nomBDD": "categories",
+            "nomBDD": "{{'requetes.nomBDD' |trans}}",
             "table": "Element",
             "tableSQL": "categorie_element"
         },
@@ -314,63 +314,85 @@
             "type": 2,
             "nomBDD": "{{'requetes.nomBDD' |trans}}",
             "table": "CategorieSource",
-            "tableSQL": "categorie_source"
+            "tableSQL": "categorie_source",
+            "tableNull": "source",
+            "nomBDDNull": "categorie_source_id"
         },
         {
             "nom": "{{ 'source.fields.type_source' |trans }}",
             "type": 2,
             "nomBDD": "{{'requetes.nomBDD' |trans}}",
             "table": "TypeSource",
-            "tableSQL": "type_source"
+            "tableSQL": "type_source",
+            "tableNull": "source",
+            "nomBDDNull": "type_source_id"
         },
         {
             "nom": "{{ 'source.fields.langues' |trans }}",
             "type": 2,
             "nomBDD": "{{'requetes.nomBDD' |trans}}",
             "table": "Langue",
-            "tableSQL": "langue"
+            "tableSQL": "langue",
+            "tableNull": "source_langue",
+            "nomBDDNull": "id_source",
+            "tableNull2": "source",
+            "nomBDDNull2": "id"
         },
         {
             "nom": "{{ 'source.fields.titre' |trans }}",
             "type": 2,
             "nomBDD": "{{'requetes.nomBDD' |trans}}",
             "table": "Titre",
-            "tableSQL": "titre"
+            "tableSQL": "titre",
+            "tableNull": "source",
+            "nomBDDNull": "titre_principal_id"
         },
         {
             "nom": "{{ 'source.fields.auteurs' |trans }}",
             "type": 2,
             "nomBDD": "{{'requetes.nomBDD' |trans}}",
             "table": "Auteur",
-            "tableSQL": "auteur"
+            "tableSQL": "auteur",
+            "tableNull": "source_auteur",
+            "nomBDDNull": "id_source",
+            "tableNull2": "source",
+            "nomBDDNull2": "id"
         },
         {
             "nom": "{{ 'source.fields.categorie_materiau' |trans }}",
             "type": 2,
             "nomBDD": "{{'requetes.nomBDD' |trans}}",
             "table": "CategorieMateriau",
-            "tableSQL": "agent"
+            "tableSQL": "categorie_materiau",
+            "tableNull": "source",
+            "nomBDDNull": "categorie_materiau_id"
         },
         {
             "nom": "{{ 'source.fields.materiau' |trans }}",
             "type": 2,
             "nomBDD": "{{'requetes.nomBDD' |trans}}",
             "table": "Materiau",
-            "tableSQL": "agent"
+            "tableSQL": "materiau",
+            "tableNull": "source",
+            "nomBDDNull": "materiau_id"
         },
         {
             "nom": "{{ 'source.fields.support' |trans }}",
             "type": 2,
             "nomBDD": "{{'requetes.nomBDD' |trans}}",
             "table": "TypeSupport",
-            "tableSQL": "type_support"
+            "tableSQL": "type_support",
+            "tableNull": "source",
+            "nomBDDNull": "type_support_id"
         },
         {
             "nom": "{{ 'source.fields.categorie_support' |trans }}",
             "type": 2,
             "nomBDD": "{{'requetes.nomBDD' |trans}}",
             "table": "CategorieSupport",
-            "tableSQL": "categorie_support"
+            "tableSQL": "categorie_support",
+            "tableNull": "source",
+            "nomBDDNull": "categorie_support_id"
         },
         {
             "nom": "{{ 'source.fields.iconographie' |trans }}",
@@ -390,20 +412,6 @@
             "nom": "{{ 'generic.fields.commentaire_en' |trans }}",
             "type": 1,
             "nomBDD": "commentaire_en",
-            "table": "Source",
-            "tableSQL": "source"
-        },
-        {
-            "nom": "{{ 'source.fields.url_texte' |trans }}",
-            "type": 1,
-            "nomBDD": "url_texte",
-            "table": "Source",
-            "tableSQL": "source"
-        },
-        {
-            "nom": "{{ 'source.fields.url_image' |trans }}",
-            "type": 1,
-            "nomBDD": "url_image",
             "table": "Source",
             "tableSQL": "source"
         }

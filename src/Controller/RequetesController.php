@@ -209,11 +209,10 @@ class RequetesController extends AbstractController
             $condition = " "; //Where
 
             for ($i = 0; $i < sizeof($tabTable); $i++) {
-                if($listeNull == " "){ //Si ce n'est pas un cas spécial
+                if ($listeNull == " ") { //Si ce n'est pas un cas spécial
                     $condition .= $tabEtOu[$i] . " " . $tabTable[$i] . "." . $tabNomBDD[$i] . " ";
                     $condition .= $this->_operatorValue($tabOperator[$i], $tabValue[$i]);
-                }
-                else{ //Si c'est un cas spécial
+                } else { //Si c'est un cas spécial
                     $condition .= $tabEtOu[$i] . " " . $listeNull . " ";
                 }
             }
@@ -252,7 +251,7 @@ class RequetesController extends AbstractController
             $sql .= $condition;
             $sql .= $groupBy;
 
-              return new JsonResponse($sql);
+            // return new JsonResponse($sql);
 
             //Requête
             $conn = $this->getDoctrine()->getEntityManager()->getConnection();
@@ -277,7 +276,7 @@ class RequetesController extends AbstractController
     {
         $select = "";
         for ($i = 0; $i < sizeof($tab); $i++) {
-            if($tab[$i] != "NULL" && $tab[$i]["nomBDD"] != "NULL"){ //Si ce n'est pas un cas spécial de listeNull
+            if ($tab[$i] != "NULL" && $tab[$i]["nomBDD"] != "NULL") { //Si ce n'est pas un cas spécial de listeNull
                 $select .= $tab[$i]["table"] . "." . $tab[$i]["nomBDD"] . " as select" . $i; //Ex : "attestation.id as 0"
                 if ($i + 1 != sizeof($tab)) { //Pour ne pas mettre la virgule au dernier
                     $select .= ", ";
@@ -343,40 +342,75 @@ class RequetesController extends AbstractController
                 case "genre_element":
                 case "nombre_element":
                     $tabVerif[] = "contient_element";
-                    if ($typeDonnee == "attestation") { //Quand je veux passer de attestation à un périphérique de element
+                    if ($typeDonnee == "attestation" || $typeDonnee == "source") { //Quand je veux passer de attestation à un périphérique de element ou de source à élément
                         $tabVerif[] = "element";
+                        $tabVerif[] = "contient_element";
+                        $tabVerif[] = "attestation"; //Si c'est la source, pour la jointure source -> attestation -> element
                     }
                     break;
 
                 case "categorie_element":
                     $tabVerif[] = "element_categorie";
-                    if ($typeDonnee == "attestation") { //Quand je veux passer de attestation à un périphérique de element
+                    if ($typeDonnee == "attestation" || $typeDonnee == "source") { //Quand je veux passer de attestation à un périphérique de element ou de source à élément
                         $tabVerif[] = "element";
+                        $tabVerif[] = "contient_element";
+                        $tabVerif[] = "attestation"; //Si c'est la source, pour la jointure source -> attestation -> element
                     }
                     break;
 
                 case "contient_element":
-                    if ($typeDonnee == "attestation") { //Quand je veux passer de attestation à un périphérique de element
+                    if ($typeDonnee == "attestation" || $typeDonnee == "source") { //Quand je veux passer de attestation à un périphérique de element ou de source à élément
                         $tabVerif[] = "element";
+                        $tabVerif[] = "contient_element";
+                        $tabVerif[] = "attestation"; //Si c'est la source, pour la jointure source -> attestation -> element
                     }
                     break;
 
                 case "element_biblio":
-                    if ($typeDonnee == "attestation") { //Quand je veux passer de attestation à un périphérique de element
+                    if ($typeDonnee == "attestation" || $typeDonnee == "source") { //Quand je veux passer de attestation à un périphérique de element ou de source à élément
                         $tabVerif[] = "element";
                         $tabVerif[] = "contient_element";
+                        $tabVerif[] = "attestation"; //Si c'est la source, pour la jointure source -> attestation -> element
                     }
                     break;
 
                 case "element":
-                    if ($typeDonnee == "attestation") { //Quand je veux passer de attestation à element
+                    if ($typeDonnee == "attestation" || $typeDonnee == "source") { //Quand je veux passer de attestation à element
                         $tabVerif[] = "contient_element";
+                        $tabVerif[] = "attestation"; //Si c'est la source, pour la jointure source -> attestation -> element
                     }
                     break;
-
+                
                 case "pratique":
                     $tabVerif[] = "attestation_pratique";
                     break;
+
+                //Source
+                case "materiau":
+                case "categorie_materiau":
+                case "type_source":
+                case "type_support":
+                case "categorie_support":
+                case "categorie_source":
+                case "titre":
+                    if($typeDonnee == "element"){
+                        $tabVerif[] = "contient_element";
+                        $tabVerif[] = "attestation";
+                        $tabVerif[] = "source";
+                    }
+                    break;
+
+                case "langue":
+                case "auteur":
+                    $tabVerif[] = "source_" . $tabTable[$i];
+                    $tabVerif[] = "source";
+                    if($typeDonnee == "element"){
+                        $tabVerif[] = "contient_element";
+                        $tabVerif[] = "attestation";
+                        $tabVerif[] = "source";
+                    }
+                    break;
+                
             } //End switch
 
             if (!in_array($tabTable[$i], $tabVerif) && $tabTable[$i] != "NULL") { //Pour le NULL : les cas spéciaux des listeNull
@@ -401,7 +435,7 @@ class RequetesController extends AbstractController
         $tabVerif = array(); //Même utilité que pour le FROM
         $tabElement = array("theonymes_implicites", "contient_element", "categorie_element", "contient_element", "genre_element", "nombre_element", "element_biblio");
         $tabAttestation = array("etat_fiche", "categorie_occasion", "occasion", "categorie_materiel", "materiel", "agent", "nature", "genre", "agentivite", "statut_affiche");
-        $tabSource = array("oui");
+        $tabSource = array("materiau","categorie_materiau","type_source","type_support","categorie_support","categorie_source","langue","titre","auteur");
 
         foreach ($tabTable as $table) {
             switch ($table) { //Tout ce qui est générique
@@ -459,7 +493,7 @@ class RequetesController extends AbstractController
                                     $tabVerif = array_merge($tabVerif, $this->_faireJointure($typeDonnee, $tabFaireJointureTmp, 1)); //J'appelle récursivement la fonction, pour qu'il me renvoir la jointure que je concatène
                                     $tabVerif[] = "occasion.categorie_occasion_id = categorie_occasion.id";
                                     break;
-                                
+
                                 case "attestation_occasion":
                                     $tabVerif[] = "attestation_occasion.id_attestation = attestation.id";
                                     break;
@@ -491,7 +525,7 @@ class RequetesController extends AbstractController
                                     $tabVerif[] = "agent.id = agent_activite.id_agent";
                                     $tabVerif[] = "agent_activite.id_activite = activite_agent.id";
                                     break;
-                                
+
                                 case "nature":
                                 case "genre":
                                 case "agentivite":
@@ -524,11 +558,13 @@ class RequetesController extends AbstractController
 
                                 default:
                                     if (in_array($table, $tabElement)) {
-                                        $tabVerif[] = "contient_element.id_element = element.id"; //Je fais la liaison entre attestation et element
-                                        $tabVerif[] = "contient_element.id_attestation = attestation.id";
+                                        $tabFaireJointureTmp[0] = "element";
+                                        $tabVerif = array_merge($tabVerif, $this->_faireJointure($typeDonnee, $tabFaireJointureTmp, 1)); //Entre attestation et element
                                         $tmpTypeDonnee = "element";
                                     } elseif (in_array($table, $tabSource)) {
                                         $tmpTypeDonnee = "source";
+                                        $tabFaireJointureTmp[0] = "source";
+                                        $tabVerif = array_merge($tabVerif, $this->_faireJointure($typeDonnee, $tabFaireJointureTmp, 1));
                                     } else {
                                         throw new NoFileException('Champ non pris en compte');
                                     }
@@ -539,6 +575,60 @@ class RequetesController extends AbstractController
                             break;
 
                         case "source":
+                            switch ($table) {
+
+                                case "source":
+                                    break;
+
+                                case "element":
+                                    $tabFaireJointureTmp[0] = "source";
+                                    $tabVerif = array_merge($tabVerif, $this->_faireJointure("element", $tabFaireJointureTmp, 1));
+                                    break;
+
+                                case "materiau":
+                                case "categorie_materiau":
+                                case "type_source":
+                                case "type_support":
+                                case "categorie_support":
+                                case "categorie_source":
+                                    $tabVerif[] = "source." . $table . "_id = " . $table . ".id";
+                                    break;
+
+                                case "langue":
+                                    $tabVerif[] = "source.id = source_langue.id_source";
+                                    $tabVerif[] = "source_langue.id_langue = langue.id";
+                                    break;
+
+                                case "titre":
+                                    $tabVerif[] = "source.titre_principal_id = titre.id";
+                                    break;
+
+                                case "auteur":
+                                    $tabVerif[] = "source.id = source_auteur.id_source";
+                                    $tabVerif[] = "source_auteur.id_auteur = auteur.id";
+                                    break;
+
+                                case "attestation":
+                                    $tabVerif[] = "attestation.id_source = source.id";
+                                    break;
+
+                                default:
+                                    if (in_array($table, $tabAttestation)) {
+                                        $tmpTypeDonnee = "attestation";
+                                        $tabFaireJointureTmp[0] = "attestation";
+                                        $tabVerif = array_merge($tabVerif, $this->_faireJointure($typeDonnee, $tabFaireJointureTmp, 1));
+                                    } elseif (in_array($table, $tabElement)) {
+                                        $tmpTypeDonnee = "element";
+                                        $tabFaireJointureTmp[0] = "element";
+                                        $tabVerif = array_merge($tabVerif, $this->_faireJointure($typeDonnee, $tabFaireJointureTmp, 1));
+                                    } else {
+                                        throw new NoFileException('Champ non pris en compte');
+                                    }
+                                    $tabFaireJointureTmp[0] = array($table);
+                                    $tabVerif = array_merge($tabVerif, $this->_faireJointure($tmpTypeDonnee, $tabFaireJointureTmp[0], 1)); //Je fais la jointure avec les deux autres
+                                    break;
+                                    
+                            }
                             break;
 
                         case "element":
@@ -581,15 +671,21 @@ class RequetesController extends AbstractController
                                     break;
 
                                 case "source":
+                                    $tabFaireJointureTmp[0] = "attestation";
+                                    $tabVerif = array_merge($tabVerif, $this->_faireJointure($typeDonnee, $tabFaireJointureTmp, 1)); //On fait la jointure sur attestation
+                                    $tabFaireJointureTmp[0] = "source";
+                                    $tabVerif = array_merge($tabVerif, $this->_faireJointure("attestation", $tabFaireJointureTmp, 1)); //On fait la liaison entre attestation et source
                                     break;
 
                                 default:
                                     if (in_array($table, $tabAttestation)) {
-                                        $tabVerif[] = "contient_element.id_element = element.id"; //Je fais la liaison entre attestation et element
-                                        $tabVerif[] = "contient_element.id_attestation = attestation.id";
                                         $tmpTypeDonnee = "attestation";
+                                        $tabFaireJointureTmp[0] = "attestation";
+                                        $tabVerif = array_merge($tabVerif, $this->_faireJointure($typeDonnee, $tabFaireJointureTmp, 1)); //On fait la liaison entre element et attestation
                                     } elseif (in_array($table, $tabSource)) {
                                         $tmpTypeDonnee = "source";
+                                        $tabFaireJointureTmp[0] = "source";
+                                        $tabVerif = array_merge($tabVerif, $this->_faireJointure($typeDonnee, $tabFaireJointureTmp, 1)); //On fait la liaison entre element et source
                                     } else {
                                         throw new NoFileException('Champ non pris en compte');
                                     }

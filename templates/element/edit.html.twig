@@ -173,15 +173,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
 
-        const chosenSettings = {
-            disable_search_threshold: 10,
-            no_results_text: "{{ 'autocomplete.no_matches'|trans }}",
-            allow_single_deselect: true,
-            group_search: false,
-            display_selected_options: false,
-            include_group_label_in_selected: true
-        };
-        const chosenSettingsMax3 = $.extend(chosenSettings, { max_selected_options: 3 });
+        const chosenSettingsMax3 = $.extend(CHOSEN_SETTINGS, { max_selected_options: 3 });
 
         $('form#element').watchFormDirty({
             message: "{{ 'modals.confirm_exit_dirty.body'|trans }}",
@@ -242,8 +234,8 @@
                     inline: true
                 });
                 $(el).find('.selectorcreate').selectOrCreate();
-                $(el).find('select.autocomplete:not(.autocomplete-max-3)').chosen(chosenSettings);
-                $(el).find('select.autocomplete.autocomplete-max-3').chosen(chosenSettings);
+                $(el).find('select.autocomplete:not(.autocomplete-max-3)').chosen(CHOSEN_SETTINGS);
+                $(el).find('select.autocomplete.autocomplete-max-3').chosen(chosenSettingsMax3);
             },
             viewLinkGenerator: function (entry) {
                 const entryId = $(entry).find('.selectorcreate_selection').find('select').val();
@@ -276,8 +268,8 @@
                     inline: true
                 });
                 $(el).find('.selectorcreate').selectOrCreate();
-                $(el).find('select.autocomplete:not(.autocomplete-max-3)').chosen(chosenSettings);
-                $(el).find('select.autocomplete.autocomplete-max-3').chosen(chosenSettings);
+                $(el).find('select.autocomplete:not(.autocomplete-max-3)').chosen(CHOSEN_SETTINGS);
+                $(el).find('select.autocomplete.autocomplete-max-3').chosen(chosenSettingsMax3);
             },
             viewLinkGenerator: function (entry) {
                 const entryId = $(entry).find('.selectorcreate_selection').find('select').val();
@@ -290,8 +282,8 @@
         });
 
 
-        $('select.autocomplete:not(.autocomplete-max-3)').chosen(chosenSettings);
-        $('select.autocomplete.autocomplete-max-3').chosen(chosenSettings);
+        $('select.autocomplete:not(.autocomplete-max-3)').chosen(CHOSEN_SETTINGS);
+        $('select.autocomplete.autocomplete-max-3').chosen(chosenSettingsMax3);
 
         $.fn.dependentFields({
             areference: {

@@ -244,14 +244,6 @@
 {{ encore_entry_script_tags('attestation_form_page') }}
 <script type="text/javascript">
     $(document).ready(function () {
-        const chosenSettings = {
-            disable_search_threshold: 10,
-            no_results_text: "{{ 'autocomplete.no_matches'|trans }}",
-            allow_single_deselect: true,
-            group_search: false,
-            display_selected_options: false,
-            include_group_label_in_selected: true
-        };
         const dependentFieldsSettings = {
             estdatee: {
                 conditionCallback: function (main) { return $(main).is(':checked'); },
@@ -284,7 +276,7 @@
                 $(el).find('.typeCategorieOccasion').dependentSelects({
                     data_url: "{{ url('data_type_occasion') }}"
                 });
-                $(el).find('select.autocomplete').chosen(chosenSettings);
+                $(el).find('select.autocomplete').chosen(CHOSEN_SETTINGS);
             }
         });
         $('div#attestation_attestationMateriels').collectionField({
@@ -295,7 +287,7 @@
                 $(el).find('.typeCategorieMateriel').dependentSelects({
                     data_url: "{{ url('data_materiel') }}"
                 });
-                $(el).find('select.autocomplete').chosen(chosenSettings);
+                $(el).find('select.autocomplete').chosen(CHOSEN_SETTINGS);
             }
         });
 
@@ -306,7 +298,7 @@
             setupListener: function (el) {
                 $.fn.dependentFields(dependentFieldsSettings);
                 $(el).find('.localisation_form').localisationForm(localisationFormSettings);
-                $(el).find('select.autocomplete').chosen(chosenSettings);
+                $(el).find('select.autocomplete').chosen(CHOSEN_SETTINGS);
                 $(el).find('.grandeSousRegion').dependentSelects({
                     data_url: "{{ url('data_sous_region') }}"
                 });
@@ -324,7 +316,7 @@
             deleteLink: '{{ "generic.delete"|trans }}',
             confirmationModal: $('#confirm_remove_item'),
             setupListener: function (el) {
-                $(el).find('select.autocomplete').chosen(chosenSettings);
+                $(el).find('select.autocomplete').chosen(CHOSEN_SETTINGS);
                 $(el).find('.selectorcreate').selectOrCreate();
                 $(el).find('.element_traductions').after($('<a href="#" class="btn btn-primary collection-add-link link-add-traduction"><i class="fa fa-plus"></i>&nbsp;{{ "element.add_traduction"|trans }}</a>'));
                 $(el).find('.element_traductions').collectionField({
@@ -398,7 +390,7 @@
 
         $('.selectorcreate').selectOrCreate();
 
-        $('select.autocomplete').chosen(chosenSettings);
+        $('select.autocomplete').chosen(CHOSEN_SETTINGS);
 
         $.fn.dependentFields(dependentFieldsSettings);
 

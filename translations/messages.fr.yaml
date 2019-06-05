@@ -54,6 +54,7 @@ generic:
     clear: "Effacer"
     clear_filters: "Réinitialiser les filtres"
     exit: "Quitter"
+    back: "Retour"
     stay: "Rester"
     choose: "Choisir"
     toggle_section: "Afficher/Cacher la section"

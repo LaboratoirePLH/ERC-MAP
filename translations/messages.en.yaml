@@ -54,6 +54,7 @@ generic:
     clear: "Clear"
     clear_filters: "Clear filters"
     exit: "Exit"
+    back: "Back"
     stay: "Stay"
     choose: "Choose"
     toggle_section: "Show/Hide section"

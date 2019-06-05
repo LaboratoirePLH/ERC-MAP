@@ -164,10 +164,11 @@ class ElementController extends AbstractController
     /**
      * @Route("/element/{id}", name="element_show")
      */
-    public function show($id){
+    public function show($id, Request $request, TranslatorInterface $translator){
         $element = $this->getDoctrine()
                        ->getRepository(Element::class)
-                       ->getRecord($id, true);
+                       ->find($id);
+
         if(is_null($element)){
             $request->getSession()->getFlashBag()->add(
                 'error',

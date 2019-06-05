@@ -52,9 +52,9 @@
         {% for element in elements %}
         <tr>
             <th scope="row" class="px-0" data-order="{{ element.id }}">
-                {# <a href="{{ url('element_show', {'id': element.id}) }}"> #}
-                #{{ element.id }}
-                {# </a> #}
+                <a href="{{ url('element_show', {'id': element.id}) }}">
+                    #{{ element.id }}
+                </a>
                 <br />
                 <small>{{ 'generic.fields.version'|trans }}&nbsp;{{ element.version|default("?") }}</small>
             </th>
@@ -92,8 +92,7 @@
                 {{ element.traduireEn ? "languages.en"|trans : "" }}
             </td>
             <td class="py-0 px-1">
-                <a href="{{ url('element_show', {'id': element.id}) }}"
-                    class="btn btn-sm btn-block my-1 btn-primary d-none">
+                <a href="{{ url('element_show', {'id': element.id}) }}" class="btn btn-sm btn-block my-1 btn-primary">
                     <i class="fas fa-fw fa-eye"></i>
                     {{ 'generic.view'|trans }}
                 </a>

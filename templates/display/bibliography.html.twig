@@ -21,7 +21,7 @@
                 {{ 'biblio.fields.titre_complet'|trans}}
             </th>
             <td>
-                {{ bibliography.titreComplet }}
+                {{ bibliography.titreComplet|raw }}
             </td>
         </tr>
         {% if not bibliography.estCorpus %}

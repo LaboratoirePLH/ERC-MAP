@@ -234,10 +234,19 @@
             var me = this;
             $('input', this.footer()).on('keyup change', function () {
                 if (me.search() !== this.value) {
-                    me.search(this.value).draw();
+                    me.search(
+                        // Remove accented characters from search string
+                        jQuery.fn.DataTable.ext.type.search.string(this.value)
+                    ).draw();
                 }
             })
         });
+        $('input[type=search]').on('keyup change', function () {
+            dt.search(
+                // Remove accented characters from search string
+                jQuery.fn.DataTable.ext.type.search.string(this.value)
+            ).draw();
+        })
         dt.buttons().container().appendTo('.table-buttons');
         $('.clear-filter-button').on('click', function (e) {
             e.preventDefault();

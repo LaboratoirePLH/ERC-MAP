@@ -66,11 +66,15 @@
             <td>
                 {% set count_sources = biblio.getSourceBiblios()|length %}
                 {% set count_elements = biblio.getElementBiblios()|length %}
-                {{ 'biblio.fields.sources'|trans }}&nbsp;:&nbsp;
-                <span class="badge badge-{{ count_sources == 0 ? "danger" : "light"}}">{{ count_sources }}</span>
+                <span class="badge badge-{{ count_sources == 0 ? "danger" : "light"}}">
+                    {{ count_sources }}
+                </span>
+                &nbsp;{{ 'biblio.fields.sources'|trans }}
                 <br />
-                {{ 'biblio.fields.elements'|trans }}&nbsp;:&nbsp;
-                <span class="badge badge-{{ count_elements == 0 ? "danger" : "light"}}">{{ count_elements }}</span>
+                <span class="badge badge-{{ count_elements == 0 ? "danger" : "light"}}">
+                    {{ count_elements }}
+                </span>
+                &nbsp;{{ 'biblio.fields.elements'|trans }}
             </td>
             <td class="py-0 px-1">
                 <a href="{{ url('bibliography_show', {'id': biblio.id}) }}"
@@ -143,11 +147,15 @@
             scrollX: false,
             searching: true,
             ordering: true,
-            columns: [null, null, null, null, null, null, null, {
+            columns: [null, null, null, null, null, null, {
                 searchable: false,
                 orderable: false,
-                width: 80
-            }],
+                width: 140
+            }, {
+                    searchable: false,
+                    orderable: false,
+                    width: 110
+                }],
             order: [
                 [0, 'desc']
             ],

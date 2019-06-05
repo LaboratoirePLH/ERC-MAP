@@ -145,7 +145,7 @@ class Element extends AbstractEntity
 
     public function getAffichage(): string
     {
-        return sprintf("#%d : %s (%s)", $this->getId(), $this->getEtatAbsolu(), $this->getBetaCode());
+        return sprintf("#%d : %s (%s)", $this->getId(), strip_tags($this->getEtatAbsolu()), $this->getBetaCode());
     }
 
     public function getEtatAbsolu(): ?string

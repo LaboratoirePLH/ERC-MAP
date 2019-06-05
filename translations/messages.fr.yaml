@@ -138,6 +138,7 @@ source:
         createur: "Créateur"
         dernier_editeur: "Dernier Éditeur"
         reference_bibliographique: "Référence Bibliographique"
+        reference_source: "Référence à la source"
         to_translate_fr: "À traduire en Français"
         to_translate_en: "À traduire en Anglais"
         fiability: "Score de fiabilité"

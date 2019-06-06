@@ -62,6 +62,7 @@ generic:
     locked: "Verrouillé"
     fields:
         id: "ID"
+        createur: "Créateur"
         date_creation: "Création"
         date_modification: "Dernière Modification"
         by: "par"
@@ -83,6 +84,7 @@ generic:
         quantite: "Quantité"
         est_datee: "Est Daté(e) ?"
         est_localisee: "Localisation ?"
+        position: "Position"
     choices :
         new: "Nouveau"
         existing: "Existant"

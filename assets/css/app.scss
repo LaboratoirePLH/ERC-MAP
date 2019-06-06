@@ -168,3 +168,46 @@ body {
         opacity: 1;
     }
 }
+
+.formula-editor {
+    @extend .mb-1;
+    @extend .px-3;
+    width: 100%;
+    border: 1px solid $map-yellow;
+    border-radius: 10px;
+
+    & > div.row {
+        @extend .py-2;
+        border-bottom: 1px solid $map-yellow;
+        &:last-child{
+            border-bottom: none;
+        }
+
+        & > div.label {
+            height: 100%;
+            font-weight: bolder;
+            border-right: 1px dotted $map-yellow;
+        }
+
+        &:first-child > div.label {
+            line-height: 50px;
+        }
+    }
+
+    .formula-visualizer {
+        .btn {
+            font-weight: bold;
+        }
+    }
+
+    .formula-operators, .formula-elements {
+        .btn {
+            @extend .btn-sm;
+        }
+    }
+}
+
+table { page-break-inside:auto }
+tr    { page-break-inside:avoid; page-break-after:auto }
+thead { display:table-header-group }
+tfoot { display:table-footer-group }

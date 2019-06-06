@@ -20,8 +20,8 @@
             <th scope="row">
                 {{ 'element.fields.traductions'|trans}}
             </th>
-            <td>
-                <table class="table table-sm text-center">
+            <td class="p-0">
+                <table class="table table-sm text-center mb-0">
                     <thead>
                         <tr>
                             <th scope="col">{{ 'languages.fr'|trans }}</th>
@@ -95,7 +95,7 @@
             <th scope="row">
                 {{ 'generic.fields.localisation'|trans}}
             </th>
-            <td>
+            <td class="p-0">
                 {% include "display/localisation.html.twig" with {
                     'localisation': element.localisation
                 } %}
@@ -106,8 +106,8 @@
             <th scope="row">
                 {{ 'biblio.list'|trans}}
             </th>
-            <td>
-                <table class="table table-sm text-center">
+            <td class="p-0">
+                <table class="table table-sm text-center mb-0">
                     <thead>
                         <tr>
                             <th scope="col">{{ 'source.fields.reference_bibliographique'|trans }}</th>
@@ -129,9 +129,9 @@
                                 {{ elementBiblio.referenceElement }}
                             </td>
                             <td>
-                                {{ elementBiblio.getCommentaire(locale) }}
+                                {{ elementBiblio.getCommentaire(locale)|raw }}
                                 <br />
-                                <small>{{ elementBiblio.getCommentaire(locale == "fr" ? "en" : "fr") }}</small>
+                                <small>{{ elementBiblio.getCommentaire(locale == "fr" ? "en" : "fr")|raw }}</small>
                             </td>
                         </tr>
                         {% endfor %}
@@ -144,9 +144,9 @@
                 {{ 'generic.fields.commentaire'|trans}}
             </th>
             <td>
-                {{ element.getCommentaire(locale) }}
+                {{ element.getCommentaire(locale)|raw }}
                 <br />
-                <small>{{ element.getCommentaire(locale == "fr" ? "en" : "fr") }}</small>
+                <small>{{ element.getCommentaire(locale == "fr" ? "en" : "fr")|raw }}</small>
             </td>
         </tr>
     </tbody>

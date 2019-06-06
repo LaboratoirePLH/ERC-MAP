@@ -77,6 +77,7 @@ generic:
         precision: "Précision"
         fiabilite: "Fiabilité"
         version: "Version"
+        datation: "Datation"
         localisation: "Localisation"
         localisation_reelle: "Réel(e) ?"
         quantite: "Quantité"
@@ -148,6 +149,7 @@ source:
         region_origine: "Région d'Origine"
         lieu_origine: "Lieu d'Origine"
         lieu_decouverte: "Lieu de Découverte"
+        lieu_decouverte_in_situ : "Lieu de Découverte (in situ)"
         iconographie: "Iconographie ?"
         source_biblio: "Référence"
         source_biblio_n: "Référence #"
@@ -157,8 +159,8 @@ source:
     sections:
         informations_source: "Informations de la source"
         bibliographie: "Bibliographie"
-        datation: "Datation"
-        localisation: "Localisation"
+        datation: "Datation de la Source"
+        localisation: "Localisation de la source"
         commentaires: "Commentaires"
         attestations: "Attestations"
 

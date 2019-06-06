@@ -1,0 +1,252 @@
+<table class="table table-striped table-bordered">
+    <tbody>
+        <tr>
+            <th scope="row">
+                {{ 'source.fields.projet'|trans}}
+            </th>
+            <td>
+                {{ source.projet is not empty ? source.projet.getNom(locale) : '' }}
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">
+                {{ 'source.fields.categorie_source'|trans}}
+            </th>
+            <td>
+                {{ source.categorieSource is not empty ? source.categorieSource.getNom(locale) : '' }}
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">
+                {{ 'source.fields.type_source'|trans}}
+            </th>
+            <td>
+                {{ source.typeSource is not empty ? source.typeSource.getNom(locale) : '' }}
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">
+                {{ 'source.fields.langues'|trans}}
+            </th>
+            <td>
+                {{ source.concatLangues(locale) }}
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">
+                {{ 'source.fields.titre_principal'|trans}}
+            </th>
+            <td>
+                {{ source.titrePrincipal is empty ? "generic.choices.none"|trans : source.titrePrincipal.getNom(locale) }}
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">
+                {{ 'source.fields.auteurs'|trans}}
+            </th>
+            <td>
+                {% if source.titrePrincipal is empty %}
+                {% set auteurs = source.auteurs %}
+                {% else %}
+                {% set auteurs = source.titrePrincipal.auteurs %}
+                {% endif %}
+                {% for auteur in auteurs %}
+                {{ auteur.getNom(locale) }}
+                {% if not loop.last %}
+                {{", "}}
+                {% endif %}
+                {% endfor %}
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">
+                {{ 'source.fields.categorie_materiau'|trans}}
+            </th>
+            <td>
+                {{ source.categorieMateriau is not empty ? source.categorieMateriau.getNom(locale) : '' }}
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">
+                {{ 'source.fields.materiau'|trans}}
+            </th>
+            <td>
+                {{ source.materiau is not empty ? source.materiau.getNom(locale) : '' }}
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">
+                {{ 'source.fields.categorie_support'|trans}}
+            </th>
+            <td>
+                {{ source.categorieSupport is not empty ? source.categorieSupport.getNom(locale) : '' }}
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">
+                {{ 'source.fields.type_support'|trans}}
+            </th>
+            <td>
+                {{ source.typeSupport is not empty ? source.typeSupport.getNom(locale) : '' }}
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">
+                {{ 'source.fields.url_texte'|trans}}
+            </th>
+            <td>
+                {% if source.urlTexte is not empty %}
+                <a href="{{source.urlTexte}}" target="_blank" rel="noopener noreferrer">{{source.urlTexte}}</a>
+                {% endif %}
+            </td>
+        </tr>
+        {% if source.iconographie == true %}
+        <tr>
+            <th scope="row">
+                {{ 'source.fields.url_image'|trans}}
+            </th>
+            <td>
+                {% if source.urlImage is not empty %}
+                <a href="{{source.urlImage}}" target="_blank" rel="noopener noreferrer">{{source.urlImage}}</a>
+                {% endif %}
+            </td>
+        </tr>
+        {% endif %}
+        <tr>
+            <th scope="row">
+                {{ 'biblio.list'|trans}}
+            </th>
+            <td class="p-0">
+                <table class="table table-sm text-center mb-0">
+                    <thead>
+                        <tr>
+                            <th scope="col">{{ 'source.fields.reference_bibliographique'|trans }}</th>
+                            <th scope="col">{{ 'source_biblio.fields.edition_principale'|trans }}</th>
+                            <th scope="col">{{ 'source_biblio.fields.reference_source'|trans }}</th>
+                            <th scope="col">{{ 'generic.fields.commentaire'|trans }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for sourceBiblio in source.sourceBiblios %}
+                        <tr>
+                            <td>
+                                {% include "partials/_entitylink.html.twig" with {
+                                            'entity': 'biblio',
+                                            'link': url('bibliography_show', {'id': sourceBiblio.biblio.id}),
+                                            'text': '#' ~ sourceBiblio.biblio.id ~ " " ~ (sourceBiblio.biblio.titreAbrege|raw|striptags)
+                                        } %}
+                            </td>
+                            <td>
+                                {% if sourceBiblio.editionPrincipale %}
+                                <i class="fas fa-check fa-fw"></i>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {{ sourceBiblio.referenceSource }}
+                            </td>
+                            <td>
+                                {{ sourceBiblio.getCommentaire(locale)|raw }}
+                                <br />
+                                <small>{{ sourceBiblio.getCommentaire(locale == "fr" ? "en" : "fr")|raw }}</small>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        {% if source.estDatee %}
+        <tr>
+            <th scope="row">
+                {{ 'generic.fields.datation'|trans}}
+                <br />
+                <small>
+                    {{ 'generic.fields.precision'|trans }}: {{ source.fiabiliteDatation }}
+                </small>
+            </th>
+            <td class="p-0">
+                {% include "display/datation.html.twig" with {
+                    'datation': source.datation
+                } %}
+            </td>
+        </tr>
+        {% endif %}
+        {% if source.lieuDecouverte is not empty %}
+        <tr>
+            <th scope="row">
+                {{ (source.inSitu ? 'source.fields.lieu_decouverte_in_situ' : 'source.fields.lieu_decouverte')|trans}}
+                <br />
+                <small>
+                    {{ 'generic.fields.precision'|trans }}: {{ source.fiabiliteLocalisation }}
+                </small>
+            </th>
+            <td class="p-0">
+                {% include "display/localisation.html.twig" with {
+                    'localisation': source.lieuDecouverte
+                } %}
+            </td>
+        </tr>
+        {% endif %}
+        {% if source.inSitu == false and source.lieuOrigine is not empty %}
+        <tr>
+            <th scope="row">
+                {{ 'source.fields.lieu_origine'|trans}}
+                {% if source.lieuDecouverte is empty %}
+                <br />
+                <small>
+                    {{ 'generic.fields.precision'|trans }}: {{ source.fiabiliteDatation }}
+                </small>
+                {% endif %}
+            </th>
+            <td class="p-0">
+                {% include "display/localisation.html.twig" with {
+                    'localisation': source.lieuOrigine
+                } %}
+            </td>
+        </tr>
+        {% endif %}
+        <tr>
+            <th scope="row">
+                {{ 'generic.fields.commentaire'|trans}}
+            </th>
+            <td>
+                {{ source.getCommentaire(locale)|raw }}
+                <br />
+                <small>{{ source.getCommentaire(locale == "fr" ? "en" : "fr")|raw }}</small>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">
+                {{ 'source.sections.attestations'|trans}}
+            </th>
+            <td class="p-0">
+                {% if source.attestations is not empty %}
+                <table class="table table-sm text-center mb-0">
+                    <thead>
+                        <tr>
+                            <th scope="col">{{ 'attestation.name'|trans }}</th>
+                            <th scope="col">{{ 'attestation.fields.translitteration'|trans }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for attestation in source.attestations %}
+                        <tr>
+                            <td>
+                                {% include "partials/_entitylink.html.twig" with {
+                                            'entity': 'attestation',
+                                            'link': url('attestation_show', {'id': attestation.id}),
+                                            'text': '#' ~ attestation.id ~ (attestation.passage is not empty ? (" " ~ attestation.passage) : "")
+                                        } %}
+                            </td>
+                            <td>
+                                {{ attestation.translitteration|raw }}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% endif %}
+            </td>
+        </tr>
+    </tbody>
+</table>

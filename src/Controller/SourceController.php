@@ -131,10 +131,10 @@ class SourceController extends AbstractController
     /**
      * @Route("/source/{id}", name="source_show")
      */
-    public function show($id){
+    public function show($id, Request $request, TranslatorInterface $translator){
         $source = $this->getDoctrine()
                        ->getRepository(Source::class)
-                       ->getRecord($id, true);
+                       ->find($id);
         if(is_null($source)){
             $request->getSession()->getFlashBag()->add(
                 'error',

@@ -46,9 +46,9 @@
             <th scope="row">
                 {{ 'biblio.fields.sources'|trans}}
             </th>
-            <td>
+            <td class="p-0">
                 {% if bibliography.sourceBiblios is not empty %}
-                <table class="table table-sm text-center">
+                <table class="table table-sm text-center mb-0">
                     <thead>
                         <tr>
                             <th scope="col">{{ 'source.name'|trans }}</th>
@@ -85,9 +85,9 @@
             <th scope="row">
                 {{ 'biblio.fields.elements'|trans}}
             </th>
-            <td>
+            <td class="p-0">
                 {% if bibliography.elementBiblios is not empty %}
-                <table class="table table-sm text-center">
+                <table class="table table-sm text-center mb-0">
                     <thead>
                         <tr>
                             <th scope="col">{{ 'element.name'|trans }}</th>

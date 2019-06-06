@@ -1,16 +1,16 @@
 {% set entity = entity|default(null) %}
 {% if entity == "source" %}
 {% set color = "btn-primary" %}
-{% set icon = "fa-ankh" %}
+{% set icon = icons.source %}
 {% elseif entity == "attestation" %}
 {% set color = "btn-success" %}
-{% set icon = "fa-file-alt" %}
+{% set icon = icons.attestation %}
 {% elseif entity == "element" %}
 {% set color = "btn-warning" %}
-{% set icon = "fa-atom" %}
+{% set icon = icons.element %}
 {% elseif entity == "biblio" %}
 {% set color = "btn-danger" %}
-{% set icon = "fa-book-open" %}
+{% set icon = icons.bibliography %}
 {% else %}
 {% set color = "btn-secondary btn-outline" %}
 {% set icon = icon|default(false) %}

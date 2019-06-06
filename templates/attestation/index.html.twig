@@ -99,7 +99,7 @@
             <td class="py-0 px-1">
                 <a href="{{ url('element_attestation', {'attestation_id': attestation.id}) }}"
                     class="btn btn-sm btn-block my-1 btn-success">
-                    <i class="fas fa-fw fa-atom"></i>
+                    <i class="fas fa-fw {{ icons.element }}"></i>
                     {{ 'attestation.sections.elements'|trans }}
                 </a>
                 <a href="{{ url('attestation_show', {'id': attestation.id}) }}"

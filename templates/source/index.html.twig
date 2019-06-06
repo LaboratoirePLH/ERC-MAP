@@ -127,7 +127,7 @@
                 {% else %}
                 <a href="{{ url('attestation_source', {'source_id': source.id}) }}"
                     class="btn btn-sm btn-block my-1 btn-success">
-                    <i class="fas fa-fw fa-file-alt"></i>
+                    <i class="fas fa-fw {{ icons.attestation }}"></i>
                     {{ 'source.sections.attestations'|trans }}
                 </a>
                 <a href="{{ url('source_show', {'id': source.id}) }}"

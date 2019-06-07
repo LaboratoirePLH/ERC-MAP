@@ -4,6 +4,12 @@ global.$ = global.jQuery = $;
 
 require('bootstrap');
 
+decodeEntities = function (encodedString) {
+    var textArea = document.createElement('textarea');
+    textArea.innerHTML = encodedString;
+    return textArea.value;
+};
+
 (function ($) {
     if ($('#back-to-top').length) {
         var scrollTrigger = 100, // px

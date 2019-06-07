@@ -232,6 +232,9 @@
             },
             inline: true,
             setupListener: function (el) {
+                $(el).find('.selectorcreate_selection option').each(function () {
+                    $(this).html(decodeEntities($(this).html()));
+                })
                 $(el).find('.element_traductions').after($('<div class="form-group row"><div class="col-sm-11 offset-sm-1"><a href="#" class="btn btn-primary collection-add-link"><i class="fa fa-plus"></i>&nbsp;{{ "element.add_traduction"| trans }}</a></div></div>'));
                 $(el).find('.element_traductions').collectionField({
                     addLink: $(el).find('.collection-add-link'),
@@ -272,6 +275,9 @@
             },
             inline: true,
             setupListener: function (el) {
+                $(el).find('.selectorcreate_selection option').each(function () {
+                    $(this).html(decodeEntities($(this).html()));
+                })
                 $(el).find('.element_traductions').after($('<div class="form-group row"><div class="col-sm-11 offset-sm-1"><a href="#" class="btn btn-primary collection-add-link"><i class="fa fa-plus"></i>&nbsp;{{ "element.add_traduction"| trans }}</a></div></div>'));
                 $(el).find('.element_traductions').collectionField({
                     addLink: $(el).find('.collection-add-link'),
@@ -317,6 +323,8 @@
                 targetFinder: function (name, main) { return $(main).parent().parent().parent().siblings().find('.dependent_field_' + name); }
             },
         });
+
+
 
         $('.localisation_form').localisationForm({
             errorMessage: "{{'generic.messages.error_unknown'|trans}}",

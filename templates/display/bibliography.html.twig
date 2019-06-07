@@ -53,7 +53,6 @@
                         <tr>
                             <th scope="col">{{ 'source.name'|trans }}</th>
                             <th scope="col">{{ 'source.fields.reference_source'|trans }}</th>
-                            <th scope="col">{{ 'generic.fields.commentaire'|trans }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -68,11 +67,6 @@
                             </td>
                             <td>
                                 {{ sourceBiblio.referencesource }}
-                            </td>
-                            <td>
-                                {{ sourceBiblio.getCommentaire(locale) }}
-                                <br />
-                                <small>{{ sourceBiblio.getCommentaire(locale == "fr" ? "en" : "fr") }}</small>
                             </td>
                         </tr>
                         {% endfor %}
@@ -92,7 +86,6 @@
                         <tr>
                             <th scope="col">{{ 'element.name'|trans }}</th>
                             <th scope="col">{{ 'element.fields.reference_element'|trans }}</th>
-                            <th scope="col">{{ 'generic.fields.commentaire'|trans }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -107,11 +100,6 @@
                             </td>
                             <td>
                                 {{ elementBiblio.referenceElement }}
-                            </td>
-                            <td>
-                                {{ elementBiblio.getCommentaire(locale) }}
-                                <br />
-                                <small>{{ elementBiblio.getCommentaire(locale == "fr" ? "en" : "fr") }}</small>
                             </td>
                         </tr>
                         {% endfor %}

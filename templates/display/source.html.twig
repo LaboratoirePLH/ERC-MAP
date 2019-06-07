@@ -123,7 +123,6 @@
                             <th scope="col">{{ 'source.fields.reference_bibliographique'|trans }}</th>
                             <th scope="col">{{ 'source_biblio.fields.edition_principale'|trans }}</th>
                             <th scope="col">{{ 'source_biblio.fields.reference_source'|trans }}</th>
-                            <th scope="col">{{ 'generic.fields.commentaire'|trans }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -143,11 +142,6 @@
                             </td>
                             <td>
                                 {{ sourceBiblio.referenceSource }}
-                            </td>
-                            <td>
-                                {{ sourceBiblio.getCommentaire(locale)|raw }}
-                                <br />
-                                <small>{{ sourceBiblio.getCommentaire(locale == "fr" ? "en" : "fr")|raw }}</small>
                             </td>
                         </tr>
                         {% endfor %}

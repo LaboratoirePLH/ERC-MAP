@@ -12,8 +12,6 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class ElementBiblio extends AbstractEntity
 {
-    use Traits\TranslatedComment;
-
     /**
      * @var \Element
      *

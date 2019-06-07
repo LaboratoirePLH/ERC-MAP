@@ -18,10 +18,10 @@
         </tr>
         <tr>
             <th scope="row">
-                {{ 'source.fields.type_source'|trans}}
+                {{ 'source.fields.types_source'|trans}}
             </th>
             <td>
-                {{ source.typeSource is not empty ? source.typeSource.getNom(locale) : '' }}
+                {{ source.concatTypeSources(locale) }}
             </td>
         </tr>
         <tr>

@@ -185,6 +185,8 @@
 <script type="text/javascript">
     $(document).ready(function () {
 
+        const chosenSettingsMax3 = $.extend(CHOSEN_SETTINGS, { max_selected_options: 3 });
+
         $('form#source').watchFormDirty({
             message: "{{ 'modals.confirm_exit_dirty.body'|trans }}",
             modal: $(".modal#confirm_exit_dirty"),
@@ -255,14 +257,8 @@
         });
 
         $('.selectorcreate').selectOrCreate();
-        $('select.autocomplete').chosen({
-            disable_search_threshold: 10,
-            no_results_text: "{{ 'autocomplete.no_matches'|trans }}",
-            allow_single_deselect: true,
-            group_search: false,
-            display_selected_options: false,
-            include_group_label_in_selected: true
-        });
+        $('select.autocomplete:not(.autocomplete-max-3)').chosen(CHOSEN_SETTINGS);
+        $('select.autocomplete.autocomplete-max-3').chosen(chosenSettingsMax3);
         $.fn.dependentFields({
             iconography: {
                 conditionCallback: function (main) { return $(main).is(':checked'); },

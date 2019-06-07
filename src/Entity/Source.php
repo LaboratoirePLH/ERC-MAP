@@ -108,12 +108,17 @@ class Source extends AbstractEntity
     /**
      * @var \TypeSource
      *
-     * @ORM\ManyToOne(targetEntity="TypeSource", fetch="EAGER")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="type_source_id", referencedColumnName="id", nullable=true)
-     * })
+     * @ORM\ManyToMany(targetEntity="TypeSource")
+     * @ORM\JoinTable(name="source_type_source",
+     *   joinColumns={
+     *     @ORM\JoinColumn(name="id_source", referencedColumnName="id")
+     *   },
+     *   inverseJoinColumns={
+     *     @ORM\JoinColumn(name="id_type_source", referencedColumnName="id")
+     *   }
+     * )
      */
-    private $typeSource;
+    private $typeSources;
 
     /**
      * @var \CategorieSource|null
@@ -220,10 +225,11 @@ class Source extends AbstractEntity
      */
     public function __construct()
     {
-        $this->auteurs = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->langues = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->sourceBiblios = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->attestations = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->auteurs = new ArrayCollection();
+        $this->langues = new ArrayCollection();
+        $this->sourceBiblios = new ArrayCollection();
+        $this->attestations = new ArrayCollection();
+        $this->typeSources = new ArrayCollection();
     }
 
     public function getTitrePrincipal(): ?Titre
@@ -366,14 +372,38 @@ class Source extends AbstractEntity
         ];
     }
 
-    public function getTypeSource(): ?TypeSource
+    /**
+     * @return Collection|TypeSource[]
+     */
+    public function getTypeSources(): Collection
     {
-        return $this->typeSource;
+        return $this->typeSources;
     }
 
-    public function setTypeSource(?TypeSource $typeSource): self
+    public function concatTypeSources($lang): string
     {
-        $this->typeSource = $typeSource;
+        if(empty($this->getTypeSources())){ return ""; }
+        $names = $this->getTypeSources()->map(function($type) use ($lang) {
+            return $type->getNom($lang);
+        });
+        $names = $names->toArray();
+        sort($names);
+        return implode(', ', $names);
+    }
+
+    public function addTypeSource(TypeSource $typeSource): self
+    {
+        if (!$this->typeSources->contains($typeSource)) {
+            $this->typeSources[] = $typeSource;
+        }
+        return $this;
+    }
+
+    public function removeTypeSource(TypeSource $typeSource): self
+    {
+        if ($this->typeSources->contains($typeSource)) {
+            $this->typeSources->removeElement($typeSource);
+        }
         return $this;
     }
 
@@ -391,14 +421,17 @@ class Source extends AbstractEntity
     public function setTypeCategorieSource($data): self
     {
         $this->setCategorieSource($data['categorieSource']);
-        $this->setTypeSource($data['typeSource']);
+        $this->getTypeSources()->clear();
+        foreach($data['typeSources'] as $type){
+            $this->getTypeSources()->add($type);
+        }
         return $this;
     }
 
     public function getTypeCategorieSource(): array
     {
         return [
-            'typeSource' => $this->getTypeSource(),
+            'typeSources' => $this->getTypeSources()->getValues(),
             'categorieSource' => $this->getCategorieSource(),
         ];
     }

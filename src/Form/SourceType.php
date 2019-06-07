@@ -97,7 +97,7 @@ class SourceType extends AbstractType
                 'locale'         => $options['locale'],
                 'translations'   => $options['translations'],
                 'name'           => 'categorieSource',
-                'secondary_name' => 'typeSource',
+                'secondary_name' => 'typeSources',
                 'category_field' => 'categorieSource',
                 'field_options'  => [
                     'label'        => 'source.fields.categorie_source',
@@ -114,12 +114,13 @@ class SourceType extends AbstractType
                     }
                 ],
                 'secondary_field_options' => [
-                    'label'        => 'source.fields.type_source',
+                    'label'        => 'source.fields.types_source',
                     'required'     => false,
+                    'multiple'     => true,
                     'class'        => TypeSource::class,
                     'choice_label' => 'nom'.ucfirst($locale),
                     'attr'         => [
-                        'class' => 'autocomplete',
+                        'class' => 'autocomplete autocomplete-max-3',
                         'data-placeholder' => $options['translations']['autocomplete.select_element']
                     ]
                 ]

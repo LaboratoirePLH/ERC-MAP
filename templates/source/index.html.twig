@@ -26,7 +26,7 @@
                 {{ 'source.fields.categorie_source'|trans }}
             </th>
             <th scope="col">
-                {{ 'source.fields.type_source'|trans }}
+                {{ 'source.fields.types_source'|trans }}
             </th>
             <th scope="col">
                 {{ 'source.fields.langues'|trans }}
@@ -71,7 +71,7 @@
                 {{ source.categorieSource is not null ? source.categorieSource.nom(locale) : "" }}
             </td>
             <td>
-                {{ source.typeSource is not null ? source.typeSource.nom(locale) : "" }}
+                {{ source.concatTypeSources(locale) }}
             </td>
             <td>
                 {{ source.concatLangues(locale) }}

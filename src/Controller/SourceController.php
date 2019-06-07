@@ -33,7 +33,7 @@ class SourceController extends AbstractController
     {
         $sources = $this->getDoctrine()
                         ->getRepository(Source::class)
-                        ->getSimpleList();
+                        ->findAll();
 
         return $this->render('source/index.html.twig', [
             'controller_name' => 'SourceController',

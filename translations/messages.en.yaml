@@ -131,7 +131,7 @@ source:
         titre_en:  "Title (EN)"
         titre_principal: "Main Title"
         auteurs: "Authors"
-        type_source: "Type"
+        types_source: "Types"
         categorie_source: "Category"
         materiau: "Material"
         categorie_materiau: "Material Category"

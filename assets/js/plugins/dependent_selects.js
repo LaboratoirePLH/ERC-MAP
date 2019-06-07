@@ -45,7 +45,7 @@
                 });
             });
 
-            selectFirst.trigger('change');
+            // selectFirst.trigger('change');
         });
     }
 })(jQuery);

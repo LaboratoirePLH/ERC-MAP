@@ -35,7 +35,6 @@ final class Version20190407172158 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
-        $this->addSql('CREATE SCHEMA public');
         $this->addSql('ALTER TABLE element DROP CONSTRAINT fk_41405e391e25c1f6');
         $this->addSql('ALTER TABLE element ADD CONSTRAINT fk_41405e391e25c1f6 FOREIGN KEY (verrou_id) REFERENCES verrou_entite (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE source DROP CONSTRAINT fk_5f8a7f731e25c1f6');

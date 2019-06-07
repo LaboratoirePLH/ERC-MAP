@@ -31,7 +31,6 @@ final class Version20190308142804 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
-        $this->addSql('CREATE SCHEMA public');
         $this->addSql('ALTER TABLE agent DROP est_localisee');
         $this->addSql('ALTER TABLE attestation DROP est_localisee');
     }

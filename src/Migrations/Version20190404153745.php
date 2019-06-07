@@ -40,7 +40,6 @@ final class Version20190404153745 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
-        $this->addSql('CREATE SCHEMA public');
         $this->addSql('CREATE TABLE elements_theonymes (id_parent INT NOT NULL, id_enfant INT NOT NULL, PRIMARY KEY(id_parent, id_enfant))');
         $this->addSql('CREATE INDEX idx_a4d66cfa1280b94f ON elements_theonymes (id_enfant)');
         $this->addSql('CREATE INDEX idx_a4d66cfa1bb9d5a2 ON elements_theonymes (id_parent)');

@@ -35,7 +35,6 @@ final class Version20190226180240 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
-        $this->addSql('CREATE SCHEMA public');
         $this->addSql('CREATE SEQUENCE corpus_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE TABLE corpus (id INT NOT NULL, nom VARCHAR(255) DEFAULT NULL, nom_complet TEXT DEFAULT NULL, PRIMARY KEY(id))');
         $this->addSql('ALTER TABLE biblio ADD corpus_id INT DEFAULT NULL');

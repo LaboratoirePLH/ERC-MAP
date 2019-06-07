@@ -61,7 +61,6 @@ final class Version20190404154306 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
-        $this->addSql('CREATE SCHEMA public');
         $this->addSql('ALTER TABLE element_biblio ALTER commentaire_fr TYPE VARCHAR(255)');
         $this->addSql('ALTER TABLE element_biblio ALTER commentaire_fr DROP DEFAULT');
         $this->addSql('ALTER TABLE element_biblio ALTER commentaire_en TYPE VARCHAR(255)');

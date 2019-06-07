@@ -133,7 +133,6 @@ final class Version20190312163110 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
-        $this->addSql('CREATE SCHEMA public');
         $this->addSql('ALTER TABLE projet_chercheur ALTER id_projet TYPE SMALLINT');
         $this->addSql('ALTER TABLE projet_chercheur ALTER id_projet DROP DEFAULT');
         $this->addSql('ALTER TABLE projet ALTER id TYPE SMALLINT');

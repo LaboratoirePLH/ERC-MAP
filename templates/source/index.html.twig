@@ -134,10 +134,17 @@
                     <i class="fas fa-fw fa-eye"></i>
                     {{ 'generic.view'|trans }}
                 </a>
+                {% if source.verrou != null %}
+                <a href="#" class="btn btn-sm btn-block my-1 btn-danger disabled">
+                    <i class="fas fa-fw fa-lock"></i>
+                    {{ 'generic.locked'|trans }}
+                </a>
+                {% else %}
                 <a href="{{ url('source_edit', {'id': source.id}) }}" class="btn btn-sm btn-block my-1 btn-warning">
                     <i class="fas fa-fw fa-edit"></i>
                     {{ 'generic.edit'|trans }}
                 </a>
+                {% endif %}
                 {% set uuid = 'confirm_deletion_' ~ source.id ~ '_' ~ random() %}
                 <button type="button" class="btn btn-sm btn-block my-1 btn-danger" id="delete-link-{{source.id}}"
                     data-toggle="modal" data-target="#{{ uuid }}">

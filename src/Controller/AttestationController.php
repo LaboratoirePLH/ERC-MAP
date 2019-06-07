@@ -81,7 +81,7 @@ class AttestationController extends AbstractController
     {
         $sources = $this->getDoctrine()
                         ->getRepository(Source::class)
-                        ->getSimpleList();
+                        ->findAll();
 
         return $this->render('source/index.html.twig', [
             'controller_name' => 'SourceController',
@@ -116,16 +116,18 @@ class AttestationController extends AbstractController
             return $this->redirectToRoute('attestation_list');
         }
 
-        $verrou = $this->getDoctrine()->getRepository(VerrouEntite::class)->create($source, $user, $this->dureeVerrou);
-        if(!$verrou->isWritable($user))
+        if($source->getVerrou() === null){
+            $verrou = $this->getDoctrine()->getRepository(VerrouEntite::class)->create($source, $user, $this->dureeVerrou);
+        }
+        else if(!$source->getVerrou()->isWritable($user))
         {
             $request->getSession()->getFlashBag()->add(
                 'error',
                 $translator->trans('generic.messages.error_locked', [
                     '%type%' => $translator->trans('source.name'),
-                    '%id%' => $source_id,
-                    '%user%' => $verrou->getCreateur()->getPrenomNom(),
-                    '%time%' => $verrou->getDateFin()->format(
+                    '%id%' => $id,
+                    '%user%' => $source->getVerrou()->getCreateur()->getPrenomNom(),
+                    '%time%' => $source->getVerrou()->getDateFin()->format(
                         $translator->trans('locale_datetime')
                     )
                 ])
@@ -184,6 +186,7 @@ class AttestationController extends AbstractController
                     $attestation->removeContientElement($ce);
                 }
             }
+            $this->getDoctrine()->getRepository(VerrouEntite::class)->remove($source->getVerrou());
             $em->flush();
 
             // Message de confirmation
@@ -199,6 +202,7 @@ class AttestationController extends AbstractController
             'action'          => 'create',
             'locale'          => $request->getLocale(),
             'form'            => $form->createView(),
+            'source'          => $source,
             'breadcrumbs'     => [
                 ['label' => 'nav.home', 'url' => $this->generateUrl('home')],
                 ['label' => 'source.list', 'url' => $this->generateUrl('source_list')],
@@ -206,6 +210,22 @@ class AttestationController extends AbstractController
             ]
         ]);
     }
+
+        /**
+     * @Route("/attestation/cancelcreate/{source_id}", name="attestation_cancelcreate")
+     */
+    public function cancelcreate($source_id, Request $request){
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $source = $this->getDoctrine()
+                       ->getRepository(Source::class)
+                       ->find($source_id);
+        $verrou = $source->getVerrou();
+        if($verrou !== null && $verrou->isWritable($user)){
+            $this->getDoctrine()->getRepository(VerrouEntite::class)->remove($verrou);
+        }
+        return $this->redirectToRoute('attestation_list');
+    }
+
 
     /**
      * @Route("/attestation/{id}", name="attestation_show")
@@ -253,16 +273,18 @@ class AttestationController extends AbstractController
             );
             return $this->redirectToRoute('attestation_list');
         }
-        $verrou = $this->getDoctrine()->getRepository(VerrouEntite::class)->create($attestation, $user, $this->dureeVerrou);
-        if(!$verrou->isWritable($user))
+        if($attestation->getVerrou() === null){
+            $verrou = $this->getDoctrine()->getRepository(VerrouEntite::class)->create($attestation, $user, $this->dureeVerrou);
+        }
+        else if(!$attestation->getVerrou()->isWritable($user))
         {
             $request->getSession()->getFlashBag()->add(
                 'error',
                 $translator->trans('generic.messages.error_locked', [
                     '%type%' => $translator->trans('attestation.name'),
                     '%id%' => $id,
-                    '%user%' => $verrou->getCreateur()->getPrenomNom(),
-                    '%time%' => $verrou->getDateFin()->format(
+                    '%user%' => $attestation->getVerrou()->getCreateur()->getPrenomNom(),
+                    '%time%' => $attestation->getVerrou()->getDateFin()->format(
                         $translator->trans('locale_datetime')
                     )
                 ])
@@ -333,7 +355,7 @@ class AttestationController extends AbstractController
                     $attestation->removeFormule($f);
                 }
             }
-            $this->getDoctrine()->getRepository(VerrouEntite::class)->remove($verrou);
+            $this->getDoctrine()->getRepository(VerrouEntite::class)->remove($attestation->getVerrou());
             $em->flush();
 
             // Message de confirmation
@@ -366,7 +388,7 @@ class AttestationController extends AbstractController
         $attestation = $this->getDoctrine()
                             ->getRepository(Attestation::class)
                             ->find($id);
-        $verrou = $this->getDoctrine()->getRepository(VerrouEntite::class)->fetch($attestation);
+        $verrou = $attestation->getVerrou();
         if($verrou !== null && $verrou->isWritable($user)){
             $this->getDoctrine()->getRepository(VerrouEntite::class)->remove($verrou);
         }

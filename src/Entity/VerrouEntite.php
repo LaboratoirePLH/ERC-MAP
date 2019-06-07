@@ -169,7 +169,8 @@ class VerrouEntite extends AbstractEntity
 
     public function isWritable(Chercheur $chercheur): bool
     {
-        return $this->getCreateur()->getId() === $chercheur->getId();
+        return $this->getCreateur()->getId() === $chercheur->getId()
+            || $this->getDateFin() < (new \DateTime);
     }
 
     /**

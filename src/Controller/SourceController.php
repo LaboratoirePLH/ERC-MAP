@@ -172,16 +172,18 @@ class SourceController extends AbstractController
             );
             return $this->redirectToRoute('source_list');
         }
-        $verrou = $this->getDoctrine()->getRepository(VerrouEntite::class)->create($source, $user, $this->dureeVerrou);
-        if(!$verrou->isWritable($user))
+        if($source->getVerrou() === null){
+            $verrou = $this->getDoctrine()->getRepository(VerrouEntite::class)->create($source, $user, $this->dureeVerrou);
+        }
+        else if(!$source->getVerrou()->isWritable($user))
         {
             $request->getSession()->getFlashBag()->add(
                 'error',
                 $translator->trans('generic.messages.error_locked', [
                     '%type%' => $translator->trans('source.name'),
                     '%id%' => $id,
-                    '%user%' => $verrou->getCreateur()->getPrenomNom(),
-                    '%time%' => $verrou->getDateFin()->format(
+                    '%user%' => $source->getVerrou()->getCreateur()->getPrenomNom(),
+                    '%time%' => $source->getVerrou()->getDateFin()->format(
                         $translator->trans('locale_datetime')
                     )
                 ])
@@ -245,7 +247,7 @@ class SourceController extends AbstractController
             if($source->getEstDatee() !== true){
                 $source->setDatation(null);
             }
-            $this->getDoctrine()->getRepository(VerrouEntite::class)->remove($verrou);
+            $this->getDoctrine()->getRepository(VerrouEntite::class)->remove($source->getVerrou());
             $em->flush();
 
             // Message de confirmation

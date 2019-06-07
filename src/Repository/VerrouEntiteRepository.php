@@ -2,11 +2,12 @@
 
 namespace App\Repository;
 
-use App\Entity\VerrouEntite;
-use App\Entity\Source;
 use App\Entity\Attestation;
-use App\Entity\Element;
+use App\Entity\Biblio;
 use App\Entity\Chercheur;
+use App\Entity\Element;
+use App\Entity\Source;
+use App\Entity\VerrouEntite;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
@@ -38,6 +39,9 @@ class VerrouEntiteRepository extends ServiceEntityRepository
             case $entite instanceof Element:
                 $qb = $qb->where(":e MEMBER OF v.elements");
                 break;
+            case $entite instanceof Biblio:
+                $qb = $qb->where(":e MEMBER OF v.biblios");
+                break;
         }
         $qb = $qb->setParameter('e', $entite)
                  ->setMaxResults(1);
@@ -60,20 +64,23 @@ class VerrouEntiteRepository extends ServiceEntityRepository
         $verrou->setDateFin($date);
         $verrou->setCreateur($user);
 
-        switch(true){
-            case $entite instanceof Source:
+        if($entite instanceof Source || $entite instanceof Attestation) {
+            if($entite instanceof Source) {
                 $source = $entite;
-                break;
-            case $entite instanceof Attestation:
+            }
+            else {
                 $source = $entite->getSource();
-                break;
-            case $entite instanceof Element:
-                // echo "Element";
-                break;
+            }
+            $verrou->addSource($source);
+            foreach($source->getAttestations() as $att){
+                $verrou->addAttestation($att);
+            }
         }
-        $verrou->addSource($source);
-        foreach($source->getAttestations() as $att){
-            $verrou->addAttestation($att);
+        else if($entite instanceof Element) {
+            $verrou->addElement($entite);
+        }
+        else if($entite instanceof Biblio) {
+            $verrou->addBiblio($entite);
         }
 
         $this->getEntityManager()->persist($verrou);

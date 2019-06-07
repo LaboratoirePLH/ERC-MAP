@@ -204,6 +204,24 @@ class ElementController extends AbstractController
             );
             return $this->redirectToRoute('element_list');
         }
+        if($element->getVerrou() === null){
+            $verrou = $this->getDoctrine()->getRepository(VerrouEntite::class)->create($element, $user, $this->dureeVerrou);
+        }
+        else if(!$element->getVerrou()->isWritable($user))
+        {
+            $request->getSession()->getFlashBag()->add(
+                'error',
+                $translator->trans('generic.messages.error_locked', [
+                    '%type%' => $translator->trans('element.name'),
+                    '%id%' => $id,
+                    '%user%' => $element->getVerrou()->getCreateur()->getPrenomNom(),
+                    '%time%' => $element->getVerrou()->getDateFin()->format(
+                        $translator->trans('locale_datetime')
+                    )
+                ])
+            );
+            return $this->redirectToRoute('element_list');
+        }
 
         $form   = $this->get('form.factory')->create(ElementType::class, $element, [
             'element'      => $element,
@@ -254,7 +272,7 @@ class ElementController extends AbstractController
                     }
                 }
             }
-
+            $this->getDoctrine()->getRepository(VerrouEntite::class)->remove($element->getVerrou());
             $em->flush();
 
             // Message de confirmation
@@ -280,15 +298,47 @@ class ElementController extends AbstractController
     }
 
     /**
+     * @Route("/element/{id}/canceledit", name="element_canceledit")
+     */
+    public function canceledit($id, Request $request){
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $element = $this->getDoctrine()
+                       ->getRepository(Element::class)
+                       ->find($id);
+        $verrou = $this->getDoctrine()->getRepository(VerrouEntite::class)->fetch($element);
+        if($verrou !== null && $verrou->isWritable($user)){
+            $this->getDoctrine()->getRepository(VerrouEntite::class)->remove($verrou);
+        }
+        return $this->redirectToRoute('element_list');
+    }
+
+    /**
      * @Route("/element/{id}/delete", name="element_delete")
      */
     public function delete($id, Request $request){
         $submittedToken = $request->request->get('token');
+        $user = $this->get('security.token_storage')->getToken()->getUser();
 
         if ($this->isCsrfTokenValid('delete_element_'.$id, $submittedToken)) {
             $repository = $this->getDoctrine()->getRepository(Element::class);
             $element = $repository->find($id);
             if($element instanceof Element){
+                $verrou = $element->getVerrou();
+                if(!!$verrou && !$verrou->isWritable($user))
+                {
+                    $request->getSession()->getFlashBag()->add(
+                        'error',
+                        $translator->trans('generic.messages.error_locked', [
+                            '%type%' => $translator->trans('element.name'),
+                            '%id%' => $id,
+                            '%user%' => $verrou->getCreateur()->getPrenomNom(),
+                            '%time%' => $verrou->getDateFin()->format(
+                                $translator->trans('locale_datetime')
+                            )
+                        ])
+                    );
+                    return $this->redirectToRoute('element_list');
+                }
                 $em = $this->getDoctrine()->getManager();
                 $em->remove($element);
                 $em->flush();

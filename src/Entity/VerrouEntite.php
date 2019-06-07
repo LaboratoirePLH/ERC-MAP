@@ -30,6 +30,11 @@ class VerrouEntite extends AbstractEntity
     private $elements;
 
     /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Biblio", mappedBy="verrou", fetch="EAGER")
+     */
+    private $biblios;
+
+    /**
      * @ORM\Column(type="datetime")
      */
     private $date_fin;
@@ -49,6 +54,7 @@ class VerrouEntite extends AbstractEntity
         $this->sources = new ArrayCollection();
         $this->attestations = new ArrayCollection();
         $this->elements = new ArrayCollection();
+        $this->biblios = new ArrayCollection();
     }
 
     /**
@@ -181,5 +187,36 @@ class VerrouEntite extends AbstractEntity
         foreach($this->getSources() as $source){ $this->removeSource($source); }
         foreach($this->getAttestations() as $attestation){ $this->removeAttestation($attestation); }
         foreach($this->getElements() as $element){ $this->removeElement($element); }
+    }
+
+    /**
+     * @return Collection|Biblio[]
+     */
+    public function getBiblios(): Collection
+    {
+        return $this->biblios;
+    }
+
+    public function addBiblio(Biblio $biblio): self
+    {
+        if (!$this->biblios->contains($biblio)) {
+            $this->biblios[] = $biblio;
+            $biblio->setVerrou($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBiblio(Biblio $biblio): self
+    {
+        if ($this->biblios->contains($biblio)) {
+            $this->biblios->removeElement($biblio);
+            // set the owning side to null (unless already changed)
+            if ($biblio->getVerrou() === $this) {
+                $biblio->setVerrou(null);
+            }
+        }
+
+        return $this;
     }
 }

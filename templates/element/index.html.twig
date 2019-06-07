@@ -96,6 +96,19 @@
                     <i class="fas fa-fw fa-eye"></i>
                     {{ 'generic.view'|trans }}
                 </a>
+                {% if element.verrou != null and not element.verrou.isWritable(app.user) %}
+                {% set error = "generic.messages.error_locked"|trans({
+                                    '%type%': 'element.name'|trans,
+                                    '%id%' : element.id,
+                                    '%user%': element.verrou.createur.prenomNom,
+                                    '%time%': element.verrou.dateFin.format('locale_datetime'|trans)
+                                }) %}
+                <button type="button" class="btn btn-sm btn-block my-1 btn-danger disabled" data-toggle="tooltip"
+                    data-placement="left" title="{{ error }}">
+                    <i class="fas fa-fw fa-lock"></i>
+                    {{ 'generic.locked'|trans }}
+                </button>
+                {% else %}
                 <a href="{{ url('element_edit', {'id': element.id}) }}" class="btn btn-sm btn-block my-1 btn-warning">
                     <i class="fas fa-fw fa-edit"></i>
                     {{ 'generic.edit'|trans }}
@@ -113,6 +126,7 @@
                     'confirmationLabel': 'generic.delete',
                     'csrfToken': 'delete_element_' ~ element.id,
                 } %}
+                {% endif %}
             </td>
         </tr>
         {% endfor %}

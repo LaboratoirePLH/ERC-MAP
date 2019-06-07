@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Biblio;
+use App\Entity\VerrouEntite;
 use App\Form\BiblioType;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -12,6 +13,16 @@ use Symfony\Component\Translation\TranslatorInterface;
 
 class BibliographyController extends AbstractController
 {
+    /**
+     * @var int
+     */
+    private $dureeVerrou;
+
+    public function __construct(int $dureeVerrou)
+    {
+        $this->dureeVerrou = $dureeVerrou;
+    }
+
     /**
      * @Route("/bibliography", name="bibliography_list")
      */
@@ -105,6 +116,7 @@ class BibliographyController extends AbstractController
      */
     public function edit($id, Request $request, TranslatorInterface $translator)
     {
+        $user = $this->get('security.token_storage')->getToken()->getUser();
         $biblio = $this->getDoctrine()
                        ->getRepository(Biblio::class)
                        ->find($id);
@@ -112,6 +124,24 @@ class BibliographyController extends AbstractController
             $request->getSession()->getFlashBag()->add(
                 'error',
                 $translator->trans('biblio.messages.missing', ['%id%' => $id])
+            );
+            return $this->redirectToRoute('bibliography_list');
+        }
+        if($biblio->getVerrou() === null){
+            $verrou = $this->getDoctrine()->getRepository(VerrouEntite::class)->create($biblio, $user, $this->dureeVerrou);
+        }
+        else if(!$biblio->getVerrou()->isWritable($user))
+        {
+            $request->getSession()->getFlashBag()->add(
+                'error',
+                $translator->trans('generic.messages.error_locked', [
+                    '%type%' => $translator->trans('biblio.list'),
+                    '%id%' => $id,
+                    '%user%' => $biblio->getVerrou()->getCreateur()->getPrenomNom(),
+                    '%time%' => $biblio->getVerrou()->getDateFin()->format(
+                        $translator->trans('locale_datetime')
+                    )
+                ])
             );
             return $this->redirectToRoute('bibliography_list');
         }
@@ -128,6 +158,7 @@ class BibliographyController extends AbstractController
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()){
             $em = $this->getDoctrine()->getManager();
             $em->persist($biblio);
+            $this->getDoctrine()->getRepository(VerrouEntite::class)->remove($biblio->getVerrou());
             $em->flush();
 
             // Message de confirmation
@@ -153,16 +184,48 @@ class BibliographyController extends AbstractController
     }
 
     /**
+     * @Route("/biblio/{id}/canceledit", name="biblio_canceledit")
+     */
+    public function canceledit($id, Request $request){
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $biblio = $this->getDoctrine()
+                       ->getRepository(Biblio::class)
+                       ->find($id);
+        $verrou = $this->getDoctrine()->getRepository(VerrouEntite::class)->fetch($biblio);
+        if($verrou !== null && $verrou->isWritable($user)){
+            $this->getDoctrine()->getRepository(VerrouEntite::class)->remove($verrou);
+        }
+        return $this->redirectToRoute('bibliography_list');
+    }
+
+    /**
      * @Route("/bibliography/{id}/delete", name="bibliography_delete")
      */
     public function delete($id, Request $request)
     {
         $submittedToken = $request->request->get('token');
+        $user = $this->get('security.token_storage')->getToken()->getUser();
 
         if ($this->isCsrfTokenValid('delete_biblio_'.$id, $submittedToken)) {
             $repository = $this->getDoctrine()->getRepository(Biblio::class);
             $biblio = $repository->find($id);
             if($biblio instanceof Biblio){
+                $verrou = $biblio->getVerrou();
+                if(!!$verrou && !$verrou->isWritable($user))
+                {
+                    $request->getSession()->getFlashBag()->add(
+                        'error',
+                        $translator->trans('generic.messages.error_locked', [
+                            '%type%' => $translator->trans('biblio.list'),
+                            '%id%' => $id,
+                            '%user%' => $verrou->getCreateur()->getPrenomNom(),
+                            '%time%' => $verrou->getDateFin()->format(
+                                $translator->trans('locale_datetime')
+                            )
+                        ])
+                    );
+                    return $this->redirectToRoute('bibliography_list');
+                }
                 $em = $this->getDoctrine()->getManager();
                 $em->remove($biblio);
                 $em->flush();

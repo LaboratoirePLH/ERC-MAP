@@ -219,7 +219,7 @@
                     <thead>
                         <tr>
                             <th scope="col">{{ 'attestation.name'|trans }}</th>
-                            <th scope="col">{{ 'attestation.fields.translitteration'|trans }}</th>
+                            <th scope="col">{{ 'attestation.fields.extrait_avec_restitution'|trans }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -233,7 +233,7 @@
                                         } %}
                             </td>
                             <td>
-                                {{ attestation.translitteration|raw }}
+                                {{ attestation.extraitAvecRestitution|raw }}
                             </td>
                         </tr>
                         {% endfor %}

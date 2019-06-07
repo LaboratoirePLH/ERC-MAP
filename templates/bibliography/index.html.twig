@@ -100,6 +100,7 @@
                     <i class="fas fa-edit"></i>
                     {{ 'generic.edit'|trans }}
                 </a>
+                {% if is_granted('ROLE_ADMIN') %}
                 {% set uuid = 'confirm_deletion_' ~ biblio.id ~ '_' ~ random() %}
                 <button type="button" class="btn btn-sm btn-block my-1 btn-danger" id="delete-link-{{biblio.id}}"
                     data-toggle="modal" data-target="#{{ uuid }}">
@@ -113,6 +114,7 @@
                 'confirmationLabel': 'generic.delete',
                 'csrfToken': 'delete_biblio_' ~ biblio.id,
                 } %}
+                {% endif %}
                 {% endif %}
             </td>
         </tr>

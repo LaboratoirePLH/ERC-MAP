@@ -102,6 +102,7 @@ generic:
         error_ambiguous: "Error : Ambiguous results"
         error_unknown: "Unknown error"
         error_locked: "%type% #%id% is locked by %user% until %time%."
+        error_unauthorized: "You are not allowed to perform this operation"
     help:
         edition_principale: "At least one reference must be specified as the Main Edition"
         city_search: "Enter a City name and/or a Pleiades number, then click the \"Search database\" button to search the database. If a single result is found, relevant fields will be populated according to its data"

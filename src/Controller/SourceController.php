@@ -172,6 +172,10 @@ class SourceController extends AbstractController
             );
             return $this->redirectToRoute('source_list');
         }
+        if(!$this->isGranted('ROLE_MODERATOR') && $source->getCreateur()->getId() !== $user->getId()){
+            $request->getSession()->getFlashBag()->add('error', 'generic.messages.error_unauthorized');
+            return $this->redirectToRoute('source_list');
+        }
         if($source->getVerrou() === null){
             $verrou = $this->getDoctrine()->getRepository(VerrouEntite::class)->create($source, $user, $this->dureeVerrou);
         }
@@ -292,42 +296,42 @@ class SourceController extends AbstractController
      */
     public function delete($id, Request $request, TranslatorInterface $translator){
         $submittedToken = $request->request->get('token');
+        $user = $this->get('security.token_storage')->getToken()->getUser();
 
         if ($this->isCsrfTokenValid('delete_source_'.$id, $submittedToken)) {
             $user = $this->get('security.token_storage')->getToken()->getUser();
             $repository = $this->getDoctrine()->getRepository(Source::class);
             $source = $repository->find($id);
             if($source instanceof Source){
-                $verrou = $source->getVerrou();
-                if(!!$verrou && !$verrou->isWritable($user))
-                {
-                    $request->getSession()->getFlashBag()->add(
-                        'error',
-                        $translator->trans('generic.messages.error_locked', [
-                            '%type%' => $translator->trans('source.name'),
-                            '%id%' => $id,
-                            '%user%' => $verrou->getCreateur()->getPrenomNom(),
-                            '%time%' => $verrou->getDateFin()->format(
-                                $translator->trans('locale_datetime')
-                            )
-                        ])
-                    );
-                    return $this->redirectToRoute('source_list');
+                if($this->isGranted('ROLE_ADMIN')){
+                    $verrou = $source->getVerrou();
+                    if(!$verrou || $verrou->isWritable($user)) {
+                        $em = $this->getDoctrine()->getManager();
+                        $em->remove($source);
+                        $em->flush();
+                        $request->getSession()->getFlashBag()->add('success', 'source.messages.deleted');
+                    } else {
+                        $request->getSession()->getFlashBag()->add(
+                            'error',
+                            $translator->trans('generic.messages.error_locked', [
+                                '%type%' => $translator->trans('source.name'),
+                                '%id%' => $id,
+                                '%user%' => $verrou->getCreateur()->getPrenomNom(),
+                                '%time%' => $verrou->getDateFin()->format(
+                                    $translator->trans('locale_datetime')
+                                )
+                            ])
+                        );
+                    }
+                } else {
+                    $request->getSession()->getFlashBag()->add('error', 'generic.messages.error_unauthorized');
                 }
-
-                $em = $this->getDoctrine()->getManager();
-                $em->remove($source);
-                $em->flush();
-
-                $request->getSession()->getFlashBag()->add('success', 'source.messages.deleted');
-                return $this->redirectToRoute('source_list');
             } else {
                 $request->getSession()->getFlashBag()->add('error', 'generic.messages.deletion_failed_missing');
-                return $this->redirectToRoute('source_list');
             }
         } else {
             $request->getSession()->getFlashBag()->add('error', 'generic.messages.deletion_failed_csrf');
-            return $this->redirectToRoute('source_list');
         }
+        return $this->redirectToRoute('source_list');
     }
 }

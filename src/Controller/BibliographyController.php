@@ -201,8 +201,7 @@ class BibliographyController extends AbstractController
     /**
      * @Route("/bibliography/{id}/delete", name="bibliography_delete")
      */
-    public function delete($id, Request $request)
-    {
+    public function delete($id, Request $request){
         $submittedToken = $request->request->get('token');
         $user = $this->get('security.token_storage')->getToken()->getUser();
 
@@ -210,27 +209,29 @@ class BibliographyController extends AbstractController
             $repository = $this->getDoctrine()->getRepository(Biblio::class);
             $biblio = $repository->find($id);
             if($biblio instanceof Biblio){
-                $verrou = $biblio->getVerrou();
-                if(!!$verrou && !$verrou->isWritable($user))
-                {
-                    $request->getSession()->getFlashBag()->add(
-                        'error',
-                        $translator->trans('generic.messages.error_locked', [
-                            '%type%' => $translator->trans('biblio.list'),
-                            '%id%' => $id,
-                            '%user%' => $verrou->getCreateur()->getPrenomNom(),
-                            '%time%' => $verrou->getDateFin()->format(
-                                $translator->trans('locale_datetime')
-                            )
-                        ])
-                    );
-                    return $this->redirectToRoute('bibliography_list');
+                if($this->isGranted('ROLE_ADMIN')){
+                    $verrou = $biblio->getVerrou();
+                    if(!$verrou || $verrou->isWritable($user)) {
+                        $em = $this->getDoctrine()->getManager();
+                        $em->remove($biblio);
+                        $em->flush();
+                        $request->getSession()->getFlashBag()->add('success', 'biblio.messages.deleted');
+                    } else {
+                        $request->getSession()->getFlashBag()->add(
+                            'error',
+                            $translator->trans('generic.messages.error_locked', [
+                                '%type%' => $translator->trans('biblio.list'),
+                                '%id%' => $id,
+                                '%user%' => $verrou->getCreateur()->getPrenomNom(),
+                                '%time%' => $verrou->getDateFin()->format(
+                                    $translator->trans('locale_datetime')
+                                )
+                            ])
+                        );
+                    }
+                } else {
+                    $request->getSession()->getFlashBag()->add('error', 'generic.messages.error_unauthorized');
                 }
-                $em = $this->getDoctrine()->getManager();
-                $em->remove($biblio);
-                $em->flush();
-
-                $request->getSession()->getFlashBag()->add('success', 'biblio.messages.deleted');
             } else {
                 $request->getSession()->getFlashBag()->add('error', 'generic.messages.deletion_failed_missing');
             }

@@ -154,10 +154,13 @@
                     {{ 'generic.locked'|trans }}
                 </button>
                 {% else %}
+                {% if is_granted('ROLE_MODERATOR') or source.createur.id == app.user.id %}
                 <a href="{{ url('source_edit', {'id': source.id}) }}" class="btn btn-sm btn-block my-1 btn-warning">
                     <i class="fas fa-fw fa-edit"></i>
                     {{ 'generic.edit'|trans }}
                 </a>
+                {% endif %}
+                {% if is_granted('ROLE_ADMIN') or source.createur.id == app.user.id %}
                 {% set uuid = 'confirm_deletion_' ~ source.id ~ '_' ~ random() %}
                 <button type="button" class="btn btn-sm btn-block my-1 btn-danger" id="delete-link-{{source.id}}"
                     data-toggle="modal" data-target="#{{ uuid }}">
@@ -171,6 +174,7 @@
                     'confirmationLabel': 'generic.delete',
                     'csrfToken': 'delete_source_' ~ source.id,
                 } %}
+                {% endif %}
                 {% endif %}
                 {% endif %}
             </td>

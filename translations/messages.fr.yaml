@@ -102,6 +102,7 @@ generic:
         error_ambiguous: "Erreur : résultats ambigus"
         error_unknown: "Erreur inconnue"
         error_locked: "%type% #%id% est verrouillé(e) par %user% jusqu'à %time%."
+        error_unauthorized: "Vous n'avez pas le droit d'effectuer cette opération"
     help:
         edition_principale: "Au moins une référence doit être spécifiée en tant qu'Édition Principale"
         city_search: "Entrez un nom de ville et/ou un numéro Pléiades, puis cliquez le bouton \"Chercher dans la base\". Si un résultat unique est trouvé, les champs correspondants seront remplis avec ses données"

@@ -210,6 +210,10 @@ class Chercheur extends AbstractEntity implements UserInterface
         $roles = ['ROLE_USER'];
         if(strtolower($this->getRole()) === "admin"){
             $roles[] = 'ROLE_ADMIN';
+            $roles[] = 'ROLE_MODERATOR';
+        }
+        if(strtolower($this->getRole()) === "moderator"){
+            $roles[] = 'ROLE_MODERATOR';
         }
         return $roles;
     }

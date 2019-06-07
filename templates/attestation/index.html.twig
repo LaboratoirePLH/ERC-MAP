@@ -120,11 +120,14 @@
                     {{ 'generic.locked'|trans }}
                 </button>
                 {% else %}
+                {% if is_granted('ROLE_MODERATOR') or attestation.createur.id == app.user.id %}
                 <a href="{{ url('attestation_edit', {'id': attestation.id}) }}"
                     class="btn btn-sm btn-block my-1 btn-warning">
                     <i class="fas fa-edit"></i>
                     {{ 'generic.edit'|trans }}
                 </a>
+                {% endif %}
+                {% if is_granted('ROLE_ADMIN') or attestation.createur.id == app.user.id %}
                 {% set uuid = 'confirm_deletion_' ~ attestation.id ~ '_' ~ random() %}
                 <button type="button" class="btn btn-sm btn-block my-1 btn-danger" id="delete-link-{{attestation.id}}"
                     data-toggle="modal" data-target="#{{ uuid }}">
@@ -138,6 +141,7 @@
                     'confirmationLabel': 'generic.delete',
                     'csrfToken': 'delete_attestation_' ~ attestation.id,
                 } %}
+                {% endif %}
                 {% endif %}
             </td>
         </tr>

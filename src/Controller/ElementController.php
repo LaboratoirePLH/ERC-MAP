@@ -204,6 +204,10 @@ class ElementController extends AbstractController
             );
             return $this->redirectToRoute('element_list');
         }
+        if(!$this->isGranted('ROLE_MODERATOR') && $element->getCreateur()->getId() !== $user->getId()){
+            $request->getSession()->getFlashBag()->add('error', 'generic.messages.error_unauthorized');
+            return $this->redirectToRoute('element_list');
+        }
         if($element->getVerrou() === null){
             $verrou = $this->getDoctrine()->getRepository(VerrouEntite::class)->create($element, $user, $this->dureeVerrou);
         }
@@ -323,35 +327,35 @@ class ElementController extends AbstractController
             $repository = $this->getDoctrine()->getRepository(Element::class);
             $element = $repository->find($id);
             if($element instanceof Element){
-                $verrou = $element->getVerrou();
-                if(!!$verrou && !$verrou->isWritable($user))
-                {
-                    $request->getSession()->getFlashBag()->add(
-                        'error',
-                        $translator->trans('generic.messages.error_locked', [
-                            '%type%' => $translator->trans('element.name'),
-                            '%id%' => $id,
-                            '%user%' => $verrou->getCreateur()->getPrenomNom(),
-                            '%time%' => $verrou->getDateFin()->format(
-                                $translator->trans('locale_datetime')
-                            )
-                        ])
-                    );
-                    return $this->redirectToRoute('element_list');
+                if($this->isGranted('ROLE_ADMIN')){
+                    $verrou = $element->getVerrou();
+                    if(!$verrou || $verrou->isWritable($user)) {
+                        $em = $this->getDoctrine()->getManager();
+                        $em->remove($element);
+                        $em->flush();
+                        $request->getSession()->getFlashBag()->add('success', 'element.messages.deleted');
+                    } else {
+                        $request->getSession()->getFlashBag()->add(
+                            'error',
+                            $translator->trans('generic.messages.error_locked', [
+                                '%type%' => $translator->trans('element.name'),
+                                '%id%' => $id,
+                                '%user%' => $verrou->getCreateur()->getPrenomNom(),
+                                '%time%' => $verrou->getDateFin()->format(
+                                    $translator->trans('locale_datetime')
+                                )
+                            ])
+                        );
+                    }
+                } else {
+                    $request->getSession()->getFlashBag()->add('error', 'generic.messages.error_unauthorized');
                 }
-                $em = $this->getDoctrine()->getManager();
-                $em->remove($element);
-                $em->flush();
-
-                $request->getSession()->getFlashBag()->add('success', 'element.messages.deleted');
-                return $this->redirectToRoute('element_list');
             } else {
                 $request->getSession()->getFlashBag()->add('error', 'generic.messages.deletion_failed_missing');
-                return $this->redirectToRoute('element_list');
             }
         } else {
             $request->getSession()->getFlashBag()->add('error', 'generic.messages.deletion_failed_csrf');
-            return $this->redirectToRoute('element_list');
         }
+        return $this->redirectToRoute('element_list');
     }
 }

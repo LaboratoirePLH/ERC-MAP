@@ -273,6 +273,10 @@ class AttestationController extends AbstractController
             );
             return $this->redirectToRoute('attestation_list');
         }
+        if(!$this->isGranted('ROLE_MODERATOR') && $attestation->getCreateur()->getId() !== $user->getId()){
+            $request->getSession()->getFlashBag()->add('error', 'generic.messages.error_unauthorized');
+            return $this->redirectToRoute('attestation_list');
+        }
         if($attestation->getVerrou() === null){
             $verrou = $this->getDoctrine()->getRepository(VerrouEntite::class)->create($attestation, $user, $this->dureeVerrou);
         }
@@ -401,30 +405,35 @@ class AttestationController extends AbstractController
     public function delete($id, Request $request, TranslatorInterface $translator)
     {
         $submittedToken = $request->request->get('token');
+        $user = $this->get('security.token_storage')->getToken()->getUser();
 
         if ($this->isCsrfTokenValid('delete_attestation_'.$id, $submittedToken)) {
             $repository = $this->getDoctrine()->getRepository(Attestation::class);
             $attestation = $repository->find($id);
             if($attestation instanceof Attestation){
-                $user = $this->get('security.token_storage')->getToken()->getUser();
-                $verrou = $attestation->getVerrou();
-                if(!!$verrou && !$verrou->isWritable($user)) {
-                    $request->getSession()->getFlashBag()->add(
-                        'error',
-                        $translator->trans('generic.messages.error_locked', [
-                            '%type%' => $translator->trans('attestation.name'),
-                            '%id%' => $id,
-                            '%user%' => $verrou->getCreateur()->getPrenomNom(),
-                            '%time%' => $verrou->getDateFin()->format(
-                                $translator->trans('locale_datetime')
-                            )
-                        ])
-                    );
+                if($this->isGranted('ROLE_ADMIN')) {
+                    $user = $this->get('security.token_storage')->getToken()->getUser();
+                    $verrou = $attestation->getVerrou();
+                    if(!$verrou || $verrou->isWritable($user)) {
+                        $em = $this->getDoctrine()->getManager();
+                        $em->remove($attestation);
+                        $em->flush();
+                        $request->getSession()->getFlashBag()->add('success', 'attestation.messages.deleted');
+                    } else {
+                        $request->getSession()->getFlashBag()->add(
+                            'error',
+                            $translator->trans('generic.messages.error_locked', [
+                                '%type%' => $translator->trans('attestation.name'),
+                                '%id%' => $id,
+                                '%user%' => $verrou->getCreateur()->getPrenomNom(),
+                                '%time%' => $verrou->getDateFin()->format(
+                                    $translator->trans('locale_datetime')
+                                )
+                            ])
+                        );
+                    }
                 } else {
-                    $em = $this->getDoctrine()->getManager();
-                    $em->remove($attestation);
-                    $em->flush();
-                    $request->getSession()->getFlashBag()->add('success', 'attestation.messages.deleted');
+                    $request->getSession()->getFlashBag()->add('error', 'generic.messages.error_unauthorized');
                 }
             } else {
                 $request->getSession()->getFlashBag()->add('error', 'generic.messages.deletion_failed_missing');

@@ -168,10 +168,10 @@ source:
 
 source_biblio:
     fields:
-        edition_principale: "Main Edition"
-        reference_source: "Source Reference"
-        biblio_selection: "Select Reference"
-        biblio_creation: "Créer Reference"
+        edition_principale: "Édition Principale"
+        reference_source: "Référence à la Source"
+        biblio_selection: "Selectionner une Référence"
+        biblio_creation: "Créer une Référence"
 
 biblio:
     list: "Bibliographie"

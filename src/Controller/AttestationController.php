@@ -407,8 +407,8 @@ class AttestationController extends AbstractController
             $attestation = $repository->find($id);
             if($attestation instanceof Attestation){
                 $user = $this->get('security.token_storage')->getToken()->getUser();
-                $verrou = $this->getDoctrine()->getRepository(VerrouEntite::class)->fetch($attestation);
-                if(!$verrou || !$verrou->isWritable($user)) {
+                $verrou = $attestation->getVerrou();
+                if(!!$verrou && !$verrou->isWritable($user)) {
                     $request->getSession()->getFlashBag()->add(
                         'error',
                         $translator->trans('generic.messages.error_locked', [

@@ -107,6 +107,19 @@
                     <i class="fas fa-eye"></i>
                     {{ 'generic.view'|trans }}
                 </a>
+                {% if attestation.verrou != null %}
+                {% set error = "generic.messages.error_locked"|trans({
+                    '%type%': 'attestation.name'|trans,
+                    '%id%'  : attestation.id,
+                    '%user%': attestation.verrou.createur.prenomNom,
+                    '%time%': attestation.verrou.dateFin.format('locale_datetime'|trans)
+                }) %}
+                <button type="button" class="btn btn-sm btn-block my-1 btn-danger disabled" data-toggle="tooltip"
+                    data-placement="left" title="{{ error }}">
+                    <i class="fas fa-fw fa-lock"></i>
+                    {{ 'generic.locked'|trans }}
+                </button>
+                {% else %}
                 <a href="{{ url('attestation_edit', {'id': attestation.id}) }}"
                     class="btn btn-sm btn-block my-1 btn-warning">
                     <i class="fas fa-edit"></i>
@@ -125,7 +138,7 @@
                     'confirmationLabel': 'generic.delete',
                     'csrfToken': 'delete_attestation_' ~ attestation.id,
                 } %}
-
+                {% endif %}
             </td>
         </tr>
         {% endfor %}

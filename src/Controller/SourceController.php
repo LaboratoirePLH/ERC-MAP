@@ -298,8 +298,8 @@ class SourceController extends AbstractController
             $repository = $this->getDoctrine()->getRepository(Source::class);
             $source = $repository->find($id);
             if($source instanceof Source){
-                $verrou = $this->getDoctrine()->getRepository(VerrouEntite::class)->fetch($source);
-                if(!$verrou || !$verrou->isWritable($user))
+                $verrou = $source->getVerrou();
+                if(!!$verrou && !$verrou->isWritable($user))
                 {
                     $request->getSession()->getFlashBag()->add(
                         'error',

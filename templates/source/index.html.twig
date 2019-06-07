@@ -141,12 +141,12 @@
                     <i class="fas fa-fw fa-eye"></i>
                     {{ 'generic.view'|trans }}
                 </a>
-                {% if source.verrou != null %}
+                {% if source.verrou != null and not source.verrou.isWritable(app.user) %}
                 {% set error = "generic.messages.error_locked"|trans({
-                    '%type%': 'attestation.name'|trans,
-                    '%id%' : attestation.id,
-                    '%user%': attestation.verrou.createur.prenomNom,
-                    '%time%': attestation.verrou.dateFin.format('locale_datetime'|trans)
+                    '%type%': 'source.name'|trans,
+                    '%id%' : source.id,
+                    '%user%': source.verrou.createur.prenomNom,
+                    '%time%': source.verrou.dateFin.format('locale_datetime'|trans)
                 }) %}
                 <button type="button" class="btn btn-sm btn-block my-1 btn-danger disabled" data-toggle="tooltip"
                     data-placement="left" title="{{ error }}">

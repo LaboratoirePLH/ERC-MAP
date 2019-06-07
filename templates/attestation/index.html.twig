@@ -107,7 +107,7 @@
                     <i class="fas fa-eye"></i>
                     {{ 'generic.view'|trans }}
                 </a>
-                {% if attestation.verrou != null %}
+                {% if attestation.verrou != null and not attestation.verrou.isWritable(app.user) %}
                 {% set error = "generic.messages.error_locked"|trans({
                     '%type%': 'attestation.name'|trans,
                     '%id%'  : attestation.id,

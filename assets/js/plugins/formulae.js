@@ -274,7 +274,16 @@ var get_browser = function () {
                     },
                     onSort: function (evt) {
                         var formule = [];
-                        $(evt.to).find('.btn').each(function (i, b) {
+                        if ($(evt.to).hasClass('formula-visualizer')) {
+                            var target = $(evt.to)
+                        }
+                        else if ($(evt.from).hasClass('formula-visualizer')) {
+                            var target = $(evt.from)
+                        }
+                        else {
+                            throw "Did not drag or drop from visualizer";
+                        }
+                        target.find('.btn').each(function (i, b) {
                             formule.push($(b).data('raw'));
                         });
                         $(me).find("input[name$='[formule]']").val(formule.join('')).trigger('change');

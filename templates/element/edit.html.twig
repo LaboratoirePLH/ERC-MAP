@@ -67,7 +67,7 @@
         'collapseTarget': '#section-references',
         'expanded'      : true,
         'counterId'     : 'references',
-        'counter'       : (element.theonymesImplicites.count()+element.theonymesConstruits.count())|default(0)
+        'counter'       : (element.theonymesImplicites.count()|default(0)+element.theonymesConstruits.count()|default(0))
     } only %}
     <div class="collapse show" id="section-references">
         {{ form_row(form.aReference) }}

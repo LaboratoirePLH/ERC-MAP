@@ -67,9 +67,17 @@
         'expanded'      : true
     } only %}
     <div class="collapse show" id="section-texte-attestation">
-        {{ form_row(form.extraitSansRestitution) }}
         {{ form_row(form.extraitAvecRestitution) }}
         {{ form_row(form.translitteration) }}
+        {{ form_row(form.traductions) }}
+        <div class="form-group row">
+            <div class="col-sm-10 offset-sm-2">
+                <a href="#" class="btn btn-primary collection-add-link" id="link-add-traduction">
+                    <i class="fa fa-plus"></i>&nbsp;
+                    {{ 'element.add_traduction'|trans }}
+                </a>
+            </div>
+        </div>
         {{ form_row(form.fiabiliteAttestation) }}
     </div>
 </section>
@@ -268,6 +276,16 @@
         });
 
         // Gestion des champs collection
+        $('div#attestation_traductions').collectionField({
+            addLink: $('#link-add-traduction'),
+            confirmationModal: $('#confirm_remove_item'),
+            deleteLinkGenerator: function () {
+                return $(
+                    '<a href="#" class="btn btn-danger ml-2 mb-1" title="{{"generic.delete"|trans}}"><i class="fas fa-trash fa-fw"></i></a>'
+                )
+            },
+            inline: true
+        });
         $('div#attestation_occasions').collectionField({
             blockTitle: '{{ "attestation.fields.occasion_n"|trans }}',
             deleteLink: '{{ "generic.delete"|trans }}',

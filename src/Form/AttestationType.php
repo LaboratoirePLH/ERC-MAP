@@ -88,11 +88,13 @@ class AttestationType extends AbstractType
                 'label'    => 'attestation.fields.poesie',
                 'required' => false
             ])
-            ->add('extraitSansRestitution', CKEditorType::class, [
-                'config_name' => 'styling_and_font',
-                'attr'        => ['class' => 'semitic_keyboard'],
-                'label'       => 'attestation.fields.extrait_sans_restitution',
-                'required'    => false
+            ->add('traductions', CollectionType::class, [
+                'label'         => 'element.fields.traductions',
+                'entry_type'    => TraductionAttestationType::class,
+                'by_reference'  => false,
+                'allow_add'     => true,
+                'allow_delete'  => true,
+                'required'      => false,
             ])
             ->add('extraitAvecRestitution', CKEditorType::class, [
                 'config_name' => 'styling_and_font',

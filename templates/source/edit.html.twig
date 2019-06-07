@@ -253,14 +253,13 @@
             },
             confirmationModal: $('#confirm_remove_item'),
             viewLinkGenerator: function (entry) {
-                const entryId = $(entry).find('input[type=hidden]').val();
+                const entryId = $(entry).find('input[type=hidden]').val(),
+                    entryName = $(entry).find('input[type=text]').val();
                 var url = "{{ url('attestation_show', {'id': '-ID-'}) }}";
                 if (!$.isNumeric(entryId)) {
-                    // Don't add a view link if attestation does not have an ID
-                    // (meaning it's not persisted in the database)
                     return "";
                 }
-                return $('<a href="' + url.replace('-ID-', entryId) + '" class="btn btn-sm btn-primary ml-2 mb-1" target="_blank" rel="noopener">{{ "source.view_attestation"|trans }}</a>');
+                return $('<a href="' + url.replace('-ID-', entryId) + '" class="btn btn-sm btn-success ml-2 mb-1" target="_blank" rel="noopener"><i class="fa fa-fw {{ icons.attestation }}"></i>' + entryName + '</a >');
             },
             addListener: function (newEl, idx) {
                 $('#counter-attestations').text(parseInt($('#counter-attestations').text(), 10) + 1);

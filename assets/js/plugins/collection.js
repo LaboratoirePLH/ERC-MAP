@@ -89,8 +89,8 @@
                     .removeClass('col-sm-2 col-form-label')
                     .addClass('col-sm-12 text-center h5')
                     .prepend(toggleButton)
-                    .append(deleteLink)
-                    .append(viewLink);
+                    .append(viewLink)
+                    .append(deleteLink);
                 prototype.children('.col-sm-10')
                     .removeClass('col-sm-10')
                     .addClass('col-sm-12 collapse' + (!collapsed ? ' show' : ''))

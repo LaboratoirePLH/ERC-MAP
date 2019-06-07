@@ -227,7 +227,6 @@ attestation:
     edit: "Modifier l'Attestation #%id%"
     add_agent: "Ajouter un Agent"
     add_element: "Ajouter un Élément"
-    view_element: "Visualiser l'Élément"
     add_occasion: "Ajouter une Occasion"
     add_materiel: "Ajouter une Matériel Associé"
     add_formule: "Ajouter une Formule"

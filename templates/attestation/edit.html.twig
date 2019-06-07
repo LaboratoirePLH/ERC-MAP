@@ -357,12 +357,13 @@
                 $('#counter-elements').text(parseInt($('#counter-elements').text(), 10) - 1);
             },
             viewLinkGenerator: function (entry) {
-                const entryId = $(entry).find('.selectorcreate_selection').find('select').val();
+                const entryId = $(entry).find('.selectorcreate_selection').find('select').val(),
+                    entryName = $(entry).find('.selectorcreate_selection').find('select option:selected').text();
                 var url = "{{ url('element_show', {'id': '-ID-'}) }}";
                 if (!$.isNumeric(entryId)) {
                     return "";
                 }
-                return $('<a href="' + url.replace('-ID-', entryId) + '" class="btn btn-sm btn-primary ml-2 mb-1" target="_blank" rel="noopener">{{ "attestation.view_element"|trans }}</a>');
+                return $('<a href="' + url.replace('-ID-', entryId) + '" class="btn btn-sm btn-warning ml-2 mb-1" target="_blank" rel="noopener"><i class="fa fa-fw {{ icons.element }}"></i>' + entryName + '</a >');
             }
         });
 

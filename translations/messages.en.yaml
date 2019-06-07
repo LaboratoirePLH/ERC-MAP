@@ -227,7 +227,6 @@ attestation:
     edit: "Edit Testimony #%id%"
     add_agent: "Add Agent"
     add_element: "Add Element"
-    view_element: "View Element"
     add_occasion: "Add Occasion"
     add_materiel: "Add Connected Material"
     add_formule: "Add Formule"

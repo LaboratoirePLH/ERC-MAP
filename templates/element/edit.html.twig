@@ -65,7 +65,9 @@
     {% include 'partials/_sectiontitle.html.twig' with {
         'title'         : 'element.sections.references',
         'collapseTarget': '#section-references',
-        'expanded'      : true
+        'expanded'      : true,
+        'counterId'     : 'references',
+        'counter'       : (element.theonymesImplicites.count()+element.theonymesConstruits.count())|default(0)
     } only %}
     <div class="collapse show" id="section-references">
         {{ form_row(form.aReference) }}
@@ -115,7 +117,9 @@
     {% include 'partials/_sectiontitle.html.twig' with {
         'title'         : 'element.sections.bibliographie',
         'collapseTarget': '#section-bibliographie',
-        'expanded'      : true
+        'expanded'      : true,
+        'counterId'     : 'biblio',
+        'counter'       : element.elementBiblios.count()|default(0)
     } only %}
     <div class="collapse show" id="section-bibliographie">
         {{ form_errors(form.elementBiblios) }}
@@ -200,6 +204,12 @@
                         }
                     }
                 });
+            },
+            addListener: function (newEl, idx) {
+                $('#counter-biblio').text(parseInt($('#counter-biblio').text(), 10) + 1);
+            },
+            deleteListener: function (oldEl) {
+                $('#counter-biblio').text(parseInt($('#counter-biblio').text(), 10) - 1);
             }
         });
         $('div#element_traductions').collectionField({
@@ -244,6 +254,12 @@
                     return "";
                 }
                 return $('<a href="' + url.replace('-ID-', entryId) + '" class="btn btn-primary ml-2 mb-1" target="_blank" rel="noopener" title="{{ "attestation.view_element"|trans }}"><i class="fas fa-external-link-alt fa-fw"></i></a>');
+            },
+            addListener: function (newEl, idx) {
+                $('#counter-references').text(parseInt($('#counter-references').text(), 10) + 1);
+            },
+            deleteListener: function (oldEl) {
+                $('#counter-references').text(parseInt($('#counter-references').text(), 10) - 1);
             }
         });
         $('div#element_theonymesConstruits').collectionField({
@@ -278,6 +294,12 @@
                     return "";
                 }
                 return $('<a href="' + url.replace('-ID-', entryId) + '" class="btn btn-primary ml-2 mb-1" target="_blank" rel="noopener" title="{{ "attestation.view_element"|trans }}"><i class="fas fa-external-link-alt fa-fw"></i></a>');
+            },
+            addListener: function (newEl, idx) {
+                $('#counter-references').text(parseInt($('#counter-references').text(), 10) + 1);
+            },
+            deleteListener: function (oldEl) {
+                $('#counter-references').text(parseInt($('#counter-references').text(), 10) - 1);
             }
         });
 

@@ -67,7 +67,9 @@
     {% include 'partials/_sectiontitle.html.twig' with {
         'title'         : 'source.sections.bibliographie',
         'collapseTarget': '#section-bibliographie',
-        'expanded'      : true
+        'expanded'      : true,
+        'counterId'     : 'biblio',
+        'counter'       : source.sourceBiblios.count()|default(0)
     } only %}
     <div class="collapse show" id="section-bibliographie">
         {{ form_errors(form.sourceBiblios) }}
@@ -138,7 +140,9 @@
 <section>
     {% include 'partials/_sectiontitle.html.twig' with {
         'title'         : 'source.sections.attestations',
-        'collapseTarget': '#section-attestations'
+        'collapseTarget': '#section-attestations',
+        'counterId'     : 'attestations',
+        'counter'       : source.attestations.count()|default(0)
     } only %}
     <div class="collapse" id="section-attestations">
         {{ form_errors(form.attestations) }}
@@ -228,6 +232,10 @@
                 if (idx == 1) {
                     $(newEl).find('label.mainsource_field').siblings('input[type=checkbox]').prop('checked', true);
                 }
+                $('#counter-biblio').text(parseInt($('#counter-biblio').text(), 10) + 1);
+            },
+            deleteListener: function (oldEl) {
+                $('#counter-biblio').text(parseInt($('#counter-biblio').text(), 10) - 1);
             }
         });
         $('div#source_attestations').collectionField({
@@ -253,6 +261,12 @@
                     return "";
                 }
                 return $('<a href="' + url.replace('-ID-', entryId) + '" class="btn btn-sm btn-primary ml-2 mb-1" target="_blank" rel="noopener">{{ "source.view_attestation"|trans }}</a>');
+            },
+            addListener: function (newEl, idx) {
+                $('#counter-attestations').text(parseInt($('#counter-attestations').text(), 10) + 1);
+            },
+            deleteListener: function (oldEl) {
+                $('#counter-attestations').text(parseInt($('#counter-attestations').text(), 10) - 1);
             }
         });
 

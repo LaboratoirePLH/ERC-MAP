@@ -1,4 +1,4 @@
-{% extends 'authenticated.html.twig' %}
+{% extends 'form_page.html.twig' %}
 {% block title %}
 {{ ('source.' ~ action)|trans((source is defined ? {'%id%': source.id} : {})) }}
 {% endblock %}

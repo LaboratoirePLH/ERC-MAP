@@ -1,4 +1,4 @@
-{% extends 'authenticated.html.twig' %}
+{% extends 'list_page.html.twig' %}
 {% set title = title|default('attestation.'~action) %}
 {% block title %}
 {{ title|trans }}
@@ -58,6 +58,8 @@
                 {# </a> #}
                 <br />
                 <small>{{ 'generic.fields.version'|trans }}&nbsp;{{ attestation.version|default("?") }}</small>
+                <br />
+                <small><i>({{ 'source.name'|trans }}&nbsp;#{{ attestation.source.id }})</i></small>
             </th>
             <td>
                 {{ attestation.source.sourceBiblios is not empty ?

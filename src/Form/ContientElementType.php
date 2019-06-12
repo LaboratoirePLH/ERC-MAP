@@ -61,7 +61,7 @@ class ContientElementType extends AbstractType
                 'expanded'    => false,
                 'multiple'    => false,
                 'required'    => false,
-                'placeholder' => false,
+                'placeholder' => "",
                 'choices'     => [
                     'element.etat_morphologique.indetermine' => "Indéterminé",
                     'element.etat_morphologique.nominatif'   => "Nominatif",

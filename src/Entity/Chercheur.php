@@ -97,14 +97,16 @@ class Chercheur extends AbstractEntity implements UserInterface
      * @ORM\OneToMany(targetEntity="App\Entity\Requetes", mappedBy="id_chercheur", orphanRemoval=true)
      */
     private $requetes; //Ici ça va être un tableau de requêtes en fait
+
     /**
      * Constructor
      */
     public function __construct()
     {
         $this->projets = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->verrous = new ArrayCollection();
         $this->requetes = new ArrayCollection();
+        $this->verrous = new ArrayCollection();
+
         $this->setDateAjout(new \DateTime());
     }
 
@@ -212,7 +214,7 @@ class Chercheur extends AbstractEntity implements UserInterface
     public function getRoles(): array
     {
         $roles = ['ROLE_USER'];
-        if (strtolower($this->getRole()) === "admin") {
+        if(strtolower($this->getRole()) === "admin"){
             $roles[] = 'ROLE_ADMIN';
         }
         return $roles;
@@ -249,7 +251,7 @@ class Chercheur extends AbstractEntity implements UserInterface
     public function getNomsProjets(): string
     {
         $projets = [];
-        foreach ($this->getProjets() as $p) {
+        foreach($this->getProjets() as $p){
             $projets[] = $p->getNomFr();
         }
         return implode(', ', $projets);
@@ -261,7 +263,8 @@ class Chercheur extends AbstractEntity implements UserInterface
     }
 
     public function eraseCredentials()
-    { }
+    {
+    }
 
     public function getPreferenceLangue(): ?string
     {
@@ -310,7 +313,8 @@ class Chercheur extends AbstractEntity implements UserInterface
     {
         return $this->getPrenomNom();
     }
-/**
+
+    /**
      * @return Collection|Requetes[]
      */
     public function getRequetes(): Collection

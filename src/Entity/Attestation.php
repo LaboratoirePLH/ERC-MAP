@@ -468,17 +468,4 @@ class Attestation extends AbstractEntity
         }
         return $elements;
     }
-
-    public static $_champsRequete = [
-        'prose' => 'attestation.fields.prose',
-        'poesie' => 'attestation.fields.poesie',
-        'translitteration' => 'attestation.fields.translitteration',
-        'commentaire_fr' => 'generic.fields.commentaire_fr',
-        'commentaire_en' => 'generic.fields.commentaire_en',
-        'etat_fiche' => 'attestation.fields.etat_fiche',
-        'categorie_occasion' => 'attestation.fields.categorie_occasion',
-        'occasion' => 'attestation.fields.occasion',
-        'categorie_materiel' => 'attestation.fields.categorie_materiel',
-        'materiel' => 'attestation.fields.materiel',
-    ];
 }

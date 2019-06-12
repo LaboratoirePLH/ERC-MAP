@@ -1,6 +1,6 @@
 app_name: "ERC MAP"
 locale: "fr"
-locale_datetime: "d/m/Y H:i:s"
+locale_datetime: "d/m/Y H:i:s (e)"
 languages:
     fr: "Français"
     en: "Anglais"
@@ -58,6 +58,7 @@ generic:
     choose: "Choisir"
     toggle_section: "Afficher/Cacher la section"
     export_csv: "Exporter en CSV"
+    locked: "Verrouillé"
     fields:
         id: "ID"
         date_creation: "Création"
@@ -398,7 +399,7 @@ mails:
         intro: "Veuillez cliquer sur le lien suivant afin de réinitialiser votre mot de passe à la base de données ERC-MAP"
         action: "Réinitialiser mon mot de passe"
         outro: "Vous avez reçu ce mail car quelqu'un a demandé la réinitialisation de votre mot de passe. Si ce n'est pas vous, veuillez ignorer ce mail."
-        
+
 requetes:
     title: "Interface de requête"
     list: "Requêtes"

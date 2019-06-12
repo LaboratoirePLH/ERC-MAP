@@ -1,6 +1,6 @@
 app_name: "ERC MAP"
 locale: "en"
-locale_datetime: "Y-m-d H:i:s"
+locale_datetime: "Y-m-d H:i:s (e)"
 languages:
     fr: "French"
     en: "English"
@@ -58,6 +58,7 @@ generic:
     choose: "Choose"
     toggle_section: "Show/Hide section"
     export_csv: "Export as CSV file"
+    locked: "Locked"
     fields:
         id: "ID"
         date_creation: "Creation"
@@ -397,7 +398,7 @@ mails:
         intro: "Please click the following link to reset your password on the ERC-MAP database"
         action: "Reset my password"
         outro: "You received this e-mail because someone asked to reset your password. If you were not the one asking, please ignore this email."
-        
+
 requetes:
     title: "Query interface"
     list: "Queries"

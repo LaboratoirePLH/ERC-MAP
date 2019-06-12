@@ -1,4 +1,8 @@
-{% extends 'authenticated.html.twig' %}
+{% extends 'form_page.html.twig' %}
+{% block stylesheets %}
+{{ encore_entry_link_tags('attestation_form_page') }}
+{% endblock %}
+
 {% block title %}
 {{ ('attestation.' ~ action)|trans((attestation is defined ? {'%id%': attestation.id} : {})) }}
 {% endblock %}
@@ -237,7 +241,7 @@
 {{ include('partials/_backtotop.html.twig') }}
 {% endblock %}
 {% block javascripts %}
-{{ parent() }}
+{{ encore_entry_script_tags('attestation_form_page') }}
 <script type="text/javascript">
     $(document).ready(function () {
         const chosenSettings = {
@@ -366,6 +370,7 @@
                     return '<span class="text-center">' + $(el).find("input[name$='[createur]']").val() + '</span>';
                 },
                 inline: true,
+                autoAdd: false,
                 setupListener: function (el) {
                     $(el).formulaEditor({
                         elements: elements,

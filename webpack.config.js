@@ -17,8 +17,11 @@ Encore
      * Each entry will result in one JavaScript file (e.g. app.js)
      * and one CSS file (e.g. app.css) if you JavaScript imports CSS.
      */
-    .addEntry('app', './assets/js/app.js')
-    //.addEntry('page2', './assets/js/page2.js')
+    // .createSharedEntry('app', './assets/js/app.js')
+    .addEntry('page', './assets/js/page.js')
+    .addEntry('list_page', './assets/js/list_page.js')
+    .addEntry('form_page', './assets/js/form_page.js')
+    .addEntry('attestation_form_page', './assets/js/attestation_form_page.js')
     .addStyleEntry('fonts', './assets/css/fonts.css')
     .addStyleEntry('ckeditorcustom', './assets/css/ckeditorcustom.css')
 

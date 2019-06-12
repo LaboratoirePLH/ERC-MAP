@@ -30,15 +30,16 @@
         {% block title %}{% endblock %}
     </title>
     {% block stylesheets %}
-    {{ encore_entry_link_tags('app') }}
+    {{ encore_entry_link_tags('page') }}
     {% endblock %}
     <script src="/build/ckeditor/ckeditor.js"></script>
 </head>
 
 <body class="{% block bodyclass %}{% endblock %}" id="top">
     {% block body %}{% endblock %}
-    {{ encore_entry_script_tags('app') }}
-    {% block javascripts %}{% endblock %}
+    {% block javascripts %}
+    {{ encore_entry_script_tags('page') }}
+    {% endblock %}
 </body>
 
 </html>

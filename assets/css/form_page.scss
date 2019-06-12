@@ -1,0 +1,94 @@
+@import "app.scss";
+
+@import "./component-chosen.css";
+@import "~virtual-keyboard/dist/css/keyboard.min.css";
+
+/* Texte par défaut du choix multiple */
+.chosen-container-multi .chosen-choices .search-field input[type="text"] {
+    color: lighten($body-color, 60%);
+}
+
+/* Texte par défaut du choix simple */
+.chosen-container-single a:not([href]):not([tabindex]) {
+    color: lighten($body-color, 60%) !important;
+}
+
+/* Correction de l'affichage du groupe */
+.chosen-container-single .chosen-single .group-name {
+    padding-right: 5px;
+
+    &::after {
+        content: " > ";
+    }
+}
+
+/* Sélection du choix simple */
+.chosen-container-single a:not([href]):not([tabindex]).chosen-single:not(.chosen-default) {
+    color: $body-color !important;
+}
+
+select:invalid {
+    height: 0px !important;
+    opacity: 0 !important;
+    position: absolute !important;
+    display: flex !important;
+}
+
+select:invalid[multiple] {
+   margin-top: 15px !important;
+}
+
+.collection-block {
+    margin: 0 ($spacer * .50);
+    .collection-item {
+        border: 1px solid $map-yellow;
+        border-radius: 10px;
+
+        &>legend {
+            padding: ($spacer * .50);
+            margin-bottom: 0;
+        }
+        &>div {
+            border-top: 1px solid $map-yellow;
+            padding: ($spacer * .50);
+        }
+    }
+}
+
+.formula-editor {
+    @extend .mb-1;
+    @extend .px-3;
+    width: 100%;
+    border: 1px solid $map-yellow;
+    border-radius: 10px;
+
+    & > div.row {
+        @extend .py-2;
+        border-bottom: 1px solid $map-yellow;
+        &:last-child{
+            border-bottom: none;
+        }
+
+        & > div.label {
+            height: 100%;
+            font-weight: bolder;
+            border-right: 1px dotted $map-yellow;
+        }
+
+        &:first-child > div.label {
+            line-height: 50px;
+        }
+    }
+
+    .formula-visualizer {
+        .btn {
+            font-weight: bold;
+        }
+    }
+
+    .formula-operators, .formula-elements {
+        .btn {
+            @extend .btn-sm;
+        }
+    }
+}

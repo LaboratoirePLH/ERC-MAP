@@ -1,4 +1,4 @@
-{% extends 'authenticated.html.twig' %}
+{% extends 'list_page.html.twig' %}
 
 {% set action = action|default('list') %}
 {% set title = title|default('element.'~action) %}
@@ -59,7 +59,7 @@
                 <small>{{ 'generic.fields.version'|trans }}&nbsp;{{ element.version|default("?") }}</small>
             </th>
             <td>
-                {{ element.etatAbsolu }}
+                {{ element.etatAbsolu|raw }}
             </td>
             <td>
                 {{ element.natureElement is not null ? element.natureElement.nom(locale) : "" }}

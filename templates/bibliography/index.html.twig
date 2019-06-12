@@ -1,4 +1,4 @@
-{% extends 'authenticated.html.twig' %}
+{% extends 'list_page.html.twig' %}
 {% block title %}
 {{ 'biblio.list'|trans }}
 {% endblock %}
@@ -48,7 +48,7 @@
                     #{{ biblio.id }}
                 </a>
             </th>
-            <td>
+            <td data-search="{{ (biblio.estCorpus ? 'biblio.fields.corpus' : 'biblio.fields.bibliographique')|trans }}">
                 {{ (biblio.estCorpus ? 'biblio.fields.corpus' : 'biblio.fields.bibliographique')|trans }}
             </td>
             <td>
@@ -105,10 +105,11 @@
         <tr>
             <th>{{ 'generic.fields.id'|trans }}</th>
             <th>{{ 'generic.fields.type'|trans }}</th>
-            <th>{{ 'biblio.fields.titre_abrege'|trans }}</th>
             <th>{{ 'biblio.fields.auteur'|trans }}</th>
             <th>{{ 'biblio.fields.annee'|trans }}</th>
-            <th>{{ 'generic.fields.utilisation'|trans }}</th>
+            <th>{{ 'biblio.fields.titre_abrege'|trans }}</th>
+            <th>{{ 'biblio.fields.titre_complet'|trans }}</th>
+            <th></th>
             <th></th>
         </tr>
     </tfoot>

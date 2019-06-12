@@ -139,7 +139,6 @@ class RequetesController extends AbstractController
             $rows = $repo->createQueryBuilder("e")
                 ->getQuery()
                 ->getResult();
-
             return new JsonResponse($this->_traiterRetour($rows, $nomBDD, $nomTable));
         }
     }
@@ -189,12 +188,19 @@ class RequetesController extends AbstractController
             $tabValue = array();
             $tabOperator = array();
             $tabEtOu = array();
+            $search = array('à', 'ã', 'â', 'ç', 'è', 'é', 'ë', 'ê', 'î', 'ï', 'ô', 'ù', 'û', 'ñ', ';', '%'); // J'enlève les caractères qui peuvent poser problème + sécurisation
+            $replace = array('a', 'a', 'a', 'c', 'e', 'e', 'e', 'e', 'i', 'i', 'o', 'u', 'u', 'n');
+
             for ($i = 0; $i < $nbCriteres; $i++) {
                 $tabTable[$i] = $tabRequete["where" . $i]["table"];
                 $tabNomBDD[$i] = $tabRequete["where" . $i]["nomBDD"];
-                $tabValue[$i] = $tabRequete["where" . $i]["value"];
                 $tabOperator[$i] = $tabRequete["where" . $i]["operator"];
                 $tabEtOu[$i] = $tabRequete["where" . $i]["etOu"];
+                if (strpos($tabRequete["where" . $i]["operator"], '%') !== false) { //Si c'est un input
+                    $tabValue[$i] = str_replace($search, $replace, mb_strtolower(strip_tags(stripslashes($tabRequete["where" . $i]["value"])))); //Sécurisation des values + casse
+                } else {
+                    $tabValue[$i] = $tabRequete["where" . $i]["value"];
+                }
             }
 
             $tabTableAffiche = array(); //Le tableau qui va prendre les tables requises pour le SELECT
@@ -209,11 +215,26 @@ class RequetesController extends AbstractController
             $condition = " "; //Where
 
             for ($i = 0; $i < sizeof($tabTable); $i++) {
-                if ($listeNull == " ") { //Si ce n'est pas un cas spécial
-                    $condition .= $tabEtOu[$i] . " " . $tabTable[$i] . "." . $tabNomBDD[$i] . " ";
-                    $condition .= $this->_operatorValue($tabOperator[$i], $tabValue[$i]);
-                } else { //Si c'est un cas spécial
-                    $condition .= $tabEtOu[$i] . " " . $listeNull . " ";
+                if($tabTable[$i] != "theonymes_implicites"){ //Si ce n'est pas théonyes_implicites, car j'ai fait la condition dans les jointures
+                    if ($listeNull == " ") { //Si ce n'est pas un cas spécial
+                        if (strpos($tabOperator[$i], '%') !== false) { //Si c'est un input, donc s'il y a un "%" dans le champ
+                            $condition .= $tabEtOu[$i] . " translate(lower(" . $tabTable[$i] . "." . $tabNomBDD[$i] . ")" . ",'àãâçèéëêîïôùûñ','aaaceeeeiiouun') "; //On met tout sans accents/majuscule
+                        } 
+                        else 
+                        {
+                            $condition .= $tabEtOu[$i] . " " . $tabTable[$i] . "." . $tabNomBDD[$i] . " ";
+                        }
+                            $condition .= $this->_operatorValue($tabOperator[$i], $tabValue[$i]);
+                    } 
+                    else 
+                    { //Si c'est un cas spécial
+                        $condition .= $tabEtOu[$i] . " " . $listeNull . " ";
+                    }
+                }
+                else{ //Si c'est un theonyme
+                    //and e2.etat_absolu like '<div>eeeeezrzefššsd</div>'
+                    $condition .= $tabEtOu[$i] . " e1.etat_absolu "; //Elément de comparaison : l'état absolu du second élément (donc du fils)
+                    $condition .= $this->_operatorValue($tabOperator[$i], "<div>" . $tabValue[$i] . "</div>"); //Je rajoute le <div> qui est dans la BDD
                 }
             }
 
@@ -229,11 +250,11 @@ class RequetesController extends AbstractController
             $jointures .= $this->_faireJointure($typeDonnee, $tabTable, 0);
 
             //Pour le select;
-            $select = "SELECT ";
+            $select = "SELECT DISTINCT $typeDonnee.id as selectid, ";
             $select .= $this->_faireSelect($tabOrdreAffiche);
 
             //Group by
-            $groupBy = "GROUP BY ";
+            $groupBy = "GROUP BY selectid, ";
             for ($i = 0; $i < sizeof($tabOrdreAffiche); $i++) {
                 $groupBy .= "select" . $i;
 
@@ -244,14 +265,17 @@ class RequetesController extends AbstractController
                 }
             }
 
+            $orderBy = "ORDER BY $typeDonnee.id";
+
             $sql = "";
             $sql .= $select;
             $sql .= $from;
             $sql .= $jointures;
             $sql .= $condition;
             $sql .= $groupBy;
+            $sql .= $orderBy;
 
-            // return new JsonResponse($sql);
+            //  return new JsonResponse($sql);
 
             //Requête
             $conn = $this->getDoctrine()->getEntityManager()->getConnection();
@@ -260,15 +284,16 @@ class RequetesController extends AbstractController
             $stmt->execute();
 
             //Traitement de la requête
-            $tmp2 = [];
+            $objectResponse = [];
             $i = 0;
             while ($data = $stmt->fetch()) {
                 for ($j = 0; $j < sizeof($tabAffiche); $j++) { //Boucle pour récupérer tous les champs SELECT
-                    $tmp2[$i]["select" . $j] = strip_tags($data["select" . $j]); //Affectation des champs à une variable
+                    $objectResponse[$i]["select" . $j] = strip_tags($data["select" . $j]); //Affectation des champs à une variable
+                    $objectResponse[$i]["selectid"] = strip_tags($data["selectid"]); //Je récupère l'id
                 }
                 $i++;
             }
-            return new JsonResponse($tmp2);
+            return new JsonResponse($objectResponse);
         }
     }
 
@@ -276,8 +301,12 @@ class RequetesController extends AbstractController
     {
         $select = "";
         for ($i = 0; $i < sizeof($tab); $i++) {
+            if(strcmp(substr($tab[$i]["table"],0,6),"agent_") == 0)//Pour le localisation_agent
+            { 
+                $tab[$i]["table"] = substr($tab[$i]["table"],6);
+            }
             if ($tab[$i] != "NULL" && $tab[$i]["nomBDD"] != "NULL") { //Si ce n'est pas un cas spécial de listeNull
-                $select .= $tab[$i]["table"] . "." . $tab[$i]["nomBDD"] . " as select" . $i; //Ex : "attestation.id as 0"
+                $select .= $tab[$i]["table"] . "." . $tab[$i]["nomBDD"] . " as select" . $i; //Ex : "attestation.id as select0"
                 if ($i + 1 != sizeof($tab)) { //Pour ne pas mettre la virgule au dernier
                     $select .= ", ";
                 } else {
@@ -294,24 +323,71 @@ class RequetesController extends AbstractController
         $tabVerif[] = $typeDonnee;
 
         for ($i = 0; $i < sizeof($tabTable); $i++) {
+ 
             switch ($tabTable[$i]) {
+ 
+                    //Cas spéciaux :
+                case "agent_" . substr($tabTable[$i],6): //Si c'est localisation_agent
+                    $tabVerif[] = "localisation l1";
+                    $tabVerif[] = "agent";
+                    if(strcmp(substr($tabTable[$i],6),"q_topographie") == 0 || strcmp(substr($tabTable[$i],6),"q_fonction") == 0 ){ //Pour les périphériques avec d'autres tables
+                        $tabVerif[] = "localisation_" . substr($tabTable[$i],6); //Ex : localisation_q_topographie
+                        $tabVerif[] = substr($tabTable[$i],6); //Ex : q_topographie
+                    }
+                    else if (strcmp(substr($tabTable[$i],6),"localisation") != 0){ //Encore les périphériques
+                        $tabVerif[] = substr($tabTable[$i],6); //Ex : sous_region
+                    } 
+                    break;
 
+                case "theonymes_implicites":
+                    $tabVerif[] = "element";
+                    $tabVerif[] = "element e1";
+                    if($typeDonnee == "attestation" || $typeDonnee == "source"){
+                        $tabVerif[] = "contient_element";
+                    }
+                    break;
+
+                    //Attestation
                 case "categorie_materiel":
-                    $tabVerif[] =  "materiel";
+                    if ($typeDonnee == "element") {
+                        $tabVerif[] = "contient_element";
+                    }
+                    $tabVerif[] = "materiel";
                     $tabVerif[] = "attestation_materiel";
+                    $tabVerif[] = "attestation";
                     break;
 
                 case "materiel":
+                    if ($typeDonnee == "element") {
+                        $tabVerif[] = "contient_element";
+                    }
                     $tabVerif[] = "attestation_materiel";
+                    $tabVerif[] = "attestation";
                     break;
 
                 case "occasion":
+                    if ($typeDonnee == "element") {
+                        $tabVerif[] = "contient_element";
+                    }
                     $tabVerif[] = "attestation_occasion";
+                    $tabVerif[] = "attestation";
                     break;
 
                 case "categorie_occasion":
+                    if ($typeDonnee == "element") {
+                        $tabVerif[] = "contient_element";
+                    }
                     $tabVerif[] = "occasion";
                     $tabVerif[] = "attestation_occasion";
+                    $tabVerif[] = "attestation";
+                    break;
+
+                case "etat_fiche":
+                case "attestation_occasion":
+                    if ($typeDonnee == "element") {
+                        $tabVerif[] = "contient_element";
+                    }
+                    $tabVerif[] = "attestation";
                     break;
 
                     //Pour tous les périphériques de Localisation
@@ -326,6 +402,7 @@ class RequetesController extends AbstractController
                     $tabVerif[] = "localisation_" . $tabTable[$i];
                     break;
 
+                    //Pour agent
                 case "nature":
                 case "genre":
                 case "agentivite":
@@ -366,26 +443,18 @@ class RequetesController extends AbstractController
                     }
                     break;
 
-                case "element_biblio":
-                    if ($typeDonnee == "attestation" || $typeDonnee == "source") { //Quand je veux passer de attestation à un périphérique de element ou de source à élément
-                        $tabVerif[] = "element";
-                        $tabVerif[] = "contient_element";
-                        $tabVerif[] = "attestation"; //Si c'est la source, pour la jointure source -> attestation -> element
-                    }
-                    break;
-
                 case "element":
                     if ($typeDonnee == "attestation" || $typeDonnee == "source") { //Quand je veux passer de attestation à element
                         $tabVerif[] = "contient_element";
                         $tabVerif[] = "attestation"; //Si c'est la source, pour la jointure source -> attestation -> element
                     }
                     break;
-                
+
                 case "pratique":
                     $tabVerif[] = "attestation_pratique";
                     break;
 
-                //Source
+                    //Source
                 case "materiau":
                 case "categorie_materiau":
                 case "type_source":
@@ -393,27 +462,51 @@ class RequetesController extends AbstractController
                 case "categorie_support":
                 case "categorie_source":
                 case "titre":
-                    if($typeDonnee == "element"){
+                    if ($typeDonnee == "element") {
                         $tabVerif[] = "contient_element";
                         $tabVerif[] = "attestation";
-                        $tabVerif[] = "source";
                     }
+                    $tabVerif[] = "source";
                     break;
 
                 case "langue":
                 case "auteur":
                     $tabVerif[] = "source_" . $tabTable[$i];
                     $tabVerif[] = "source";
-                    if($typeDonnee == "element"){
+                    if ($typeDonnee == "element") {
                         $tabVerif[] = "contient_element";
                         $tabVerif[] = "attestation";
-                        $tabVerif[] = "source";
+                    }
+                    $tabVerif[] = "source";
+                    break;
+
+                    //Biblio
+                case "biblio":
+                    if($typeDonnee == "source"){
+                        $tabVerif[] = "source_biblio";
+                    }
+                    if($typeDonnee == "element"){
+                        $tabVerif[] = "element_biblio";
                     }
                     break;
-                
+
+                case "element_biblio":
+                    if($typeDonnee == "source"){
+                        $tabVerif[] = "source_biblio";
+                        $tabVerif[] = "biblio";
+                    }
+                    break;
+
+                case "source_biblio":
+                    if($typeDonnee == "element"){
+                        $tabVerif[] = "element_biblio";
+                        $tabVerif[] = "biblio";
+                    }
+                    break;
+                    
             } //End switch
 
-            if (!in_array($tabTable[$i], $tabVerif) && $tabTable[$i] != "NULL") { //Pour le NULL : les cas spéciaux des listeNull
+            if (!in_array($tabTable[$i], $tabVerif) && $tabTable[$i] != "NULL" && strcmp(substr($tabTable[$i],0,6),"agent_") != 0) { //Pour le NULL : les cas spéciaux des listeNull et si c'est pas un localisation_agent
                 $tabVerif[] = $tabTable[$i];
             }
         }
@@ -435,10 +528,29 @@ class RequetesController extends AbstractController
         $tabVerif = array(); //Même utilité que pour le FROM
         $tabElement = array("theonymes_implicites", "contient_element", "categorie_element", "contient_element", "genre_element", "nombre_element", "element_biblio");
         $tabAttestation = array("etat_fiche", "categorie_occasion", "occasion", "categorie_materiel", "materiel", "agent", "nature", "genre", "agentivite", "statut_affiche");
-        $tabSource = array("materiau","categorie_materiau","type_source","type_support","categorie_support","categorie_source","langue","titre","auteur");
+        $tabSource = array("materiau", "categorie_materiau", "type_source", "type_support", "categorie_support", "categorie_source", "langue", "titre", "auteur");
 
         foreach ($tabTable as $table) {
             switch ($table) { //Tout ce qui est générique
+
+                case "agent_" . substr($table,6): //Pour le localisation_agent
+                    $tabVerif[] = "l1.id = agent.localisation_id";
+                    $tabVerif[] = "attestation.id = agent.id_attestation";
+                    if(strcmp(substr($table,6),"q_topographie") == 0 || strcmp(substr($table,6),"q_fonction") == 0 ){ //Pour les périphériques avec d'autres tables
+                        $tabVerif[] = "localisation_" . substr($table,6) . ".id_localisation = l1.id";
+                        $tabVerif[] = "localisation_" . substr($table,6) . ".id_" . substr($table,6) . " = " . substr($table,6) . ".id";
+                    }
+                    else if (strcmp(substr($table,6),"localisation") != 0){ //Encore les périphériques
+                        if(strcmp(substr($table,6),"entite_politique") == 0) //Pour entite_politique car il a un traitement différent
+                        {
+                            $tabVerif[] = "l1.entite_politique = entite_politique.id";
+                        }
+                        else //Le reste
+                        { 
+                            $tabVerif[] = substr($table,6) . ".id = l1." . substr($table,6) . "_id"; //Ex : sous_region.id = localisation.sous_region_id
+                        }
+                    }
+                    break;
 
                 case "localisation": //Pour la table localisation
                     if ($typeDonnee == "source") { //Si c'est sur la source, c'est un traitement différent
@@ -547,6 +659,10 @@ class RequetesController extends AbstractController
                                     $tabVerif[] = "attestation_pratique.id_pratique = pratique.id";
                                     break;
 
+                                case "formule":
+                                    $tabVerif[] = "attestation.id = formule.attestation_id";
+                                    break;
+
                                 case "source":
                                     $tabVerif[] = "attestation.id_source = source.id";
                                     break;
@@ -612,6 +728,24 @@ class RequetesController extends AbstractController
                                     $tabVerif[] = "attestation.id_source = source.id";
                                     break;
 
+                                case "source_biblio":
+                                    $tabVerif[] = "source.id = source_biblio.id_source";
+                                    break;
+
+                                case "biblio":
+                                    $tmpTypeDonnee = "source";
+                                    $tabFaireJointureTmp[0] = "source_biblio";
+                                    $tabVerif = array_merge($tabVerif, $this->_faireJointure($typeDonnee, $tabFaireJointureTmp, 1));
+                                    $tabVerif[] = "source_biblio.id_biblio = biblio.id";
+                                    break;
+
+                                case "element_biblio":
+                                    $tmpTypeDonnee = "source";
+                                    $tabFaireJointureTmp[0] = "biblio";
+                                    $tabVerif = array_merge($tabVerif, $this->_faireJointure($typeDonnee, $tabFaireJointureTmp, 1));
+                                    $tabVerif[] = "biblio.id = element_biblio.id_biblio";
+                                    break;
+
                                 default:
                                     if (in_array($table, $tabAttestation)) {
                                         $tmpTypeDonnee = "attestation";
@@ -627,7 +761,6 @@ class RequetesController extends AbstractController
                                     $tabFaireJointureTmp[0] = array($table);
                                     $tabVerif = array_merge($tabVerif, $this->_faireJointure($tmpTypeDonnee, $tabFaireJointureTmp[0], 1)); //Je fais la jointure avec les deux autres
                                     break;
-                                    
                             }
                             break;
 
@@ -637,9 +770,9 @@ class RequetesController extends AbstractController
                                     break;
 
                                 case "theonymes_implicites":
-                                    // SELECT * FROM element e1, element e2, theonymes_implicites t WHERE e1.id = t.id_parent AND e2.id = t.id_enfant 	and e2.etat_absolu like '<div>eeeeezrzefššsd</div>'
-                                    //Penser à le rajouter dans le $from avec le  if($typeDonnee == "attestation"){ if(!in_array("element",$tabTable)){ $from .= "element, ";   } break;
-
+                                    $tabVerif[] = "e1.id = theonymes_implicites.id_parent AND element.id = theonymes_implicites.id_enfant";
+                                    break;
+                                    
                                 case "contient_element":
                                     $tabVerif[] = "element.id = contient_element.id_element";
                                     break;
@@ -675,6 +808,24 @@ class RequetesController extends AbstractController
                                     $tabVerif = array_merge($tabVerif, $this->_faireJointure($typeDonnee, $tabFaireJointureTmp, 1)); //On fait la jointure sur attestation
                                     $tabFaireJointureTmp[0] = "source";
                                     $tabVerif = array_merge($tabVerif, $this->_faireJointure("attestation", $tabFaireJointureTmp, 1)); //On fait la liaison entre attestation et source
+                                    break;
+
+                                case "element_biblio" :
+                                    $tabVerif[] = "element.id = element_biblio.id_element";
+                                    break;
+
+                                case "biblio":
+                                    $tmpTypeDonnee = "element";
+                                    $tabFaireJointureTmp[0] = "element_biblio";
+                                    $tabVerif = array_merge($tabVerif, $this->_faireJointure($typeDonnee, $tabFaireJointureTmp, 1));
+                                    $tabVerif[] = "element_biblio.id_biblio = biblio.id";
+                                    break;
+
+                                case "source_biblio":
+                                    $tmpTypeDonnee = "element";
+                                    $tabFaireJointureTmp[0] = "biblio";
+                                    $tabVerif = array_merge($tabVerif, $this->_faireJointure($typeDonnee, $tabFaireJointureTmp, 1));
+                                    $tabVerif[] = "biblio.id = source_biblio.id_biblio";
                                     break;
 
                                 default:
@@ -725,15 +876,15 @@ class RequetesController extends AbstractController
 
                 //String
             case "LIKE %var%":
-                $operator = "LIKE '%" . $value . "%' ";
+                $operator = "ILIKE '%" . $value . "%' ";
                 break;
 
             case "NOT LIKE %var%":
-                $operator = "NOT LIKE '%" . $value . "%' ";
+                $operator = "NOT ILIKE '%" . $value . "%' ";
                 break;
 
             case "LIKE var%":
-                $operator = "LIKE '" . $value . "%' ";
+                $operator = "ILIKE '" . $value . "%' ";
                 break;
 
             case "LIKE %var":
@@ -824,24 +975,21 @@ class RequetesController extends AbstractController
                 break;
 
             case "theonymes_implicites":
-                $responseArrayTmp = array();
+                $tabEtatAbsolu = array();
+                $i = 0;
                 foreach ($rows as $row) { //Pour chaque élément
                     $elem = $row->getTheonymesImplicites(); //Je get le théonyme d'un des élement
 
                     if (!is_null($elem[0])) //Si l'élément a des théonymes
                     {
-                        $tabEtatAbsolu = array();
-                        $i = 0;
-
                         foreach ($elem as $theo) { //Pour chaque théonyme contenu dans l'élement courrant
-                            $tabEtatAbsolu[$i] = strip_tags($theo->getEtatAbsolu()); //On le récupère en enlevant les balises
+                            $tabEtatAbsolu[$i] = $theo->getEtatAbsolu(); //On le récupère
                             $i++;
                         }
-                        $responseArrayTmp = array_merge($responseArrayTmp, $tabEtatAbsolu); //Fusion des deux tableaux
                     }
-                    $responseArrayTmp = array_unique($responseArrayTmp, SORT_REGULAR); //Suppression des doublons
                 }
-                foreach ($responseArrayTmp as $row) { //Formattage du tableau pour qu'il corresponde au traitement en JS
+                $tabEtatAbsolu = array_unique($tabEtatAbsolu, SORT_REGULAR); //Suppression des doublons
+                foreach ($tabEtatAbsolu as $row) { //Formattage du tableau pour qu'il corresponde au traitement en JS
                     $responseArray[] = array(
                         "nom" => $row
                     );

@@ -402,9 +402,9 @@ mails:
 requetes:
     title: "Interface de requête"
     list: "Requêtes"
-    selection_vide: "-- Veuillez selectionner --"
+    selection_vide: "-- Veuillez sélectionner --"
     agent_name: "Agent"
-    type_donnee: "Type de donnée"
+    type_donnee: "Type de données"
     critere: "Critères"
     champs_afficher: "Champs à afficher"
     et: "Et"
@@ -429,3 +429,4 @@ requetes:
         plus_petit: "Plus petit que"
         egal_a: "Égal à"
     localisation_agent: "Localisation de l'agent"
+    entite_politique_iacp: "Entité politique (N°IACP)"

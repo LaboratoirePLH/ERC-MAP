@@ -428,3 +428,4 @@ requetes:
         plus_petit: "Smaller than"
         egal_a: "Is equal to"
     localisation_agent: "Agent localisation"
+    entite_politique_iacp: "Political Entity (IACP number)"

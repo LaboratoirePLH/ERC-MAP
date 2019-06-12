@@ -50,6 +50,9 @@
     <br/> <br/>
     {{ block('buttonGeneric', 'requetes/partial.html.twig')}} 
 
+    <div id="infoTableauResultat">
+    </div>
+
     <div id="tableauResultat">
         <table class="table table-hover table-striped text-center table-bordered">
         <thead>
@@ -92,7 +95,7 @@
         $(".select_div").first().find(".boutonsEtOu").css("visibility","hidden");
     }
 
-    function remettreBoutonEtOu(currentElement){
+    function remettreBoutonEtOu(){
         $(".select_div").last().find(".boutonsEtOu").css("visibility","visible");
     }
 
@@ -253,7 +256,7 @@
         });
  
         //Vérification qu'il n'y ait pas deux ordres différents
-        var tabTmpOrdreCheck = [999999]; //Déclaration du tableau
+        var tabTmpOrdreCheck = [999999999]; //Déclaration du tableau
         $(".select_box_champAffiche_3").each(function(key){
             if(tabTmpOrdreCheck.indexOf($(this).children("option:selected").val()) != -1){ //Je récupère l'ordre mis, et s'il est dans le tableau j'affiche l'erreur
                 $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">Vous avez deux ou plusieurs ordres identiques.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
@@ -297,6 +300,7 @@
         tabChampAffiche = new Object();
         var i =0;
 
+        $("#infoTableauResultat").empty();
         $("#tableauResultat").empty(); //Je vide la div du tableau
         $("#tableauResultat").append(tableauResultat); //Je remet un tableau "vide"
 
@@ -315,19 +319,26 @@
             i++;
         });
 
-        $("#libelleTableau").append("<th scope=\"col\">#</th>"); //Pour l'esthétique
+        $("#libelleTableau").append("<th scope=\"col\">ID</th>"); //Pour l'esthétique
         for(var j = 0; j < i; j++){ //Je met les libellés dans le tableau
             $("#libelleTableau").append("<th scope=\"col\">" + tabChampAffiche[j]["nom"] + "</th>");
         }
         
+        var tabIdUnique = [99999999999]; //Tableau pour savoir le nombre d'id unique
+        
         for(var j = 0; j < rep.length; j++){
             $("#tbodyTableau").append("<tr class=\"odd\" id=\"td" + j + "\"></tr>");
-            $("#td" + j).append("<th scope=\"row\">" + j + "</th>"); //Je met le numéro correspondant à l'occurence (Genre 4ème ligne)
+            $("#td" + j).append("<th scope=\"row\">" + rep[j]["selectid"] + "</th>"); //Je met le numéro correspondant à l'occurence (Genre 4ème ligne)
+            if(!tabIdUnique.includes(rep[j]["selectid"])){ //S'il n'est pas dans le tableau je l'ajoute
+                tabIdUnique.push(rep[j]["selectid"]);
+            }
             for(var k = 0; k < i; k++){ //Parcours du tabChampAffiche : Pour chaque rep, je récupère toutes ses données
                 var donnee = rep[j]["select"+k];
                 $("#td" + j).append("<td>" + donnee + "</td>"); //Données que j'insère dans le tableau
             }
         }
+        $("#infoTableauResultat").append("<span><p> Nombre de résultats : " + rep.length + " (" + (tabIdUnique.length -1) + " id uniques)</p></span>"); //-1 car il y a le 99999999
+        //$("#infoTableauResultat").append("<span><p> Nombre d'id unique : " + (tabIdUnique.length -1) + "</p></span>"); 
     }
 
     function sauvegarderRequete(){
@@ -450,7 +461,7 @@
     }
 
     function chargerRequete(){
-        var idReq = 78;
+        var idReq = 80;
          $.ajax({
                     url:'{{path('requetes_charger_requete')}}',
                     type: "POST",
@@ -527,8 +538,10 @@
                 else if(valeur =="2") //Si c'est une liste
                 {
                     $(this).find(".select_box4").find(`[selected="selected"]`).removeAttr("selected");
-                // alert("Votre requête est chargée"); //Je suis obligé de mettre un alert pour laisser le temps à la page de process
-                    $(this).find(".select_box4").find(`[label="`+tabCorps[1][index]["box4"]+`"]`).attr("selected","selected"); //Problème : Ajax est trop long donc ça le fait avant
+                    var me = $(this);
+                    $(this).find(".select_box4").on('dataloaded', function(){
+                        me.find(".select_box4").find(`[label="`+tabCorps[1][index]["box4"]+`"]`).attr("selected","selected");
+                    })
                 }
 
                 //Les bouttons ET/OU
@@ -579,6 +592,12 @@
                 $(this).find(".select_box_champAffiche_3").css("visibility","visible");
             });
         }
+    }
+
+    function dupliquer(currentElement){
+        $(currentElement).parent().clone().appendTo("#liste_critere");
+        $("#liste_critere").append("<br/>");
+        remettreBoutonEtOu();
     }
 
     function ajouterFiltre() {
@@ -638,19 +657,19 @@
             switch(typeDonnee){
                 case "Attestation":
                         $(selectChampAffiche1).append("<option value=\"agent\">{{ 'requetes.agent_name' | trans }}</option>");
-                        $(selectChampAffiche1).append("<option value=\"biblio\">{{ 'nav.bibliography' | trans }}</option>");
                         $(selectChampAffiche1).append("<option value=\"datation\">{{ 'source.sections.datation' | trans }}</option>");
-                        $(selectChampAffiche1).append(" <option value=\"localisation_agent\">{{ 'requetes.localisation_agent' | trans }}</option>"); //Ce qui est commun aux trois
+                        $(selectChampAffiche1).append(" <option value=\"localisation_agent\">{{ 'requetes.localisation_agent' | trans }}</option>");
                     break;
        
                 case "Element":
                         $(selectChampAffiche1).append("<option value=\"biblio\">{{ 'nav.bibliography' | trans }}</option>");
                     break;
                 case "Source":
+                    $(selectChampAffiche1).append("<option value=\"biblio\">{{ 'nav.bibliography' | trans }}</option>");
                     $(selectChampAffiche1).append("<option value=\"datation\">{{ 'source.sections.datation' | trans }}</option>");
                     break;
             }
-            $(selectChampAffiche1).append(" <option value=\"localisation\">{{ 'source.sections.localisation' | trans }}</option>"); //Ce qui est commun aux trois
+            $(selectChampAffiche1).append("<option value=\"localisation\">{{ 'source.sections.localisation' | trans }}</option>"); //Ce qui est commun aux trois
             $(selectChampAffiche1).append("<option value=\"source\">{{ 'source.name' | trans }}</option>"); //Ce qui est commun aux trois
             champAffiche = $("#liste_affiche").html();
     }
@@ -725,8 +744,7 @@
                 }
                 $(this).css("visibility","visible"); 
             }
-    });
-        
+        });
     }
 
     function secondeBoxChampAffiche(currentElement){
@@ -859,8 +877,9 @@
                     success: function(rows)
                     {
                         $.each(rows, function (key, row) {
-                                $(selectBox4).append("<option label=\""+key+"\">" + row.nom + "</option>"); //On met les options avec le nom 
+                                $(selectBox4).append("<option label=\""+key+"\">" + row.nom + "</option>"); //On met les options avec le nom
                         });
+                        $(selectBox4).trigger('dataloaded');
                     },
                     error: function (err)
                     {

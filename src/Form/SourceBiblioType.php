@@ -44,18 +44,6 @@ class SourceBiblioType extends AbstractType
                 'label'    => 'source_biblio.fields.reference_source',
                 'required' => false
             ])
-            ->add('commentaireFr', CKEditorType::class, array(
-                'config_name' => 'text_styling_only',
-                'label'       => 'generic.fields.commentaire_fr',
-                'attr'        => ['rows' => 2],
-                'required'    => false
-            ))
-            ->add('commentaireEn', CKEditorType::class, array(
-                'config_name' => 'text_styling_only',
-                'label'       => 'generic.fields.commentaire_en',
-                'attr'        => ['rows' => 2],
-                'required'    => false
-            ))
         ;
     }
 

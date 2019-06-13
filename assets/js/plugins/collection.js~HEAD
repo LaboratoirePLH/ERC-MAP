@@ -28,6 +28,7 @@
             confirmationModal: false,
             inline: false,
             addLink: null,
+            autoAdd: true,
             persistedClass: "collection-persisted-item",
         }, options);
 
@@ -158,7 +159,9 @@
                 });
 
             if (index == 0) {
-                addEntry(container);
+                if (settings.autoAdd === true) {
+                    addEntry(container);
+                }
             } else {
                 container.children('.form-group').each(function (index) {
                     $(this).addClass(settings.persistedClass);

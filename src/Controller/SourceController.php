@@ -2,17 +2,17 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Translation\TranslatorInterface;
-
 use App\Entity\CategorieSource;
 use App\Entity\EtatFiche;
 use App\Entity\Source;
 use App\Entity\SourceBiblio;
 use App\Entity\VerrouEntite;
 use App\Form\SourceType;
+
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class SourceController extends AbstractController
 {
@@ -33,7 +33,7 @@ class SourceController extends AbstractController
     {
         $sources = $this->getDoctrine()
                         ->getRepository(Source::class)
-                        ->getSimpleList();
+                        ->findAll();
 
         return $this->render('source/index.html.twig', [
             'controller_name' => 'SourceController',
@@ -131,10 +131,10 @@ class SourceController extends AbstractController
     /**
      * @Route("/source/{id}", name="source_show")
      */
-    public function show($id){
+    public function show($id, Request $request, TranslatorInterface $translator){
         $source = $this->getDoctrine()
                        ->getRepository(Source::class)
-                       ->getRecord($id, true);
+                       ->find($id);
         if(is_null($source)){
             $request->getSession()->getFlashBag()->add(
                 'error',
@@ -172,16 +172,22 @@ class SourceController extends AbstractController
             );
             return $this->redirectToRoute('source_list');
         }
-        $verrou = $this->getDoctrine()->getRepository(VerrouEntite::class)->create($source, $user, $this->dureeVerrou);
-        if(!$verrou->isWritable($user))
+        if(!$this->isGranted('ROLE_MODERATOR') && $source->getCreateur()->getId() !== $user->getId()){
+            $request->getSession()->getFlashBag()->add('error', 'generic.messages.error_unauthorized');
+            return $this->redirectToRoute('source_list');
+        }
+        if($source->getVerrou() === null){
+            $verrou = $this->getDoctrine()->getRepository(VerrouEntite::class)->create($source, $user, $this->dureeVerrou);
+        }
+        else if(!$source->getVerrou()->isWritable($user))
         {
             $request->getSession()->getFlashBag()->add(
                 'error',
                 $translator->trans('generic.messages.error_locked', [
                     '%type%' => $translator->trans('source.name'),
                     '%id%' => $id,
-                    '%user%' => $verrou->getCreateur()->getPrenomNom(),
-                    '%time%' => $verrou->getDateFin()->format(
+                    '%user%' => $source->getVerrou()->getCreateur()->getPrenomNom(),
+                    '%time%' => $source->getVerrou()->getDateFin()->format(
                         $translator->trans('locale_datetime')
                     )
                 ])
@@ -245,7 +251,7 @@ class SourceController extends AbstractController
             if($source->getEstDatee() !== true){
                 $source->setDatation(null);
             }
-            $this->getDoctrine()->getRepository(VerrouEntite::class)->remove($verrou);
+            $this->getDoctrine()->getRepository(VerrouEntite::class)->remove($source->getVerrou());
             $em->flush();
 
             // Message de confirmation
@@ -290,42 +296,42 @@ class SourceController extends AbstractController
      */
     public function delete($id, Request $request, TranslatorInterface $translator){
         $submittedToken = $request->request->get('token');
+        $user = $this->get('security.token_storage')->getToken()->getUser();
 
         if ($this->isCsrfTokenValid('delete_source_'.$id, $submittedToken)) {
             $user = $this->get('security.token_storage')->getToken()->getUser();
             $repository = $this->getDoctrine()->getRepository(Source::class);
             $source = $repository->find($id);
             if($source instanceof Source){
-                $verrou = $this->getDoctrine()->getRepository(VerrouEntite::class)->fetch($source);
-                if(!$verrou || !$verrou->isWritable($user))
-                {
-                    $request->getSession()->getFlashBag()->add(
-                        'error',
-                        $translator->trans('generic.messages.error_locked', [
-                            '%type%' => $translator->trans('source.name'),
-                            '%id%' => $id,
-                            '%user%' => $verrou->getCreateur()->getPrenomNom(),
-                            '%time%' => $verrou->getDateFin()->format(
-                                $translator->trans('locale_datetime')
-                            )
-                        ])
-                    );
-                    return $this->redirectToRoute('source_list');
+                if($this->isGranted('ROLE_ADMIN')){
+                    $verrou = $source->getVerrou();
+                    if(!$verrou || $verrou->isWritable($user)) {
+                        $em = $this->getDoctrine()->getManager();
+                        $em->remove($source);
+                        $em->flush();
+                        $request->getSession()->getFlashBag()->add('success', 'source.messages.deleted');
+                    } else {
+                        $request->getSession()->getFlashBag()->add(
+                            'error',
+                            $translator->trans('generic.messages.error_locked', [
+                                '%type%' => $translator->trans('source.name'),
+                                '%id%' => $id,
+                                '%user%' => $verrou->getCreateur()->getPrenomNom(),
+                                '%time%' => $verrou->getDateFin()->format(
+                                    $translator->trans('locale_datetime')
+                                )
+                            ])
+                        );
+                    }
+                } else {
+                    $request->getSession()->getFlashBag()->add('error', 'generic.messages.error_unauthorized');
                 }
-
-                $em = $this->getDoctrine()->getManager();
-                $em->remove($source);
-                $em->flush();
-
-                $request->getSession()->getFlashBag()->add('success', 'source.messages.deleted');
-                return $this->redirectToRoute('source_list');
             } else {
                 $request->getSession()->getFlashBag()->add('error', 'generic.messages.deletion_failed_missing');
-                return $this->redirectToRoute('source_list');
             }
         } else {
             $request->getSession()->getFlashBag()->add('error', 'generic.messages.deletion_failed_csrf');
-            return $this->redirectToRoute('source_list');
         }
+        return $this->redirectToRoute('source_list');
     }
 }

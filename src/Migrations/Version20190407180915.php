@@ -31,7 +31,6 @@ final class Version20190407180915 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
-        $this->addSql('CREATE SCHEMA public');
         $this->addSql('ALTER TABLE contient_element DROP CONSTRAINT contient_element_pkey');
         $this->addSql('ALTER TABLE contient_element ADD PRIMARY KEY (id_attestation, id_element)');
     }

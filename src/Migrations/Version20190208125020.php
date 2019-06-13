@@ -133,7 +133,6 @@ final class Version20190208125020 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
-        $this->addSql('CREATE SCHEMA public');
         $this->addSql('ALTER TABLE localisation DROP CONSTRAINT FK_BFD3CE8F5FF94818');
         $this->addSql('ALTER TABLE sous_region DROP CONSTRAINT FK_DF7D03815FF94818');
         $this->addSql('ALTER TABLE biblio DROP CONSTRAINT FK_D90CBB252B41ABF4');

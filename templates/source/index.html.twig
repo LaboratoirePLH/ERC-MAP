@@ -26,7 +26,7 @@
                 {{ 'source.fields.categorie_source'|trans }}
             </th>
             <th scope="col">
-                {{ 'source.fields.type_source'|trans }}
+                {{ 'source.fields.types_source'|trans }}
             </th>
             <th scope="col">
                 {{ 'source.fields.langues'|trans }}
@@ -61,9 +61,9 @@
         {% for source in sources %}
         <tr>
             <th scope="row" class="px-0" data-order="{{ source.id }}">
-                {# <a href="{{ url('source_show', {'id': source.id}) }}"> #}
-                {{ source.projet is not empty ? source.projet.nom(locale) : "" }} #{{ source.id }}
-                {# </a> #}
+                <a href="{{ url('source_show', {'id': source.id}) }}">
+                    {{ source.projet is not empty ? source.projet.nom(locale) : "" }} #{{ source.id }}
+                </a>
                 <br />
                 <small>{{ 'generic.fields.version'|trans }}&nbsp;{{ source.version|default("?") }}</small>
             </th>
@@ -71,7 +71,7 @@
                 {{ source.categorieSource is not null ? source.categorieSource.nom(locale) : "" }}
             </td>
             <td>
-                {{ source.typeSource is not null ? source.typeSource.nom(locale) : "" }}
+                {{ source.concatTypeSources(locale) }}
             </td>
             <td>
                 {{ source.concatLangues(locale) }}
@@ -113,10 +113,24 @@
             <td class="py-0 px-1">
                 {% if action == 'select' %}
                 {% if source.verrou != null %}
+<<<<<<< HEAD
                 <a href="#" class="btn btn-sm btn-block my-1 btn-danger disabled">
                     <i class="fas fa-fw fa-lock"></i>
                     {{ 'generic.locked'|trans }}
                 </a>
+=======
+                {% set error = "generic.messages.error_locked"|trans({
+                    '%type%': 'source.name'|trans,
+                    '%id%'  : source.id,
+                    '%user%': source.verrou.createur.prenomNom,
+                    '%time%': source.verrou.dateFin.format('locale_datetime'|trans)
+                }) %}
+                <button type="button" class="btn btn-sm btn-block my-1 btn-danger disabled" data-toggle="tooltip"
+                    data-placement="left" title="{{ error }}">
+                    <i class="fas fa-fw fa-lock"></i>
+                    {{ 'generic.locked'|trans }}
+                </button>
+>>>>>>> b80eec144b0efb5ee9b73fee1666252f590354f7
                 {% else %}
                 <a href="{{ url(selectionRoute, {'source_id': source.id}) }}"
                     class="btn btn-sm btn-block my-1 btn-success">
@@ -127,18 +141,33 @@
                 {% else %}
                 <a href="{{ url('attestation_source', {'source_id': source.id}) }}"
                     class="btn btn-sm btn-block my-1 btn-success">
-                    <i class="fas fa-fw fa-file-alt"></i>
+                    <i class="fas fa-fw {{ icons.attestation }}"></i>
                     {{ 'source.sections.attestations'|trans }}
                 </a>
-                <a href="{{ url('source_show', {'id': source.id}) }}"
-                    class="btn btn-sm btn-block my-1 btn-primary d-none">
+                <a href="{{ url('source_show', {'id': source.id}) }}" class="btn btn-sm btn-block my-1 btn-primary">
                     <i class="fas fa-fw fa-eye"></i>
                     {{ 'generic.view'|trans }}
                 </a>
+                {% if source.verrou != null and not source.verrou.isWritable(app.user) %}
+                {% set error = "generic.messages.error_locked"|trans({
+                    '%type%': 'source.name'|trans,
+                    '%id%' : source.id,
+                    '%user%': source.verrou.createur.prenomNom,
+                    '%time%': source.verrou.dateFin.format('locale_datetime'|trans)
+                }) %}
+                <button type="button" class="btn btn-sm btn-block my-1 btn-danger disabled" data-toggle="tooltip"
+                    data-placement="left" title="{{ error }}">
+                    <i class="fas fa-fw fa-lock"></i>
+                    {{ 'generic.locked'|trans }}
+                </button>
+                {% else %}
+                {% if is_granted('ROLE_MODERATOR') or source.createur.id == app.user.id %}
                 <a href="{{ url('source_edit', {'id': source.id}) }}" class="btn btn-sm btn-block my-1 btn-warning">
                     <i class="fas fa-fw fa-edit"></i>
                     {{ 'generic.edit'|trans }}
                 </a>
+                {% endif %}
+                {% if is_granted('ROLE_ADMIN') or source.createur.id == app.user.id %}
                 {% set uuid = 'confirm_deletion_' ~ source.id ~ '_' ~ random() %}
                 <button type="button" class="btn btn-sm btn-block my-1 btn-danger" id="delete-link-{{source.id}}"
                     data-toggle="modal" data-target="#{{ uuid }}">
@@ -146,12 +175,14 @@
                     {{ 'generic.delete'|trans }}
                 </button>
                 {% include "modals/confirmation.html.twig" with {
-                        'modalName': 'confirm_deletion',
-                        'uuid': uuid,
-                        'targetUrl': url('source_delete', {'id' : source.id}),
-                        'confirmationLabel': 'generic.delete',
-                        'csrfToken': 'delete_source_' ~ source.id,
-                    } %}
+                    'modalName': 'confirm_deletion',
+                    'uuid': uuid,
+                    'targetUrl': url('source_delete', {'id' : source.id}),
+                    'confirmationLabel': 'generic.delete',
+                    'csrfToken': 'delete_source_' ~ source.id,
+                } %}
+                {% endif %}
+                {% endif %}
                 {% endif %}
             </td>
         </tr>
@@ -234,10 +265,19 @@
             var me = this;
             $('input', this.footer()).on('keyup change', function () {
                 if (me.search() !== this.value) {
-                    me.search(this.value).draw();
+                    me.search(
+                        // Remove accented characters from search string
+                        jQuery.fn.DataTable.ext.type.search.string(this.value)
+                    ).draw();
                 }
             })
         });
+        $('input[type=search]').on('keyup change', function () {
+            dt.search(
+                // Remove accented characters from search string
+                jQuery.fn.DataTable.ext.type.search.string(this.value)
+            ).draw();
+        })
         dt.buttons().container().appendTo('.table-buttons');
         $('.clear-filter-button').on('click', function (e) {
             e.preventDefault();

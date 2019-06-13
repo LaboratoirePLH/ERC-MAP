@@ -22,6 +22,10 @@ Encore
     .addEntry('list_page', './assets/js/list_page.js')
     .addEntry('form_page', './assets/js/form_page.js')
     .addEntry('attestation_form_page', './assets/js/attestation_form_page.js')
+<<<<<<< HEAD
+=======
+    .addEntry('attestation_view_page', './assets/js/attestation_view_page.js')
+>>>>>>> b80eec144b0efb5ee9b73fee1666252f590354f7
     .addStyleEntry('fonts', './assets/css/fonts.css')
     .addStyleEntry('ckeditorcustom', './assets/css/ckeditorcustom.css')
 

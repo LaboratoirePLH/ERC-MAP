@@ -66,6 +66,14 @@ class Biblio extends AbstractEntity
     private $elementBiblios;
 
     /**
+     * @ORM\ManyToOne(targetEntity="VerrouEntite", inversedBy="biblios", fetch="EAGER")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="verrou_id", referencedColumnName="id", nullable=true, onDelete="SET NULL")
+     * })
+     */
+    private $verrou;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -193,6 +201,18 @@ class Biblio extends AbstractEntity
     public function __toString(): string
     {
         return $this->getAffichage();
+    }
+
+    public function getVerrou(): ?VerrouEntite
+    {
+        return $this->verrou;
+    }
+
+    public function setVerrou(?VerrouEntite $verrou): self
+    {
+        $this->verrou = $verrou;
+
+        return $this;
     }
 
 }

@@ -3,5 +3,12 @@
 {{ ('biblio.view')|trans({'%id%': bibliography.id}) }}
 {% endblock %}
 {% block content %}
-
+<hr />
+{% include "display/bibliography.html.twig" with {'bibliography': bibliography} %}
+<hr />
+<div class="row">
+    <div class="col-12 text-center">
+        <a href=" {{ url('bibliography_list') }}" class="btn btn-secondary">{{ 'generic.back'|trans }}</a>
+    </div>
+</div>
 {% endblock %}

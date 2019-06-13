@@ -65,7 +65,9 @@
     {% include 'partials/_sectiontitle.html.twig' with {
         'title'         : 'element.sections.references',
         'collapseTarget': '#section-references',
-        'expanded'      : true
+        'expanded'      : true,
+        'counterId'     : 'references',
+        'counter'       : (element.theonymesImplicites.count()|default(0)+element.theonymesConstruits.count()|default(0))
     } only %}
     <div class="collapse show" id="section-references">
         {{ form_row(form.aReference) }}
@@ -115,7 +117,9 @@
     {% include 'partials/_sectiontitle.html.twig' with {
         'title'         : 'element.sections.bibliographie',
         'collapseTarget': '#section-bibliographie',
-        'expanded'      : true
+        'expanded'      : true,
+        'counterId'     : 'biblio',
+        'counter'       : element.elementBiblios.count()|default(0)
     } only %}
     <div class="collapse show" id="section-bibliographie">
         {{ form_errors(form.elementBiblios) }}
@@ -173,15 +177,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
 
-        const chosenSettings = {
-            disable_search_threshold: 10,
-            no_results_text: "{{ 'autocomplete.no_matches'|trans }}",
-            allow_single_deselect: true,
-            group_search: false,
-            display_selected_options: false,
-            include_group_label_in_selected: true
-        };
-        const chosenSettingsMax3 = $.extend(chosenSettings, { max_selected_options: 3 });
+        const chosenSettingsMax3 = $.extend(CHOSEN_SETTINGS, { max_selected_options: 3 });
 
         $('form#element').watchFormDirty({
             message: "{{ 'modals.confirm_exit_dirty.body'|trans }}",
@@ -208,6 +204,12 @@
                         }
                     }
                 });
+            },
+            addListener: function (newEl, idx) {
+                $('#counter-biblio').text(parseInt($('#counter-biblio').text(), 10) + 1);
+            },
+            deleteListener: function (oldEl) {
+                $('#counter-biblio').text(parseInt($('#counter-biblio').text(), 10) - 1);
             }
         });
         $('div#element_traductions').collectionField({
@@ -230,6 +232,9 @@
             },
             inline: true,
             setupListener: function (el) {
+                $(el).find('.selectorcreate_selection option').each(function () {
+                    $(this).html(decodeEntities($(this).html()));
+                })
                 $(el).find('.element_traductions').after($('<div class="form-group row"><div class="col-sm-11 offset-sm-1"><a href="#" class="btn btn-primary collection-add-link"><i class="fa fa-plus"></i>&nbsp;{{ "element.add_traduction"| trans }}</a></div></div>'));
                 $(el).find('.element_traductions').collectionField({
                     addLink: $(el).find('.collection-add-link'),
@@ -242,8 +247,8 @@
                     inline: true
                 });
                 $(el).find('.selectorcreate').selectOrCreate();
-                $(el).find('select.autocomplete:not(.autocomplete-max-3)').chosen(chosenSettings);
-                $(el).find('select.autocomplete.autocomplete-max-3').chosen(chosenSettings);
+                $(el).find('select.autocomplete:not(.autocomplete-max-3)').chosen(CHOSEN_SETTINGS);
+                $(el).find('select.autocomplete.autocomplete-max-3').chosen(chosenSettingsMax3);
             },
             viewLinkGenerator: function (entry) {
                 const entryId = $(entry).find('.selectorcreate_selection').find('select').val();
@@ -252,6 +257,12 @@
                     return "";
                 }
                 return $('<a href="' + url.replace('-ID-', entryId) + '" class="btn btn-primary ml-2 mb-1" target="_blank" rel="noopener" title="{{ "attestation.view_element"|trans }}"><i class="fas fa-external-link-alt fa-fw"></i></a>');
+            },
+            addListener: function (newEl, idx) {
+                $('#counter-references').text(parseInt($('#counter-references').text(), 10) + 1);
+            },
+            deleteListener: function (oldEl) {
+                $('#counter-references').text(parseInt($('#counter-references').text(), 10) - 1);
             }
         });
         $('div#element_theonymesConstruits').collectionField({
@@ -264,6 +275,9 @@
             },
             inline: true,
             setupListener: function (el) {
+                $(el).find('.selectorcreate_selection option').each(function () {
+                    $(this).html(decodeEntities($(this).html()));
+                })
                 $(el).find('.element_traductions').after($('<div class="form-group row"><div class="col-sm-11 offset-sm-1"><a href="#" class="btn btn-primary collection-add-link"><i class="fa fa-plus"></i>&nbsp;{{ "element.add_traduction"| trans }}</a></div></div>'));
                 $(el).find('.element_traductions').collectionField({
                     addLink: $(el).find('.collection-add-link'),
@@ -276,8 +290,8 @@
                     inline: true
                 });
                 $(el).find('.selectorcreate').selectOrCreate();
-                $(el).find('select.autocomplete:not(.autocomplete-max-3)').chosen(chosenSettings);
-                $(el).find('select.autocomplete.autocomplete-max-3').chosen(chosenSettings);
+                $(el).find('select.autocomplete:not(.autocomplete-max-3)').chosen(CHOSEN_SETTINGS);
+                $(el).find('select.autocomplete.autocomplete-max-3').chosen(chosenSettingsMax3);
             },
             viewLinkGenerator: function (entry) {
                 const entryId = $(entry).find('.selectorcreate_selection').find('select').val();
@@ -286,12 +300,18 @@
                     return "";
                 }
                 return $('<a href="' + url.replace('-ID-', entryId) + '" class="btn btn-primary ml-2 mb-1" target="_blank" rel="noopener" title="{{ "attestation.view_element"|trans }}"><i class="fas fa-external-link-alt fa-fw"></i></a>');
+            },
+            addListener: function (newEl, idx) {
+                $('#counter-references').text(parseInt($('#counter-references').text(), 10) + 1);
+            },
+            deleteListener: function (oldEl) {
+                $('#counter-references').text(parseInt($('#counter-references').text(), 10) - 1);
             }
         });
 
 
-        $('select.autocomplete:not(.autocomplete-max-3)').chosen(chosenSettings);
-        $('select.autocomplete.autocomplete-max-3').chosen(chosenSettings);
+        $('select.autocomplete:not(.autocomplete-max-3)').chosen(CHOSEN_SETTINGS);
+        $('select.autocomplete.autocomplete-max-3').chosen(chosenSettingsMax3);
 
         $.fn.dependentFields({
             areference: {
@@ -303,6 +323,8 @@
                 targetFinder: function (name, main) { return $(main).parent().parent().parent().siblings().find('.dependent_field_' + name); }
             },
         });
+
+
 
         $('.localisation_form').localisationForm({
             errorMessage: "{{'generic.messages.error_unknown'|trans}}",

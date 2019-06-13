@@ -52,9 +52,9 @@
         {% for element in elements %}
         <tr>
             <th scope="row" class="px-0" data-order="{{ element.id }}">
-                {# <a href="{{ url('element_show', {'id': element.id}) }}"> #}
-                #{{ element.id }}
-                {# </a> #}
+                <a href="{{ url('element_show', {'id': element.id}) }}">
+                    #{{ element.id }}
+                </a>
                 <br />
                 <small>{{ 'generic.fields.version'|trans }}&nbsp;{{ element.version|default("?") }}</small>
             </th>
@@ -92,15 +92,30 @@
                 {{ element.traduireEn ? "languages.en"|trans : "" }}
             </td>
             <td class="py-0 px-1">
-                <a href="{{ url('element_show', {'id': element.id}) }}"
-                    class="btn btn-sm btn-block my-1 btn-primary d-none">
+                <a href="{{ url('element_show', {'id': element.id}) }}" class="btn btn-sm btn-block my-1 btn-primary">
                     <i class="fas fa-fw fa-eye"></i>
                     {{ 'generic.view'|trans }}
                 </a>
+                {% if element.verrou != null and not element.verrou.isWritable(app.user) %}
+                {% set error = "generic.messages.error_locked"|trans({
+                                    '%type%': 'element.name'|trans,
+                                    '%id%' : element.id,
+                                    '%user%': element.verrou.createur.prenomNom,
+                                    '%time%': element.verrou.dateFin.format('locale_datetime'|trans)
+                                }) %}
+                <button type="button" class="btn btn-sm btn-block my-1 btn-danger disabled" data-toggle="tooltip"
+                    data-placement="left" title="{{ error }}">
+                    <i class="fas fa-fw fa-lock"></i>
+                    {{ 'generic.locked'|trans }}
+                </button>
+                {% else %}
+                {% if is_granted('ROLE_MODERATOR') or element.createur.id == app.user.id %}
                 <a href="{{ url('element_edit', {'id': element.id}) }}" class="btn btn-sm btn-block my-1 btn-warning">
                     <i class="fas fa-fw fa-edit"></i>
                     {{ 'generic.edit'|trans }}
                 </a>
+                {% endif %}
+                {% if is_granted('ROLE_ADMIN') or element.createur.id == app.user.id %}
                 {% set uuid = 'confirm_deletion_' ~ element.id ~ '_' ~ random() %}
                 <button type="button" class="btn btn-sm btn-block my-1 btn-danger" id="delete-link-{{element.id}}"
                     data-toggle="modal" data-target="#{{ uuid }}">
@@ -114,6 +129,8 @@
                     'confirmationLabel': 'generic.delete',
                     'csrfToken': 'delete_element_' ~ element.id,
                 } %}
+                {% endif %}
+                {% endif %}
             </td>
         </tr>
         {% endfor %}
@@ -192,10 +209,19 @@
             var me = this;
             $('input', this.footer()).on('keyup change', function () {
                 if (me.search() !== this.value) {
-                    me.search(this.value).draw();
+                    me.search(
+                        // Remove accented characters from search string
+                        jQuery.fn.DataTable.ext.type.search.string(this.value)
+                    ).draw();
                 }
             })
         });
+        $('input[type=search]').on('keyup change', function () {
+            dt.search(
+                // Remove accented characters from search string
+                jQuery.fn.DataTable.ext.type.search.string(this.value)
+            ).draw();
+        })
         dt.buttons().container().appendTo('.table-buttons');
         $('.clear-filter-button').on('click', function (e) {
             e.preventDefault();

@@ -37,7 +37,6 @@ final class Version20190307133458 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
-        $this->addSql('CREATE SCHEMA public');
         $this->addSql('CREATE TABLE attestation_categorie_occasion (id_attestation INT NOT NULL, id_categorie_occasion SMALLINT NOT NULL, PRIMARY KEY(id_attestation, id_categorie_occasion))');
         $this->addSql('CREATE INDEX idx_3a9de4ed31c32f20 ON attestation_categorie_occasion (id_categorie_occasion)');
         $this->addSql('CREATE INDEX idx_3a9de4ed2a7c0bc8 ON attestation_categorie_occasion (id_attestation)');

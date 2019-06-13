@@ -53,21 +53,33 @@
             <ul class="nav nav-fill">
                 <li class="nav-item {{ app.request.uri == url('home') ? 'active' : '' }}">
                     <a class="nav-link" href="{{ url('home') }}">
-                        <i class="fas fa-place-of-worship"></i>
+                        <i class="fas {{ icons.home }}"></i>
                         {{ 'nav.home'|trans }}
                     </a>
                 </li>
                 <li class="nav-item {{ controller_name == 'SourceController' ? 'active' : '' }}">
-                    <a class="nav-link" href="{{ url('source_list') }}">{{ 'nav.source_list'|trans }}</a>
+                    <a class="nav-link" href="{{ url('source_list') }}">
+                        <i class="fas {{ icons.source }}"></i>
+                        {{ 'nav.source_list'|trans }}
+                    </a>
                 </li>
                 <li class="nav-item {{ controller_name == 'AttestationController' ? 'active' : '' }}">
-                    <a class="nav-link" href="{{ url('attestation_list') }}">{{ 'nav.attestation'|trans }}</a>
+                    <a class="nav-link" href="{{ url('attestation_list') }}">
+                        <i class="fas {{ icons.attestation }}"></i>
+                        {{ 'nav.attestation'|trans }}
+                    </a>
                 </li>
                 <li class="nav-item {{ controller_name == 'ElementController' ? 'active' : '' }}">
-                    <a class="nav-link" href="{{ url('element_list') }}">{{ 'nav.element'|trans }}</a>
+                    <a class="nav-link" href="{{ url('element_list') }}">
+                        <i class="fas {{ icons.element }}"></i>
+                        {{ 'nav.element'|trans }}
+                    </a>
                 </li>
                 <li class="nav-item {{ controller_name == 'BibliographyController' ? 'active' : '' }}">
-                    <a class="nav-link" href="{{ url('bibliography_list') }}">{{ 'nav.bibliography'|trans }}</a>
+                    <a class="nav-link" href="{{ url('bibliography_list') }}">
+                        <i class="fas {{ icons.bibliography }}"></i>
+                        {{ 'nav.bibliography'|trans }}
+                    </a>
                 </li>
                 <li class="nav-item {{ controller_name == 'RequetesController' ? 'active' : '' }}">
                     <a class="nav-link" href="{{ url('requetes_list') }}">{{ 'nav.requete'|trans }}</a>

@@ -4,6 +4,15 @@ global.$ = global.jQuery = $;
 
 require('bootstrap');
 
+<<<<<<< HEAD
+=======
+decodeEntities = function (encodedString) {
+    var textArea = document.createElement('textarea');
+    textArea.innerHTML = encodedString;
+    return textArea.value;
+};
+
+>>>>>>> b80eec144b0efb5ee9b73fee1666252f590354f7
 (function ($) {
     if ($('#back-to-top').length) {
         var scrollTrigger = 100, // px

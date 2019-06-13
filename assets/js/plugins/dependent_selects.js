@@ -12,10 +12,6 @@
             var selectFirst = $(this).find('select').first(),
                 selectLast = $(this).find('select').last();
 
-
-            selectLast.attr('disabled', (selectFirst.val() == ""))
-                .trigger('chosen:updated');
-
             selectFirst.on('change', function () {
                 var me = $(this);
                 if (me.val() == "" || me.val() == null) {
@@ -47,7 +43,9 @@
                         alert("An error ocurred while loading data ...");
                     }
                 });
-            })
+            });
+
+            // selectFirst.trigger('change');
         });
     }
 })(jQuery);

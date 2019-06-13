@@ -81,7 +81,7 @@ class AttestationController extends AbstractController
     {
         $sources = $this->getDoctrine()
                         ->getRepository(Source::class)
-                        ->getSimpleList();
+                        ->findAll();
 
         return $this->render('source/index.html.twig', [
             'controller_name' => 'SourceController',
@@ -116,16 +116,29 @@ class AttestationController extends AbstractController
             return $this->redirectToRoute('attestation_list');
         }
 
+<<<<<<< HEAD
         $verrou = $this->getDoctrine()->getRepository(VerrouEntite::class)->create($source, $user, $this->dureeVerrou);
         if(!$verrou->isWritable($user))
+=======
+        if($source->getVerrou() === null){
+            $verrou = $this->getDoctrine()->getRepository(VerrouEntite::class)->create($source, $user, $this->dureeVerrou);
+        }
+        else if(!$source->getVerrou()->isWritable($user))
+>>>>>>> b80eec144b0efb5ee9b73fee1666252f590354f7
         {
             $request->getSession()->getFlashBag()->add(
                 'error',
                 $translator->trans('generic.messages.error_locked', [
                     '%type%' => $translator->trans('source.name'),
+<<<<<<< HEAD
                     '%id%' => $source_id,
                     '%user%' => $verrou->getCreateur()->getPrenomNom(),
                     '%time%' => $verrou->getDateFin()->format(
+=======
+                    '%id%' => $id,
+                    '%user%' => $source->getVerrou()->getCreateur()->getPrenomNom(),
+                    '%time%' => $source->getVerrou()->getDateFin()->format(
+>>>>>>> b80eec144b0efb5ee9b73fee1666252f590354f7
                         $translator->trans('locale_datetime')
                     )
                 ])
@@ -184,6 +197,7 @@ class AttestationController extends AbstractController
                     $attestation->removeContientElement($ce);
                 }
             }
+            $this->getDoctrine()->getRepository(VerrouEntite::class)->remove($source->getVerrou());
             $em->flush();
 
             // Message de confirmation
@@ -199,6 +213,7 @@ class AttestationController extends AbstractController
             'action'          => 'create',
             'locale'          => $request->getLocale(),
             'form'            => $form->createView(),
+            'source'          => $source,
             'breadcrumbs'     => [
                 ['label' => 'nav.home', 'url' => $this->generateUrl('home')],
                 ['label' => 'source.list', 'url' => $this->generateUrl('source_list')],
@@ -206,6 +221,22 @@ class AttestationController extends AbstractController
             ]
         ]);
     }
+
+        /**
+     * @Route("/attestation/cancelcreate/{source_id}", name="attestation_cancelcreate")
+     */
+    public function cancelcreate($source_id, Request $request){
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $source = $this->getDoctrine()
+                       ->getRepository(Source::class)
+                       ->find($source_id);
+        $verrou = $source->getVerrou();
+        if($verrou !== null && $verrou->isWritable($user)){
+            $this->getDoctrine()->getRepository(VerrouEntite::class)->remove($verrou);
+        }
+        return $this->redirectToRoute('attestation_list');
+    }
+
 
     /**
      * @Route("/attestation/{id}", name="attestation_show")
@@ -253,16 +284,22 @@ class AttestationController extends AbstractController
             );
             return $this->redirectToRoute('attestation_list');
         }
-        $verrou = $this->getDoctrine()->getRepository(VerrouEntite::class)->create($attestation, $user, $this->dureeVerrou);
-        if(!$verrou->isWritable($user))
+        if(!$this->isGranted('ROLE_MODERATOR') && $attestation->getCreateur()->getId() !== $user->getId()){
+            $request->getSession()->getFlashBag()->add('error', 'generic.messages.error_unauthorized');
+            return $this->redirectToRoute('attestation_list');
+        }
+        if($attestation->getVerrou() === null){
+            $verrou = $this->getDoctrine()->getRepository(VerrouEntite::class)->create($attestation, $user, $this->dureeVerrou);
+        }
+        else if(!$attestation->getVerrou()->isWritable($user))
         {
             $request->getSession()->getFlashBag()->add(
                 'error',
                 $translator->trans('generic.messages.error_locked', [
                     '%type%' => $translator->trans('attestation.name'),
                     '%id%' => $id,
-                    '%user%' => $verrou->getCreateur()->getPrenomNom(),
-                    '%time%' => $verrou->getDateFin()->format(
+                    '%user%' => $attestation->getVerrou()->getCreateur()->getPrenomNom(),
+                    '%time%' => $attestation->getVerrou()->getDateFin()->format(
                         $translator->trans('locale_datetime')
                     )
                 ])
@@ -333,7 +370,7 @@ class AttestationController extends AbstractController
                     $attestation->removeFormule($f);
                 }
             }
-            $this->getDoctrine()->getRepository(VerrouEntite::class)->remove($verrou);
+            $this->getDoctrine()->getRepository(VerrouEntite::class)->remove($attestation->getVerrou());
             $em->flush();
 
             // Message de confirmation
@@ -366,7 +403,7 @@ class AttestationController extends AbstractController
         $attestation = $this->getDoctrine()
                             ->getRepository(Attestation::class)
                             ->find($id);
-        $verrou = $this->getDoctrine()->getRepository(VerrouEntite::class)->fetch($attestation);
+        $verrou = $attestation->getVerrou();
         if($verrou !== null && $verrou->isWritable($user)){
             $this->getDoctrine()->getRepository(VerrouEntite::class)->remove($verrou);
         }
@@ -379,30 +416,35 @@ class AttestationController extends AbstractController
     public function delete($id, Request $request, TranslatorInterface $translator)
     {
         $submittedToken = $request->request->get('token');
+        $user = $this->get('security.token_storage')->getToken()->getUser();
 
         if ($this->isCsrfTokenValid('delete_attestation_'.$id, $submittedToken)) {
             $repository = $this->getDoctrine()->getRepository(Attestation::class);
             $attestation = $repository->find($id);
             if($attestation instanceof Attestation){
-                $user = $this->get('security.token_storage')->getToken()->getUser();
-                $verrou = $this->getDoctrine()->getRepository(VerrouEntite::class)->fetch($attestation);
-                if(!$verrou || !$verrou->isWritable($user)) {
-                    $request->getSession()->getFlashBag()->add(
-                        'error',
-                        $translator->trans('generic.messages.error_locked', [
-                            '%type%' => $translator->trans('attestation.name'),
-                            '%id%' => $id,
-                            '%user%' => $verrou->getCreateur()->getPrenomNom(),
-                            '%time%' => $verrou->getDateFin()->format(
-                                $translator->trans('locale_datetime')
-                            )
-                        ])
-                    );
+                if($this->isGranted('ROLE_ADMIN')) {
+                    $user = $this->get('security.token_storage')->getToken()->getUser();
+                    $verrou = $attestation->getVerrou();
+                    if(!$verrou || $verrou->isWritable($user)) {
+                        $em = $this->getDoctrine()->getManager();
+                        $em->remove($attestation);
+                        $em->flush();
+                        $request->getSession()->getFlashBag()->add('success', 'attestation.messages.deleted');
+                    } else {
+                        $request->getSession()->getFlashBag()->add(
+                            'error',
+                            $translator->trans('generic.messages.error_locked', [
+                                '%type%' => $translator->trans('attestation.name'),
+                                '%id%' => $id,
+                                '%user%' => $verrou->getCreateur()->getPrenomNom(),
+                                '%time%' => $verrou->getDateFin()->format(
+                                    $translator->trans('locale_datetime')
+                                )
+                            ])
+                        );
+                    }
                 } else {
-                    $em = $this->getDoctrine()->getManager();
-                    $em->remove($attestation);
-                    $em->flush();
-                    $request->getSession()->getFlashBag()->add('success', 'attestation.messages.deleted');
+                    $request->getSession()->getFlashBag()->add('error', 'generic.messages.error_unauthorized');
                 }
             } else {
                 $request->getSession()->getFlashBag()->add('error', 'generic.messages.deletion_failed_missing');

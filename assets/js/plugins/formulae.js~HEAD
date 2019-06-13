@@ -1,3 +1,6 @@
+var Sortable = require('sortablejs');
+global.Sortable = Sortable;
+
 FORMULA_EDITOR_UUID = 0;
 (function ($) {
     const parenthesisStyles = [

@@ -14,14 +14,7 @@
 
             container.children('.selectorcreate_selection')
                 .find('select.autocomplete')
-                .chosen({
-                    disable_search_threshold: 10,
-                    no_results_text: "{{ 'autocomplete.no_matches'|trans }}",
-                    allow_single_deselect: true,
-                    group_search: false,
-                    display_selected_options: false,
-                    include_group_label_in_selected: true
-                });
+                .chosen(CHOSEN_SETTINGS);
 
             var radio = container.children('.selectorcreate_decision')
                 .find('input[type=radio]');

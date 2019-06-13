@@ -66,11 +66,15 @@
             <td>
                 {% set count_sources = biblio.getSourceBiblios()|length %}
                 {% set count_elements = biblio.getElementBiblios()|length %}
-                {{ 'biblio.fields.sources'|trans }}&nbsp;:&nbsp;
-                <span class="badge badge-{{ count_sources == 0 ? "danger" : "light"}}">{{ count_sources }}</span>
+                <span class="badge badge-{{ count_sources == 0 ? "danger" : "light"}}">
+                    {{ count_sources }}
+                </span>
+                &nbsp;{{ 'biblio.fields.sources'|trans }}
                 <br />
-                {{ 'biblio.fields.elements'|trans }}&nbsp;:&nbsp;
-                <span class="badge badge-{{ count_elements == 0 ? "danger" : "light"}}">{{ count_elements }}</span>
+                <span class="badge badge-{{ count_elements == 0 ? "danger" : "light"}}">
+                    {{ count_elements }}
+                </span>
+                &nbsp;{{ 'biblio.fields.elements'|trans }}
             </td>
             <td class="py-0 px-1">
                 <a href="{{ url('bibliography_show', {'id': biblio.id}) }}"
@@ -78,11 +82,25 @@
                     <i class="fas fa-eye"></i>
                     {{ 'generic.view'|trans }}
                 </a>
+                {% if biblio.verrou != null and not biblio.verrou.isWritable(app.user) %}
+                {% set error = "generic.messages.error_locked"|trans({
+                                    '%type%': 'biblio.list'|trans,
+                                    '%id%' : biblio.id,
+                                    '%user%': biblio.verrou.createur.prenomNom,
+                                    '%time%': biblio.verrou.dateFin.format('locale_datetime'|trans)
+                                }) %}
+                <button type="button" class="btn btn-sm btn-block my-1 btn-danger disabled" data-toggle="tooltip"
+                    data-placement="left" title="{{ error }}">
+                    <i class="fas fa-fw fa-lock"></i>
+                    {{ 'generic.locked'|trans }}
+                </button>
+                {% else %}
                 <a href="{{ url('bibliography_edit', {'id': biblio.id}) }}"
                     class="btn btn-sm btn-block my-1 btn-warning">
                     <i class="fas fa-edit"></i>
                     {{ 'generic.edit'|trans }}
                 </a>
+                {% if is_granted('ROLE_ADMIN') %}
                 {% set uuid = 'confirm_deletion_' ~ biblio.id ~ '_' ~ random() %}
                 <button type="button" class="btn btn-sm btn-block my-1 btn-danger" id="delete-link-{{biblio.id}}"
                     data-toggle="modal" data-target="#{{ uuid }}">
@@ -96,7 +114,8 @@
                 'confirmationLabel': 'generic.delete',
                 'csrfToken': 'delete_biblio_' ~ biblio.id,
                 } %}
-
+                {% endif %}
+                {% endif %}
             </td>
         </tr>
         {% endfor %}
@@ -143,11 +162,15 @@
             scrollX: false,
             searching: true,
             ordering: true,
-            columns: [null, null, null, null, null, null, null, {
+            columns: [null, null, null, null, null, null, {
                 searchable: false,
                 orderable: false,
-                width: 80
-            }],
+                width: 140
+            }, {
+                    searchable: false,
+                    orderable: false,
+                    width: 110
+                }],
             order: [
                 [0, 'desc']
             ],
@@ -172,10 +195,19 @@
             var me = this;
             $('input', this.footer()).on('keyup change', function () {
                 if (me.search() !== this.value) {
-                    me.search(this.value).draw();
+                    me.search(
+                        // Remove accented characters from search string
+                        jQuery.fn.DataTable.ext.type.search.string(this.value)
+                    ).draw();
                 }
             })
         });
+        $('input[type=search]').on('keyup change', function () {
+            dt.search(
+                // Remove accented characters from search string
+                jQuery.fn.DataTable.ext.type.search.string(this.value)
+            ).draw();
+        })
         dt.buttons().container().appendTo('.table-buttons');
         $('.clear-filter-button').on('click', function (e) {
             e.preventDefault();

@@ -32,7 +32,6 @@ final class Version20190411152922 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
-        $this->addSql('CREATE SCHEMA public');
         $this->addSql('ALTER TABLE contient_element ADD extrait_avec_restitution TEXT DEFAULT NULL');
         $this->addSql('ALTER TABLE contient_element RENAME COLUMN en_contexte TO extrait_sans_restitution');
     }

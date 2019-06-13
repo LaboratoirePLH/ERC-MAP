@@ -52,10 +52,10 @@
         {% for attestation in attestations %}
         <tr>
             <th scope="row" class="px-0" data-sort="{{ attestation.id }}">
-                {# <a href="{{ url('attestation_show', {'id': attestation.id}) }}"> #}
-                {{ attestation.source.projet is not empty ? attestation.source.projet.nom(locale) : "" }}
-                #{{ attestation.id }}
-                {# </a> #}
+                <a href="{{ url('attestation_show', {'id': attestation.id}) }}">
+                    {{ attestation.source.projet is not empty ? attestation.source.projet.nom(locale) : "" }}
+                    #{{ attestation.id }}
+                </a>
                 <br />
                 <small>{{ 'generic.fields.version'|trans }}&nbsp;{{ attestation.version|default("?") }}</small>
                 <br />
@@ -99,19 +99,35 @@
             <td class="py-0 px-1">
                 <a href="{{ url('element_attestation', {'attestation_id': attestation.id}) }}"
                     class="btn btn-sm btn-block my-1 btn-success">
-                    <i class="fas fa-fw fa-atom"></i>
+                    <i class="fas fa-fw {{ icons.element }}"></i>
                     {{ 'attestation.sections.elements'|trans }}
                 </a>
                 <a href="{{ url('attestation_show', {'id': attestation.id}) }}"
-                    class="btn btn-sm btn-block my-1 btn-primary d-none">
+                    class="btn btn-sm btn-block my-1 btn-primary">
                     <i class="fas fa-eye"></i>
                     {{ 'generic.view'|trans }}
                 </a>
+                {% if attestation.verrou != null and not attestation.verrou.isWritable(app.user) %}
+                {% set error = "generic.messages.error_locked"|trans({
+                    '%type%': 'attestation.name'|trans,
+                    '%id%'  : attestation.id,
+                    '%user%': attestation.verrou.createur.prenomNom,
+                    '%time%': attestation.verrou.dateFin.format('locale_datetime'|trans)
+                }) %}
+                <button type="button" class="btn btn-sm btn-block my-1 btn-danger disabled" data-toggle="tooltip"
+                    data-placement="left" title="{{ error }}">
+                    <i class="fas fa-fw fa-lock"></i>
+                    {{ 'generic.locked'|trans }}
+                </button>
+                {% else %}
+                {% if is_granted('ROLE_MODERATOR') or attestation.createur.id == app.user.id %}
                 <a href="{{ url('attestation_edit', {'id': attestation.id}) }}"
                     class="btn btn-sm btn-block my-1 btn-warning">
                     <i class="fas fa-edit"></i>
                     {{ 'generic.edit'|trans }}
                 </a>
+                {% endif %}
+                {% if is_granted('ROLE_ADMIN') or attestation.createur.id == app.user.id %}
                 {% set uuid = 'confirm_deletion_' ~ attestation.id ~ '_' ~ random() %}
                 <button type="button" class="btn btn-sm btn-block my-1 btn-danger" id="delete-link-{{attestation.id}}"
                     data-toggle="modal" data-target="#{{ uuid }}">
@@ -125,7 +141,8 @@
                     'confirmationLabel': 'generic.delete',
                     'csrfToken': 'delete_attestation_' ~ attestation.id,
                 } %}
-
+                {% endif %}
+                {% endif %}
             </td>
         </tr>
         {% endfor %}
@@ -202,10 +219,19 @@
             var me = this;
             $('input', this.footer()).on('keyup change', function () {
                 if (me.search() !== this.value) {
-                    me.search(this.value).draw();
+                    me.search(
+                        // Remove accented characters from search string
+                        jQuery.fn.DataTable.ext.type.search.string(this.value)
+                    ).draw();
                 }
             })
         });
+        $('input[type=search]').on('keyup change', function () {
+            dt.search(
+                // Remove accented characters from search string
+                jQuery.fn.DataTable.ext.type.search.string(this.value)
+            ).draw();
+        })
         dt.buttons().container().appendTo('.table-buttons');
         $('.clear-filter-button').on('click', function (e) {
             e.preventDefault();

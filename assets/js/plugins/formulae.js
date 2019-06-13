@@ -2,6 +2,25 @@ var Sortable = require('sortablejs');
 global.Sortable = Sortable;
 
 FORMULA_EDITOR_UUID = 0;
+
+var get_browser = function () {
+    var ua = navigator.userAgent, tem, M = ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
+    if (/trident/i.test(M[1])) {
+        tem = /\brv[ :]+(\d+)/g.exec(ua) || [];
+        return { name: 'IE', version: (tem[1] || '') };
+    }
+    if (M[1] === 'Chrome') {
+        tem = ua.match(/\bOPR|Edge\/(\d+)/)
+        if (tem != null) { return { name: 'Opera', version: tem[1] }; }
+    }
+    M = M[2] ? [M[1], M[2]] : [navigator.appName, navigator.appVersion, '-?'];
+    if ((tem = ua.match(/version\/(\d+)/i)) != null) { M.splice(1, 1, tem[1]); }
+    return {
+        name: M[0],
+        version: M[1]
+    };
+};
+
 (function ($) {
     const parenthesisStyles = [
         'Black',
@@ -215,9 +234,11 @@ FORMULA_EDITOR_UUID = 0;
 
             if ($(me).find("input[name$='[id]']").val() == "") {
                 // Setup drag & drop
+                const isOldFirefox = get_browser()['name'] == 'Firefox' && get_browser()['version'] < "64";
                 sortableOperators = new Sortable($(me).find('.formula-operators').get(0), {
                     draggable: '.btn',
                     sort: false,
+                    forceFallback: isOldFirefox,
                     group: {
                         name: uuid,
                         pull: 'clone',
@@ -231,6 +252,7 @@ FORMULA_EDITOR_UUID = 0;
                 sortableElements = new Sortable($(me).find('.formula-elements').get(0), {
                     draggable: '.btn',
                     sort: false,
+                    forceFallback: isOldFirefox,
                     group: {
                         name: uuid,
                         pull: 'clone',
@@ -244,6 +266,7 @@ FORMULA_EDITOR_UUID = 0;
                 sortableFormula = new Sortable($(me).find('.formula-visualizer').get(0), {
                     draggable: '.btn',
                     sort: true,
+                    forceFallback: isOldFirefox,
                     group: {
                         name: uuid,
                         pull: [uuid],
@@ -251,7 +274,16 @@ FORMULA_EDITOR_UUID = 0;
                     },
                     onSort: function (evt) {
                         var formule = [];
-                        $(evt.to).find('.btn').each(function (i, b) {
+                        if ($(evt.to).hasClass('formula-visualizer')) {
+                            var target = $(evt.to)
+                        }
+                        else if ($(evt.from).hasClass('formula-visualizer')) {
+                            var target = $(evt.from)
+                        }
+                        else {
+                            throw "Did not drag or drop from visualizer";
+                        }
+                        target.find('.btn').each(function (i, b) {
                             formule.push($(b).data('raw'));
                         });
                         $(me).find("input[name$='[formule]']").val(formule.join('')).trigger('change');

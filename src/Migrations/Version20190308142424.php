@@ -40,7 +40,6 @@ final class Version20190308142424 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
-        $this->addSql('CREATE SCHEMA public');
         $this->addSql('ALTER TABLE agent DROP CONSTRAINT FK_268B9C9DC68BE09C');
         $this->addSql('DROP INDEX UNIQ_268B9C9DC68BE09C');
         $this->addSql('ALTER TABLE agent RENAME COLUMN localisation_id TO localisation_decouverte_id');

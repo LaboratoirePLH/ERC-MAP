@@ -6,3 +6,9 @@ twig:
     globals:
         showcase_website_url: '%showcase_website_url%'
         env: '%env(APP_ENV)%'
+        icons:
+            home: 'fa-place-of-worship'
+            source: 'fa-ankh'
+            attestation: 'fa-file-alt'
+            element: 'fa-atom'
+            bibliography: 'fa-book-open'

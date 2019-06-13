@@ -38,7 +38,6 @@ final class Version20190313112711 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
-        $this->addSql('CREATE SCHEMA public');
         $this->addSql('ALTER TABLE element DROP CONSTRAINT FK_41405E399DE46F0F');
         $this->addSql('ALTER TABLE element DROP CONSTRAINT FK_41405E39D34FDCB2');
         $this->addSql('DROP INDEX IDX_41405E399DE46F0F');

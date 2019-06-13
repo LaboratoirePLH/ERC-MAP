@@ -37,6 +37,18 @@
 
 <body class="{% block bodyclass %}{% endblock %}" id="top">
     {% block body %}{% endblock %}
+<<<<<<< HEAD
+=======
+    <script type="text/javascript">
+        CHOSEN_SETTINGS = {
+            disable_search: false,
+            disable_search_threshold: 10,
+            no_results_text: "{{ 'autocomplete.no_matches'|trans }}",
+            allow_single_deselect: true,
+            display_selected_options: false
+        };
+    </script>
+>>>>>>> b80eec144b0efb5ee9b73fee1666252f590354f7
     {% block javascripts %}
     {{ encore_entry_script_tags('page') }}
     {% endblock %}

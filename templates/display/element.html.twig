@@ -1,0 +1,147 @@
+<table class="table table-striped table-bordered">
+    <tbody>
+        <tr>
+            <th scope="row">
+                {{ 'element.fields.etat_absolu'|trans}}
+            </th>
+            <td>
+                {{ element.etatAbsolu|raw }}
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">
+                {{ 'element.fields.beta_code'|trans}}
+            </th>
+            <td>
+                {{ element.betaCode }}
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">
+                {{ 'element.fields.traductions'|trans}}
+            </th>
+            <td class="p-0">
+                <table class="table table-sm text-center mb-0">
+                    <thead>
+                        <tr>
+                            <th scope="col">{{ 'languages.fr'|trans }}</th>
+                            <th scope="col">{{ 'languages.en'|trans }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for traduction in element.traductions %}
+                        <tr>
+                            <td>{{ traduction.nomFr }}</td>
+                            <td>{{ traduction.nomEn }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">
+                {{ 'element.fields.nature'|trans}}
+            </th>
+            <td>
+                {{ element.natureElement is not empty ? element.natureElement.getNom(locale) : "" }}
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">
+                {{ 'element.fields.categories_invariantes'|trans}}
+            </th>
+            <td>
+                {% for c in element.categories %}
+                {{ c.getNom(locale) }}
+                {% if not loop.last %}
+                {{", "}}
+                {% endif %}
+                {% endfor %}
+            </td>
+        </tr>
+        {% if element.aReference %}
+        <tr>
+            <th scope="row">
+                {{ 'element.fields.theonymes_implicites'|trans}}
+            </th>
+            <td>
+                {% for e in element.theonymesImplicites %}
+                {% include "partials/_entitylink.html.twig" with {
+                    'entity': 'element',
+                    'link': url('element_show', {'id': e.id}),
+                    'text': '#' ~ e.id ~ " " ~ (e.etatAbsolu|raw|striptags)
+                } %}
+                {% endfor %}
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">
+                {{ 'element.fields.theonymes_construits'|trans}}
+            </th>
+            <td>
+                {% for e in element.theonymesConstruits %}
+                {% include "partials/_entitylink.html.twig" with {
+                    'entity': 'element',
+                    'link': url('element_show', {'id': e.id}),
+                    'text': '#' ~ e.id ~ " " ~ (e.etatAbsolu|raw|striptags)
+                } %}
+                {% endfor %}
+            </td>
+        </tr>
+        {% endif %}
+        {% if element.estLocalisee %}
+        <tr>
+            <th scope="row">
+                {{ 'generic.fields.localisation'|trans}}
+            </th>
+            <td class="p-0">
+                {% include "display/localisation.html.twig" with {
+                    'localisation': element.localisation
+                } %}
+            </td>
+        </tr>
+        {% endif %}
+        <tr>
+            <th scope="row">
+                {{ 'biblio.list'|trans}}
+            </th>
+            <td class="p-0">
+                <table class="table table-sm text-center mb-0">
+                    <thead>
+                        <tr>
+                            <th scope="col">{{ 'source.fields.reference_bibliographique'|trans }}</th>
+                            <th scope="col">{{ 'element.fields.reference_element'|trans }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for elementBiblio in element.elementBiblios %}
+                        <tr>
+                            <td>
+                                {% include "partials/_entitylink.html.twig" with {
+                                    'entity': 'biblio',
+                                    'link': url('bibliography_show', {'id': elementBiblio.biblio.id}),
+                                    'text': '#' ~ elementBiblio.biblio.id ~ " " ~ (elementBiblio.biblio.titreAbrege|raw|striptags)
+                                } %}
+                            </td>
+                            <td>
+                                {{ elementBiblio.referenceElement }}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">
+                {{ 'generic.fields.commentaire'|trans}}
+            </th>
+            <td>
+                {{ element.getCommentaire(locale)|raw }}
+                <br />
+                <small>{{ element.getCommentaire(locale == "fr" ? "en" : "fr")|raw }}</small>
+            </td>
+        </tr>
+    </tbody>
+</table>

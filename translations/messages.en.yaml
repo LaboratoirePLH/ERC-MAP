@@ -54,6 +54,7 @@ generic:
     clear: "Clear"
     clear_filters: "Clear filters"
     exit: "Exit"
+    back: "Back"
     stay: "Stay"
     choose: "Choose"
     toggle_section: "Show/Hide section"
@@ -61,6 +62,7 @@ generic:
     locked: "Locked"
     fields:
         id: "ID"
+        createur: "Creator"
         date_creation: "Creation"
         date_modification: "Latest Edition"
         by: "by"
@@ -76,15 +78,19 @@ generic:
         precision: "Precision"
         fiabilite: "Reliability"
         version: "Version"
+        datation: "Datation"
         localisation: "Location"
         localisation_reelle: "Real ?"
         quantite: "Quantity"
         est_datee: "Is Dated ?"
         est_localisee: "Location ?"
+        position: "Position"
     choices :
         new: "New"
         existing: "Existing"
         none: "None"
+        oui: "Yes"
+        non: "No"
     messages:
         deletion_failed_csrf: "Deletion failed, invalid CSRF Token"
         deletion_failed_missing: "Deletion failed, record not found"
@@ -96,6 +102,7 @@ generic:
         error_ambiguous: "Error : Ambiguous results"
         error_unknown: "Unknown error"
         error_locked: "%type% #%id% is locked by %user% until %time%."
+        error_unauthorized: "You are not allowed to perform this operation"
     help:
         edition_principale: "At least one reference must be specified as the Main Edition"
         city_search: "Enter a City name and/or a Pleiades number, then click the \"Search database\" button to search the database. If a single result is found, relevant fields will be populated according to its data"
@@ -125,7 +132,7 @@ source:
         titre_en:  "Title (EN)"
         titre_principal: "Main Title"
         auteurs: "Authors"
-        type_source: "Type"
+        types_source: "Types"
         categorie_source: "Category"
         materiau: "Material"
         categorie_materiau: "Material Category"
@@ -135,15 +142,17 @@ source:
         createur: "Creator"
         dernier_editeur: "Latest Editor"
         reference_bibliographique: "Bibliographic Reference"
+        reference_source: "Source Reference"
         to_translate_fr: "To translate in French"
         to_translate_en: "To translate in English"
         fiability_score: "Reliability score"
         url_image: "Image URL"
         url_texte: "Text URL"
-        in_situ: "In Situ ?"
+        in_situ: "Same Location ?"
         region_origine: "Original Region"
         lieu_origine: "Original Location"
         lieu_decouverte: "Discovery Location"
+        lieu_decouverte_in_situ : "Discovery / Original Location"
         iconographie: "Iconography ?"
         source_biblio: "Reference"
         source_biblio_n: "Reference #"
@@ -153,8 +162,8 @@ source:
     sections:
         informations_source: "Source information"
         bibliographie: "Bibliography"
-        datation: "Datation"
-        localisation: "Location"
+        datation: "Source Datation"
+        localisation: "Source Location"
         commentaires: "Comments"
         attestations: "Testimonies"
 
@@ -219,7 +228,6 @@ attestation:
     edit: "Edit Testimony #%id%"
     add_agent: "Add Agent"
     add_element: "Add Element"
-    view_element: "View Element"
     add_occasion: "Add Occasion"
     add_materiel: "Add Connected Material"
     add_formule: "Add Formule"
@@ -321,6 +329,7 @@ localisation:
         latitude: "Latitude"
         longitude: "Longitude"
         pleiades_site: "Pleiades Number (Site)"
+        site: "Site"
         nom_site : "Name (Site)"
         topographie : "Topography"
         fonction: "Function"
@@ -399,6 +408,10 @@ mails:
         action: "Reset my password"
         outro: "You received this e-mail because someone asked to reset your password. If you were not the one asking, please ignore this email."
 
+<<<<<<< HEAD
+=======
+        
+>>>>>>> b80eec144b0efb5ee9b73fee1666252f590354f7
 requetes:
     title: "Query interface"
     list: "Queries"
@@ -429,4 +442,9 @@ requetes:
         plus_petit: "Smaller than"
         egal_a: "Is equal to"
     localisation_agent: "Agent localisation"
+<<<<<<< HEAD
     entite_politique_iacp: "Political Entity (IACP number)"
+=======
+    entite_politique_iacp: "Political Entity (IACP number)"
+    dupliquer: "Clone"
+>>>>>>> b80eec144b0efb5ee9b73fee1666252f590354f7

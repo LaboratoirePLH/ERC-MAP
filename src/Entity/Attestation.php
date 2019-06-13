@@ -43,13 +43,6 @@ class Attestation extends AbstractEntity
     /**
      * @var string|null
      *
-     * @ORM\Column(name="extrait_sans_restitution", type="text", nullable=true)
-     */
-    private $extraitSansRestitution;
-
-    /**
-     * @var string|null
-     *
      * @ORM\Column(name="extrait_avec_restitution", type="text", nullable=true)
      */
     private $extraitAvecRestitution;
@@ -60,6 +53,13 @@ class Attestation extends AbstractEntity
      * @ORM\Column(name="translitteration", type="text", nullable=true)
      */
     private $translitteration;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     *
+     * @ORM\OneToMany(targetEntity="TraductionAttestation", mappedBy="attestation", cascade={"persist", "remove"})
+     */
+    private $traductions;
 
     /**
      * @var int|null
@@ -173,6 +173,7 @@ class Attestation extends AbstractEntity
         $this->formules = new ArrayCollection();
         $this->contientElements = new ArrayCollection();
         $this->occasions = new ArrayCollection();
+        $this->traductions = new ArrayCollection();
     }
 
     // Hack for attestationSource form
@@ -189,17 +190,6 @@ class Attestation extends AbstractEntity
     public function setPassage(?string $passage): self
     {
         $this->passage = $passage;
-        return $this;
-    }
-
-    public function getExtraitSansRestitution(): ?string
-    {
-        return $this->extraitSansRestitution;
-    }
-
-    public function setExtraitSansRestitution(?string $extraitSansRestitution): self
-    {
-        $this->extraitSansRestitution = $extraitSansRestitution;
         return $this;
     }
 
@@ -467,5 +457,36 @@ class Attestation extends AbstractEntity
             $elements[$el->getId()] = $el->getEtatAbsolu();
         }
         return $elements;
+    }
+
+    /**
+     * @return Collection|TraductionAttestation[]
+     */
+    public function getTraductions(): Collection
+    {
+        return $this->traductions;
+    }
+
+    public function addTraduction(TraductionAttestation $traduction): self
+    {
+        if (!$this->traductions->contains($traduction)) {
+            $this->traductions[] = $traduction;
+            $traduction->setAttestation($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTraduction(TraductionAttestation $traduction): self
+    {
+        if ($this->traductions->contains($traduction)) {
+            $this->traductions->removeElement($traduction);
+            // set the owning side to null (unless already changed)
+            if ($traduction->getAttestation() === $this) {
+                $traduction->setAttestation(null);
+            }
+        }
+
+        return $this;
     }
 }

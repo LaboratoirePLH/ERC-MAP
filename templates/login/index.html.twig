@@ -1,0 +1,100 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{'login_page.login_required'|trans}}{% endblock %}
+
+{% block bodyclass %}login-page{% endblock %}
+{% block body %}
+<div class="container">
+    <div class="row justify-content-center" style="margin-top: 100px">
+        <div class="col-6 text-center">
+            <img src="{{ asset('build/images/logo-ercmap.png') }}" class="w-100" />
+        </div>
+    </div>
+    <div class="row justify-content-center mt-4">
+        <div class="col-6">
+            <h2 class="text-center">
+                {{'login_page.access_database'|trans}}
+                {% if env != "prod" %}
+                <br>
+                <span class="text-danger font-weight-bold">
+                    ({{ 'test_database'|trans|upper }})
+                </span>
+                {% endif %}
+            </h2>
+        </div>
+    </div>
+    {% set bags = {'error' : 'danger', 'warning' : 'warning', 'success': 'success'} %}
+    {% for bag, color in bags %}
+    {% for flashMessage in app.session.flashbag.get(bag) %}
+    <div class="row justify-content-center">
+        <div class="col-sm-6 alert alert-{{color}}" role="alert">
+            <span class="badge badge-{{color}} text-uppercase">{{bag}}</span>
+            {{ flashMessage|trans }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </div>
+    {% endfor %}
+    {% endfor %}
+    <div class="row justify-content-center mt-4">
+        <div class="col-6">
+            <form method="post">
+                {% if error %}
+                <div class="alert alert-danger" role="alert">
+                    <span class="badge badge-danger text-uppercase">
+                        {{ 'generic.messages.error'|trans }}
+                    </span>
+                    {{ error.messageKey|trans(error.messageData, 'security') }}
+                </div>
+                {% endif %}
+                <div class="form-group row">
+                    <label class="col-form-label col-2 required" for="_username">
+                        {{ 'login_page.form.username'|trans }}
+                    </label>
+                    <div class="col-10">
+                        <input type="text" id="_username" name="_username" required="required" class="form-control"
+                            value="{{ last_username }}" autocomplete="off">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-form-label col-2 required" for="_password">
+                        {{ 'login_page.form.password'|trans }}
+                    </label>
+                    <div class="col-10">
+                        <input type="password" id="_password" name="_password" required="required" class="form-control"
+                            autocomplete="off">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-10 offset-2">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" name="_remember_me"
+                                id="_remember_me">
+                            <label class="form-check-label" for="_remember_me">
+                                {{ 'login_page.form.remember_me'|trans }}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                <div class="form-group row">
+                    <div class="col-12 text-center">
+                        <button type="submit" id="login" name="login" class="btn-primary btn">
+                            {{ 'login_page.form.login'|trans }}
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+            <div class="form-group row">
+                <div class="col-12 text-center">
+                    <a href="{{ url('forgotten_password') }}" class="btn btn-sm btn-secondary">
+                        {{ 'login_page.form.reset_password'|trans }}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

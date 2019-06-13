@@ -1,0 +1,283 @@
+{% extends 'list_page.html.twig' %}
+
+{% set action = action|default('list') %}
+{% set title = title|default('source.'~action) %}
+{% block title %}
+{{ title|trans }}
+{% endblock %}
+{% block content %}
+{% if action == 'list' %}
+<div class="row">
+    <div class="col-12 table-buttons">
+        <a href=" {{ url('source_create') }}" class="btn btn-primary">{{ 'source.create'|trans }}</a>
+        <button type="button" class="btn btn-warning clear-filter-button">
+            {{ 'generic.clear_filters'|trans }}
+        </button>
+    </div>
+</div>
+{% endif %}
+<table class="table table-striped table-hover table-bordered w-100 text-center list_table" id="source_list">
+    <thead>
+        <tr>
+            <th scope="col">
+                {{ 'generic.fields.id'|trans }}
+            </th>
+            <th scope="col">
+                {{ 'source.fields.categorie_source'|trans }}
+            </th>
+            <th scope="col">
+                {{ 'source.fields.types_source'|trans }}
+            </th>
+            <th scope="col">
+                {{ 'source.fields.langues'|trans }}
+            </th>
+            <th scope="col">
+                {{ 'source.fields.region_origine'|trans }}
+            </th>
+            <th scope="col">
+                {{ 'source.sections.datation'|trans }}
+            </th>
+            <th scope="col">
+                {{ 'biblio.fields.titre_abrege'|trans }}
+            </th>
+            <th scope="col">
+                {{ 'source.fields.reference_bibliographique'|trans }}
+            </th>
+            <th scope="col">
+                {{ 'generic.fields.date_creation'|trans }}
+            </th>
+            <th scope="col">
+                {{ 'generic.fields.date_modification'|trans }}
+            </th>
+            <th scope="col">
+                {{ 'generic.fields.to_translate'|trans }}
+            </th>
+            <th scope="col">
+                {{ 'generic.actions'|trans }}
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for source in sources %}
+        <tr>
+            <th scope="row" class="px-0" data-order="{{ source.id }}">
+                <a href="{{ url('source_show', {'id': source.id}) }}">
+                    {{ source.projet is not empty ? source.projet.nom(locale) : "" }} #{{ source.id }}
+                </a>
+                <br />
+                <small>{{ 'generic.fields.version'|trans }}&nbsp;{{ source.version|default("?") }}</small>
+            </th>
+            <td>
+                {{ source.categorieSource is not null ? source.categorieSource.nom(locale) : "" }}
+            </td>
+            <td>
+                {{ source.concatTypeSources(locale) }}
+            </td>
+            <td>
+                {{ source.concatLangues(locale) }}
+            </td>
+            <td>
+                {% set lieu = source.inSitu ? source.lieuDecouverte : source.lieuOrigine %}
+                {{ lieu.grandeRegion.nom(locale)|default("") }}
+            </td>
+            <td>
+                {{ source.estDatee ? (source.datation.postQuem|default("?") ~ " / " ~ source.datation.anteQuem|default("?")) : "" }}
+            </td>
+            <td>
+                {{ source.sourceBiblios is not empty ? source.editionPrincipaleBiblio.biblio.titreAbrege|raw : "" }}
+            </td>
+            <td>
+                {{ source.sourceBiblios is not empty ? source.editionPrincipaleBiblio.referenceSource : "" }}
+            </td>
+            <td data-order="{{ source.dateCreation|date('U') }}">
+                {{ source.dateCreation|date("locale_datetime"|trans) }}
+                <br />
+                <small>
+                    {{ source.createur.prenomNom }}<br />
+                </small>
+            </td>
+            <td data-order="{{ source.dateModification|date('U') }}">
+                {{ source.dateModification|date("locale_datetime"|trans) }}
+                <br />
+                <small>
+                    {{ source.dernierEditeur.prenomNom }}<br />
+                </small>
+            </td>
+            <td>
+                {{ source.traduireFr ? "languages.fr"|trans : "" }}
+                {% if source.traduireFr and source.traduireEn %}
+                <br />
+                {% endif %}
+                {{ source.traduireEn ? "languages.en"|trans : "" }}
+            </td>
+            <td class="py-0 px-1">
+                {% if action == 'select' %}
+                {% if source.verrou != null %}
+                {% set error = "generic.messages.error_locked"|trans({
+                    '%type%': 'source.name'|trans,
+                    '%id%'  : source.id,
+                    '%user%': source.verrou.createur.prenomNom,
+                    '%time%': source.verrou.dateFin.format('locale_datetime'|trans)
+                }) %}
+                <button type="button" class="btn btn-sm btn-block my-1 btn-danger disabled" data-toggle="tooltip"
+                    data-placement="left" title="{{ error }}">
+                    <i class="fas fa-fw fa-lock"></i>
+                    {{ 'generic.locked'|trans }}
+                </button>
+                {% else %}
+                <a href="{{ url(selectionRoute, {'source_id': source.id}) }}"
+                    class="btn btn-sm btn-block my-1 btn-success">
+                    <i class="fas fa-fw fa-check"></i>
+                    {{ 'generic.choose'|trans }}
+                </a>
+                {% endif %}
+                {% else %}
+                <a href="{{ url('attestation_source', {'source_id': source.id}) }}"
+                    class="btn btn-sm btn-block my-1 btn-success">
+                    <i class="fas fa-fw {{ icons.attestation }}"></i>
+                    {{ 'source.sections.attestations'|trans }}
+                </a>
+                <a href="{{ url('source_show', {'id': source.id}) }}" class="btn btn-sm btn-block my-1 btn-primary">
+                    <i class="fas fa-fw fa-eye"></i>
+                    {{ 'generic.view'|trans }}
+                </a>
+                {% if source.verrou != null and not source.verrou.isWritable(app.user) %}
+                {% set error = "generic.messages.error_locked"|trans({
+                    '%type%': 'source.name'|trans,
+                    '%id%' : source.id,
+                    '%user%': source.verrou.createur.prenomNom,
+                    '%time%': source.verrou.dateFin.format('locale_datetime'|trans)
+                }) %}
+                <button type="button" class="btn btn-sm btn-block my-1 btn-danger disabled" data-toggle="tooltip"
+                    data-placement="left" title="{{ error }}">
+                    <i class="fas fa-fw fa-lock"></i>
+                    {{ 'generic.locked'|trans }}
+                </button>
+                {% else %}
+                {% if is_granted('ROLE_MODERATOR') or source.createur.id == app.user.id %}
+                <a href="{{ url('source_edit', {'id': source.id}) }}" class="btn btn-sm btn-block my-1 btn-warning">
+                    <i class="fas fa-fw fa-edit"></i>
+                    {{ 'generic.edit'|trans }}
+                </a>
+                {% endif %}
+                {% if is_granted('ROLE_ADMIN') or source.createur.id == app.user.id %}
+                {% set uuid = 'confirm_deletion_' ~ source.id ~ '_' ~ random() %}
+                <button type="button" class="btn btn-sm btn-block my-1 btn-danger" id="delete-link-{{source.id}}"
+                    data-toggle="modal" data-target="#{{ uuid }}">
+                    <i class="fas fa-fw fa-trash"></i>
+                    {{ 'generic.delete'|trans }}
+                </button>
+                {% include "modals/confirmation.html.twig" with {
+                    'modalName': 'confirm_deletion',
+                    'uuid': uuid,
+                    'targetUrl': url('source_delete', {'id' : source.id}),
+                    'confirmationLabel': 'generic.delete',
+                    'csrfToken': 'delete_source_' ~ source.id,
+                } %}
+                {% endif %}
+                {% endif %}
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    <tfoot>
+        <tr>
+            <th>{{ 'generic.fields.id'|trans }}</th>
+            <th>{{ 'source.fields.categorie_source'|trans }}</th>
+            <th>{{ 'source.fields.type_source'|trans }}</th>
+            <th>{{ 'source.fields.langues'|trans }}</th>
+            <th>{{ 'source.fields.region_origine'|trans }}</th>
+            <th>{{ 'source.sections.datation'|trans }}</th>
+            <th>{{ 'biblio.fields.titre_abrege'|trans }}</th>
+            <th>{{ 'source.fields.reference_bibliographique'|trans }}</th>
+            <th>{{ 'generic.fields.date_creation'|trans }}</th>
+            <th>{{ 'generic.fields.date_modification'|trans }}</th>
+            <th>{{ 'generic.fields.to_translate'|trans }}</th>
+            <th></th>
+        </tr>
+    </tfoot>
+</table>
+{% if action == 'list' %}
+<div class="row">
+    <div class="col-12 table-buttons">
+        <a href=" {{ url('source_create') }}" class="btn btn-primary">{{ 'source.create'|trans }}</a>
+        <button type="button" class="btn btn-warning clear-filter-button">
+            {{ 'generic.clear_filters'|trans }}
+        </button>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#source_list tfoot th').each(function () {
+            var title = $(this).text();
+            if (title != "") {
+                $(this).html(
+                    '<input type="text" class="w-100 form-control form-control-sm" placeholder="{{"generic.search"|trans}}' +
+                    ' ' + title + '" />'
+                );
+            }
+        });
+        var dt = $('#source_list').DataTable({
+            autoWidth: true,
+            lengthChange: true,
+            scrollX: false,
+            searching: true,
+            ordering: true,
+            columns: [null, null, null, null, null, null, null, null, null, null, null, {
+                searchable: false,
+                orderable: false,
+                width: 110
+            }],
+            order: [
+                [9, 'desc']
+            ],
+            language: $.parseJSON('{{ "datatable.language"|trans|raw }}'),
+            pageLength: 10,
+            lengthMenu: [
+                [
+                    10, 25, 50, -1
+                ],
+                [
+                    10, 25, 50, "{{'datatable.all'|trans}}"
+                ]
+            ],
+            buttons: [{
+                extend: 'csv',
+                filename: "{{ 'app_name'|trans }}-{{ 'source.list'|trans }}",
+                text: "{{'generic.export_csv'|trans}}"
+            }]
+        });
+        $('#source_list_wrapper select').removeClass('custom-select');
+        dt.columns().every(function () {
+            var me = this;
+            $('input', this.footer()).on('keyup change', function () {
+                if (me.search() !== this.value) {
+                    me.search(
+                        // Remove accented characters from search string
+                        jQuery.fn.DataTable.ext.type.search.string(this.value)
+                    ).draw();
+                }
+            })
+        });
+        $('input[type=search]').on('keyup change', function () {
+            dt.search(
+                // Remove accented characters from search string
+                jQuery.fn.DataTable.ext.type.search.string(this.value)
+            ).draw();
+        })
+        dt.buttons().container().appendTo('.table-buttons');
+        $('.clear-filter-button').on('click', function (e) {
+            e.preventDefault();
+            dt.columns().every(function () {
+                $('input', this.footer()).val("").trigger('change');
+            });
+        })
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends 'page.html.twig' %}
+{% block title %}
+{{ ('source.view')|trans({'%id%': source.id}) }}
+{% endblock %}
+{% block content %}
+<hr />
+{% include "display/source.html.twig" with {'source': source} %}
+<hr />
+<div class="row">
+    <div class="col-12 text-center">
+        <a href=" {{ url('source_list') }}" class="btn btn-secondary">{{ 'generic.back'|trans }}</a>
+    </div>
+</div>
+{% endblock %}

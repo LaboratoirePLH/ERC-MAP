@@ -1,0 +1,213 @@
+$breadcrumb-bg: darken(lightgray, 10%);
+$breadcrumb-active-color: #343a40;
+
+@import "./fonts.css";
+@import "~bootstrap/scss/bootstrap";
+@import '~@fortawesome/fontawesome-free/css/all.css';
+
+$map-yellow: #d8be00;
+$map-grey: #434343;
+
+body {
+    background-color: lightgray;
+
+    &.login-page {
+        background-image: url('../images/bkg-ercmap.jpg');
+
+        form div.form-group {
+            margin-bottom: 2rem;
+
+            label {
+                font-weight: bold;
+            }
+        }
+    }
+
+    #test-banner {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 10000;
+    }
+
+    header#site-header {
+        background-image: url('../images/bkg-ercmap.jpg');
+
+        #site-logo {
+            width: 100%;
+        }
+
+        .btn {
+            background-color: rgba(67, 67, 67, 0.4);
+            color: #fff;
+
+            &:hover {
+                background-color: rgba(67, 67, 67, 1);
+            }
+        }
+
+        nav#navigation {
+            background-color: $map-grey;
+
+            .nav-item {
+                border: 1px solid #dbdbdb;
+
+                a {
+                    color: #fff;
+                }
+
+                &.active,
+                &:hover {
+                    background-color: $map-yellow;
+
+                    a {
+                        color: #434343;
+                    }
+                }
+            }
+        }
+    }
+
+    main {
+        padding-top: 40px;
+
+        #homepage {
+            .homeblock {
+                background-color: $jumbotron-bg;
+                @include border-radius($border-radius-lg);
+
+                &:hover{
+                    background-color: $map-yellow;
+                }
+
+                .btn {
+                    background-color: rgba(67, 67, 67, 0.4);
+                    color: #fff;
+
+                    &:hover {
+                        background-color: rgba(67, 67, 67, 1);
+                    }
+                }
+            }
+        }
+
+        form {
+            .col-form-label {
+                font-weight: bold;
+                text-align: right;
+
+                &.required {
+                    &::after {
+                        content: "*";
+                        color: red;
+                        font-weight: bolder;
+                        // font-size: 2rem;
+                    }
+                }
+            }
+        }
+
+        table.list_table {
+
+            th[scope=row],
+            td {
+                vertical-align: middle;
+            }
+        }
+
+        form {
+            .form-section-title {
+                border: 1px solid desaturate($map-yellow, 10%);
+                background-color: desaturate($map-yellow, 10%);
+                text-transform: uppercase;
+                text-align: center;
+                font-weight: bold;
+                margin-top: ($spacer * .50);
+                margin-bottom: ($spacer * .50);
+            }
+
+            &#source {
+                #source_sourcebiblios {
+
+                    /* Amélioration de l'affichage des références bibliographiques */
+                    &>div.form-group.row {
+                        padding-top: ($spacer * .5) !important;
+                        padding-bottom: ($spacer * 1) !important;
+
+                        &:nth-child(even) {
+                            background-color: darken(lightgray, 10%);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+#back-to-top {
+    position: fixed;
+    bottom: 40px;
+    right: 40px;
+    z-index: 9999;
+    width: 32px;
+    height: 32px;
+    text-align: center;
+    line-height: 30px;
+    background: #f5f5f5;
+    color: #444;
+    cursor: pointer;
+    border: 0;
+    border-radius: 2px;
+    text-decoration: none;
+    transition: opacity 0.2s ease-out;
+    opacity: 0;
+    &:hover {
+        background: #e9ebec;
+    }
+    &.show {
+        opacity: 1;
+    }
+}
+
+.formula-editor {
+    @extend .mb-1;
+    @extend .px-3;
+    width: 100%;
+    border: 1px solid $map-yellow;
+    border-radius: 10px;
+
+    & > div.row {
+        @extend .py-2;
+        border-bottom: 1px solid $map-yellow;
+        &:last-child{
+            border-bottom: none;
+        }
+
+        & > div.label {
+            height: 100%;
+            font-weight: bolder;
+            border-right: 1px dotted $map-yellow;
+        }
+
+        &:first-child > div.label {
+            line-height: 50px;
+        }
+    }
+
+    .formula-visualizer {
+        .btn {
+            font-weight: bold;
+        }
+    }
+
+    .formula-operators, .formula-elements {
+        .btn {
+            @extend .btn-sm;
+        }
+    }
+}
+
+table { page-break-inside:auto }
+tr    { page-break-inside:avoid; page-break-after:auto }
+thead { display:table-header-group }
+tfoot { display:table-footer-group }

@@ -1,0 +1,411 @@
+{% extends 'form_page.html.twig' %}
+{% block title %}
+{{ ('source.' ~ action)|trans((source is defined ? {'%id%': source.id} : {})) }}
+{% endblock %}
+{% block content %}
+
+{{ form_start(form, {'attr' : {'id': 'source'}} ) }}
+{% if not form.vars.valid %}
+{% import "form/macros.html.twig" as macros %}
+{{ macros.display_error(form) }}
+{% endif %}
+
+<div class="row justify-content-center">
+    <div class="col-sm-3">
+        {% include "partials/_formbuttons.html.twig" with {'exitUrl' : action == "edit" ? url('source_canceledit', {'id': source.id}) : url('source_list')} %}
+    </div>
+    <div class="col-sm-6 text-center">
+        {% if action == 'edit' %}
+        {% spaceless %}
+        {{ 'generic.fields.date_creation'|trans }}&nbsp;:&nbsp;
+        {{ source.dateCreation|date("locale_datetime"|trans) }}&nbsp;
+        {{ 'generic.fields.by'|trans }}&nbsp;{{ source.createur.prenomNom }}
+        {% endspaceless %}
+        <br />
+        {% spaceless %}
+        {{ 'generic.fields.date_modification'|trans }}&nbsp;:&nbsp;
+        {{ source.dateModification|date("locale_datetime"|trans) }}&nbsp;
+        {{ 'generic.fields.by'|trans }}&nbsp;{{ source.dernierEditeur.prenomNom }}
+        {% endspaceless %}
+        <br />
+        {{ 'generic.fields.version'|trans }}&nbsp;{{ source.version }}&rarr;{{ source.version+1 }}
+        {% endif %}
+        <br />
+        <div class="row justify-content-center">
+            <div class="col-sm-6">
+                {{ form_row(form.projet) }}
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-3">
+        {{ 'generic.fields.to_translate'|trans }} :
+        {{ form_widget(form.traduireFr) }}
+        {{ form_widget(form.traduireEn) }}
+    </div>
+</div>
+<hr />
+<section>
+    {% include 'partials/_sectiontitle.html.twig' with {
+        'title'         : 'source.sections.informations_source',
+        'collapseTarget': '#section-infos',
+        'expanded'      : true
+    } only %}
+    <div class="collapse show" id="section-infos">
+        {{ form_widget(form.typeCategorieSource) }}
+        {{ form_row(form.langues) }}
+        {{ form_row(form.titrePrincipal) }}
+        {{ form_row(form.auteurs) }}
+        {{ form_widget(form.typeCategorieMateriau) }}
+        {{ form_widget(form.typeCategorieSupport) }}
+        {{ form_row(form.urlTexte) }}
+        {{ form_row(form.iconographie) }}
+        {{ form_row(form.urlImage) }}
+    </div>
+</section>
+
+<section>
+    {% include 'partials/_sectiontitle.html.twig' with {
+        'title'         : 'source.sections.bibliographie',
+        'collapseTarget': '#section-bibliographie',
+        'expanded'      : true,
+        'counterId'     : 'biblio',
+        'counter'       : source.sourceBiblios.count()|default(0)
+    } only %}
+    <div class="collapse show" id="section-bibliographie">
+        {{ form_errors(form.sourceBiblios) }}
+        {{ form_widget(form.sourceBiblios) }}
+        <div class="form-group row">
+            <div class="col-sm-10 offset-sm-2">
+                <a href="#" class="btn btn-primary collection-add-link">
+                    <i class="fa fa-plus"></i>&nbsp;
+                    {{ 'source.add_sourcebiblio'|trans }}
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section>
+    {% include 'partials/_sectiontitle.html.twig' with {
+        'title'             : 'source.sections.datation',
+        'collapseTarget'    : '#section-datation',
+        'expanded'          : true,
+        'precisionIndicator': 'datation'
+    } only %}
+    <div class="collapse show" id="section-datation">
+        {{ form_row(form.estDatee) }}
+        <div class="row">
+            <div class="col-sm-12 dependent_field_estdatee">
+                {{ form_errors(form.datation) }}
+                {{ form_widget(form.datation) }}
+            </div>
+        </div>
+    </div>
+</section>
+
+<section>
+    {% include 'partials/_sectiontitle.html.twig' with {
+        'title'             : 'source.sections.localisation',
+        'collapseTarget'    : '#section-localisation',
+        'expanded'          : true,
+        'precisionIndicator': 'localisation'
+    } only %}
+    <div class="collapse show" id="section-localisation">
+        {# {{ form_widget(form.lieuDecouverte.grandeSousRegion) }} #}
+        {{ form_row(form.lieuDecouverte) }}
+        {{ form_row(form.inSitu) }}
+        <div class="form-group row">
+            <div class="col-sm-10 offset-sm-2">
+                <a href="#" id="copy_location" class="btn btn-secondary">
+                    <i class="fas fa-copy"></i>&nbsp;
+                    {{ 'localisation.copy_location'|trans }}
+                </a>
+            </div>
+        </div>
+        {# {{ form_widget(form.lieuOrigine.grandeSousRegion) }} #}
+        {{ form_row(form.lieuOrigine) }}
+    </div>
+</section>
+
+<section>
+    {% include 'partials/_sectiontitle.html.twig' with {
+        'title'         : 'source.sections.commentaires',
+        'collapseTarget': '#section-commentaires'
+    } only %}
+    <div class="collapse" id="section-commentaires">
+        {{ form_row(form.commentaireFr) }}
+        {{ form_row(form.commentaireEn) }}
+    </div>
+</section>
+<section>
+    {% include 'partials/_sectiontitle.html.twig' with {
+        'title'         : 'source.sections.attestations',
+        'collapseTarget': '#section-attestations',
+        'counterId'     : 'attestations',
+        'counter'       : source.attestations.count()|default(0)
+    } only %}
+    <div class="collapse" id="section-attestations">
+        {{ form_errors(form.attestations) }}
+        {{ form_widget(form.attestations) }}
+        <div class="form-group row">
+            <div class="col-sm-10 offset-sm-2">
+                <a href="#" class="btn btn-primary collection-add-link">
+                    <i class="fa fa-plus"></i>&nbsp;
+                    {{ 'source.add_attestation'|trans }}
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<hr />
+<div class="form-group row">
+    <div class="col-sm-12 text-center">
+        {% include "partials/_formbuttons.html.twig" with {'exitUrl' : action == "edit" ? url('source_canceledit', {'id': source.id}) : url('source_list')} %}
+    </div>
+</div>
+{{ form_rest(form) }}
+{{ form_end(form) }}
+
+{% include "modals/confirmation.html.twig" with {
+'modalName': 'confirm_exit_dirty',
+'uuid': 'confirm_exit_dirty',
+'targetUrl': url('source_list'),
+'method': 'GET',
+'confirmationLabel': 'generic.exit',
+'cancelLabel': 'generic.stay'
+} %}
+{% include "modals/confirmation.html.twig" with {
+'modalName': 'confirm_remove_item',
+'uuid': 'confirm_remove_item',
+'confirmationLabel': 'generic.delete',
+'useForm': false
+} %}
+
+{{ include('partials/_backtotop.html.twig') }}
+{% endblock %}
+{% block javascripts %}
+{{ parent() }}
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        const chosenSettingsMax3 = $.extend(CHOSEN_SETTINGS, { max_selected_options: 3 });
+
+        $('form#source').watchFormDirty({
+            message: "{{ 'modals.confirm_exit_dirty.body'|trans }}",
+            modal: $(".modal#confirm_exit_dirty"),
+            exitLink: $('.exit-form-link')
+        });
+
+        $('div#source_sourceBiblios').collectionField({
+            blockTitle: '{{ "source.fields.source_biblio_n"|trans }}',
+            deleteLinkGenerator: function () {
+                return $(
+                    '<a href="#" class="btn btn-sm btn-danger ml-2 mb-1">{{ "generic.delete"| trans }}</a>'
+                )
+            },
+            confirmationModal: $('#confirm_remove_item'),
+            setupListener: function (el) {
+                $(el).find('.selectorcreate').selectOrCreate();
+
+                // Add listener to uncheck other "main source" fields if one is checked
+                $('label.mainsource_field').siblings('input[type=checkbox]').off('change');
+                $('label.mainsource_field').siblings('input[type=checkbox]').on('change', function (e) {
+                    if ($(this).is(':checked')) {
+                        $('label.mainsource_field').siblings('input[type=checkbox]')
+                            .not(this)
+                            .prop('checked', false);
+                    }
+                });
+
+                $.fn.dependentFields({
+                    corpus: {
+                        conditionCallback: function (main) { return $(main).is(':checked'); },
+                        targetFinder: function (name, main) {
+                            return main.parents('.selectorcreate').find('.dependent_field_' + name);
+                        }
+                    }
+                });
+            },
+            addListener: function (newEl, idx) {
+                // If we are adding the first reference (i.e. source creation) we check the "main source" field
+                if (idx == 1) {
+                    $(newEl).find('label.mainsource_field').siblings('input[type=checkbox]').prop('checked', true);
+                }
+                $('#counter-biblio').text(parseInt($('#counter-biblio').text(), 10) + 1);
+            },
+            deleteListener: function (oldEl) {
+                $('#counter-biblio').text(parseInt($('#counter-biblio').text(), 10) - 1);
+            }
+        });
+        $('div#source_attestations').collectionField({
+            blockTitle: '{{ "source.fields.attestation_n"|trans }}',
+            deleteLinkGenerator: function (entry) {
+                const entryId = $(entry).find('input[type=hidden]').val();
+                if ($.isNumeric(entryId)) {
+                    // Remove delete link if attestation already has an ID
+                    // (meaning it's already persisted in the database)
+                    return "";
+                }
+                return $(
+                    '<a href="#" class="btn btn-sm btn-danger ml-2 mb-1">{{ "generic.delete"| trans }}</a>'
+                )
+            },
+            confirmationModal: $('#confirm_remove_item'),
+            viewLinkGenerator: function (entry) {
+                const entryId = $(entry).find('input[type=hidden]').val(),
+                    entryName = $(entry).find('input[type=text]').val();
+                var url = "{{ url('attestation_show', {'id': '-ID-'}) }}";
+                if (!$.isNumeric(entryId)) {
+                    return "";
+                }
+                return $('<a href="' + url.replace('-ID-', entryId) + '" class="btn btn-sm btn-success ml-2 mb-1" target="_blank" rel="noopener"><i class="fa fa-fw {{ icons.attestation }}"></i>' + entryName + '</a >');
+            },
+            addListener: function (newEl, idx) {
+                $('#counter-attestations').text(parseInt($('#counter-attestations').text(), 10) + 1);
+            },
+            deleteListener: function (oldEl) {
+                $('#counter-attestations').text(parseInt($('#counter-attestations').text(), 10) - 1);
+            }
+        });
+
+        $('.selectorcreate').selectOrCreate();
+        $('select.autocomplete:not(.autocomplete-max-3)').chosen(CHOSEN_SETTINGS);
+        $('select.autocomplete.autocomplete-max-3').chosen(chosenSettingsMax3);
+        $.fn.dependentFields({
+            iconography: {
+                conditionCallback: function (main) { return $(main).is(':checked'); },
+                targetFinder: function (name, main) { return $('.dependent_field_' + name); }
+            },
+            insitu: {
+                conditionCallback: function (main) { return $(main).is(':checked'); },
+                targetFinder: function (name, main) { return $('.dependent_field_' + name); }
+            },
+            estdatee: {
+                conditionCallback: function (main) { return $(main).is(':checked'); },
+                targetFinder: function (name, main) { return $('.dependent_field_' + name); }
+            },
+            auteurs: {
+                inputSelector: '.selectorcreate_decision input[type=radio]',
+                conditionCallback: function (main) {
+                    if ($(main).is(':checked')) {
+                        return $(main).val() === "";
+                    }
+                },
+                targetFinder: function (name, main) { return $('.dependent_field_' + name); }
+            }
+        });
+        // Linked combobox
+        $('#source_typeCategorieSource').dependentSelects({
+            data_url: "{{ url('data_type_source') }}"
+        });
+        $('#source_typeCategorieSupport').dependentSelects({
+            data_url: "{{ url('data_type_support') }}"
+        });
+        $('#source_typeCategorieMateriau').dependentSelects({
+            data_url: "{{ url('data_materiau') }}"
+        });
+        $('#source_lieuDecouverte_grandeSousRegion').dependentSelects({
+            data_url: "{{ url('data_sous_region') }}"
+        });
+        $('#source_lieuOrigine_grandeSousRegion').dependentSelects({
+            data_url: "{{ url('data_sous_region') }}"
+        });
+
+        // Pleiades search
+        $('.localisation_form').localisationForm({
+            errorMessage: "{{'generic.messages.error_unknown'|trans}}",
+            notFoundErrorMessage: "{{'generic.messages.error_not_found'|trans}}",
+            ambiguousErrorMessage: "{{'generic.messages.error_ambiguous'|trans}}",
+            dataUrl: "{{ url('city_search') }}"
+        });
+        // Copy discovery location field data to origin location
+        $('#copy_location').on('click', function (e) {
+            e.preventDefault();
+
+            $('#source_inSitu').prop('checked', false).trigger('change');
+
+            // Copy region data and wait for subregion combobox to be loaded before seleting the entry
+            $("#source_lieuOrigine_grandeSousRegion_grandeRegion").val(
+                $("#source_lieuDecouverte_grandeSousRegion_grandeRegion").val()
+            ).on('dependent:updated', function () {
+                $("#source_lieuOrigine_grandeSousRegion_sousRegion").val(
+                    $("#source_lieuDecouverte_grandeSousRegion_sousRegion").val()
+                ).trigger('chosen:updated');
+            }).trigger('chosen:updated').trigger('change');
+
+            $("#source_lieuOrigine_entitePolitique").val(
+                $("#source_lieuDecouverte_entitePolitique").val()
+            ).trigger('chosen:updated');
+            $("#source_lieuOrigine_pleiadesVille").val(
+                $("#source_lieuDecouverte_pleiadesVille").val()
+            ).trigger('chosen:updated');
+            if ($("#source_lieuOrigine_pleiadesVille").val() !== "") {
+                $("#source_lieuOrigine_pleiadesVille").siblings().find('.pleiades_search').click();
+            }
+            return false;
+        });
+
+        // Fiability indicator
+        var displayPrecisionIndicator = function (el, value) {
+            $(el).text("{{ 'generic.fields.precision'|trans }} : " + value);
+            var newClass;
+            switch (Math.floor(value)) {
+                case 1:
+                    newClass = 'badge-success'; break;
+                case 2:
+                    newClass = 'badge-primary'; break;
+                case 3:
+                    newClass = 'badge-info'; break;
+                case 4:
+                    newClass = 'badge-warning'; break;
+                case 5:
+                    newClass = 'badge-danger'; break;
+                default:
+                    newClass = 'badge-secondary';
+            }
+            $(el).removeClass('badge-success badge-primary badge-info badge-warning badge-danger badge-secondary').addClass(newClass);
+        };
+        $('form#source').precisionIndicator({
+            displayEl: $('#precision-datation'),
+            displayFn: displayPrecisionIndicator,
+            calculatorFn: function (data) {
+                if (!data.source.hasOwnProperty("estDatee") || data.source.estDatee !== "1") {
+                    return "?";
+                }
+                var delta = Math.abs(
+                    parseInt(data.source.datation.postQuem, 10)
+                    - parseInt(data.source.datation.anteQuem, 10)
+                );
+                if (delta <= 5) { return 1; }
+                else if (delta <= 50) { return 2; }
+                else if (delta <= 100) { return 3; }
+                else if (delta <= 200) { return 4; }
+                else { return 5; }
+            }
+        });
+        $('form#source').precisionIndicator({
+            displayEl: $('#precision-localisation'),
+            displayFn: displayPrecisionIndicator,
+            calculatorFn: function (data) {
+                var inSitu = data.source.hasOwnProperty("inSitu") && data.source.inSitu === "1",
+                    lieu = inSitu
+                        ? (data.source.hasOwnProperty("lieuDecouverte") ? data.source.lieuDecouverte : null)
+                        : (data.source.hasOwnProperty("lieuOrigine") ? data.source.lieuOrigine : null);
+
+                if (lieu === null) { return 0; }
+                if (lieu.nomSite !== "") { return 1; }
+                else if (lieu.nomVille !== "") { return 2; }
+                else if (
+                    lieu.grandeSousRegion.hasOwnProperty('sousRegion') &&
+                    lieu.grandeSousRegion.sousRegion !== ""
+                ) {
+                    return 3;
+                }
+                else if (lieu.grandeSousRegion.grandeRegion !== "") { return 4; }
+                else { return 0; }
+            }
+        });
+    });
+</script>
+{% endblock %}

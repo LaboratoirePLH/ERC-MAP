@@ -1,0 +1,45 @@
+security:
+    encoders:
+        App\Entity\Chercheur:
+            algorithm: bcrypt
+    providers:
+        user:
+            entity:
+                class: App\Entity\Chercheur
+                property: username
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        main:
+            anonymous: true
+            provider: user
+            form_login:
+                default_target_path: home
+            logout:
+                path:   /logout
+                target: /login
+            guard:
+                authenticators:
+                    - App\Security\LoginFormAuthenticator
+            remember_me:
+                secret:   '%kernel.secret%'
+                lifetime: 604800 # 1 week in seconds
+                path:     /
+
+            # activate different ways to authenticate
+
+            # http_basic: true
+            # https://symfony.com/doc/current/security.html#a-configuring-how-your-users-will-authenticate
+
+            # form_login: true
+            # https://symfony.com/doc/current/security/form_login_setup.html
+
+    # Easy way to control access for large sections of your site
+    # Note: Only the *first* access control that matches will be used
+    access_control:
+        - { path: ^/admin,              roles: ROLE_ADMIN }
+        - { path: ^/forgotten_password, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/reset_password,     roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/login,              roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/,                   roles: ROLE_USER }

@@ -1,0 +1,14 @@
+{% extends 'page.html.twig' %}
+{% block title %}
+{{ ('element.view')|trans({'%id%': element.id}) }}
+{% endblock %}
+{% block content %}
+<hr />
+{% include "display/element.html.twig" with {'element': element} %}
+<hr />
+<div class="row">
+    <div class="col-12 text-center">
+        <a href=" {{ url('element_list') }}" class="btn btn-secondary">{{ 'generic.back'|trans }}</a>
+    </div>
+</div>
+{% endblock %}

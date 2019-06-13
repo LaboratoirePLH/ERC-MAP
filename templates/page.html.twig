@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+{% if env != "prod" %}
+{{ include('partials/_test_banner.html.twig')}}
+{% endif %}
+{{ include('partials/_navigation.html.twig') }}
+{{ include('partials/_breadcrumbs.html.twig') }}
+<main class="container-fluid mb-5">
+    {% set bags = {'error' : 'danger', 'warning' : 'warning', 'success': 'success'} %}
+    {% for bag, color in bags %}
+    {% for flashMessage in app.session.flashbag.get(bag) %}
+    <div class="row justify-content-center">
+        <div class="col-sm-6 alert alert-{{color}}" role="alert">
+            <span class="badge badge-{{color}} text-uppercase">{{bag}}</span>
+            {{ flashMessage|trans }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </div>
+    {% endfor %}
+    {% endfor %}
+    <div class="row">
+        <div class="col-12">
+            <h2 class="text-center">
+                {% block title %}{% endblock %}
+            </h2>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-11">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+</main>
+<hr />
+<footer class="text-center font-weight-light">
+    &copy; {{ 'misc.copyright'|trans }}
+</footer>
+{% endblock %}

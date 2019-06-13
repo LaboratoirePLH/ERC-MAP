@@ -1,0 +1,29 @@
+{
+    "devDependencies": {
+        "@fortawesome/fontawesome-free": "^5.6.3",
+        "@symfony/webpack-encore": "^0.27.0",
+        "bootstrap": "^4.2.1",
+        "chosen-js": "^1.8.7",
+        "ckeditor": "^4.0.0",
+        "datatables.net-bs4": "^1.10.19",
+        "datatables.net-buttons-bs4": "^1.5.6",
+        "datatables.net-responsive-bs4": "^2.2.3",
+        "form-serializer": "^2.5.0",
+        "jquery": "^3.3.1",
+        "node-sass": "^4.11.0",
+        "popper.js": "^1.14.6",
+        "sass-loader": "^7.1.0",
+        "sortablejs": "^1.9.0",
+        "virtual-keyboard": "^1.28.9",
+        "webpack-notifier": "^1.6.0"
+    },
+    "license": "UNLICENSED",
+    "private": true,
+    "scripts": {
+        "dev-server": "encore dev-server",
+        "dev": "encore dev",
+        "watch": "encore dev --watch",
+        "build": "encore production --progress"
+    },
+    "dependencies": {}
+}

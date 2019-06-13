@@ -1,0 +1,43 @@
+{% extends 'page.html.twig' %}
+{% block title %}
+{{ 'chercheur.profile'|trans }}
+{% endblock %}
+{% block content %}
+<hr />
+
+{{ form_start(accountForm, {'attr' : {'id': 'profile'}} ) }}
+{{ form_errors(accountForm) }}
+{{ form_rest(accountForm) }}
+<hr />
+<div class="form-group row">
+    <div class="col-sm-12 text-center">
+        {% include "partials/_formbuttons.html.twig" with {
+            'exitUrl'      : url('home'),
+            'hideSaveClose': true
+        } %}
+    </div>
+</div>
+{{ form_end(accountForm) }}
+<hr />
+<div class="row">
+    <div class="col-12">
+        <h2 class="text-center">
+            {{ 'chercheur.password'|trans }}
+        </h2>
+    </div>
+</div>
+{{ form_start(passwordForm, {'attr' : {'id': 'profile'}} ) }}
+{{ form_errors(passwordForm) }}
+{{ form_rest(passwordForm) }}
+<hr />
+<div class="form-group row">
+    <div class="col-sm-12 text-center">
+        {% include "partials/_formbuttons.html.twig" with {
+            'exitUrl'      : url('home'),
+            'hideSaveClose': true
+        } %}
+    </div>
+</div>
+{{ form_end(passwordForm) }}
+
+{% endblock %}

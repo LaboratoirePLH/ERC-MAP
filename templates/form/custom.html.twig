@@ -1,0 +1,104 @@
+{% use "bootstrap_4_horizontal_layout.html.twig" %}
+
+{% block selectorcreate_widget %}
+<div id="selectorcreate_{{ uuid }}" class="selectorcreate">
+    <div class="selectorcreate_decision mb-2">
+        {{ form_widget(form.decision) }}
+    </div>
+    <div class="selectorcreate_selection">
+        {{ form_widget(form.selection) }}
+    </div>
+    <div class="selectorcreate_creation">
+        {{ form_widget(form.creation) }}
+    </div>
+</div>
+{% endblock selectorcreate_widget %}
+
+{% block pleiades_widget %}
+<div class="input-group">
+    {{- form_widget(form) -}}
+    <div class="input-group-append">
+        <button class="btn btn-outline-primary pleiades_search">
+            <i class="fas fa-search fa-fw"></i>
+            {{ search_label|trans }}
+        </button>
+        <button class="btn btn-outline-danger pleiades_clear">
+            <i class="fas fa-times fa-fw"></i>
+            {{ clear_label|trans }}
+        </button>
+        <a class="btn btn-outline-secondary pleiades_view" title="{{ view_label|trans }}" href="#" target="_blank"
+            rel="noopener">
+            <i class="fas fa-globe-europe fa-fw"></i>
+            {{ view_label|trans }}
+        </a>
+    </div>
+    <br />
+</div>
+<small class="form-text text-danger pleiades-error"></small>
+{% endblock pleiades_widget %}
+
+{% block citysearch_widget %}
+<div class="input-group">
+    {{- form_widget(form) -}}
+    <div class="input-group-append">
+        <button class="btn btn-outline-primary citysearch_search">
+            <i class="fas fa-search fa-fw"></i>
+            {{ search_label|trans }}
+        </button>
+    </div>
+    <br />
+</div>
+<small class="form-text text-danger citysearch-error"></small>
+{% endblock citysearch_widget %}
+
+{% block dependentselect_row %}
+{%- set widget_attr = {} -%}
+{%- if help is not empty -%}
+{%- set widget_attr = {attr: {'aria-describedby': id ~"_help"}} -%}
+{%- endif -%}
+<{{ element|default('div') }} class="form-group">
+    {%- if label is not empty -%}
+    {{- form_label(form) -}}
+    {%- endif -%}
+    {{- form_widget(form, widget_attr) -}}
+    {{- form_help(form) -}}
+</{{ element|default('div') }}>
+{% endblock dependentselect_row %}
+
+{% block form_help -%}
+{%- if help is not empty -%}
+{%- set help_attr = help_attr|merge({class: (help_attr.class|default('') ~ ' form-text text-muted')|trim}) -%}
+<small id="{{ id }}_help" {% with { attr: help_attr } %}{{ block('attributes') }}{% endwith %}>
+    {%- if translation_domain is same as(false) -%}
+    {{- help -}}
+    {%- else -%}
+    {{- help|trans({}, translation_domain)|raw -}}
+    {%- endif -%}
+</small>
+{%- endif -%}
+{%- endblock form_help %}
+
+{% block translatedname_widget %}
+<div class="row">
+    <div class="col-sm-6">
+        <div class="row">
+            <div class="col-sm-3">
+                {{ form_label(form.nomFr) }}
+            </div>
+            <div class="col-sm-9">
+                {{ form_widget(form.nomFr) }}
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="row">
+            <div class="col-sm-3">
+                {{ form_label(form.nomEn) }}
+            </div>
+            <div class="col-sm-9">
+                {{ form_widget(form.nomEn) }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock translatedname_widget %}

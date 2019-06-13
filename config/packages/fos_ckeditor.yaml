@@ -1,0 +1,34 @@
+# Read the documentation: https://symfony.com/doc/current/bundles/FOSCKEditorBundle/index.html
+
+twig:
+    form_themes:
+        - '@FOSCKEditor/Form/ckeditor_widget.html.twig'
+
+fos_ck_editor:
+    configs:
+        text_styling_only:
+            plugins: "toolbar,button,enterkey,basicstyles,font,entities,floatingspace,wysiwygarea,resize"
+            toolbar: [['Bold', 'Italic', 'Underline', 'Strike'], '-', ['Subscript', 'Superscript']]
+            removeButtons: ''
+            height: '5rem'
+            removePlugins: 'elementspath'
+            blockless: true
+            enterMode: 2
+            resize_enabled: true
+            resize_dir: 'vertical'
+            contentsCss: ['/build/ckeditor/contents.css','/build/ckeditorcustom.css']
+        styling_and_font:
+            plugins: "toolbar,button,enterkey,basicstyles,font,entities,floatingspace,wysiwygarea,resize"
+            toolbar: [['Bold', 'Italic', 'Underline', 'Strike'], '-', ['Subscript', 'Superscript'], '-', ['Font']]
+            removeButtons: ''
+            height: '5rem'
+            blockless: true
+            enterMode: 2
+            resize_enabled: true
+            resize_dir: 'vertical'
+            font_defaultLabel: 'Arial'
+            font_names: 'Arial/Arial;IFAOGreek'
+            contentsCss: ['/build/ckeditor/contents.css','/build/ckeditorcustom.css']
+    base_path: "build/ckeditor"
+    js_path:   "build/ckeditor/ckeditor.js"
+    autoload:  false

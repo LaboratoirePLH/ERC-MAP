@@ -1,0 +1,183 @@
+easy_admin:
+    site_name: 'ERC-MAP - Administration'
+    formats:
+        date:     'd/m/Y'
+        time:     'H:i'
+        datetime: 'd/m/Y H:i:s'
+    list:
+        max_results: 30
+    show:
+        max_results: 20
+    design:
+        menu:
+         - label: 'Gestion'
+         - { entity: 'Chercheur', default: true }
+         - Projet
+         - VerrouEntite
+         - { label: 'Source' }
+         - Auteur
+         - CategorieMateriau
+         - CategorieSource
+         - CategorieSupport
+         - Langue
+         - Materiau
+         - Titre
+         - TypeSource
+         - TypeSupport
+         - { label: 'Attestation' }
+         - CategorieMateriel
+         - CategorieOccasion
+         - EtatFiche
+         - Formule
+         - Materiel
+         - Occasion
+         - Pratique
+         - { label: 'Agent'}
+         - ActiviteAgent
+         - Agentivite
+         - Genre
+         - Nature
+         - StatutAffiche
+         - { label: 'Elément'}
+         - CategorieElement
+         - GenreElement
+         - NatureElement
+         - NombreElement
+         - TraductionElement
+         - { label: 'Localisation'}
+         - EntitePolitique
+         - GrandeRegion
+         - QFonction
+         - QTopographie
+         - SousRegion
+
+    entities:
+        ActiviteAgent:
+            class: App\Entity\ActiviteAgent
+            label: Activité (Agent)
+        Agentivite:
+            class: App\Entity\Agentivite
+            label: Agentivité
+        Auteur:
+            class: App\Entity\Auteur
+            label: Auteur
+        CategorieElement:
+            class: App\Entity\CategorieElement
+            label: Catégorie (Elément)
+        CategorieMateriau:
+            class: App\Entity\CategorieMateriau
+            label: Catégorie (Materiau)
+        CategorieMateriel:
+            class: App\Entity\CategorieMateriel
+            label: Catégorie (Materiel)
+        CategorieOccasion:
+            class: App\Entity\CategorieOccasion
+            label: Catégorie (Occasion)
+        CategorieSource:
+            class: App\Entity\CategorieSource
+            label: Catégorie (Source)
+        CategorieSupport:
+            class: App\Entity\CategorieSupport
+            label: Catégorie (Support)
+        Chercheur:
+            class: App\Entity\Chercheur
+            label: Chercheur
+            list:
+                fields:
+                 - 'id'
+                 - 'prenomNom'
+                 - 'username'
+                 - { property: 'mail', type: 'email' }
+                 - 'institution'
+                 - 'role'
+                 - 'nomsProjets'
+            edit:
+                fields:
+                 - { property: 'prenomNom', type_options: { required: true }}
+                 - { property: 'username', type_options: { required: true }}
+                 - { property: 'mail', type: 'email', type_options: { required: true }}
+                 - { property: 'newPassword', label: 'Nouveau mot de passe', type: 'text' }
+                 - 'institution'
+                 - { property: 'role', type: 'choice', type_options: { choices: {Administrateur: 'admin', Modérateur: 'moderator', Utilisateur: 'user'}}}
+                 - { property: 'projets', type_options: { required: true, by_reference: false }}
+            new:
+                fields:
+                 - { property: 'prenomNom', type_options: { required: true }}
+                 - { property: 'username', type_options: { required: true }}
+                 - { property: 'mail', type: 'email', type_options: { required: true }}
+                 - { property: 'newPassword', label: 'Nouveau mot de passe', type: 'text', type_options: { required: true }}
+                 - 'institution'
+                 - { property: 'role', type: 'choice', type_options: { choices: {Administrateur: 'admin', Modérateur: 'moderator', Utilisateur: 'user'}}}
+                 - { property: 'projets', type_options: { required: true, by_reference: false }}
+        EntitePolitique:
+            class: App\Entity\EntitePolitique
+            label: Entité Politique
+        EtatFiche:
+            class: App\Entity\EtatFiche
+            label: Etat Fiche
+        Formule:
+            class: App\Entity\Formule
+            label: Formule
+        Genre:
+            class: App\Entity\Genre
+            label: Genre
+        GenreElement:
+            class: App\Entity\GenreElement
+            label: Genre (Elément)
+        GrandeRegion:
+            class: App\Entity\GrandeRegion
+            label: Grande Région
+        Langue:
+            class: App\Entity\Langue
+            label: Langue
+        Materiau:
+            class: App\Entity\Materiau
+            label: Matériau
+        Materiel:
+            class: App\Entity\Materiel
+            label: Matériel
+        Nature:
+            class: App\Entity\Nature
+            label: Nature
+        NatureElement:
+            class: App\Entity\NatureElement
+            label: Nature (Element)
+        NombreElement:
+            class: App\Entity\NombreElement
+            label: Nombre (Element)
+        Occasion:
+            class: App\Entity\Occasion
+            label: Occasion
+        Pratique:
+            class: App\Entity\Pratique
+            label: Pratique
+        Projet:
+            class: App\Entity\Projet
+            label: Projet
+        QFonction:
+            class: App\Entity\QFonction
+            label: Qualité Fonctionnnelle
+        QTopographie:
+            class: App\Entity\QTopographie
+            label: Qualité Topographique
+        SousRegion:
+            class: App\Entity\SousRegion
+            label: Sous Région
+        StatutAffiche:
+            class: App\Entity\StatutAffiche
+            label: Statut Affiché
+        Titre:
+            class: App\Entity\Titre
+            label: Titre
+        TraductionElement:
+            class: App\Entity\TraductionElement
+            label: Traduction (Elément)
+        TypeSource:
+            class: App\Entity\TypeSource
+            label: Type (Source)
+        TypeSupport:
+            class: App\Entity\TypeSupport
+            label: Type (Support)
+        VerrouEntite:
+            class: App\Entity\VerrouEntite
+            label: Verrou Entité

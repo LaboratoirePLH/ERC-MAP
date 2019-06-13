@@ -1,0 +1,110 @@
+<table class="table table-striped table-sm mb-0">
+    <tbody>
+        <tr>
+            <th scope="row">
+                {{ 'generic.fields.localisation_reelle'|trans}}
+            </th>
+            <td>
+                {{ (localisation.reel ? 'generic.choices.oui' : 'generic.choices.non')|trans }}
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">
+                {{ 'localisation.fields.entite_politique'|trans}}
+            </th>
+            <td>
+                {{ localisation.entitePolitique is not empty ? localisation.entitePolitique.getNom(locale) : "" }}
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">
+                {{ 'localisation.fields.grande_region'|trans}}
+            </th>
+            <td>
+                {{ localisation.grandeRegion is not empty ? localisation.grandeRegion.getNom(locale) : "" }}
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">
+                {{ 'localisation.fields.sous_region'|trans}}
+            </th>
+            <td>
+                {{ localisation.sousRegion is not empty ? localisation.sousRegion.getNom(locale) : "" }}
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">
+                {{ 'localisation.fields.ville'|trans}}
+            </th>
+            <td>
+                {{ localisation.nomVille }}
+                {% if localisation.pleiadesVille is not empty %}
+                &nbsp;
+                {% include "partials/_entitylink.html.twig" with {
+                    'link': "https://pleiades.stoa.org/places/" ~ localisation.pleiadesVille,
+                    'text': 'localisation.view_pleiades'|trans
+                } %}
+                {% endif %}
+                {% if localisation.longitude is not empty and localisation.latitude is not empty %}
+                &nbsp;
+                {% include "partials/_entitylink.html.twig" with {
+                        'icon': 'fa-location-arrow',
+                        'text': localisation.latitude ~ ', ' ~ localisation.longitude,
+                        'link': 'https://www.google.com/maps/search/?api=1&query=' ~ localisation.latitude ~ ',' ~ localisation.longitude
+                    } %}
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">
+                {{ 'localisation.fields.site'|trans}}
+            </th>
+            <td>
+                {{ localisation.nomSite }}
+                {% if localisation.pleiadesSite is not empty %}
+                &nbsp;
+                {% include "partials/_entitylink.html.twig" with {
+                    'link': "https://pleiades.stoa.org/places/" ~ localisation.pleiadesSite,
+                    'text': 'localisation.view_pleiades'|trans
+                } %}
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">
+                {{ 'localisation.fields.topographie'|trans}}
+            </th>
+            <td>
+                {% for t in localisation.topographies %}
+                {{ t.getNom(locale) }}
+                {% if not loop.last %}
+                {{", "}}
+                {% endif %}
+                {% endfor %}
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">
+                {{ 'localisation.fields.fonction'|trans}}
+            </th>
+            <td>
+                {% for f in localisation.fonctions %}
+                {{ f.getNom(locale) }}
+                {% if not loop.last %}
+                {{", "}}
+                {% endif %}
+                {% endfor %}
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">
+                {{ 'generic.fields.commentaire'|trans}}
+            </th>
+            <td>
+                {{ localisation.getCommentaire(locale)|raw }}
+                <br />
+                <small>{{ localisation.getCommentaire(locale == "fr" ? "en" : "fr")|raw }}</small>
+            </td>
+        </tr>
+    </tbody>
+</table>

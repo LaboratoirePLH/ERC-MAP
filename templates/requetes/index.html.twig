@@ -1,7 +1,7 @@
 {% extends 'list_page.html.twig' %}
 
 {% block title %}
-    {{ 'requetes.title'|trans }}
+   {{ 'requetes.title'|trans }}
 {% endblock %}
 
 {% block head %}{% endblock %}
@@ -50,11 +50,12 @@
     <br/> <br/>
     {{ block('buttonGeneric', 'requetes/partial.html.twig')}} 
 
+    <div class="col-12 table-buttons2">
+    </div>
     <div id="infoTableauResultat">
     </div>
-
     <div id="tableauResultat">
-        <table class="table table-hover table-striped text-center table-bordered">
+        <table class="table table-hover table-striped text-center table-bordered" id="tableauTableResultat">
         <thead>
             <tr id="libelleTableau" class="odd">
             </tr>
@@ -183,7 +184,6 @@
                     tmp["nomBDD"] = tabObjets[tabObjetValeur][tabObjetI].nomBDDNull;
                     tmp["table2"] = tabObjets[tabObjetValeur][tabObjetI].tableNull2;
                     tmp["nomBDD2"] = tabObjets[tabObjetValeur][tabObjetI].nomBDDNull2;
-                    //AND NOT EXIST (SELECT  * FROM source, source_langue WHERE source.id = source_langue.id_source)
                     listeNull = "NOT EXISTS (SELECT * FROM " + tmp["table2"] + ", " + tmp["table"] + " WHERE " + tmp["table"] + "." + tmp["nomBDD"] + " = " + tmp["table2"] + "." + tmp["nomBDD2"] + ")";
                     tmp["table"] = tabObjets[tabObjetValeur][tabObjetI].tableNull2;
                     tmp["nomBDD"] = tabObjets[tabObjetValeur][tabObjetI].nomBDDNull2;
@@ -302,6 +302,7 @@
 
         $("#infoTableauResultat").empty();
         $("#tableauResultat").empty(); //Je vide la div du tableau
+        $(".table-buttons2").empty(); //Je vide là où il y a le bouton export CSV
         $("#tableauResultat").append(tableauResultat); //Je remet un tableau "vide"
 
         $(".div_champ_affiche").each(function(index){
@@ -338,7 +339,38 @@
             }
         }
         $("#infoTableauResultat").append("<span><p> Nombre de résultats : " + rep.length + " (" + (tabIdUnique.length -1) + " id uniques)</p></span>"); //-1 car il y a le 99999999
-        //$("#infoTableauResultat").append("<span><p> Nombre d'id unique : " + (tabIdUnique.length -1) + "</p></span>"); 
+        dataTable();
+    }
+
+    function dataTable(){
+            //DataTable
+            var dt = $('#tableauTableResultat').DataTable({
+            autoWidth: true,
+            lengthChange: true,
+            scrollX: false,
+            searching: true,
+            ordering: true,
+            order: [
+                [0, 'desc']
+            ],
+            language: $.parseJSON('{{ "datatable.language"|trans|raw }}'),
+            pageLength: 10,
+            lengthMenu: [
+                [
+                    10, 25, 50, -1
+                ],
+                [
+                    10, 25, 50, "{{'datatable.all'|trans}}"
+                ]
+            ],
+            buttons: [{
+                extend: 'csv',
+                filename: "{{ 'app_name'|trans }}-{{ 'requetes.list'|trans }}",
+                text: "{{'generic.export_csv'|trans}}"
+            }]
+        });
+
+        dt.buttons().container().appendTo('.table-buttons2');
     }
 
     function sauvegarderRequete(){

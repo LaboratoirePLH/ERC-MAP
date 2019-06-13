@@ -232,7 +232,6 @@ class RequetesController extends AbstractController
                     }
                 }
                 else{ //Si c'est un theonyme
-                    //and e2.etat_absolu like '<div>eeeeezrzefššsd</div>'
                     $condition .= $tabEtOu[$i] . " e1.etat_absolu "; //Elément de comparaison : l'état absolu du second élément (donc du fils)
                     $condition .= $this->_operatorValue($tabOperator[$i], "<div>" . $tabValue[$i] . "</div>"); //Je rajoute le <div> qui est dans la BDD
                 }
@@ -275,7 +274,7 @@ class RequetesController extends AbstractController
             $sql .= $groupBy;
             $sql .= $orderBy;
 
-            //  return new JsonResponse($sql);
+             return new JsonResponse($sql);
 
             //Requête
             $conn = $this->getDoctrine()->getEntityManager()->getConnection();

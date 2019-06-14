@@ -20,6 +20,7 @@ ERC-MAP
 ```bash
     # Install prerequisites
     composer install --no-dev
+    npm install
 
     # Apply migrations and load seed data
     php bin/console doctrine:migrations:migrate --no-interaction

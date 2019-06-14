@@ -10,11 +10,9 @@
 {% block content %}
 <div id="alert_bootstrap">
 </div>
-
     {{ block("buttonGeneric", "requetes/partial.html.twig")}}
     
     {{ form(formEnrReq) }}
-    
     <div id="general_req">
         <div id="type_donnee">
             <h3>
@@ -46,7 +44,7 @@
         </div>    
     </div>
 
-    <!-- <button class="btn btn-primary" onclick="chargerRequete()" type="button">{{ 'requetes.charger' | trans }}</button> Boutton temporaire, pour tester le chargement -->
+    <button class="btn btn-primary" onclick="chargerRequete(80)" type="button">{{ 'requetes.charger' | trans }}</button>
     <br/> <br/>
     {{ block('buttonGeneric', 'requetes/partial.html.twig')}} 
 
@@ -67,6 +65,17 @@
 
     {{ block("modal_bootstrap", "requetes/partial.html.twig") }}
 
+    </div>
+
+    <!-- Volet de sélection de requêtes -->
+    <div id="volet_clos">
+        <div id="volet">
+            <p> {{'requetes.mes_requetes' |trans}} </p>
+            <a href="#volet" class="ouvrir" aria-hidden="true">{{'requetes.ma_liste' | trans}}</a>
+            <a href="#volet_clos" class="fermer" aria-hidden="true">{{'requetes.ma_liste' | trans}}</a>
+        </div>
+    </div>
+
     {% endblock %}
 
     {% block javascripts %}
@@ -80,9 +89,10 @@
         creerTableAfficherEtCritere();
         $("#exampleModal").css("display","none"); //On cache le modal
         $("#input_modal").val(''); //On lui met un input vide
+        afficherListeRequete();
     });
-
-    //C'est la première box
+ 
+ //C'est la première box
     var formulaire_critere = null;// Variable qui prend le formulaire.
     var formulaire_critere_vide = null; //Variable qui prend le formulaire vide, utilisé dans afficheListeCritere
 
@@ -109,11 +119,32 @@
             $('#alert_bootstrap').append("<div class=\"alert alert-success alert-dismissible fade show\" role=\"alert\">Requête enregistrée.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
 
             //Affichage du reste (Corps de la requête)
-            chargerRequete(); //Rajouter l'id qui est envoyé dans reqSaveCorps
+            //chargerRequete(); //Rajouter l'id qui est envoyé dans reqSaveCorps
         }
         else{
             enleverBoutonEtOu(); //Pour ne pas qu'ils apparaissent sur le premièr critère
         }
+    }
+
+    function afficherListeRequete(){
+        //Ajax
+        $.ajax({
+            url:'{{path('requetes_charger_liste_requete')}}',
+            type: "POST",
+            success: function(rows)
+            {        
+                console.log(rows);
+                $.each(rows, function (key, row) {
+                    $("#volet").append("<a class=\"listeRequete\" href=\"#\" onclick=\"chargerRequete(" + row.id + ");return false;\">- " + row.tete + "</a><br/>");
+                });
+            },
+            error: function (err)
+            {
+                $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">Erreur serveur.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
+                console.log("An error ocurred while loading data ...");
+                console.log(err);
+            }
+        });
     }
 
     function clearFilters(id) {
@@ -284,7 +315,6 @@
             },
             success: function(rep)
             {        
-                console.log(JSON.stringify(rep));
                 afficherExecRequete(rep);
             },
             error: function (err)
@@ -292,7 +322,7 @@
                 $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">Erreur serveur.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
                 console.log("An error ocurred while loading data ...");
             }
-        })
+        });
     }
 
     function afficherExecRequete(rep){
@@ -492,8 +522,7 @@
         $("#formEnrReq").submit();
     }
 
-    function chargerRequete(){
-        var idReq = 80;
+    function chargerRequete(idReq){
          $.ajax({
                     url:'{{path('requetes_charger_requete')}}',
                     type: "POST",
@@ -509,7 +538,7 @@
                         //Affichage d'une erreur à l'utilisateur
                         $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">Erreur serveur.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
                         console.log("An error ocurred while loading data ...");
-                        console.log(rep);
+                        console.log(err);
                     }
                 })
     }

@@ -441,3 +441,5 @@ requetes:
     localisation_agent: "Agent localisation"
     entite_politique_iacp: "Political Entity (IACP number)"
     dupliquer: "Clone"
+    mes_requetes: "My queries :"
+    ma_liste: " List "

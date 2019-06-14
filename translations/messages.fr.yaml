@@ -441,3 +441,5 @@ requetes:
     localisation_agent: "Localisation de l'agent"
     entite_politique_iacp: "Entité politique (N°IACP)"
     dupliquer: "Dupliquer"
+    mes_requetes: "Mes requêtes :"
+    ma_liste: "Liste"

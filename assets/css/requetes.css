@@ -1,0 +1,96 @@
+/*#volet_clos {
+    position: fixed; 
+    top: 20%; right: 0;
+    margin-top : 150px;
+}
+
+#volet {
+    width: 250px;
+    background: #6B9A49; color: #fff;
+}
+
+#contenuReq {
+    margin-left:10px;
+}
+
+#volet a.ouvrir {
+    position: absolute;
+    -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    -moz-radius: 0 0 8px 8px;
+    border-radius: 0 0 8px 8px;
+    padding: 10px 25px;
+    background: #555;
+    color: #fff;
+    text-decoration: none;
+    top:39px;
+    left:-73.5px;
+ }*/
+ 
+ #volet {
+    width: 250px;
+    padding: 10px;
+    background: #6B9A49; color: #fff;
+}
+
+#volet a.ouvrir,
+#volet a.fermer {
+    padding: 10px 25px;
+    background: #555;
+    color: #fff;
+    text-decoration: none;
+}
+
+#volet {
+    position: absolute;
+    top:150px;
+    left: -250px;  /*test fixed + scroll, on retire la position top*/
+    -webkit-transition: all .5s ease-in;
+    -moz-transition: all .5s ease-in;
+    transition: all .5s ease-in;
+}
+
+#volet a.listeRequete{
+    color: #fff;
+}
+
+#volet a.ouvrir,
+#volet a.fermer {
+    position: absolute;
+    right: -62px;
+    top: 19px;
+    -webkit-transform: rotate(270deg);
+    -moz-transform: rotate(270deg);
+    -o-transform: rotate(270deg);
+    -ms-transform: rotate(270deg);
+    -moz-radius: 0 0 8px 8px;
+    border-radius: 0 0 8px 8px;
+}
+
+#volet a.fermer {
+    display: none;
+}
+
+#volet:target {
+    left: 0px;
+}
+
+/* code pour la fermeture */
+
+#volet:target a.fermer {
+    display: block;
+}
+#volet:target a.ouvrir {
+    display: none;
+}
+#volet_clos:target #volet {
+    left: -255px;
+}
+
+ /* test fixed + scroll */
+#volet_clos {
+    position: fixed; 
+    top: 120px; left: 0;
+}

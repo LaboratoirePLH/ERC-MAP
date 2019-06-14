@@ -538,7 +538,7 @@
             "tableSQL": "categorie_source"
         },
         {
-            "nom": "{{ 'source.fields.type_source' |trans }}",
+            "nom": "{{ 'source.fields.types_source' |trans }}",
             "type": 2,
             "nomBDD": "{{'requetes.nomBDD' |trans}}",
             "table": "TypeSource",

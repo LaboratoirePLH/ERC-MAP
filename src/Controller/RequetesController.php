@@ -147,6 +147,33 @@ class RequetesController extends AbstractController
     /**
      * Page queries
      *
+     * @Route("/requetes/chargerListeReq", name="requetes_charger_liste_requete", options={"expose"=true})
+     */
+
+     public function chargerListeRequete(Request $request){
+        $user = (string)$this->get('security.token_storage')->getToken()->getUser(); //On récupère le nom + prénom de l'user en cours
+        $idChercheur = $this->getDoctrine()->getRepository(Chercheur::class)->findOneBy(['prenomNom' => $user]); //On récupère son id
+        $repo = $this->getDoctrine()->getManager()->getRepository(Chercheur::class);
+        $rows = $repo->createQueryBuilder("e")
+                ->andWhere('e.id = :id')
+                ->setParameter('id', $idChercheur)
+                ->getQuery()
+                ->getResult();
+
+        $rows = $rows[0]->getRequetes(); //Je get les requêtes
+
+        foreach ($rows as $row) {
+            $responseArray[] = array(
+                "id" => $row->getId(),
+                "tete" => $row->getReqLib()
+            );
+        }
+        return new JsonResponse($responseArray);
+     }
+
+    /**
+     * Page queries
+     *
      * @Route("/requetes/chargerReq", name="requetes_charger_requete", options={"expose"=true})
      */
     public function chargerRequete(Request $request)

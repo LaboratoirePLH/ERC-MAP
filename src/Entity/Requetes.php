@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Traits\EntityId;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\RequetesRepository")

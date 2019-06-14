@@ -94,12 +94,18 @@ class Chercheur extends AbstractEntity implements UserInterface
     private $verrous;
 
     /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Requetes", mappedBy="id_chercheur", orphanRemoval=true)
+     */
+    private $requetes; //Ici ça va être un tableau de requêtes en fait
+
+    /**
      * Constructor
      */
     public function __construct()
     {
         $this->projets = new \Doctrine\Common\Collections\ArrayCollection();
         $this->verrous = new ArrayCollection();
+        $this->requetes = new ArrayCollection();
 
         $this->setDateAjout(new \DateTime());
     }
@@ -310,5 +316,36 @@ class Chercheur extends AbstractEntity implements UserInterface
     public function __toString(): string
     {
         return $this->getPrenomNom();
+    }
+
+    /**
+     * @return Collection|Requetes[]
+     */
+    public function getRequetes(): Collection
+    {
+        return $this->requetes;
+    }
+
+    public function addRequete(Requetes $requete): self
+    {
+        if (!$this->requetes->contains($requete)) {
+            $this->requetes[] = $requete;
+            $requete->setIdChercheur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRequete(Requetes $requete): self
+    {
+        if ($this->requetes->contains($requete)) {
+            $this->requetes->removeElement($requete);
+            // set the owning side to null (unless already changed)
+            if ($requete->getIdChercheur() === $this) {
+                $requete->setIdChercheur(null);
+            }
+        }
+
+        return $this;
     }
 }

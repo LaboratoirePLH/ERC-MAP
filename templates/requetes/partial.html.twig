@@ -1,0 +1,134 @@
+{% block buttonBarCritere %}
+    <div class="row">
+        <div class="col-12 table-buttons">
+            <button
+                class="btn btn-warning clear-filter-button" onclick="clearFilters(1)" type="button">
+                {#Bouton pour réinitialiser les filtres #}
+                {{ 'generic.clear_filters'|trans }}
+            </button>
+            <button class="btn btn-primary" onclick="ajouterFiltre()" type="button">
+                {{ 'generic.add' |trans }}</button>
+            {# Ajouter une requête #}
+            <br/>
+            <br/>
+        </div>
+    </div>
+{% endblock %}
+
+{% block buttonBarChampAffiche %}
+    <div class="row">
+        <div class="col-12 table-buttons">
+            <button
+                class="btn btn-warning clear-filter-button" onclick="clearFilters(2)" type="button">
+                {#Bouton pour réinitialiser les filtres #}
+                {{ 'generic.clear_filters'|trans }}
+            </button>
+            <button class="btn btn-primary" onclick="ajouterChampAffiche()" type="button">
+                {{ 'generic.add' |trans }}</button>
+            {# Ajouter une requête #}
+            <br/>
+            <br/>
+        </div>
+    </div>
+{% endblock %}
+
+{% block buttonGeneric %}
+    <div class="row">
+        <div class="col-12 table-buttons">
+            <button class="btn btn-info" data-target="#exampleModal" data-toggle="modal" type="button">{{ 'generic.save' |trans }}</button>
+            {#Bouton pour sauvegarder la requête #}
+            <button class="btn btn-success" onclick="executerRequete()" type="button">
+                {{ 'generic.search' |trans }}
+            </button>
+            {#Bouton pour lancer la requête #}
+            <br/>
+            <br/>
+        </div>
+    </div>
+{% endblock %}
+
+{% block typeDonnee %}
+    <br/>
+    <div class="div_type_donnee" id="div_type_donnee">
+        <form class="form_afficher">
+            <select class="select_type_donnee" id="select_type_donnee" name="select_type_donnee" onchange="selectTypeDonnee(this)">
+                <option disabled="disabled" selected="selected" value="" label="-1">{{ 'requetes.selection_vide' | trans }}</option>
+                <option value="Attestation">{{ 'attestation.name' | trans }}</option>
+                <option value="Element">{{ 'element.name' | trans }}</option>
+                <option value="Source">{{ 'source.name' | trans }}</option>
+            </select>
+        </form>
+    </div>
+    <br/>
+{% endblock %}
+
+{% block ajoutBox1 %}
+    <div class="select_div">
+        <span class="span_box1">
+            <select class="select_box1" name="select_box1" onchange="secondeBox(this)">
+                <option disabled="disabled" label="-1" selected="selected" value="">{{ 'requetes.selection_vide' | trans }}</option>
+            </select>
+        </span>
+        <span class="span_box2">
+            <select class="select_box2" name="select_box2" onchange="troisiemeBox(this)" style="visibility:hidden">
+                <option disabled="disabled" label="-1" selected="selected" value="">{{ 'requetes.selection_vide' | trans }}</option>
+            </select>
+        </span>
+        <span class="span_box3">
+            <select class="select_box3" name="select_box3" onchange="quatriemeBox(this)" style="visibility:hidden">
+                <option disabled="disabled" label="-1" selected="selected" value="">{{ 'requetes.selection_vide' | trans }}</option>
+            </select>
+        </span>
+        <span class="span_box4"></span>
+        <button class="btn_suppr_critere btn btn-danger" onclick="removeFiltre(this)" type="button">{{ 'generic.delete' | trans }}</button>
+        <div class="btn-group btn-group-toggle boutonsEtOu" data-toggle="buttons">
+            <label checked class="btn btn-secondary active Et">
+                <input autocomplete="off" name="options" type="radio">{{ 'requetes.et' |trans }}</label>
+            <label class="btn btn-secondary Ou">
+                <input autocomplete="off" name="options" type="radio">{{ 'requetes.ou' |trans }}</label>
+        </div>
+        <button type="button buttonDupliquer" onclick="dupliquer(this)" class="btn btn-info">{{ 'requetes.dupliquer' |trans }}</button>
+    </div>
+    <br/>
+{% endblock %}
+
+{% block champAffiche %}
+    <div class="div_champ_affiche">
+        <span class="span_box_champAffiche_1">
+            <select class="select_box_champAffiche_1" name="select_box_champAffiche_1" onchange="secondeBoxChampAffiche(this)">
+                <option disabled="disabled" label="-1" selected="selected" value="-1">{{ 'requetes.selection_vide' | trans }}</option>
+            </select>
+        </span>
+        <span class="span_box_champAffiche_2">
+            <select class="select_box_champAffiche_2" name="select_box2" onchange="troisiemeBoxChampAffiche(this)" style="visibility:hidden"></select>
+        </span>
+        <span class="span_box_champAffiche_3">
+            <select class="select_box_champAffiche_3" name="select_box3" onchange="changerSelected(this)" style="visibility:hidden"></select>
+        </span>
+        <button class="btn_suppr btn btn-danger btn_suppr_champAffiche" onclick="removeFiltre(this)" type="button">{{ 'generic.delete' | trans }}</button>
+    </div>
+    <br/>
+{% endblock %}
+
+{% block modal_bootstrap %}
+    <!-- Modal, fênetre pour le nom de la requête -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">{{ 'requetes.modal_nom_req' | trans }}</h5> <!-- A mettre en variable twig -->
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="text" required class="text_input input_req" id="input_modal" style="margin-left: auto; margin-right: auto; display: block;">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ 'requetes.modal_fermer' | trans }}</button> <!-- A mettre en variable twig -->
+                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="sauvegarderRequete()">{{ 'requetes.modal_sauvegarder' | trans }}</button> <!-- A mettre en variable twig -->
+            </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -44,7 +44,7 @@
         </div>    
     </div>
 
-    <button class="btn btn-primary" onclick="chargerRequete(80)" type="button">{{ 'requetes.charger' | trans }}</button>
+    <button class="btn btn-primary" onclick="chargerRequete(94)" type="button">{{ 'requetes.charger' | trans }}</button>
     <br/> <br/>
     {{ block('buttonGeneric', 'requetes/partial.html.twig')}} 
 
@@ -85,7 +85,6 @@
 
     $(document).ready(function () {
         // Le document ready
-        // Peut-être mettre directement le text dans les <option> au moins j'aurai la traduction
         creerTableAfficherEtCritere();
         $("#exampleModal").css("display","none"); //On cache le modal
         $("#input_modal").val(''); //On lui met un input vide
@@ -121,9 +120,7 @@
             //Affichage du reste (Corps de la requête)
             //chargerRequete(); //Rajouter l'id qui est envoyé dans reqSaveCorps
         }
-        else{
             enleverBoutonEtOu(); //Pour ne pas qu'ils apparaissent sur le premièr critère
-        }
     }
 
     function afficherListeRequete(){
@@ -133,7 +130,6 @@
             type: "POST",
             success: function(rows)
             {        
-                console.log(rows);
                 $.each(rows, function (key, row) {
                     $("#volet").append("<a class=\"listeRequete\" href=\"#\" onclick=\"chargerRequete(" + row.id + ");return false;\">- " + row.tete + "</a><br/>");
                 });
@@ -590,8 +586,8 @@
                 var valeur =  $(this).find(".select_box3").find(`[selected="selected"]`).val();//Le val correspond à la valeur de l'élément (String, number, liste...)
                 var idTabChoix = tabChoix[valeur][tabCorps[1][index]["box3"]].id;
                 remplirQuatriemeBox(valeur, idTabChoix, $(this).find(".span_box4"), $(this).find(".select_box3"));
-                    
-                    //Traitement en fonction de la box4
+                
+                    //Traitement en fonction de la box3
                 if(valeur == "1" || valeur =="3") //Si c'est un input
                 {
                     $(this).find(".input_req").val(tabCorps[1][index]["box4"]);
@@ -636,6 +632,8 @@
 
                 //Box 1
                 var tabBox1 = tabCorps[2][index]["box1"].toLowerCase().replace(/é|è|ê/g,"e");
+                if(tabBox1 == "localisation de l'agent") tabBox1 = "localisation_agent";
+
                 $(this).find(".select_box_champAffiche_1").find(`[selected="selected"]`).removeAttr("selected");//Je chope celui qui à l'attribut "selected" et je le vire
                 $(this).find(".select_box_champAffiche_1").find(`[value="`+tabBox1+`"]`).attr("selected","selected"); //Je mets le selected sur le bon
 
@@ -718,7 +716,7 @@
             switch(typeDonnee){
                 case "Attestation":
                         $(selectChampAffiche1).append("<option value=\"agent\">{{ 'requetes.agent_name' | trans }}</option>");
-                        $(selectChampAffiche1).append("<option value=\"datation\">{{ 'source.sections.datation' | trans }}</option>");
+                        $(selectChampAffiche1).append("<option value=\"datation\">{{ 'generic.fields.datation' | trans }}</option>");
                         $(selectChampAffiche1).append(" <option value=\"localisation_agent\">{{ 'requetes.localisation_agent' | trans }}</option>");
                     break;
        
@@ -727,10 +725,10 @@
                     break;
                 case "Source":
                     $(selectChampAffiche1).append("<option value=\"biblio\">{{ 'nav.bibliography' | trans }}</option>");
-                    $(selectChampAffiche1).append("<option value=\"datation\">{{ 'source.sections.datation' | trans }}</option>");
+                    $(selectChampAffiche1).append("<option value=\"datation\">{{ 'generic.fields.datation' | trans }}</option>");
                     break;
             }
-            $(selectChampAffiche1).append("<option value=\"localisation\">{{ 'source.sections.localisation' | trans }}</option>"); //Ce qui est commun aux trois
+            $(selectChampAffiche1).append("<option value=\"localisation\">{{ 'generic.fields.localisation' | trans }}</option>"); //Ce qui est commun aux trois
             $(selectChampAffiche1).append("<option value=\"source\">{{ 'source.name' | trans }}</option>"); //Ce qui est commun aux trois
             champAffiche = $("#liste_affiche").html();
     }
@@ -745,7 +743,7 @@
                 case "Attestation":
                     $(selectBox1).append("<option value=\"agent\">{{ 'requetes.agent_name' | trans }}</option>");
                     $(selectBox1).append("<option value=\"attestation\">{{ 'attestation.name' | trans }}</option>");
-                    $(selectBox1).append("<option value=\"datation\">{{ 'source.sections.datation' | trans }}</option>");
+                    $(selectBox1).append("<option value=\"datation\">{{ 'generic.fields.datation' | trans }}</option>");
                     $(selectBox1).append("<option value=\"element\">{{ 'element.name' | trans }}</option>");
                     $(selectBox1).append("<option value=\"source\">{{ 'source.name' | trans }}</option>");
                     break;
@@ -763,7 +761,7 @@
                     $(selectBox1).append("<option value=\"source\">{{ 'source.name' | trans }}</option>");
                     break;
             }
-            $(selectBox1).append("<option value=\"localisation\">{{ 'source.sections.localisation' | trans }}</option>"); //Est commun aux trois
+            $(selectBox1).append("<option value=\"localisation\">{{ 'generic.fields.localisation' | trans }}</option>"); //Est commun aux trois
             formulaire_critere = $("#liste_critere").html();
             enleverBoutonEtOu();
     }
@@ -901,8 +899,8 @@
         $(box).empty();//On le vide avant d'ajouter quoi que ce soit
         var valeurTabObjet = $(currentElement).parent().parent().find(".select_box2").children("option:selected").val();
         var iValeurTabObjet = $(currentElement).parent().parent().find(".select_box2").children("option:selected").attr('label'); // le i de tabObjets['valeur'][i]
+       
         switch (valeur) {
-
             case "1":
                 if (id != 7) { // estNul
                     $(box).append("<input type=\"text\" required class=\"text_input input_req\">"); // Text input classique (String)
@@ -914,8 +912,7 @@
                 break;
 
             case "2" :
-                var reqSaveCorps = '{{ reqSaveCorps}}';
-                if(reqSaveCorps != "" || id == 14 )//Si c'est une sauvegarde de requête ou que est null
+                if(id == 14 )//Si c'est une sauvegarde de requête ou que c'est null
                 {
                     break;
                 }

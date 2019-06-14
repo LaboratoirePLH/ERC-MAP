@@ -168,6 +168,9 @@ class RequetesController extends AbstractController
                 "tete" => $row->getReqLib()
             );
         }
+        if(!isset($responseArray) || empty($responseArray)){
+            $responseArray = " ";
+        }
         return new JsonResponse($responseArray);
      }
 

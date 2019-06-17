@@ -131,7 +131,8 @@
             "nomBDD": "{{'requetes.nomBDD' |trans}}",
             "table": "Nature",
             "tableSQL": "nature",
-            "tableNull": "agent_agent",
+            "tableNull": "agent_nature",
+            "nomBDDNull": "id_agent",
             "tableNull2": "agent",
             "nomBDDNull2": "id"
         },
@@ -289,7 +290,8 @@
             "tableSQL": "theonymes_implicites",
             "tableNull": "theonymes_implicites",
             "nomBDDNull": "id_parent",
-            "OUIIIIII": "OUIIIIII"
+            "tableNull2": "element",
+            "nomBDDNull2": "id"
         },
         {
             "nom": "{{ 'element.fields.etat_morphologique' |trans }}",
@@ -298,7 +300,9 @@
             "table": "ContientElement",
             "tableSQL": "contient_element",
             "tableNull": "contient_element",
-            "nomBDDNull": "etat_morphologique"
+            "nomBDDNull": "id_element",
+            "tableNull2": "element",
+            "nomBDDNull2": "id"
         },
         {
             "nom": "{{ 'element.fields.beta_code' |trans }}",
@@ -313,8 +317,10 @@
             "nomBDD": "{{'requetes.nomBDD' |trans}}",
             "table": "Element",
             "tableSQL": "categorie_element",
-            "tableNull": "contient_element",
-            "nomBDDNull": "id_categorie_element"
+            "tableNull": "element_categorie",
+            "nomBDDNull": "id_element",
+            "tableNull2": "element",
+            "nomBDDNull2": "id"
         },
         {
             "nom": "{{ 'element.fields.suffixe' |trans }}",

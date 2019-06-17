@@ -50,13 +50,6 @@
             "tableSQL": "attestation"
         },
         {
-            "nom": "{{ 'attestation.fields.extrait_sans_restitution' |trans }}",
-            "type": 1,
-            "nomBDD": "extrait_sans_restitution",
-            "table": "Attestation",
-            "tableSQL": "attestation"
-        },
-        {
             "nom": "{{ 'attestation.fields.translitteration' |trans }}",
             "type": 1,
             "nomBDD": "translitteration",

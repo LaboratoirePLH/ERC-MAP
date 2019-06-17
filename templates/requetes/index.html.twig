@@ -105,10 +105,12 @@
 
     function enleverBoutonEtOu(){
         $(".select_div").first().find(".boutonsEtOu").css("visibility","hidden");
+        $(".select_div").first().find(".boutonsEtOu").find(".Et").removeClass("active");
     }
 
     function remettreBoutonEtOu(){
         $(".select_div").last().find(".boutonsEtOu").css("visibility","visible");
+        $(".select_div").last().find(".boutonsEtOu").find(".Et").addClass("active");
     }
 
     function creerTableAfficherEtCritere() {
@@ -162,8 +164,11 @@
     function executerRequete(){
         var typeDonnee = $("#select_type_donnee").children("option:selected").val(); //Je récupère le type donnée
         var tabRequete = {}; //Objet qui va être envoyé au controller
+        var listeNull = []; //Tableau qui va prendre toutes les infos de listeNull
+        var listeNullCondition = []; //Les conditions
+        var listeNullTable = []; //Les tables à ajouter
+        var tabNull = {};
         var quit = false;
-        var listeNull = " "; //Variable qui va servir de critère si une liste est nulle, pour les cas spéciaux
 
         if(typeDonnee == "") //Si le type de donnée n'est pas mis
         {
@@ -201,32 +206,46 @@
             if(tabChoix[tabChoixValeur][tabChoixI].id == 2 || tabChoix[tabChoixValeur][tabChoixI].id == 7 || tabChoix[tabChoixValeur][tabChoixI].id == 13)
             {
                  tmp["value"] = "IS NULL";
-                 tmp["etOu"] = "AND";
             }
             else if(tabChoix[tabChoixValeur][tabChoixI].id == 14 && tabObjets[tabObjetValeur][tabObjetI].tableNull2 == undefined){ //Le est null d'une liste
                 tmp["table"] = tabObjets[tabObjetValeur][tabObjetI].tableNull;
                 tmp["nomBDD"] = tabObjets[tabObjetValeur][tabObjetI].nomBDDNull;
                 tmp["value"] = "IS NULL";
-                tmp["etOu"] = "AND";
             }
-            else if(tabChoix[tabChoixValeur][tabChoixI].id == 14 && tabObjets[tabObjetValeur][tabObjetI].tableNull2 != undefined){ //Si ça doit passer par une table intermédiaire, les cas spéciaux
-                    tmp["table"] = tabObjets[tabObjetValeur][tabObjetI].tableNull;
-                    tmp["nomBDD"] = tabObjets[tabObjetValeur][tabObjetI].nomBDDNull;
-                    tmp["nomBDD2"] = tabObjets[tabObjetValeur][tabObjetI].nomBDDNull2;
+            else if(tabChoix[tabChoixValeur][tabChoixI].id == 14 && tabObjets[tabObjetValeur][tabObjetI].tableNull2 != undefined && tabObjets[tabObjetValeur][tabObjetI].nomBDDNull2 != undefined){ //Si ça doit passer par une table intermédiaire, les cas spéciaux
+                console.log("ok")
+                var listeNullTmp = "";
 
-                    if(tabObjets[tabObjetValeur][tabObjetI].tableNull2.toLowerCase() == typeDonnee.toLowerCase()){ //Si la table y est déjà alors je ne la rajoute pas
-                        listeNull = "NOT EXISTS (SELECT * FROM " + tmp["table"] + " WHERE " + tmp["table"] + "." + tmp["nomBDD"] + " = " + typeDonnee + "." + tmp["nomBDD2"] + ")";
-                    }
-                    else{
-                        tmp["table2"] = tabObjets[tabObjetValeur][tabObjetI].tableNull2;
-                         listeNull = "NOT EXISTS (SELECT * FROM " + tmp["table2"] + ", " + tmp["table"] + " WHERE " + tmp["table"] + "." + tmp["nomBDD"] + " = " + tmp["table2"] + "." + tmp["nomBDD2"] + ")";
-                    }
+                //Pour mettre le ET/OU au début
+                if($(this).find(".boutonsEtOu").find(".active").hasClass("Et")){ //Si c'est le boutton "Et"
+                    listeNullTmp = " AND ";
+                }
+                else if($(this).find(".boutonsEtOu").find(".active").hasClass("Ou")){ //Si c'est le boutton "Ou"
+                   listeNullTmp = " OR ";
+                }
+                else{
+                    listeNullTmp = " AND ";
+                }
 
-                    tmp["table"] = tabObjets[tabObjetValeur][tabObjetI].tableNull2;
-                    tmp["nomBDD"] = tabObjets[tabObjetValeur][tabObjetI].nomBDDNull2;
-                    tmp["operator"] = "NULL";
-                    tmp["value"] = "NULL";
-                    tmp["etOu"] = "AND";
+                tmp["table"] = tabObjets[tabObjetValeur][tabObjetI].tableNull;
+                tmp["nomBDD"] = tabObjets[tabObjetValeur][tabObjetI].nomBDDNull;
+                tmp["table2"] = tabObjets[tabObjetValeur][tabObjetI].tableNull2;
+                tmp["nomBDD2"] = tabObjets[tabObjetValeur][tabObjetI].nomBDDNull2;
+
+                listeNullTmp += "NOT EXISTS (SELECT * FROM " + tmp["table"] + " WHERE " + tmp["table"] + "." + tmp["nomBDD"] + " = " + tmp["table2"] + "." + tmp["nomBDD2"] + ") ";
+                
+                if(tmp["table2"] == "agent"){
+                    listeNullTable.push("agent");
+                }
+                if(tmp["table2"] == "localisation"){
+                    listeNullTable.push("localisation");
+                }
+
+                listeNullCondition.push(listeNullTmp);
+                tmp["table"] = "NULL";
+                tmp["nomBDD"] = "NULL";
+                tmp["operator"] = "NULL";
+                tmp["value"] = "NULL";
             }
             else
             {
@@ -252,13 +271,20 @@
                     quit = true;
                     return false;
                 }
-                if($(this).find(".boutonsEtOu").find(".active").hasClass("Et")){ //Si c'est le boutton "Et"
-                    tmp["etOu"] = "AND";
-                }
-                else if($(this).find(".boutonsEtOu").find(".active").hasClass("Ou")){ //Si c'est le boutton "Ou"
-                    tmp["etOu"] = "OR";
-                }
             }
+            listeNull.push(listeNullCondition);
+            listeNull.push(listeNullTable);
+
+            if($(this).find(".boutonsEtOu").find(".active").hasClass("Et")){ //Si c'est le boutton "Et"
+                tmp["etOu"] = "AND";
+            }
+            else if($(this).find(".boutonsEtOu").find(".active").hasClass("Ou")){ //Si c'est le boutton "Ou"
+                tmp["etOu"] = "OR";
+            }
+            else{
+                tmp["etOu"] = "AND";
+            }
+
             tabRequete["where"+index]=tmp;
         });
 
@@ -326,7 +352,7 @@
             },
             error: function (err)
             {
-                $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\"{{ 'requetes.erreur' | trans }}<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
+                $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">{{ 'requetes.erreur' | trans }}<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
                 console.log("An error ocurred while loading data ...");
             }
         });
@@ -464,14 +490,11 @@
             }
  
             //Bouton ET/OU, s'il est visible (Donc on peut le changer)
-            if($(this).find(".boutonsEtOu").attr("style") == undefined) //Pas de style = le style "visibility: hidden;" a été enlevé
-            {
-               if($(this).find(".boutonsEtOu").find(".active").hasClass("Et")){ //Si c'est le boutton "Et"
-                   tmp["box5"] = "Et";
-               }
-               else if($(this).find(".boutonsEtOu").find(".active").hasClass("Ou")){ //Si c'est le boutton "Ou"
-                   tmp["box5"] = "Ou";
-               }
+            if($(this).find(".boutonsEtOu").find(".active").hasClass("Et")){ //Si c'est le boutton "Et"
+                tmp["box5"] = "Et";
+            }
+            else if($(this).find(".boutonsEtOu").find(".active").hasClass("Ou")){ //Si c'est le boutton "Ou"
+                tmp["box5"] = "Ou";
             }
             else
             {

@@ -95,7 +95,16 @@ class RequetesController extends AbstractController
             $em->persist($reqSave);
             $em->flush();
 
-            $reqSaveCorps = 18; //Renvoie l'id de la requête
+            $tmp = $idChercheur->getId();
+            //Pour avoir l'id de la dernière requête
+            $sql = "SELECT r.id FROM requetes r, chercheur c WHERE r.id_chercheur_id = c.id AND c.id = $tmp ORDER BY r.id DESC";
+            $conn = $this->getDoctrine()->getEntityManager()->getConnection();
+
+            $stmt = $conn->prepare($sql);
+            $stmt->execute();
+
+            $stmt = $stmt->fetchAll();
+            $reqSaveCorps = $stmt[0]["id"];
         }
 
         return $this->render('requetes/index.html.twig', [
@@ -150,29 +159,53 @@ class RequetesController extends AbstractController
      * @Route("/requetes/chargerListeReq", name="requetes_charger_liste_requete", options={"expose"=true})
      */
 
-     public function chargerListeRequete(Request $request){
-        $user = (string)$this->get('security.token_storage')->getToken()->getUser(); //On récupère le nom + prénom de l'user en cours
-        $idChercheur = $this->getDoctrine()->getRepository(Chercheur::class)->findOneBy(['prenomNom' => $user]); //On récupère son id
-        $repo = $this->getDoctrine()->getManager()->getRepository(Chercheur::class);
-        $rows = $repo->createQueryBuilder("e")
+    public function chargerListeRequete(Request $request)
+    {
+        if ($request->isXmlHttpRequest()) {
+            $user = (string)$this->get('security.token_storage')->getToken()->getUser(); //On récupère le nom + prénom de l'user en cours
+            $idChercheur = $this->getDoctrine()->getRepository(Chercheur::class)->findOneBy(['prenomNom' => $user]); //On récupère son id
+            $repo = $this->getDoctrine()->getManager()->getRepository(Chercheur::class);
+            $rows = $repo->createQueryBuilder("e")
                 ->andWhere('e.id = :id')
                 ->setParameter('id', $idChercheur)
                 ->getQuery()
                 ->getResult();
 
-        $rows = $rows[0]->getRequetes(); //Je get les requêtes
+            $rows = $rows[0]->getRequetes(); //Je get les requêtes
 
-        foreach ($rows as $row) {
-            $responseArray[] = array(
-                "id" => $row->getId(),
-                "tete" => $row->getReqLib()
-            );
+            foreach ($rows as $row) {
+                $responseArray[] = array(
+                    "id" => $row->getId(),
+                    "tete" => $row->getReqLib()
+                );
+            }
+            if (!isset($responseArray) || empty($responseArray)) {
+                $responseArray = " ";
+            }
+            return new JsonResponse($responseArray);
         }
-        if(!isset($responseArray) || empty($responseArray)){
-            $responseArray = " ";
+    }
+
+    /**
+     * Page queries
+     *
+     * @Route("/requetes/supprimerReq", name="requetes_supprimer_requete", options={"expose"=true})
+     */
+    public function supprimerRequete(Request $request)
+    {
+        if ($request->isXmlHttpRequest()) {
+            $idReq = $request->request->get('idReq');
+
+            //Requête QB portant sur l'id
+            $repository = $this->getDoctrine()->getRepository(Requetes::class);
+            $requete = $repository->find($idReq);
+            $em = $this->getDoctrine()->getManager();
+            $em->remove($requete);
+            $em->flush();
+
+            return new JsonResponse($em);
         }
-        return new JsonResponse($responseArray);
-     }
+    }
 
     /**
      * Page queries
@@ -245,23 +278,18 @@ class RequetesController extends AbstractController
             $condition = " "; //Where
 
             for ($i = 0; $i < sizeof($tabTable); $i++) {
-                if($tabTable[$i] != "theonymes_implicites"){ //Si ce n'est pas théonyes_implicites, car j'ai fait la condition dans les jointures
+                if ($tabTable[$i] != "theonymes_implicites") { //Si ce n'est pas théonyes_implicites, car j'ai fait la condition dans les jointures
                     if ($listeNull == " ") { //Si ce n'est pas un cas spécial
                         if (strpos($tabOperator[$i], '%') !== false) { //Si c'est un input, donc s'il y a un "%" dans le champ
                             $condition .= $tabEtOu[$i] . " translate(lower(" . $tabTable[$i] . "." . $tabNomBDD[$i] . ")" . ",'àãâçèéëêîïôùûñ','aaaceeeeiiouun') "; //On met tout sans accents/majuscule
-                        } 
-                        else 
-                        {
+                        } else {
                             $condition .= $tabEtOu[$i] . " " . $tabTable[$i] . "." . $tabNomBDD[$i] . " ";
                         }
-                            $condition .= $this->_operatorValue($tabOperator[$i], $tabValue[$i]);
-                    } 
-                    else 
-                    { //Si c'est un cas spécial
+                        $condition .= $this->_operatorValue($tabOperator[$i], $tabValue[$i]);
+                    } else { //Si c'est un cas spécial
                         $condition .= $tabEtOu[$i] . " " . $listeNull . " ";
                     }
-                }
-                else{ //Si c'est un theonyme
+                } else { //Si c'est un theonyme
                     $condition .= $tabEtOu[$i] . " e1.etat_absolu "; //Elément de comparaison : l'état absolu du second élément (donc du fils)
                     $condition .= $this->_operatorValue($tabOperator[$i], "<div>" . $tabValue[$i] . "</div>"); //Je rajoute le <div> qui est dans la BDD
                 }
@@ -304,7 +332,7 @@ class RequetesController extends AbstractController
             $sql .= $groupBy;
             $sql .= $orderBy;
 
-             return new JsonResponse($sql);
+           return new JsonResponse($sql);
 
             //Requête
             $conn = $this->getDoctrine()->getEntityManager()->getConnection();
@@ -330,9 +358,9 @@ class RequetesController extends AbstractController
     {
         $select = "";
         for ($i = 0; $i < sizeof($tab); $i++) {
-            if(strcmp(substr($tab[$i]["table"],0,6),"agent_") == 0)//Pour le localisation_agent
-            { 
-                $tab[$i]["table"] = substr($tab[$i]["table"],6);
+            if (strcmp(substr($tab[$i]["table"], 0, 6), "agent_") == 0) //Pour le localisation_agent
+            {
+                $tab[$i]["table"] = substr($tab[$i]["table"], 6);
             }
             if ($tab[$i] != "NULL" && $tab[$i]["nomBDD"] != "NULL") { //Si ce n'est pas un cas spécial de listeNull
                 $select .= $tab[$i]["table"] . "." . $tab[$i]["nomBDD"] . " as select" . $i; //Ex : "attestation.id as select0"
@@ -352,26 +380,25 @@ class RequetesController extends AbstractController
         $tabVerif[] = $typeDonnee;
 
         for ($i = 0; $i < sizeof($tabTable); $i++) {
- 
+
             switch ($tabTable[$i]) {
- 
+
                     //Cas spéciaux :
-                case "agent_" . substr($tabTable[$i],6): //Si c'est localisation_agent
+                case "agent_" . substr($tabTable[$i], 6): //Si c'est localisation_agent
                     $tabVerif[] = "localisation l1";
                     $tabVerif[] = "agent";
-                    if(strcmp(substr($tabTable[$i],6),"q_topographie") == 0 || strcmp(substr($tabTable[$i],6),"q_fonction") == 0 ){ //Pour les périphériques avec d'autres tables
-                        $tabVerif[] = "localisation_" . substr($tabTable[$i],6); //Ex : localisation_q_topographie
-                        $tabVerif[] = substr($tabTable[$i],6); //Ex : q_topographie
+                    if (strcmp(substr($tabTable[$i], 6), "q_topographie") == 0 || strcmp(substr($tabTable[$i], 6), "q_fonction") == 0) { //Pour les périphériques avec d'autres tables
+                        $tabVerif[] = "localisation_" . substr($tabTable[$i], 6); //Ex : localisation_q_topographie
+                        $tabVerif[] = substr($tabTable[$i], 6); //Ex : q_topographie
+                    } else if (strcmp(substr($tabTable[$i], 6), "localisation") != 0) { //Encore les périphériques
+                        $tabVerif[] = substr($tabTable[$i], 6); //Ex : sous_region
                     }
-                    else if (strcmp(substr($tabTable[$i],6),"localisation") != 0){ //Encore les périphériques
-                        $tabVerif[] = substr($tabTable[$i],6); //Ex : sous_region
-                    } 
                     break;
 
                 case "theonymes_implicites":
                     $tabVerif[] = "element";
                     $tabVerif[] = "element e1";
-                    if($typeDonnee == "attestation" || $typeDonnee == "source"){
+                    if ($typeDonnee == "attestation" || $typeDonnee == "source") {
                         $tabVerif[] = "contient_element";
                     }
                     break;
@@ -511,31 +538,30 @@ class RequetesController extends AbstractController
 
                     //Biblio
                 case "biblio":
-                    if($typeDonnee == "source"){
+                    if ($typeDonnee == "source") {
                         $tabVerif[] = "source_biblio";
                     }
-                    if($typeDonnee == "element"){
+                    if ($typeDonnee == "element") {
                         $tabVerif[] = "element_biblio";
                     }
                     break;
 
                 case "element_biblio":
-                    if($typeDonnee == "source"){
+                    if ($typeDonnee == "source") {
                         $tabVerif[] = "source_biblio";
                         $tabVerif[] = "biblio";
                     }
                     break;
 
                 case "source_biblio":
-                    if($typeDonnee == "element"){
+                    if ($typeDonnee == "element") {
                         $tabVerif[] = "element_biblio";
                         $tabVerif[] = "biblio";
                     }
                     break;
-                    
             } //End switch
 
-            if (!in_array($tabTable[$i], $tabVerif) && $tabTable[$i] != "NULL" && strcmp(substr($tabTable[$i],0,6),"agent_") != 0) { //Pour le NULL : les cas spéciaux des listeNull et si c'est pas un localisation_agent
+            if (!in_array($tabTable[$i], $tabVerif) && $tabTable[$i] != "NULL" && strcmp(substr($tabTable[$i], 0, 6), "agent_") != 0) { //Pour le NULL : les cas spéciaux des listeNull et si c'est pas un localisation_agent
                 $tabVerif[] = $tabTable[$i];
             }
         }
@@ -562,21 +588,19 @@ class RequetesController extends AbstractController
         foreach ($tabTable as $table) {
             switch ($table) { //Tout ce qui est générique
 
-                case "agent_" . substr($table,6): //Pour le localisation_agent
+                case "agent_" . substr($table, 6): //Pour le localisation_agent
                     $tabVerif[] = "l1.id = agent.localisation_id";
                     $tabVerif[] = "attestation.id = agent.id_attestation";
-                    if(strcmp(substr($table,6),"q_topographie") == 0 || strcmp(substr($table,6),"q_fonction") == 0 ){ //Pour les périphériques avec d'autres tables
-                        $tabVerif[] = "localisation_" . substr($table,6) . ".id_localisation = l1.id";
-                        $tabVerif[] = "localisation_" . substr($table,6) . ".id_" . substr($table,6) . " = " . substr($table,6) . ".id";
-                    }
-                    else if (strcmp(substr($table,6),"localisation") != 0){ //Encore les périphériques
-                        if(strcmp(substr($table,6),"entite_politique") == 0) //Pour entite_politique car il a un traitement différent
+                    if (strcmp(substr($table, 6), "q_topographie") == 0 || strcmp(substr($table, 6), "q_fonction") == 0) { //Pour les périphériques avec d'autres tables
+                        $tabVerif[] = "localisation_" . substr($table, 6) . ".id_localisation = l1.id";
+                        $tabVerif[] = "localisation_" . substr($table, 6) . ".id_" . substr($table, 6) . " = " . substr($table, 6) . ".id";
+                    } else if (strcmp(substr($table, 6), "localisation") != 0) { //Encore les périphériques
+                        if (strcmp(substr($table, 6), "entite_politique") == 0) //Pour entite_politique car il a un traitement différent
                         {
                             $tabVerif[] = "l1.entite_politique = entite_politique.id";
-                        }
-                        else //Le reste
-                        { 
-                            $tabVerif[] = substr($table,6) . ".id = l1." . substr($table,6) . "_id"; //Ex : sous_region.id = localisation.sous_region_id
+                        } else //Le reste
+                        {
+                            $tabVerif[] = substr($table, 6) . ".id = l1." . substr($table, 6) . "_id"; //Ex : sous_region.id = localisation.sous_region_id
                         }
                     }
                     break;
@@ -801,7 +825,7 @@ class RequetesController extends AbstractController
                                 case "theonymes_implicites":
                                     $tabVerif[] = "e1.id = theonymes_implicites.id_parent AND element.id = theonymes_implicites.id_enfant";
                                     break;
-                                    
+
                                 case "contient_element":
                                     $tabVerif[] = "element.id = contient_element.id_element";
                                     break;
@@ -839,7 +863,7 @@ class RequetesController extends AbstractController
                                     $tabVerif = array_merge($tabVerif, $this->_faireJointure("attestation", $tabFaireJointureTmp, 1)); //On fait la liaison entre attestation et source
                                     break;
 
-                                case "element_biblio" :
+                                case "element_biblio":
                                     $tabVerif[] = "element.id = element_biblio.id_element";
                                     break;
 

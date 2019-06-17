@@ -44,10 +44,9 @@
         </div>    
     </div>
 
-    <button class="btn btn-primary" onclick="chargerRequete(94)" type="button">{{ 'requetes.charger' | trans }}</button>
-    <br/> <br/>
     {{ block('buttonGeneric', 'requetes/partial.html.twig')}} 
 
+    <!-- Tableau d'affichage des résultats -->
     <div class="col-12 table-buttons2">
     </div>
     <div id="infoTableauResultat">
@@ -64,13 +63,15 @@
     </div>
 
     {{ block("modal_bootstrap", "requetes/partial.html.twig") }}
-
+    {{ block("modal_bootstrap_suppression", "requetes/partial.html.twig") }}
     </div>
 
     <!-- Volet de sélection de requêtes -->
     <div id="volet_clos">
         <div id="volet">
-            <p> {{'requetes.mes_requetes' |trans}} </p>
+            <p><u> {{'requetes.mes_requetes' |trans}} </u></p>
+            <div id="volet2">
+            </div>
             <a href="#volet" class="ouvrir" aria-hidden="true">{{'requetes.ma_liste' | trans}}</a>
             <a href="#volet_clos" class="fermer" aria-hidden="true">{{'requetes.ma_liste' | trans}}</a>
         </div>
@@ -86,7 +87,8 @@
     $(document).ready(function () {
         // Le document ready
         creerTableAfficherEtCritere();
-        $("#exampleModal").css("display","none"); //On cache le modal
+        $("#exampleModal").css("display","none"); //On cache le modal pour sauvegarderRequete
+        $("#exampleModal2").css("display","none"); //On cache le modal pour supprimerRequete
         $("#input_modal").val(''); //On lui met un input vide
         afficherListeRequete();
     });
@@ -115,28 +117,29 @@
         if(reqSaveCorps != "" )
         {
             //Affichage du message qui dit que la requête est bien enregistrée
-            $('#alert_bootstrap').append("<div class=\"alert alert-success alert-dismissible fade show\" role=\"alert\">Requête enregistrée.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
+            $('#alert_bootstrap').append("<div class=\"alert alert-success alert-dismissible fade show\" role=\"alert\">{{ 'requetes.enregistree' | trans }}<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
 
-            //Affichage du reste (Corps de la requête)
-            //chargerRequete(); //Rajouter l'id qui est envoyé dans reqSaveCorps
+            //Affichage du reste (requête)
+            chargerRequete(reqSaveCorps);
         }
             enleverBoutonEtOu(); //Pour ne pas qu'ils apparaissent sur le premièr critère
     }
 
     function afficherListeRequete(){
         //Ajax
+        $("#volet2").empty();
         $.ajax({
             url:'{{path('requetes_charger_liste_requete')}}',
             type: "POST",
             success: function(rows)
             {        
                 $.each(rows, function (key, row) {
-                    $("#volet").append("<a class=\"listeRequete\" href=\"#\" onclick=\"chargerRequete(" + row.id + ");return false;\">- " + row.tete + "</a><br/>");
+                    $("#volet2").append("<a class=\"listeRequete\" href=\"#\" onclick=\"chargerRequete(" + row.id + ");return false;\">- " + row.tete + "</a> <a href=\"#\" class=\"deleteListeRequete\" onclick=\"changerModal("+ row.id +")\">X</a> <br/>");
                 });
             },
             error: function (err)
             {
-                $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">Erreur serveur.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
+                $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">{{ 'requetes.erreur' | trans }}<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
                 console.log("An error ocurred while loading data ...");
                 console.log(err);
             }
@@ -164,7 +167,7 @@
 
         if(typeDonnee == "") //Si le type de donnée n'est pas mis
         {
-            $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">Veuillez mettre un type de donnée.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
+            $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">{{ 'requetes.erreur_type_donnee' | trans }}<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
             console.log ("Type donnée non renseigné");
             quit = true;
             return false;
@@ -174,7 +177,7 @@
         {
             //Je vérifie que les 3 premières box sont bien remplies
             if( $(this).find(".select_box1").children("option:selected").attr("label") == "-1" || $(this).find(".select_box2").children("option:selected").attr("label") == "-1"  || $(this).find(".select_box3").children("option:selected").attr("label") == "-1" || quit ){
-                $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">Vous devez compléter les critères.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
+                $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">{{ 'requetes.erreur_critere' | trans }}<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
                 console.log ("Un des critère n'est pas complet");
                 quit = true;
                 return false;
@@ -209,9 +212,16 @@
             else if(tabChoix[tabChoixValeur][tabChoixI].id == 14 && tabObjets[tabObjetValeur][tabObjetI].tableNull2 != undefined){ //Si ça doit passer par une table intermédiaire, les cas spéciaux
                     tmp["table"] = tabObjets[tabObjetValeur][tabObjetI].tableNull;
                     tmp["nomBDD"] = tabObjets[tabObjetValeur][tabObjetI].nomBDDNull;
-                    tmp["table2"] = tabObjets[tabObjetValeur][tabObjetI].tableNull2;
                     tmp["nomBDD2"] = tabObjets[tabObjetValeur][tabObjetI].nomBDDNull2;
-                    listeNull = "NOT EXISTS (SELECT * FROM " + tmp["table2"] + ", " + tmp["table"] + " WHERE " + tmp["table"] + "." + tmp["nomBDD"] + " = " + tmp["table2"] + "." + tmp["nomBDD2"] + ")";
+
+                    if(tabObjets[tabObjetValeur][tabObjetI].tableNull2.toLowerCase() == typeDonnee.toLowerCase()){ //Si la table y est déjà alors je ne la rajoute pas
+                        listeNull = "NOT EXISTS (SELECT * FROM " + tmp["table"] + " WHERE " + tmp["table"] + "." + tmp["nomBDD"] + " = " + typeDonnee + "." + tmp["nomBDD2"] + ")";
+                    }
+                    else{
+                        tmp["table2"] = tabObjets[tabObjetValeur][tabObjetI].tableNull2;
+                         listeNull = "NOT EXISTS (SELECT * FROM " + tmp["table2"] + ", " + tmp["table"] + " WHERE " + tmp["table"] + "." + tmp["nomBDD"] + " = " + tmp["table2"] + "." + tmp["nomBDD2"] + ")";
+                    }
+
                     tmp["table"] = tabObjets[tabObjetValeur][tabObjetI].tableNull2;
                     tmp["nomBDD"] = tabObjets[tabObjetValeur][tabObjetI].nomBDDNull2;
                     tmp["operator"] = "NULL";
@@ -237,7 +247,7 @@
                 
                 if(tmp["value"] == "" || tmp["value"] == -1) //Si la box4 n'est pas remplie/choisie (Si == -1 c'est le label de veuillez selectionner)
                 {
-                    $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">Vous devez compléter les critères.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
+                    $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">{{ 'requetes.erreur_critere' | trans }}<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
                     console.log ("Un des critère n'est pas complet");
                     quit = true;
                     return false;
@@ -264,7 +274,7 @@
             //Je vérifie que toutes les box d'affichage soient remplies
             if($(this).find(".select_box_champAffiche_1").children("option:selected").attr("label") == "-1" || $(this).find(".select_box_champAffiche_2").children("option:selected").attr("label") == "-1" || $(this).find(".select_box_champAffiche_3").children("option:selected").attr("label") == "-1")
             {
-                $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">Vous devez compléter les champs à afficher.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
+                $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">{{ 'requetes.erreur_champ_affiche' | trans }}<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
                 console.log ("Un des champs à afficher n'est pas complet");
                 quit = true;
                 return false;
@@ -286,7 +296,7 @@
         var tabTmpOrdreCheck = [999999999]; //Déclaration du tableau
         $(".select_box_champAffiche_3").each(function(key){
             if(tabTmpOrdreCheck.indexOf($(this).children("option:selected").val()) != -1){ //Je récupère l'ordre mis, et s'il est dans le tableau j'affiche l'erreur
-                $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">Vous avez deux ou plusieurs ordres identiques.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
+                $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">{{ 'requetes.erreur_ordre' | trans }}<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
                 quit = true;
                 console.log ("Deux ou plusieurs champs ont le même ordre");
                 return false;
@@ -310,12 +320,13 @@
                 "listeNull": listeNull
             },
             success: function(rep)
-            {        
+            {   
+                console.log(rep);
                 afficherExecRequete(rep);
             },
             error: function (err)
             {
-                $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">Erreur serveur.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
+                $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\"{{ 'requetes.erreur' | trans }}<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
                 console.log("An error ocurred while loading data ...");
             }
         });
@@ -406,7 +417,7 @@
 
        if($("#select_type_donnee").children("option:selected").val() == "") //Si le type de donnée n'est pas mis
         {
-                $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">Veuillez mettre un type de donnée.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
+                $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">{{ 'requetes.erreur_type_donnee' | trans }}<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
                 console.log ("Type donnée non renseigné");
                 quit = true;
                 return false;
@@ -508,7 +519,7 @@
         $("#exampleModal").css("display","none"); //On cache le modal
         
         if (nomReq == null || nomReq == "") {//Si il n'y a pas de nom ou que le nom est vide
-            $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">Vous devez donner un nom à la requête.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
+            $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">{{ 'requetes.erreur_nom_requete' | trans }}<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
             return;
         }
 
@@ -518,25 +529,54 @@
         $("#formEnrReq").submit();
     }
 
+    function changerModal(idReq){
+        $("#confirmationModalSuppression").attr("onclick","supprimerRequete("+idReq+")"); //Je mets ça sur le bouton de confirmation
+        $("#exampleModal2").modal(); //Je show le modal
+
+    }
+
+    function supprimerRequete(idReq){
+         $.ajax({
+                url:'{{path('requetes_supprimer_requete')}}',
+                type: "POST",
+                data: {
+                    "idReq": idReq
+                },
+                success: function(corps)
+                {
+                    afficherListeRequete(); //Je mets à jour l'affichage de la liste des requêtes
+                    $('#alert_bootstrap').append("<div class=\"alert alert-success alert-dismissible fade show\" role=\"alert\">{{ 'requetes.supprimee' | trans }}<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
+                },
+                error: function (err)
+                {
+                    //Affichage d'une erreur à l'utilisateur
+                    $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">{{ 'requetes.erreur' | trans }}<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
+                    console.log("An error ocurred while loading data ...");
+                    console.log(err);
+                }
+        });
+        
+    }
+
     function chargerRequete(idReq){
          $.ajax({
-                    url:'{{path('requetes_charger_requete')}}',
-                    type: "POST",
-                    data: {
-                        "idReq": idReq
-                    },
-                    success: function(corps)
-                    {
-                        afficherChargerRequete(corps);
-                    },
-                    error: function (err)
-                    {
-                        //Affichage d'une erreur à l'utilisateur
-                        $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">Erreur serveur.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
-                        console.log("An error ocurred while loading data ...");
-                        console.log(err);
-                    }
-                })
+                url:'{{path('requetes_charger_requete')}}',
+                type: "POST",
+                data: {
+                    "idReq": idReq
+                },
+                success: function(corps)
+                {
+                    afficherChargerRequete(corps);
+                },
+                error: function (err)
+                {
+                    //Affichage d'une erreur à l'utilisateur
+                    $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">{{ 'requetes.erreur' | trans }}<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
+                    console.log("An error ocurred while loading data ...");
+                    console.log(err);
+                }
+        });
     }
 
     function afficherChargerRequete(corps){
@@ -662,7 +702,7 @@
     function ajouterFiltre() {
         if(formulaire_critere == null) //Si un type de donnée n'est pas sélectionné
         {                      
-            $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">Veuillez remplir le type de donnée.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
+            $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">{{ 'requetes.erreur_type_donnee' | trans }}<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
             console.log("Type donnée incomplet");
             return;
         }
@@ -676,7 +716,7 @@
 
     function ajouterChampAffiche(){
         if($("#select_type_donnee").children("option:selected").attr("label") == -1){
-            $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">Veuillez remplir le type de donnée.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
+            $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">{{ 'requetes.erreur_type_donnee' | trans }}<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
             console.log("Type donnée incomplet");
             return;
         }
@@ -941,7 +981,7 @@
                     },
                     error: function (err)
                     {
-                        $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">Erreur serveur.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
+                        $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">{{ 'requetes.erreur' | trans }}<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
                         console.log("An error ocurred while loading data ...");
                         console.log(err);
                     }

@@ -10,11 +10,9 @@
 {% block content %}
 <div id="alert_bootstrap">
 </div>
-
     {{ block("buttonGeneric", "requetes/partial.html.twig")}}
     
     {{ form(formEnrReq) }}
-    
     <div id="general_req">
         <div id="type_donnee">
             <h3>
@@ -46,10 +44,9 @@
         </div>    
     </div>
 
-    <!-- <button class="btn btn-primary" onclick="chargerRequete()" type="button">{{ 'requetes.charger' | trans }}</button> Boutton temporaire, pour tester le chargement -->
-    <br/> <br/>
     {{ block('buttonGeneric', 'requetes/partial.html.twig')}} 
 
+    <!-- Tableau d'affichage des résultats -->
     <div class="col-12 table-buttons2">
     </div>
     <div id="infoTableauResultat">
@@ -66,6 +63,19 @@
     </div>
 
     {{ block("modal_bootstrap", "requetes/partial.html.twig") }}
+    {{ block("modal_bootstrap_suppression", "requetes/partial.html.twig") }}
+    </div>
+
+    <!-- Volet de sélection de requêtes -->
+    <div id="volet_clos">
+        <div id="volet">
+            <p><u> {{'requetes.mes_requetes' |trans}} </u></p>
+            <div id="volet2">
+            </div>
+            <a href="#volet" class="ouvrir" aria-hidden="true">{{'requetes.ma_liste' | trans}}</a>
+            <a href="#volet_clos" class="fermer" aria-hidden="true">{{'requetes.ma_liste' | trans}}</a>
+        </div>
+    </div>
 
     {% endblock %}
 
@@ -76,13 +86,14 @@
 
     $(document).ready(function () {
         // Le document ready
-        // Peut-être mettre directement le text dans les <option> au moins j'aurai la traduction
         creerTableAfficherEtCritere();
-        $("#exampleModal").css("display","none"); //On cache le modal
+        $("#exampleModal").css("display","none"); //On cache le modal pour sauvegarderRequete
+        $("#exampleModal2").css("display","none"); //On cache le modal pour supprimerRequete
         $("#input_modal").val(''); //On lui met un input vide
+        afficherListeRequete();
     });
-
-    //C'est la première box
+ 
+ //C'est la première box
     var formulaire_critere = null;// Variable qui prend le formulaire.
     var formulaire_critere_vide = null; //Variable qui prend le formulaire vide, utilisé dans afficheListeCritere
 
@@ -94,10 +105,12 @@
 
     function enleverBoutonEtOu(){
         $(".select_div").first().find(".boutonsEtOu").css("visibility","hidden");
+        $(".select_div").first().find(".boutonsEtOu").find(".Et").removeClass("active");
     }
 
     function remettreBoutonEtOu(){
         $(".select_div").last().find(".boutonsEtOu").css("visibility","visible");
+        $(".select_div").last().find(".boutonsEtOu").find(".Et").addClass("active");
     }
 
     function creerTableAfficherEtCritere() {
@@ -106,14 +119,33 @@
         if(reqSaveCorps != "" )
         {
             //Affichage du message qui dit que la requête est bien enregistrée
-            $('#alert_bootstrap').append("<div class=\"alert alert-success alert-dismissible fade show\" role=\"alert\">Requête enregistrée.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
+            $('#alert_bootstrap').append("<div class=\"alert alert-success alert-dismissible fade show\" role=\"alert\">{{ 'requetes.enregistree' | trans }}<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
 
-            //Affichage du reste (Corps de la requête)
-            chargerRequete(); //Rajouter l'id qui est envoyé dans reqSaveCorps
+            //Affichage du reste (requête)
+            chargerRequete(reqSaveCorps);
         }
-        else{
             enleverBoutonEtOu(); //Pour ne pas qu'ils apparaissent sur le premièr critère
-        }
+    }
+
+    function afficherListeRequete(){
+        //Ajax
+        $("#volet2").empty();
+        $.ajax({
+            url:'{{path('requetes_charger_liste_requete')}}',
+            type: "POST",
+            success: function(rows)
+            {        
+                $.each(rows, function (key, row) {
+                    $("#volet2").append("<a class=\"listeRequete\" href=\"#\" onclick=\"chargerRequete(" + row.id + ");return false;\">- " + row.tete + "</a> <a href=\"#\" class=\"deleteListeRequete\" onclick=\"changerModal("+ row.id +")\">X</a> <br/>");
+                });
+            },
+            error: function (err)
+            {
+                $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">{{ 'requetes.erreur' | trans }}<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
+                console.log("An error ocurred while loading data ...");
+                console.log(err);
+            }
+        });
     }
 
     function clearFilters(id) {
@@ -132,12 +164,15 @@
     function executerRequete(){
         var typeDonnee = $("#select_type_donnee").children("option:selected").val(); //Je récupère le type donnée
         var tabRequete = {}; //Objet qui va être envoyé au controller
+        var listeNull = []; //Tableau qui va prendre toutes les infos de listeNull
+        var listeNullCondition = []; //Les conditions
+        var listeNullTable = []; //Les tables à ajouter
+        var tabNull = {};
         var quit = false;
-        var listeNull = " "; //Variable qui va servir de critère si une liste est nulle, pour les cas spéciaux
 
         if(typeDonnee == "") //Si le type de donnée n'est pas mis
         {
-            $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">Veuillez mettre un type de donnée.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
+            $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">{{ 'requetes.erreur_type_donnee' | trans }}<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
             console.log ("Type donnée non renseigné");
             quit = true;
             return false;
@@ -147,7 +182,7 @@
         {
             //Je vérifie que les 3 premières box sont bien remplies
             if( $(this).find(".select_box1").children("option:selected").attr("label") == "-1" || $(this).find(".select_box2").children("option:selected").attr("label") == "-1"  || $(this).find(".select_box3").children("option:selected").attr("label") == "-1" || quit ){
-                $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">Vous devez compléter les critères.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
+                $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">{{ 'requetes.erreur_critere' | trans }}<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
                 console.log ("Un des critère n'est pas complet");
                 quit = true;
                 return false;
@@ -171,25 +206,46 @@
             if(tabChoix[tabChoixValeur][tabChoixI].id == 2 || tabChoix[tabChoixValeur][tabChoixI].id == 7 || tabChoix[tabChoixValeur][tabChoixI].id == 13)
             {
                  tmp["value"] = "IS NULL";
-                 tmp["etOu"] = "AND";
             }
             else if(tabChoix[tabChoixValeur][tabChoixI].id == 14 && tabObjets[tabObjetValeur][tabObjetI].tableNull2 == undefined){ //Le est null d'une liste
                 tmp["table"] = tabObjets[tabObjetValeur][tabObjetI].tableNull;
                 tmp["nomBDD"] = tabObjets[tabObjetValeur][tabObjetI].nomBDDNull;
                 tmp["value"] = "IS NULL";
-                tmp["etOu"] = "AND";
             }
-            else if(tabChoix[tabChoixValeur][tabChoixI].id == 14 && tabObjets[tabObjetValeur][tabObjetI].tableNull2 != undefined){ //Si ça doit passer par une table intermédiaire, les cas spéciaux
-                    tmp["table"] = tabObjets[tabObjetValeur][tabObjetI].tableNull;
-                    tmp["nomBDD"] = tabObjets[tabObjetValeur][tabObjetI].nomBDDNull;
-                    tmp["table2"] = tabObjets[tabObjetValeur][tabObjetI].tableNull2;
-                    tmp["nomBDD2"] = tabObjets[tabObjetValeur][tabObjetI].nomBDDNull2;
-                    listeNull = "NOT EXISTS (SELECT * FROM " + tmp["table2"] + ", " + tmp["table"] + " WHERE " + tmp["table"] + "." + tmp["nomBDD"] + " = " + tmp["table2"] + "." + tmp["nomBDD2"] + ")";
-                    tmp["table"] = tabObjets[tabObjetValeur][tabObjetI].tableNull2;
-                    tmp["nomBDD"] = tabObjets[tabObjetValeur][tabObjetI].nomBDDNull2;
-                    tmp["operator"] = "NULL";
-                    tmp["value"] = "NULL";
-                    tmp["etOu"] = "AND";
+            else if(tabChoix[tabChoixValeur][tabChoixI].id == 14 && tabObjets[tabObjetValeur][tabObjetI].tableNull2 != undefined && tabObjets[tabObjetValeur][tabObjetI].nomBDDNull2 != undefined){ //Si ça doit passer par une table intermédiaire, les cas spéciaux
+                console.log("ok")
+                var listeNullTmp = "";
+
+                //Pour mettre le ET/OU au début
+                if($(this).find(".boutonsEtOu").find(".active").hasClass("Et")){ //Si c'est le boutton "Et"
+                    listeNullTmp = " AND ";
+                }
+                else if($(this).find(".boutonsEtOu").find(".active").hasClass("Ou")){ //Si c'est le boutton "Ou"
+                   listeNullTmp = " OR ";
+                }
+                else{
+                    listeNullTmp = " AND ";
+                }
+
+                tmp["table"] = tabObjets[tabObjetValeur][tabObjetI].tableNull;
+                tmp["nomBDD"] = tabObjets[tabObjetValeur][tabObjetI].nomBDDNull;
+                tmp["table2"] = tabObjets[tabObjetValeur][tabObjetI].tableNull2;
+                tmp["nomBDD2"] = tabObjets[tabObjetValeur][tabObjetI].nomBDDNull2;
+
+                listeNullTmp += "NOT EXISTS (SELECT * FROM " + tmp["table"] + " WHERE " + tmp["table"] + "." + tmp["nomBDD"] + " = " + tmp["table2"] + "." + tmp["nomBDD2"] + ") ";
+                
+                if(tmp["table2"] == "agent"){
+                    listeNullTable.push("agent");
+                }
+                if(tmp["table2"] == "localisation"){
+                    listeNullTable.push("localisation");
+                }
+
+                listeNullCondition.push(listeNullTmp);
+                tmp["table"] = "NULL";
+                tmp["nomBDD"] = "NULL";
+                tmp["operator"] = "NULL";
+                tmp["value"] = "NULL";
             }
             else
             {
@@ -210,18 +266,25 @@
                 
                 if(tmp["value"] == "" || tmp["value"] == -1) //Si la box4 n'est pas remplie/choisie (Si == -1 c'est le label de veuillez selectionner)
                 {
-                    $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">Vous devez compléter les critères.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
+                    $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">{{ 'requetes.erreur_critere' | trans }}<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
                     console.log ("Un des critère n'est pas complet");
                     quit = true;
                     return false;
                 }
-                if($(this).find(".boutonsEtOu").find(".active").hasClass("Et")){ //Si c'est le boutton "Et"
-                    tmp["etOu"] = "AND";
-                }
-                else if($(this).find(".boutonsEtOu").find(".active").hasClass("Ou")){ //Si c'est le boutton "Ou"
-                    tmp["etOu"] = "OR";
-                }
             }
+            listeNull.push(listeNullCondition);
+            listeNull.push(listeNullTable);
+
+            if($(this).find(".boutonsEtOu").find(".active").hasClass("Et")){ //Si c'est le boutton "Et"
+                tmp["etOu"] = "AND";
+            }
+            else if($(this).find(".boutonsEtOu").find(".active").hasClass("Ou")){ //Si c'est le boutton "Ou"
+                tmp["etOu"] = "OR";
+            }
+            else{
+                tmp["etOu"] = "AND";
+            }
+
             tabRequete["where"+index]=tmp;
         });
 
@@ -237,7 +300,7 @@
             //Je vérifie que toutes les box d'affichage soient remplies
             if($(this).find(".select_box_champAffiche_1").children("option:selected").attr("label") == "-1" || $(this).find(".select_box_champAffiche_2").children("option:selected").attr("label") == "-1" || $(this).find(".select_box_champAffiche_3").children("option:selected").attr("label") == "-1")
             {
-                $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">Vous devez compléter les champs à afficher.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
+                $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">{{ 'requetes.erreur_champ_affiche' | trans }}<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
                 console.log ("Un des champs à afficher n'est pas complet");
                 quit = true;
                 return false;
@@ -259,7 +322,7 @@
         var tabTmpOrdreCheck = [999999999]; //Déclaration du tableau
         $(".select_box_champAffiche_3").each(function(key){
             if(tabTmpOrdreCheck.indexOf($(this).children("option:selected").val()) != -1){ //Je récupère l'ordre mis, et s'il est dans le tableau j'affiche l'erreur
-                $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">Vous avez deux ou plusieurs ordres identiques.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
+                $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">{{ 'requetes.erreur_ordre' | trans }}<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
                 quit = true;
                 console.log ("Deux ou plusieurs champs ont le même ordre");
                 return false;
@@ -283,16 +346,16 @@
                 "listeNull": listeNull
             },
             success: function(rep)
-            {        
-                console.log(JSON.stringify(rep));
+            {   
+                console.log(rep);
                 afficherExecRequete(rep);
             },
             error: function (err)
             {
-                $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">Erreur serveur.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
+                $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">{{ 'requetes.erreur' | trans }}<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
                 console.log("An error ocurred while loading data ...");
             }
-        })
+        });
     }
 
     function afficherExecRequete(rep){
@@ -380,7 +443,7 @@
 
        if($("#select_type_donnee").children("option:selected").val() == "") //Si le type de donnée n'est pas mis
         {
-                $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">Veuillez mettre un type de donnée.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
+                $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">{{ 'requetes.erreur_type_donnee' | trans }}<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
                 console.log ("Type donnée non renseigné");
                 quit = true;
                 return false;
@@ -427,14 +490,11 @@
             }
  
             //Bouton ET/OU, s'il est visible (Donc on peut le changer)
-            if($(this).find(".boutonsEtOu").attr("style") == undefined) //Pas de style = le style "visibility: hidden;" a été enlevé
-            {
-               if($(this).find(".boutonsEtOu").find(".active").hasClass("Et")){ //Si c'est le boutton "Et"
-                   tmp["box5"] = "Et";
-               }
-               else if($(this).find(".boutonsEtOu").find(".active").hasClass("Ou")){ //Si c'est le boutton "Ou"
-                   tmp["box5"] = "Ou";
-               }
+            if($(this).find(".boutonsEtOu").find(".active").hasClass("Et")){ //Si c'est le boutton "Et"
+                tmp["box5"] = "Et";
+            }
+            else if($(this).find(".boutonsEtOu").find(".active").hasClass("Ou")){ //Si c'est le boutton "Ou"
+                tmp["box5"] = "Ou";
             }
             else
             {
@@ -482,7 +542,7 @@
         $("#exampleModal").css("display","none"); //On cache le modal
         
         if (nomReq == null || nomReq == "") {//Si il n'y a pas de nom ou que le nom est vide
-            $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">Vous devez donner un nom à la requête.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
+            $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">{{ 'requetes.erreur_nom_requete' | trans }}<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
             return;
         }
 
@@ -492,26 +552,54 @@
         $("#formEnrReq").submit();
     }
 
-    function chargerRequete(){
-        var idReq = 80;
+    function changerModal(idReq){
+        $("#confirmationModalSuppression").attr("onclick","supprimerRequete("+idReq+")"); //Je mets ça sur le bouton de confirmation
+        $("#exampleModal2").modal(); //Je show le modal
+
+    }
+
+    function supprimerRequete(idReq){
          $.ajax({
-                    url:'{{path('requetes_charger_requete')}}',
-                    type: "POST",
-                    data: {
-                        "idReq": idReq
-                    },
-                    success: function(corps)
-                    {
-                        afficherChargerRequete(corps);
-                    },
-                    error: function (err)
-                    {
-                        //Affichage d'une erreur à l'utilisateur
-                        $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">Erreur serveur.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
-                        console.log("An error ocurred while loading data ...");
-                        console.log(rep);
-                    }
-                })
+                url:'{{path('requetes_supprimer_requete')}}',
+                type: "POST",
+                data: {
+                    "idReq": idReq
+                },
+                success: function(corps)
+                {
+                    afficherListeRequete(); //Je mets à jour l'affichage de la liste des requêtes
+                    $('#alert_bootstrap').append("<div class=\"alert alert-success alert-dismissible fade show\" role=\"alert\">{{ 'requetes.supprimee' | trans }}<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
+                },
+                error: function (err)
+                {
+                    //Affichage d'une erreur à l'utilisateur
+                    $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">{{ 'requetes.erreur' | trans }}<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
+                    console.log("An error ocurred while loading data ...");
+                    console.log(err);
+                }
+        });
+        
+    }
+
+    function chargerRequete(idReq){
+         $.ajax({
+                url:'{{path('requetes_charger_requete')}}',
+                type: "POST",
+                data: {
+                    "idReq": idReq
+                },
+                success: function(corps)
+                {
+                    afficherChargerRequete(corps);
+                },
+                error: function (err)
+                {
+                    //Affichage d'une erreur à l'utilisateur
+                    $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">{{ 'requetes.erreur' | trans }}<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
+                    console.log("An error ocurred while loading data ...");
+                    console.log(err);
+                }
+        });
     }
 
     function afficherChargerRequete(corps){
@@ -561,8 +649,8 @@
                 var valeur =  $(this).find(".select_box3").find(`[selected="selected"]`).val();//Le val correspond à la valeur de l'élément (String, number, liste...)
                 var idTabChoix = tabChoix[valeur][tabCorps[1][index]["box3"]].id;
                 remplirQuatriemeBox(valeur, idTabChoix, $(this).find(".span_box4"), $(this).find(".select_box3"));
-                    
-                    //Traitement en fonction de la box4
+                
+                    //Traitement en fonction de la box3
                 if(valeur == "1" || valeur =="3") //Si c'est un input
                 {
                     $(this).find(".input_req").val(tabCorps[1][index]["box4"]);
@@ -607,6 +695,8 @@
 
                 //Box 1
                 var tabBox1 = tabCorps[2][index]["box1"].toLowerCase().replace(/é|è|ê/g,"e");
+                if(tabBox1 == "localisation de l'agent") tabBox1 = "localisation_agent";
+
                 $(this).find(".select_box_champAffiche_1").find(`[selected="selected"]`).removeAttr("selected");//Je chope celui qui à l'attribut "selected" et je le vire
                 $(this).find(".select_box_champAffiche_1").find(`[value="`+tabBox1+`"]`).attr("selected","selected"); //Je mets le selected sur le bon
 
@@ -635,7 +725,7 @@
     function ajouterFiltre() {
         if(formulaire_critere == null) //Si un type de donnée n'est pas sélectionné
         {                      
-            $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">Veuillez remplir le type de donnée.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
+            $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">{{ 'requetes.erreur_type_donnee' | trans }}<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
             console.log("Type donnée incomplet");
             return;
         }
@@ -649,7 +739,7 @@
 
     function ajouterChampAffiche(){
         if($("#select_type_donnee").children("option:selected").attr("label") == -1){
-            $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">Veuillez remplir le type de donnée.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
+            $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">{{ 'requetes.erreur_type_donnee' | trans }}<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
             console.log("Type donnée incomplet");
             return;
         }
@@ -689,7 +779,7 @@
             switch(typeDonnee){
                 case "Attestation":
                         $(selectChampAffiche1).append("<option value=\"agent\">{{ 'requetes.agent_name' | trans }}</option>");
-                        $(selectChampAffiche1).append("<option value=\"datation\">{{ 'source.sections.datation' | trans }}</option>");
+                        $(selectChampAffiche1).append("<option value=\"datation\">{{ 'generic.fields.datation' | trans }}</option>");
                         $(selectChampAffiche1).append(" <option value=\"localisation_agent\">{{ 'requetes.localisation_agent' | trans }}</option>");
                     break;
        
@@ -698,10 +788,10 @@
                     break;
                 case "Source":
                     $(selectChampAffiche1).append("<option value=\"biblio\">{{ 'nav.bibliography' | trans }}</option>");
-                    $(selectChampAffiche1).append("<option value=\"datation\">{{ 'source.sections.datation' | trans }}</option>");
+                    $(selectChampAffiche1).append("<option value=\"datation\">{{ 'generic.fields.datation' | trans }}</option>");
                     break;
             }
-            $(selectChampAffiche1).append("<option value=\"localisation\">{{ 'source.sections.localisation' | trans }}</option>"); //Ce qui est commun aux trois
+            $(selectChampAffiche1).append("<option value=\"localisation\">{{ 'generic.fields.localisation' | trans }}</option>"); //Ce qui est commun aux trois
             $(selectChampAffiche1).append("<option value=\"source\">{{ 'source.name' | trans }}</option>"); //Ce qui est commun aux trois
             champAffiche = $("#liste_affiche").html();
     }
@@ -716,7 +806,7 @@
                 case "Attestation":
                     $(selectBox1).append("<option value=\"agent\">{{ 'requetes.agent_name' | trans }}</option>");
                     $(selectBox1).append("<option value=\"attestation\">{{ 'attestation.name' | trans }}</option>");
-                    $(selectBox1).append("<option value=\"datation\">{{ 'source.sections.datation' | trans }}</option>");
+                    $(selectBox1).append("<option value=\"datation\">{{ 'generic.fields.datation' | trans }}</option>");
                     $(selectBox1).append("<option value=\"element\">{{ 'element.name' | trans }}</option>");
                     $(selectBox1).append("<option value=\"source\">{{ 'source.name' | trans }}</option>");
                     break;
@@ -734,7 +824,7 @@
                     $(selectBox1).append("<option value=\"source\">{{ 'source.name' | trans }}</option>");
                     break;
             }
-            $(selectBox1).append("<option value=\"localisation\">{{ 'source.sections.localisation' | trans }}</option>"); //Est commun aux trois
+            $(selectBox1).append("<option value=\"localisation\">{{ 'generic.fields.localisation' | trans }}</option>"); //Est commun aux trois
             formulaire_critere = $("#liste_critere").html();
             enleverBoutonEtOu();
     }
@@ -872,8 +962,8 @@
         $(box).empty();//On le vide avant d'ajouter quoi que ce soit
         var valeurTabObjet = $(currentElement).parent().parent().find(".select_box2").children("option:selected").val();
         var iValeurTabObjet = $(currentElement).parent().parent().find(".select_box2").children("option:selected").attr('label'); // le i de tabObjets['valeur'][i]
+       
         switch (valeur) {
-
             case "1":
                 if (id != 7) { // estNul
                     $(box).append("<input type=\"text\" required class=\"text_input input_req\">"); // Text input classique (String)
@@ -885,8 +975,7 @@
                 break;
 
             case "2" :
-                var reqSaveCorps = '{{ reqSaveCorps}}';
-                if(reqSaveCorps != "" || id == 14 )//Si c'est une sauvegarde de requête ou que est null
+                if(id == 14 )//Si c'est une sauvegarde de requête ou que c'est null
                 {
                     break;
                 }
@@ -915,7 +1004,7 @@
                     },
                     error: function (err)
                     {
-                        $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">Erreur serveur.<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
+                        $('#alert_bootstrap').append("<div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">{{ 'requetes.erreur' | trans }}<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>");
                         console.log("An error ocurred while loading data ...");
                         console.log(err);
                     }

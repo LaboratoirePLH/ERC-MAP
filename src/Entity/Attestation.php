@@ -439,8 +439,8 @@ class Attestation extends AbstractEntity
     public function validateElements(): bool
     {
         $positions = [];
-        foreach($this->getContientElements() as $ce){
-            if(in_array($ce->getPositionElement(), $positions)) {
+        foreach ($this->getContientElements() as $ce) {
+            if (in_array($ce->getPositionElement(), $positions)) {
                 return false;
             } else {
                 $positions[] = $ce->getPositionElement();
@@ -452,7 +452,7 @@ class Attestation extends AbstractEntity
     public function elementsFormule(): array
     {
         $elements = [];
-        foreach($this->getContientElements() as $ce){
+        foreach ($this->getContientElements() as $ce) {
             $el = $ce->getElement();
             $elements[$el->getId()] = $el->getEtatAbsolu();
         }

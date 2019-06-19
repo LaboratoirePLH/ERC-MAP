@@ -448,6 +448,6 @@ requetes:
     erreur: "Erreur serveur."
     erreur_type_donnee: "Veuillez mettre un type de donnée."
     erreur_critere: "Vous devez compléter les critères."
-    erreur_champ_affiche: "Please fill out the fields to display."
+    erreur_champ_affiche: "Vous devez compléter les champs à afficher."
     erreur_ordre: "Vous avez deux ou plusieurs ordres identiques."
     erreur_nom_requete: "Vous devez donner un nom à la requête."

@@ -63,9 +63,10 @@ var get_browser = function () {
         var formulaElements = [];
         var elementCpt = {};
         var parenthesisIndex = 0;
+        var bracketsIndex = 0;
         for (var i = 0; i < formula.length; i++) {
             const chr = formula.charAt(i);
-            if (chr != '[') {
+            if (chr != '{') {
                 switch (chr) {
                     case '(':
                         formulaElements.push({
@@ -83,16 +84,33 @@ var get_browser = function () {
                             raw: chr
                         });
                         break;
+                    case '[':
+                        formulaElements.push({
+                            type: 'brackets',
+                            id: bracketsIndex++,
+                            display: chr,
+                            raw: chr
+                        });
+                        break;
+                    case ']':
+                        formulaElements.push({
+                            type: 'brackets',
+                            id: --bracketsIndex,
+                            display: chr,
+                            raw: chr
+                        });
+                        break;
                     default:
                         formulaElements.push({
                             type: 'operator',
                             display: chr,
-                            raw: chr
+                            raw: chr,
+                            isValid: (formulaElements[formulaElements.length - 1].type !== "operator")
                         });
                 }
             } else {
                 var id = [];
-                while (formula.charAt(++i) != ']') {
+                while (formula.charAt(++i) != '}') {
                     id.push(formula.charAt(i));
                 }
                 const elementId = parseInt(id.join(''), 10);
@@ -101,7 +119,7 @@ var get_browser = function () {
                     type: 'element',
                     id: elementId,
                     index: ++elementCpt[elementId],
-                    raw: '[' + elementId + ']'
+                    raw: '{' + elementId + '}'
                 });
             }
         }
@@ -131,6 +149,11 @@ var get_browser = function () {
                 .text(formulaEl.display);
         } else if (formulaEl.type == 'parenthesis') {
             const color = Number.isInteger(formulaEl.id) ? parenthesisStyles[formulaEl.id % parenthesisStyles.length] : 'Black';
+            btn.css('background-color', color)
+                .css('color', 'White')
+                .text(formulaEl.display);
+        } else if (formulaEl.type == 'brackets') {
+            const color = Number.isInteger(formulaEl.id) ? parenthesisStyles[parenthesisStyles.length - (formulaEl.id % parenthesisStyles.length)] : 'Black';
             btn.css('background-color', color)
                 .css('color', 'White')
                 .text(formulaEl.display);
@@ -204,6 +227,8 @@ var get_browser = function () {
                 var operatorButtons = [
                     $.fn.formulaElementRenderer({ type: 'parenthesis', display: '(', raw: '(' }, settings),
                     $.fn.formulaElementRenderer({ type: 'parenthesis', display: ')', raw: ')' }, settings),
+                    $.fn.formulaElementRenderer({ type: 'brackets', display: '[', raw: '[' }, settings),
+                    $.fn.formulaElementRenderer({ type: 'brackets', display: ']', raw: ']' }, settings),
                     $.fn.formulaElementRenderer({ type: 'operator', display: '+', raw: '+' }, settings),
                     $.fn.formulaElementRenderer({ type: 'operator', display: '/', raw: '/' }, settings),
                     $.fn.formulaElementRenderer({ type: 'operator', display: '#', raw: '#' }, settings),
@@ -221,7 +246,7 @@ var get_browser = function () {
                         $.fn.formulaElementRenderer({
                             type: 'element',
                             id: elementId,
-                            raw: '[' + elementId + ']'
+                            raw: '{' + elementId + '}'
                         }, settings)
                     );
                 }

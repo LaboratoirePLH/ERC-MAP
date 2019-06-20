@@ -230,7 +230,7 @@ attestation:
     add_element: "Add Element"
     add_occasion: "Add Occasion"
     add_materiel: "Add Connected Material"
-    add_formule: "Add Formule"
+    add_formule: "Add Formula"
     choose_source: "Choose the source for which to create a Testimony"
     messages:
         created: "Testimony created"

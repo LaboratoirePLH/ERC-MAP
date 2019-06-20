@@ -1,35 +1,8 @@
-/*#volet_clos {
-    position: fixed; 
-    top: 20%; right: 0;
-    margin-top : 150px;
+.padding-0{
+    margin-left : -20px;
 }
 
 #volet {
-    width: 250px;
-    background: #6B9A49; color: #fff;
-}
-
-#contenuReq {
-    margin-left:10px;
-}
-
-#volet a.ouvrir {
-    position: absolute;
-    -webkit-transform: rotate(90deg);
-    -moz-transform: rotate(90deg);
-    -o-transform: rotate(90deg);
-    -ms-transform: rotate(90deg);
-    -moz-radius: 0 0 8px 8px;
-    border-radius: 0 0 8px 8px;
-    padding: 10px 25px;
-    background: #555;
-    color: #fff;
-    text-decoration: none;
-    top:39px;
-    left:-73.5px;
- }*/
- 
- #volet {
     width: 250px;
     padding: 10px;
     background: #6B9A49; color: #fff;

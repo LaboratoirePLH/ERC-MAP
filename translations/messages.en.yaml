@@ -362,6 +362,12 @@ formule:
             <li>inside the formula zone to reorder them</li>
             <li>from the formula zone to their original zone to remove them</li>
         </ul>
+    errors:
+        valid: "Formula is valid"
+        unknown_element: "Unknown element"
+        brackets: "Brackets order error"
+        parenthesis: "Parenthesis order error"
+        operator: "Operator error"
 
 modals:
     confirm_deletion:

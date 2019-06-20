@@ -390,6 +390,13 @@
                             elements: "{{ 'attestation.sections.elements'|trans }}",
                             operateurs: "{{ 'formule.fields.operateurs'|trans }}"
                         },
+                        errors: {
+                            valid: "{{ 'formule.errors.valid'|trans }}",
+                            unknown_element: "{{ 'formule.errors.unknown_element'|trans }}",
+                            brackets: "{{ 'formule.errors.brackets'|trans }}",
+                            parenthesis: "{{ 'formule.errors.parenthesis'|trans }}",
+                            operator: "{{ 'formule.errors.operator'|trans }}",
+                        },
                         help: "{{ 'formule.help'|trans|replace({'\n': '', '\r\n': '', '\t': '', '\n\r': ''}) }}"
                     });
                 },

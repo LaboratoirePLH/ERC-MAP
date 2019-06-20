@@ -59,11 +59,12 @@ var get_browser = function () {
         'Teal',
     ].sort(function () { return 0.5 - Math.random(); });
 
-    $.fn.parseFormula = function (formula) {
+    $.fn.parseFormula = function (formula, settings) {
         var formulaElements = [];
         var elementCpt = {};
         var parenthesisIndex = 0;
         var bracketsIndex = 0;
+        var errors = [];
         for (var i = 0; i < formula.length; i++) {
             const chr = formula.charAt(i);
             if (chr != '{') {
@@ -83,6 +84,9 @@ var get_browser = function () {
                             display: chr,
                             raw: chr
                         });
+                        if (parenthesisIndex < 0) {
+                            errors.push(settings.errors.parenthesis)
+                        }
                         break;
                     case '[':
                         formulaElements.push({
@@ -99,13 +103,20 @@ var get_browser = function () {
                             display: chr,
                             raw: chr
                         });
+                        if (bracketsIndex < 0) {
+                            errors.push(settings.errors.brackets)
+                        }
                         break;
                     default:
+                        const isValid = (formulaElements[formulaElements.length - 1].type !== "operator");
+                        if (!isValid) {
+                            errors.push(settings.errors.operator)
+                        }
                         formulaElements.push({
                             type: 'operator',
                             display: chr,
                             raw: chr,
-                            isValid: (formulaElements[formulaElements.length - 1].type !== "operator")
+                            isValid: isValid
                         });
                 }
             } else {
@@ -115,6 +126,9 @@ var get_browser = function () {
                 }
                 const elementId = parseInt(id.join(''), 10);
                 if (!elementCpt.hasOwnProperty(elementId)) { elementCpt[elementId] = 0; }
+                if (!settings.elements.hasOwnProperty(elementId)) {
+                    errors.push(settings.errors.unknown_element);
+                }
                 formulaElements.push({
                     type: 'element',
                     id: elementId,
@@ -128,7 +142,7 @@ var get_browser = function () {
                 e.index = null;
             }
         }
-        return formulaElements;
+        return { formulaElements, errors };
     }
     $.fn.formulaElementRenderer = function (formulaEl, settings) {
         var btn = $('<button type="button">').addClass("btn mx-1 btn-outline-dark");
@@ -145,7 +159,7 @@ var get_browser = function () {
                 .data('element-id', id)
                 .html(text);
         } else if (formulaEl.type == 'operator') {
-            btn.addClass(settings.operatorCls)
+            btn.addClass(formulaEl.isValid ? settings.operatorCls : "")
                 .text(formulaEl.display);
         } else if (formulaEl.type == 'parenthesis') {
             const color = Number.isInteger(formulaEl.id) ? parenthesisStyles[formulaEl.id % parenthesisStyles.length] : 'Black';
@@ -153,7 +167,7 @@ var get_browser = function () {
                 .css('color', 'White')
                 .text(formulaEl.display);
         } else if (formulaEl.type == 'brackets') {
-            const color = Number.isInteger(formulaEl.id) ? parenthesisStyles[parenthesisStyles.length - (formulaEl.id % parenthesisStyles.length)] : 'Black';
+            const color = (Number.isInteger(formulaEl.id)) ? parenthesisStyles[parenthesisStyles.length - 1 - (formulaEl.id % parenthesisStyles.length)] : 'Black';
             btn.css('background-color', color)
                 .css('color', 'White')
                 .text(formulaEl.display);
@@ -163,10 +177,11 @@ var get_browser = function () {
     }
 
     $.fn.formulaRenderer = function (formula, settings) {
-        var formula = $.fn.parseFormula(formula);
-        return formula.map(function (formulaEl) {
+        const { formulaElements, errors } = $.fn.parseFormula(formula, settings);
+        var formulaButtons = formulaElements.map(function (formulaEl) {
             return $.fn.formulaElementRenderer(formulaEl, settings)
         });
+        return { formulaButtons, errors };
     }
 
     $.fn.formulaValidator = function (formulaElements, settings) {
@@ -181,20 +196,41 @@ var get_browser = function () {
                 elements: "Elements",
                 operateurs: "Operators"
             },
+            errors: {
+                valid: "Formula is valid",
+                unknown_element: "Unknown element",
+                brackets: "Brackets order error",
+                parenthesis: "Parenthesis order error",
+                operator: "Operator error"
+            },
             help: 'Help',
             elementCls: 'btn-info',
             operatorCls: 'btn-warning'
             // These are the defaults.
         }, settings);
 
-        var blockRenderer = function (label, blockClass, buttons) {
+        var blockRenderer = function (label, blockClass, buttons, errors) {
             var buttonWrapper = $('<div/>', {
-                class: 'col-10 d-flex justify-content-center ' + blockClass
+                class: 'col-9 d-flex justify-content-center ' + blockClass
             });
+
+            if (errors !== false) {
+                errors = errors.filter(function (item, pos, self) {
+                    return self.indexOf(item) == pos;
+                });
+                var statusWrapper = $('<div/>', {
+                    class: 'col-1 text-center formula-status',
+                    html: '<i class="fas fa-4x fa-check-circle text-success' + (errors.length > 0 ? ' d-none' : '') + '" data-toggle="tooltip" data-html="true" data-placement="left" title="' + settings.errors.valid + '" ></i>'
+                        + '<i class="fas fa-4x fa-exclamation-triangle text-danger' + (errors.length == 0 ? ' d-none' : '') + '" data-toggle="tooltip" data-html="true" data-placement="left" title="' + errors.join('<br/>') + '" ></i>'
+                })
+            } else {
+                errors = "";
+            }
             $.each(buttons, function (i, b) { buttonWrapper.append(b) });
             return $('<div/>', { class: 'row' })
                 .append($('<div/>', { class: 'col-2 text-right label', html: label }))
-                .append(buttonWrapper);
+                .append(buttonWrapper)
+                .append(statusWrapper);
         }
 
         return this.each(function () {
@@ -211,7 +247,7 @@ var get_browser = function () {
             var me = this;
             const formule = $(me).find("input[name$='[formule]']").val();
             if (formule != "") {
-                formulaButtons = $.fn.formulaRenderer(
+                var { formulaButtons, errors } = $.fn.formulaRenderer(
                     formule, settings
                 );
             } else {
@@ -219,7 +255,7 @@ var get_browser = function () {
             }
 
             editor.append(
-                blockRenderer(settings.labels.formule + help, 'formula-visualizer w-100', formulaButtons)
+                blockRenderer(settings.labels.formule + help, 'formula-visualizer w-100', formulaButtons, errors || [])
             );
 
             if ($(me).find("input[name$='[id]']").val() == "") {
@@ -235,7 +271,7 @@ var get_browser = function () {
                     $.fn.formulaElementRenderer({ type: 'operator', display: '=', raw: '=' }, settings),
                 ];
                 editor.append(
-                    blockRenderer(settings.labels.operateurs, 'formula-operators', operatorButtons)
+                    blockRenderer(settings.labels.operateurs, 'formula-operators', operatorButtons, false)
                 );
 
                 // Elements
@@ -251,7 +287,7 @@ var get_browser = function () {
                     );
                 }
                 editor.append(
-                    blockRenderer(settings.labels.elements, 'formula-elements', elementButtons)
+                    blockRenderer(settings.labels.elements, 'formula-elements', elementButtons, false)
                 );
             }
 
@@ -319,18 +355,21 @@ var get_browser = function () {
                 // Setup validation
                 $(me).find("input[name$='[formule]']").on('change', function (e) {
                     const formula = $(this).val();
-                    const validation = $.fn.formulaValidator(formula, settings);
-                    if (validation !== true) {
-                        alert('formula error');
+                    const { formulaButtons, errors } = $.fn.formulaRenderer(formula, settings);
+                    $(me).find('.formula-visualizer').empty().append(formulaButtons);
+                    if (errors.length == 0) {
+                        $(me).find('.formula-status').find('.text-success').removeClass('d-none');
+                        $(me).find('.formula-status').find('.text-danger').addClass('d-none');
                     } else {
-                        var buttons = $.fn.formulaRenderer(formula, settings);
-                        $(me).find('.formula-visualizer').empty().append(buttons);
+                        $(me).find('.formula-status').find('.text-success').addClass('d-none');
+                        $(me).find('.formula-status').find('.text-danger').removeClass('d-none').prop('title', errors.join('<br/>'));
                     }
+                    $(me).find('.formula-status').find('[data-toggle="tooltip"]').tooltip('dispose').tooltip();
                 });
 
-                // Setup tooltip for help
-                $(me).find('[data-toggle="tooltip"]').tooltip();
             }
+            // Setup tooltip for help
+            $(me).find('[data-toggle="tooltip"]').tooltip();
         });
     }
 })(jQuery);

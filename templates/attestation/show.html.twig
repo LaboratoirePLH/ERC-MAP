@@ -26,7 +26,14 @@
             var buttons = $.fn.formulaRenderer(formule, {
                 elements: elements,
                 elementCls: 'btn-info',
-                operatorCls: 'btn-warning'
+                operatorCls: 'btn-warning',
+                errors: {
+                    valid: "{{ 'formule.errors.valid'|trans }}",
+                    unknown_element: "{{ 'formule.errors.unknown_element'|trans }}",
+                    brackets: "{{ 'formule.errors.brackets'|trans }}",
+                    parenthesis: "{{ 'formule.errors.parenthesis'|trans }}",
+                    operator: "{{ 'formule.errors.operator'|trans }}",
+                },
             });
             me.empty();
             $.each(buttons, function (i, b) { me.append(b) });

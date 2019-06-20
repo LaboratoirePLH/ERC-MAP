@@ -48,7 +48,7 @@ class ElementType extends AbstractType
                 'required' => false
             ])
             ->add('traductions', CollectionType::class, [
-                'label'         => 'element.fields.traductions',
+                'label'         => 'generic.fields.translations',
                 'entry_type'    => TraductionElementType::class,
                 'by_reference'  => false,
                 'allow_add'     => true,

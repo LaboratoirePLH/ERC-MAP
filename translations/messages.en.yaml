@@ -257,7 +257,6 @@ element:
         etat_absolu: "Absolute form"
         etat_morphologique: "Morphological form"
         beta_code: "Beta Code"
-        traductions: "Translations"
         nature: "Nature"
         categories_invariantes: "Out of Context Categories"
         suffixe: "Suffix ?"
@@ -408,7 +407,7 @@ mails:
         action: "Reset my password"
         outro: "You received this e-mail because someone asked to reset your password. If you were not the one asking, please ignore this email."
 
-        
+
 requetes:
     title: "Query interface"
     list: "Queries"

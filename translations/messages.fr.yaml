@@ -257,7 +257,6 @@ element:
         etat_absolu: "Etat Absolu"
         etat_morphologique: "Etat Morphologique"
         beta_code: "Beta Code"
-        traductions: "Traductions"
         nature: "Nature"
         categories_invariantes: "Categories invariantes"
         suffixe: "Suffixe ?"

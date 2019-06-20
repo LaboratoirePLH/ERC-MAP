@@ -33,7 +33,7 @@ class ElementMiniType extends AbstractType
                 'required' => false
             ])
             ->add('traductions', CollectionType::class, [
-                'label'         => 'element.fields.traductions',
+                'label'         => 'generic.fields.translations',
                 'attr'          => ['class' => 'element_traductions'],
                 'entry_type'    => TraductionElementType::class,
                 'by_reference'  => false,

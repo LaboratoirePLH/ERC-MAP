@@ -66,14 +66,6 @@
         </tr>
         <tr>
             <th scope="row">
-                {{ 'attestation.fields.extrait_sans_restitution'|trans}}
-            </th>
-            <td>
-                {{ attestation.extraitSansRestitution|raw }}
-            </td>
-        </tr>
-        <tr>
-            <th scope="row">
                 {{ 'attestation.fields.extrait_avec_restitution'|trans}}
             </th>
             <td>
@@ -86,6 +78,29 @@
             </th>
             <td>
                 {{ attestation.translitteration|raw }}
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">
+                {{ 'generic.fields.translations'|trans}}
+            </th>
+            <td class="p-0">
+                <table class="table table-sm text-center mb-0">
+                    <thead>
+                        <tr>
+                            <th scope="col">{{ 'languages.fr'|trans }}</th>
+                            <th scope="col">{{ 'languages.en'|trans }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for traduction in attestation.traductions %}
+                        <tr>
+                            <td>{{ traduction.nomFr }}</td>
+                            <td>{{ traduction.nomEn }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </td>
         </tr>
         <tr>

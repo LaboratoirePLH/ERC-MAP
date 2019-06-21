@@ -20,6 +20,7 @@
             </h3>
             {{ block("typeDonnee", "requetes/partial.html.twig") }}
         </div>
+
         <div id="criteres">
             <h3>
                 {{ 'requetes.critere' | trans }}
@@ -29,7 +30,8 @@
             <div id="liste_critere">
                 {{ block("ajoutBox1", "requetes/partial.html.twig") }}
             </div>
-        </div>      
+        </div>   
+
         <div id="champ_affiche">
             <h3>
                 {{ 'requetes.champs_afficher' | trans }}
@@ -110,7 +112,6 @@
 
     function remettreBoutonEtOu(){
         $(".select_div").last().find(".boutonsEtOu").css("visibility","visible");
-        $(".select_div").last().find(".boutonsEtOu").find(".Et").addClass("active");
     }
 
     function creerTableAfficherEtCritere() {
@@ -213,7 +214,6 @@
                 tmp["value"] = "IS NULL";
             }
             else if(tabChoix[tabChoixValeur][tabChoixI].id == 14 && tabObjets[tabObjetValeur][tabObjetI].tableNull2 != undefined && tabObjets[tabObjetValeur][tabObjetI].nomBDDNull2 != undefined){ //Si ça doit passer par une table intermédiaire, les cas spéciaux
-                console.log("ok")
                 var listeNullTmp = "";
 
                 //Pour mettre le ET/OU au début
@@ -347,7 +347,6 @@
             },
             success: function(rep)
             {   
-                console.log(rep);
                 afficherExecRequete(rep);
             },
             error: function (err)
@@ -717,7 +716,7 @@
     }
 
     function dupliquer(currentElement){
-        $(currentElement).parent().clone().appendTo("#liste_critere");
+        $(currentElement).parent().parent().clone().appendTo("#liste_critere");
         $("#liste_critere").append("<br/>");
         remettreBoutonEtOu();
     }
@@ -748,8 +747,8 @@
     }
 
     function removeFiltre(currentElement) { // Par rapport au bouton supprimer
-        $(currentElement).parent().next().remove(); // Le br
-        $(currentElement).parent().remove(); // La div
+        $(currentElement).parent().parent().next().remove(); // Le br
+        $(currentElement).parent().parent().remove(); // La div
         if($(currentElement).hasClass("btn_suppr_champAffiche"))
         {
             changerTroisiemeBoxChampAffiche();
@@ -966,7 +965,7 @@
         switch (valeur) {
             case "1":
                 if (id != 7) { // estNul
-                    $(box).append("<input type=\"text\" required class=\"text_input input_req\">"); // Text input classique (String)
+                    $(box).append("<input type=\"text\" required class=\"text_input input_req form-control\">"); // Text input classique (String)
 
                     if(tabObjets[valeurTabObjet][iValeurTabObjet].nomBDD == "extrait_avec_restitution"){ //Pour implémenter le semeitic Keyboard
                         $(box).find(".text_input").semiticKeyboard();
@@ -980,7 +979,7 @@
                     break;
                 }
 
-                $(box).append("<select name=\"select_box4\" class=\"select_box4\" onchange=\"changerSelected(this)\"> </select>"); // On ajout le select
+                $(box).append("<select name=\"select_box4\" class=\"select_box4 form-control\" onchange=\"changerSelected(this)\"> </select>"); // On ajout le select
                 var selectBox4 = $(box).children();// Le select_box4
                 $(selectBox4).append("<option value=\"\" label=\"-1\" selected=\"selected\" disabled=\"disabled\">{{ 'requetes.selection_vide' | trans }}</option>");
 
@@ -1013,7 +1012,7 @@
 
             case "3":
                 if (id != 13) { // estNul
-                    $(box).append("<input required id=\"number_input\" class=\"number_input input_req\">"); // Text input avec uniquement des nombres (int)
+                    $(box).append("<input required id=\"number_input\" class=\"number_input input_req form-control\">"); // Text input avec uniquement des nombres (int)
                     var numInp =  document.getElementsByClassName('number_input'); //Je récupère tous les number_input
                     for(var i = 0; i< numInp.length; i++){
                         setInputFilter(numInp[i], function (value) { //Je les affecte à la fonction

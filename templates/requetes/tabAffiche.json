@@ -466,13 +466,6 @@
             "tableSQL": "element"
         },
         {
-            "nom": "{{ 'element.fields.theonymes_implicites' |trans }}",
-            "type": 4,
-            "nomBDD": "theonymes_implicites",
-            "table": "Element",
-            "tableSQL": "theonymes_implicites"
-        },
-        {
             "nom": "{{ 'element.fields.etat_morphologique' |trans }}",
             "type": 4,
             "nomBDD": "etat_morphologique",

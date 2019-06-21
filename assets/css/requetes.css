@@ -2,6 +2,16 @@
     margin-left : -20px;
 }
 
+.btn-orange, .btn-orange:hover, .btn-orange:active, .btn-orange:visited, .btn-orange:focus{
+    background-color: #ED7F10 !important;
+    border-color: #ED7F10 !important;
+}
+
+.btn-orange-brule, .btn-orange-brule:hover, .btn-orange-brule:active, .btn-orange-brule:visited, .btn-orange-brule:focus{
+    background-color: #cc5500 !important;
+    border-color: #cc5500 !important;
+}
+
 #volet {
     width: 250px;
     padding: 10px;

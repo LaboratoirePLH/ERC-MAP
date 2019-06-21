@@ -112,6 +112,9 @@
 
     function remettreBoutonEtOu(){
         $(".select_div").last().find(".boutonsEtOu").css("visibility","visible");
+            if(!$(".select_div").last().find(".boutonsEtOu").find(".Et").hasClass("active") && !$(".select_div").last().find(".boutonsEtOu").find(".Ou").hasClass("active")){ //Si c'est le boutton "Et"
+                $(".select_div").last().find(".boutonsEtOu").find(".Et").addClass("active");
+            }
     }
 
     function creerTableAfficherEtCritere() {

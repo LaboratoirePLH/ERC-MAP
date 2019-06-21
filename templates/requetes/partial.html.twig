@@ -6,7 +6,7 @@
                 {#Bouton pour réinitialiser les filtres #}
                 {{ 'generic.clear_filters'|trans }}
             </button>
-            <button class="btn btn-primary" onclick="ajouterFiltre()" type="button">
+            <button class="btn btn-primary btn-orange" onclick="ajouterFiltre()" type="button">
                 {{ 'generic.add' |trans }}</button>
             {# Ajouter une requête #}
             <br/>
@@ -23,7 +23,7 @@
                 {#Bouton pour réinitialiser les filtres #}
                 {{ 'generic.clear_filters'|trans }}
             </button>
-            <button class="btn btn-primary" onclick="ajouterChampAffiche()" type="button">
+            <button class="btn btn-primary btn-orange" onclick="ajouterChampAffiche()" type="button">
                 {{ 'generic.add' |trans }}</button>
             {# Ajouter une requête #}
             <br/>
@@ -88,7 +88,7 @@
                 <label class="btn btn-secondary Ou">
                     <input autocomplete="off" name="options" type="radio">{{ 'requetes.ou' |trans }}</label>
             </div>
-            <button type="button buttonDupliquer" onclick="dupliquer(this)" class="btn btn-info">{{ 'requetes.dupliquer' |trans }}</button>
+            <button type="button buttonDupliquer" onclick="dupliquer(this)" class="btn btn btn-primary btn-orange-brule">{{ 'requetes.dupliquer' |trans }}</button>
         </div>
     </div>
     <br/>

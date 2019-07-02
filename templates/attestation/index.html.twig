@@ -73,7 +73,8 @@
                 {{ attestation.passage|raw }}
             </td>
             <td>
-                {{ (attestation.translitteration | length > 250 ? attestation.translitteration|slice(0,250) ~ "&hellip;" : attestation.translitteration)|raw }}
+                {% set cellValue = attestation.translitteration|length > 0 ? attestation.translitteration : attestation.extraitAvecRestitution %}
+                {{ (cellValue | length > 250 ? cellValue|slice(0,250) ~ "&hellip;" : cellValue)|raw }}
             </td>
             <td data-order="{{ attestation.dateCreation|date('U') }}">
                 {{ attestation.dateCreation|date("locale_datetime"|trans) }}

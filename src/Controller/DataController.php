@@ -129,15 +129,10 @@ class DataController extends AbstractController
         $repo = $this->getDoctrine()->getManager()->getRepository(Localisation::class);
         $query = $repo->createQueryBuilder("e");
 
-        if($request->query->has('pleiades'))
+        if($request->query->has('city'))
         {
-            $query = $query->where("e.pleiadesVille = :number")
-                        ->setParameter("number", $request->query->get('pleiades'));
-        }
-        else if($request->query->has('city'))
-        {
-            $query = $query->where("lower(e.nomVille) = lower(:nomville)")
-                        ->setParameter("nomville", $request->query->get('city'));
+            $query = $query->where("lower(e.nomVille) LIKE :nomville")
+                        ->setParameter("nomville", '%' . strtolower($request->query->get('city')) . '%');
         }
         else
         {
@@ -159,11 +154,8 @@ class DataController extends AbstractController
         if(count($data) == 0){
             return new JsonResponse(['message' => 'Not Found'], 404);
         }
-        else if(count($data) > 1){
-            return new JsonResponse(['message' => 'Ambiguous Data'], 406);
-        }
         else {
-            return new JsonResponse(array_pop($data));
+            return new JsonResponse($data);
         }
     }
 }

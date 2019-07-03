@@ -111,10 +111,10 @@
                 e.preventDefault();
                 var btn = $(this),
                     errorEl = rootForm.find('.citysearch-error'),
-                    cityInput = $(this).parent().siblings('input[type=text]'),
-                    pleiadesInput = rootForm.find('.pleiades_search').parent().siblings('input[type=number]');
+                    resultsEl = rootForm.find('.citysearch-results'),
+                    cityInput = $(this).parent().siblings('input[type=text]');
 
-                if (cityInput.val() !== "" || pleiadesInput.val() !== "") {
+                if (cityInput.val() !== "") {
                     // Display loader
                     btn.prepend($('<i class="fas fa-spinner fa-pulse mr-2 loader"></i>'));
                     // Empty error message
@@ -133,28 +133,38 @@
                     });
 
                     var data = {};
-                    if (cityInput.val() !== "") { data.city = cityInput.val(); }
-                    if (pleiadesInput.val() !== "") { data.pleiades = pleiadesInput.val(); }
+                    data.city = cityInput.val();
 
                     $.getJSON(settings.dataUrl, data)
                         .done(function (data) {
-                            $.each(data, function (fieldName, value) {
-                                if (fields.hasOwnProperty(fieldName)) {
-                                    if (fieldName == "granderegion" && fields.hasOwnProperty("sousregion")) {
-                                        fields.granderegion.val(value).on('dependent:updated', function () {
-                                            fields.sousregion.val(data.sousregion).trigger('chosen:updated');
-                                        }).trigger('chosen:updated').trigger('change')
-                                    }
-                                    else if (fieldName == "sousregion") {
-                                        return true;
-                                    }
-                                    else {
-                                        fields[fieldName].val(value);
-                                    }
-                                }
+                            resultsEl.empty();
+                            var ul = $('<ul>');
+                            $.each(data, function (i, row) {
+                                var a = $('<a>');
 
-                            })
-                            cityInput.val(data.nom);
+                                var rowData = [
+                                    '#', row.id, ': ',
+                                    row.nom, '(',
+                                    row.latitude, ', ',
+                                    row.longitude, ')'
+                                ];
+                                a.text(rowData.join(''));
+                                a.prop('href', '#');
+                                a.on('click', function (e) {
+                                    e.preventDefault();
+                                    fields.granderegion.on('dependent:updated', function () {
+                                        fields.sousregion.val(row.sousregion).trigger('chosen:updated');
+                                    }).val(row.granderegion).trigger('chosen:updated').trigger('change')
+                                    fields.id.val(row.id);
+                                    fields.longitude.val(row.longitude);
+                                    fields.latitude.val(row.latitude);
+                                    cityInput.val(row.nom);
+                                    resultsEl.empty();
+                                    return false;
+                                });
+                                ul.append($('<li>').append(a));
+                            });
+                            resultsEl.append(ul);
                         })
                         .fail(function (jqXHR, textStatus, errorThrown) {
                             var error = settings.errorMessage;

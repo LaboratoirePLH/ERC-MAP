@@ -13,6 +13,7 @@ easy_admin:
          - label: 'Gestion'
          - { entity: 'Chercheur', default: true }
          - Projet
+         - Suivi
          - VerrouEntite
          - { label: 'Source' }
          - Auteur
@@ -166,6 +167,16 @@ easy_admin:
         StatutAffiche:
             class: App\Entity\StatutAffiche
             label: Statut Affiché
+        Suivi:
+            class: App\Entity\Suivi
+            label: Suivi
+            list:
+                fields:
+                 - 'id'
+                 - 'nom_table'
+                 - 'id_entite'
+                 - 'action'
+                 - 'date_heure'
         Titre:
             class: App\Entity\Titre
             label: Titre

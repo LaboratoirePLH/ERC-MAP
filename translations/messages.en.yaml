@@ -38,6 +38,7 @@ login_page:
         reset_link_sent: "Reset link sent"
         unknown_token: "Invalid reset link"
         password_reset: "Password has been updated"
+        message_sent: "Your message was sent to the website's administrators"
 
 generic:
     actions: "Actions"
@@ -53,6 +54,7 @@ generic:
     add: "Add"
     clear: "Clear"
     clear_filters: "Clear filters"
+    send: "Send"
     exit: "Exit"
     back: "Back"
     stay: "Stay"
@@ -68,6 +70,7 @@ generic:
         by: "by"
         type: "Type"
         commentaire: "Commentary"
+        message: "Message"
         utilisation: "Usage"
         nom_fr: "Name (FR)"
         nom_en: "Name (EN)"
@@ -412,6 +415,9 @@ mails:
         intro: "Please click the following link to reset your password on the ERC-MAP database"
         action: "Reset my password"
         outro: "You received this e-mail because someone asked to reset your password. If you were not the one asking, please ignore this email."
+    contact:
+        title: "ERC-MAP - Contact"
+        text: "A user sent you a message through the contact form : "
 
 
 requetes:

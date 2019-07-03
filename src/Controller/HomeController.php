@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Chercheur;
 use App\Form\ChercheurType;
 use App\Form\ChangePasswordType;
 
@@ -13,6 +14,22 @@ use Symfony\Component\Translation\TranslatorInterface;
 
 class HomeController extends AbstractController
 {
+    /**
+     * @var string
+     */
+    private $fromEmail;
+
+    /**
+     * @var string
+     */
+    private $fromName;
+
+    public function __construct(string $fromEmail, string $fromName)
+    {
+        $this->fromEmail = $fromEmail;
+        $this->fromName = $fromName;
+    }
+
     /**
      * @Route("/", name="home")
      */
@@ -28,8 +45,37 @@ class HomeController extends AbstractController
     /**
      * @Route("/contact", name="contact")
      */
-    public function contact()
+    public function contact(Request $request, \Swift_Mailer $mailer, TranslatorInterface $translator)
     {
+        if ($request->isMethod('POST'))
+        {
+            $user = $this->get('security.token_storage')->getToken()->getUser();
+            $message = $request->request->get('message');
+
+            $admins = $this->getDoctrine()
+                        ->getRepository(Chercheur::class)
+                        ->findBy(["role" => "admin"]);
+            $emails = array_map(function($u){ return $u->getMail();}, $admins);
+
+            $mail = (new \Swift_Message($translator->trans('mails.contact.title')))
+                ->setFrom([$this->fromEmail => $this->fromName])
+                ->setTo($emails)
+                ->setReplyTo($user->getMail())
+                ->setBody(
+                     $this->renderView(
+                        'email/contact.html.twig',
+                        compact('user', 'message')
+                    ),
+                    'text/html'
+                );
+
+            $mailer->send($mail);
+
+            $request->getSession()->getFlashBag()->add('success', 'login_page.message.message_sent');
+
+            return $this->redirectToRoute('home');
+        }
+
         return $this->render('home/contact.html.twig', [
             'controller_name' => 'HomeController',
             'breadcrumbs'     => [

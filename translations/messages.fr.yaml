@@ -38,6 +38,7 @@ login_page:
         reset_link_sent: "Lien de réinitialisation envoyé"
         unknown_token: "Lien de réinitialisation invalide"
         password_reset: "Mot de passe réinitialisé"
+        message_sent: "Votre message a bien été envoyé aux administrateurs du site"
 
 generic:
     actions: "Actions"
@@ -53,6 +54,7 @@ generic:
     add: "Ajouter"
     clear: "Effacer"
     clear_filters: "Réinitialiser les filtres"
+    send: "Envoyer"
     exit: "Quitter"
     back: "Retour"
     stay: "Rester"
@@ -68,6 +70,7 @@ generic:
         by: "par"
         type: "Type"
         commentaire: "Commentaire"
+        message: "Message"
         utilisation: "Utilisation"
         nom_fr: "Nom (FR)"
         nom_en: "Nom (EN)"
@@ -413,6 +416,9 @@ mails:
         intro: "Veuillez cliquer sur le lien suivant afin de réinitialiser votre mot de passe à la base de données ERC-MAP"
         action: "Réinitialiser mon mot de passe"
         outro: "Vous avez reçu ce mail car quelqu'un a demandé la réinitialisation de votre mot de passe. Si ce n'est pas vous, veuillez ignorer ce mail."
+    contact:
+        title: "ERC-MAP - Contact"
+        text: "Un utilisateur vous a envoyé un message via le formulaire de contact :"
 
 requetes:
     title: "Interface de requête"

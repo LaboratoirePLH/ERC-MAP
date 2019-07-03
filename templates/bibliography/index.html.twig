@@ -187,7 +187,13 @@
             buttons: [{
                 extend: 'csv',
                 filename: "{{ 'app_name'|trans }}-{{ 'biblio.list'|trans }}",
-                text: "{{'generic.export_csv'|trans}}"
+                text: "{{'generic.export_csv'|trans}}",
+                customize: function (document) {
+                    return document.replace(/(\s)\s+/g, "$1");
+                },
+                exportOptions: {
+                    columns: [0, 1, 2, 3, 4, 5]
+                }
             }]
         });
         $('#biblio_list_wrapper select').removeClass('custom-select');

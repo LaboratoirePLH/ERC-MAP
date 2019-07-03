@@ -250,7 +250,13 @@
             buttons: [{
                 extend: 'csv',
                 filename: "{{ 'app_name'|trans }}-{{ 'source.list'|trans }}",
-                text: "{{'generic.export_csv'|trans}}"
+                text: "{{'generic.export_csv'|trans}}",
+                customize: function (document) {
+                    return document.replace(/(\s)\s+/g, "$1");
+                },
+                exportOptions: {
+                    columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+                }
             }]
         });
         $('#source_list_wrapper select').removeClass('custom-select');

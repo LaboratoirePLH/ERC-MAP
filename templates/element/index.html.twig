@@ -71,14 +71,14 @@
                 {{ element.concatCategories(locale)|raw }}
             </td>
             <td data-order="{{ element.dateCreation|date('U') }}">
-                {{ element.dateCreation|date("locale_datetime"|trans) }}
+                {{ element.dateCreation|date(('locale_datetime'|trans), "Europe/Paris") }}
                 <br />
                 <small>
                     {{ element.createur.prenomNom }}<br />
                 </small>
             </td>
             <td data-order="{{ element.dateModification|date('U') }}">
-                {{ element.dateModification|date("locale_datetime"|trans) }}
+                {{ element.dateModification|date(('locale_datetime'|trans), "Europe/Paris") }}
                 <br />
                 <small>
                     {{ element.dernierEditeur.prenomNom }}<br />
@@ -101,7 +101,7 @@
                                     '%type%': 'element.name'|trans,
                                     '%id%' : element.id,
                                     '%user%': element.verrou.createur.prenomNom,
-                                    '%time%': element.verrou.dateFin.format('locale_datetime'|trans)
+                                    '%time%': element.verrou.dateFin|date(('locale_datetime'|trans), "Europe/Paris")
                                 }) %}
                 <button type="button" class="btn btn-sm btn-block my-1 btn-danger disabled" data-toggle="tooltip"
                     data-placement="left" title="{{ error }}">

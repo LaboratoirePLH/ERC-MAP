@@ -22,13 +22,13 @@
         {% if action == 'edit' %}
         {% spaceless %}
         {{ 'generic.fields.date_creation'|trans }}&nbsp;:&nbsp;
-        {{ attestation.dateCreation|date("locale_datetime"|trans) }}&nbsp;
+        {{ attestation.dateCreation|date(('locale_datetime'|trans), "Europe/Paris") }}&nbsp;
         {{ 'generic.fields.by'|trans }}&nbsp;{{ attestation.createur.prenomNom }}
         {% endspaceless %}
         <br />
         {% spaceless %}
         {{ 'generic.fields.date_modification'|trans }}&nbsp;:&nbsp;
-        {{ attestation.dateModification|date("locale_datetime"|trans) }}&nbsp;
+        {{ attestation.dateModification|date(('locale_datetime'|trans), "Europe/Paris") }}&nbsp;
         {{ 'generic.fields.by'|trans }}&nbsp;{{ attestation.dernierEditeur.prenomNom }}
         {% endspaceless %}
         <br />

@@ -90,14 +90,14 @@
                 {{ source.sourceBiblios is not empty ? source.editionPrincipaleBiblio.referenceSource : "" }}
             </td>
             <td data-order="{{ source.dateCreation|date('U') }}">
-                {{ source.dateCreation|date("locale_datetime"|trans) }}
+                {{ source.dateCreation|date(('locale_datetime'|trans), "Europe/Paris") }}
                 <br />
                 <small>
                     {{ source.createur.prenomNom }}<br />
                 </small>
             </td>
             <td data-order="{{ source.dateModification|date('U') }}">
-                {{ source.dateModification|date("locale_datetime"|trans) }}
+                {{ source.dateModification|date(('locale_datetime'|trans), "Europe/Paris") }}
                 <br />
                 <small>
                     {{ source.dernierEditeur.prenomNom }}<br />
@@ -117,7 +117,7 @@
                     '%type%': 'source.name'|trans,
                     '%id%'  : source.id,
                     '%user%': source.verrou.createur.prenomNom,
-                    '%time%': source.verrou.dateFin.format('locale_datetime'|trans)
+                    '%time%': source.verrou.dateFin|date(('locale_datetime'|trans), "Europe/Paris")
                 }) %}
                 <button type="button" class="btn btn-sm btn-block my-1 btn-danger disabled" data-toggle="tooltip"
                     data-placement="left" title="{{ error }}">
@@ -146,7 +146,7 @@
                     '%type%': 'source.name'|trans,
                     '%id%' : source.id,
                     '%user%': source.verrou.createur.prenomNom,
-                    '%time%': source.verrou.dateFin.format('locale_datetime'|trans)
+                    '%time%': source.verrou.dateFin|date(('locale_datetime'|trans), "Europe/Paris")
                 }) %}
                 <button type="button" class="btn btn-sm btn-block my-1 btn-danger disabled" data-toggle="tooltip"
                     data-placement="left" title="{{ error }}">

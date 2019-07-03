@@ -87,7 +87,7 @@
                                     '%type%': 'biblio.list'|trans,
                                     '%id%' : biblio.id,
                                     '%user%': biblio.verrou.createur.prenomNom,
-                                    '%time%': biblio.verrou.dateFin.format('locale_datetime'|trans)
+                                    '%time%': biblio.verrou.dateFin|date(('locale_datetime'|trans), "Europe/Paris")
                                 }) %}
                 <button type="button" class="btn btn-sm btn-block my-1 btn-danger disabled" data-toggle="tooltip"
                     data-placement="left" title="{{ error }}">

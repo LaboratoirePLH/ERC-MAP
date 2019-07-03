@@ -18,13 +18,13 @@
         {% if action == 'edit' %}
         {% spaceless %}
         {{ 'generic.fields.date_creation'|trans }}&nbsp;:&nbsp;
-        {{ source.dateCreation|date("locale_datetime"|trans) }}&nbsp;
+        {{ source.dateCreation|date(('locale_datetime'|trans), "Europe/Paris") }}&nbsp;
         {{ 'generic.fields.by'|trans }}&nbsp;{{ source.createur.prenomNom }}
         {% endspaceless %}
         <br />
         {% spaceless %}
         {{ 'generic.fields.date_modification'|trans }}&nbsp;:&nbsp;
-        {{ source.dateModification|date("locale_datetime"|trans) }}&nbsp;
+        {{ source.dateModification|date(('locale_datetime'|trans), "Europe/Paris") }}&nbsp;
         {{ 'generic.fields.by'|trans }}&nbsp;{{ source.dernierEditeur.prenomNom }}
         {% endspaceless %}
         <br />

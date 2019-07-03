@@ -77,14 +77,14 @@
                 {{ (cellValue | length > 250 ? cellValue|slice(0,250) ~ "&hellip;" : cellValue)|raw }}
             </td>
             <td data-order="{{ attestation.dateCreation|date('U') }}">
-                {{ attestation.dateCreation|date("locale_datetime"|trans) }}
+                {{ attestation.dateCreation|date(('locale_datetime'|trans), "Europe/Paris") }}
                 <br />
                 <small>
                     {{ attestation.createur.prenomNom }}<br />
                 </small>
             </td>
             <td data-order="{{ attestation.dateModification|date('U') }}">
-                {{ attestation.dateModification|date("locale_datetime"|trans) }}
+                {{ attestation.dateModification|date(('locale_datetime'|trans), "Europe/Paris") }}
                 <br />
                 <small>
                     {{ attestation.dernierEditeur.prenomNom }}<br />
@@ -113,7 +113,7 @@
                     '%type%': 'attestation.name'|trans,
                     '%id%'  : attestation.id,
                     '%user%': attestation.verrou.createur.prenomNom,
-                    '%time%': attestation.verrou.dateFin.format('locale_datetime'|trans)
+                    '%time%': attestation.verrou.dateFin|date(('locale_datetime'|trans), "Europe/Paris")
                 }) %}
                 <button type="button" class="btn btn-sm btn-block my-1 btn-danger disabled" data-toggle="tooltip"
                     data-placement="left" title="{{ error }}">

@@ -39,6 +39,7 @@ login_page:
         unknown_token: "Invalid reset link"
         password_reset: "Password has been updated"
         message_sent: "Your message was sent to the website's administrators"
+        invalid_captcha: "Your request was denied by the anti-robot protection. Please complete the CAPTCHA and retry"
 
 generic:
     actions: "Actions"

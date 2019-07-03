@@ -39,7 +39,7 @@ login_page:
         unknown_token: "Lien de réinitialisation invalide"
         password_reset: "Mot de passe réinitialisé"
         message_sent: "Votre message a bien été envoyé aux administrateurs du site"
-
+        invalid_captcha: "Votre requête a été refusée par la protection anti-robot. Veuillez compléter le CAPTCHA et recommencer"
 generic:
     actions: "Actions"
     close: "Fermer"

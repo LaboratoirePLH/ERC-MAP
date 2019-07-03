@@ -6,10 +6,12 @@ use App\Entity\Chercheur;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use EWZ\Bundle\RecaptchaBundle\Form\Type\EWZRecaptchaType;
+use EWZ\Bundle\RecaptchaBundle\Validator\Constraints\IsTrue as RecaptchaTrue;
 
 class LoginType extends AbstractType
 {
@@ -18,7 +20,11 @@ class LoginType extends AbstractType
         $builder
             ->add('_username', TextType::class, ['label' => 'login_page.form.username'])
             ->add('_password', PasswordType::class, ['label' => 'login_page.form.password'])
-            ->add('login', SubmitType::class, ['label' => 'login_page.form.login'])
+            ->add('_remember_me', CheckboxType::class, [
+                'label'    => 'login_page.form.remember_me',
+                'required' => false,
+            ])
+            ->add('recaptcha', EWZRecaptchaType::class, ['mapped' => false])
         ;
     }
 

@@ -112,7 +112,7 @@
             </td>
             <td class="py-0 px-1">
                 {% if action == 'select' %}
-                {% if source.verrou != null %}
+                {% if source.verrou != null and not source.verrou.isWritable(app.user) %}
                 {% set error = "generic.messages.error_locked"|trans({
                     '%type%': 'source.name'|trans,
                     '%id%'  : source.id,

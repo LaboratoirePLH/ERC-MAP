@@ -63,8 +63,8 @@ final class Version20190703161916 extends AbstractMigration
             "END;",
             "$$;",
         ]));
-        $this->addSql("CREATE TRIGGER trigger_suivimaj_attestation AFTER INSERT OR DELETE OR UPDATE ON public.attestation FOR EACH ROW EXECUTE PROCEDURE public.fonction_suivi_maj();",);
-        $this->addSql("CREATE TRIGGER trigger_suivimaj_source AFTER INSERT OR DELETE OR UPDATE ON public.source FOR EACH ROW EXECUTE PROCEDURE public.fonction_suivi_maj();",);
+        $this->addSql("CREATE TRIGGER trigger_suivimaj_attestation AFTER INSERT OR DELETE OR UPDATE ON public.attestation FOR EACH ROW EXECUTE PROCEDURE public.fonction_suivi_maj();");
+        $this->addSql("CREATE TRIGGER trigger_suivimaj_source AFTER INSERT OR DELETE OR UPDATE ON public.source FOR EACH ROW EXECUTE PROCEDURE public.fonction_suivi_maj();");
         $this->addSql("CREATE TRIGGER trigger_suivimaj_element AFTER INSERT OR DELETE OR UPDATE ON public.element FOR EACH ROW EXECUTE PROCEDURE public.fonction_suivi_maj();");
     }
 

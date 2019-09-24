@@ -1,7 +1,7 @@
 version: '3.7'
 
 volumes:
-    pgdata: ~
+    pgdata:
 
 services:
     nginx:
@@ -43,6 +43,7 @@ services:
             - POSTGRES_USER=polytheisms
             - POSTGRES_PASSWORD=polytheisms
             - POSTGRES_DB=polytheisms
+            - ALLOW_IP_RANGE="0.0.0.0/0"
         ports:
             # local 5432:5432 remote
             - 5432:5432
@@ -65,6 +66,7 @@ services:
         image: adminer
         depends_on:
             - php
+            - db
         restart: always
         ports:
             # local 8080:8080 remote

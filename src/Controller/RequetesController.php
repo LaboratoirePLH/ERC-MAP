@@ -160,7 +160,7 @@ class RequetesController extends AbstractController
                 );
             }
             if (!isset($responseArray) || empty($responseArray)) {
-                $responseArray = " ";
+                $responseArray = [];
             }
             return new JsonResponse($responseArray);
         }
@@ -217,7 +217,7 @@ class RequetesController extends AbstractController
             $listeNull = $request->request->get('listeNull');
 
             $nbCriteres = sizeof($tabRequete);
-            //Affectation du contenu de tabRequete         
+            //Affectation du contenu de tabRequete
             $tabTable = array();
             $tabNomBDD = array();
             $tabValue = array();
@@ -280,7 +280,7 @@ class RequetesController extends AbstractController
             $from = "";
             $from .= $this->_faireFrom($from, $tabTable, $typeDonnee);
 
-            //Pour les jointures  
+            //Pour les jointures
             $jointures = " WHERE 1=1";
             $jointures .= $this->_faireJointure($typeDonnee, $tabTable, 0);
 
@@ -523,7 +523,7 @@ class RequetesController extends AbstractController
                 $tabVerif[] = $tabTable[$i];
             }
         }
-        //Je met tout dans un string 
+        //Je met tout dans un string
         $from = "FROM ";
         $tabVerif = array_values(array_unique($tabVerif, SORT_REGULAR)); //J'enlève les doublons, le array_values est là pour éviter les erreurs d'index dûes au array_unique
         foreach ($tabVerif as $key => $val) {

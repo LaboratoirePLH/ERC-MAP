@@ -1,0 +1,71 @@
+version: '3.7'
+
+volumes:
+    pgdata: ~
+
+services:
+    nginx:
+        build: ./.docker/nginx
+        restart: always
+        depends_on:
+            - php
+        volumes:
+            # Logs
+            - ./logs/nginx:/var/logs/nginx:cached
+            # Code
+            - .:/var/www/html:cached
+        ports:
+            - "80:80"
+
+    php:
+        build: ./.docker/php
+        restart: always
+        working_dir: /var/www/html/
+        depends_on:
+            - db
+        volumes:
+            # Logs
+            - ./logs/symfony:/var/www/html/var/log:cached
+            # Code
+            - .:/var/www/html:cached
+            # Vendor délégués au container
+            - ./vendor:/var/www/html/vendor:delegated
+        ports:
+            - "9000:9001"
+
+    db:
+        image: kartoza/postgis:9.6-2.4
+        restart: always
+        volumes:
+            - pgdata:/var/lib/postgresql/data
+        environment:
+            # Nécessaire
+            - POSTGRES_USER=polytheisms
+            - POSTGRES_PASSWORD=polytheisms
+            - POSTGRES_DB=polytheisms
+        ports:
+            # local 5432:5432 remote
+            - 5432:5432
+
+    yarn:
+        image: node:current-alpine
+        depends_on:
+            - php
+        restart: always
+        working_dir: /var/www/html/
+        command: sh -c "yarn install && yarn watch"
+        volumes:
+            # Code
+            - .:/var/www/html
+            # node_modules et build sont délégués au container
+            - ./node_modules:/var/www/html/node_modules:delegated
+            - ./public/build:/var/www/html/public/build:delegated
+
+    adminer:
+        image: adminer
+        depends_on:
+            - php
+        restart: always
+        ports:
+            # local 8080:8080 remote
+            - 8080:8080

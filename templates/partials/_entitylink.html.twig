@@ -20,6 +20,6 @@
     {% if icon != false %}
     <i class="fas fa-fw {{ icon }}"></i>
     {% endif %}
-    {{ text }}
+    {{ text|raw }}
 </a>
 {% endif %}

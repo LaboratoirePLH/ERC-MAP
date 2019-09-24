@@ -1,5 +1,4 @@
-var Sortable = require('sortablejs');
-global.Sortable = Sortable;
+import { Sortable } from "sortablejs";
 
 FORMULA_EDITOR_UUID = 0;
 
@@ -22,6 +21,8 @@ var get_browser = function () {
 };
 
 (function ($) {
+    var FORMULA_EDITOR_UUID = 0;
+
     const parenthesisStyles = [
         'Black',
         'CadetBlue',
@@ -296,7 +297,7 @@ var get_browser = function () {
             if ($(me).find("input[name$='[id]']").val() == "") {
                 // Setup drag & drop
                 const isOldFirefox = get_browser()['name'] == 'Firefox' && get_browser()['version'] < "64";
-                sortableOperators = new Sortable($(me).find('.formula-operators').get(0), {
+                new Sortable($(me).find('.formula-operators').get(0), {
                     draggable: '.btn',
                     sort: false,
                     forceFallback: isOldFirefox,
@@ -310,7 +311,7 @@ var get_browser = function () {
                         el.parentNode.removeChild(el);
                     }
                 });
-                sortableElements = new Sortable($(me).find('.formula-elements').get(0), {
+                new Sortable($(me).find('.formula-elements').get(0), {
                     draggable: '.btn',
                     sort: false,
                     forceFallback: isOldFirefox,
@@ -324,7 +325,7 @@ var get_browser = function () {
                         el.parentNode.removeChild(el);
                     }
                 });
-                sortableFormula = new Sortable($(me).find('.formula-visualizer').get(0), {
+                new Sortable($(me).find('.formula-visualizer').get(0), {
                     draggable: '.btn',
                     sort: true,
                     forceFallback: isOldFirefox,

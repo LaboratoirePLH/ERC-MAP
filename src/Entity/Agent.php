@@ -11,6 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="agent")
  * @ORM\Entity
+ * @ORM\HasLifecycleCallbacks()
  */
 class Agent extends AbstractEntity
 {
@@ -263,5 +264,16 @@ class Agent extends AbstractEntity
             $this->agentivites->removeElement($agentivite);
         }
         return $this;
+    }
+
+    public function isBlank() :bool
+    {
+        return !is_null($this->designation)
+            && strlen($this->designation) > 0
+            && !$this->statutAffiches->isEmpty()
+            && !$this->natures->isEmpty()
+            && !$this->genres->isEmpty()
+            && !$this->activites->isEmpty()
+            && !$this->agentivites->isEmpty();
     }
 }

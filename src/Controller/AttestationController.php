@@ -166,7 +166,7 @@ class AttestationController extends AbstractController
                 }
             }
             foreach($attestation->getAgents() as $a){
-                if($a->getDesignation() !== null){
+                if(!$a->isBlank()){
                     $a->setAttestation($attestation);
                     $em->persist($a);
                 } else {
@@ -322,7 +322,7 @@ class AttestationController extends AbstractController
                 }
             }
             foreach($attestation->getAgents() as $a){
-                if($a->getDesignation() !== null){
+                if(!$a->isBlank()){
                     $a->setAttestation($attestation);
                     if(!$em->contains($a)){
                         $em->persist($a);

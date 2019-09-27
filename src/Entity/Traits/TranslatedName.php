@@ -68,6 +68,6 @@ trait TranslatedName
 
     public function __toString(): string
     {
-        return $this->getNomFr();
+        return ($this->getNomFr() ?? $this->getNomEn()) ?? "";
     }
 }

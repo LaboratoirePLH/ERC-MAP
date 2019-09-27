@@ -192,7 +192,6 @@ var get_browser = function () {
 
     $.fn.formulaRenderer = function (formula, settings) {
         const { formulaElements, errors } = $.fn.parseFormula(formula, settings);
-        console.log(formulaElements);
         var formulaButtons = formulaElements.map(function (formulaEl) {
             return $.fn.formulaElementRenderer(formulaEl, settings)
         });

@@ -367,7 +367,7 @@
             }
         });
 
-        const elements = $.parseJSON('{{ attestation.elementsFormule|default([])|json_encode()|striptags|raw }}');
+        const elements = {{ attestation.elementsFormule|default("{}")|json_encode|raw }};
         if ("{{ action }}" == "edit" && Object.keys(elements).length > 0) {
             $('div#attestation_formules').collectionField({
                 confirmationModal: $('#confirm_remove_item'),

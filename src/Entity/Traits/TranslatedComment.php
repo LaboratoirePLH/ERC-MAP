@@ -15,12 +15,12 @@ trait TranslatedComment
 
     public function getCommentaireFr(): ?string
     {
-        return $this->sanitizeOpenXMLString($this->commentaireFr);
+        return $this->sanitizeWysiwygString($this->sanitizeOpenXMLString($this->commentaireFr));
     }
 
     public function setCommentaireFr(?string $commentaireFr): self
     {
-        $this->commentaireFr = $this->sanitizeOpenXMLString($commentaireFr);
+        $this->commentaireFr = $this->sanitizeWysiwygString($this->sanitizeOpenXMLString($commentaireFr));
         return $this;
     }
 
@@ -33,12 +33,12 @@ trait TranslatedComment
 
     public function getCommentaireEn(): ?string
     {
-        return $this->sanitizeOpenXMLString($this->commentaireEn);
+        return $this->sanitizeWysiwygString($this->sanitizeOpenXMLString($this->commentaireEn));
     }
 
     public function setCommentaireEn(?string $commentaireEn): self
     {
-        $this->commentaireEn = $this->sanitizeOpenXMLString($commentaireEn);
+        $this->commentaireEn = $this->sanitizeWysiwygString($this->sanitizeOpenXMLString($commentaireEn));
         return $this;
     }
 

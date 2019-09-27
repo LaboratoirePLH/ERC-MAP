@@ -125,12 +125,12 @@ class Agent extends AbstractEntity
 
     public function getDesignation(): ?string
     {
-        return $this->sanitizeOpenXMLString($this->designation);
+        return $this->sanitizeWysiwygString($this->sanitizeOpenXMLString($this->designation));
     }
 
     public function setDesignation(?string $designation): self
     {
-        $this->designation = $this->sanitizeOpenXMLString($designation);
+        $this->designation = $this->sanitizeWysiwygString($this->sanitizeOpenXMLString($designation));
         return $this;
     }
 

@@ -13,7 +13,7 @@ fos_ck_editor:
             height: '5rem'
             removePlugins: 'elementspath'
             blockless: true
-            enterMode: 2
+            enterMode: 1
             resize_enabled: true
             resize_dir: 'vertical'
             contentsCss: ['/build/ckeditor/contents.css','/build/ckeditorcustom.css']
@@ -23,7 +23,7 @@ fos_ck_editor:
             removeButtons: ''
             height: '5rem'
             blockless: true
-            enterMode: 2
+            enterMode: 1
             resize_enabled: true
             resize_dir: 'vertical'
             font_defaultLabel: 'Arial'

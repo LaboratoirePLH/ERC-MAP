@@ -12,6 +12,27 @@ abstract class AbstractEntity {
         return $rc->getShortName()." #".$this->getId();
     }
 
+    protected function sanitizeWysiwygString($string): ?string
+    {
+        if(is_null($string)){ return null; }
+        $string = preg_replace("/<p[^>]*?>/", "", $string);
+        $string = str_replace("</p>", "<br/>", $string);
+        $string = preg_replace("/<div[^>]*?>/", "", $string);
+        $string = str_replace("</div>", "<br/>", $string);
+        $string = preg_replace("/(<br[^>]*?>)/", "<br/>", $string);
+        $string = strip_tags($string, '<strong><em><u><s><ub><sup><span><br>');
+
+        do {
+            $before = $string;
+            $string = str_replace("&amp;", "&", $string);
+            $string = str_replace("&nbsp;", " ", $string);
+            $string = preg_replace("/(\s*<br\/>\s*){2,}/", "<br/>", $string);
+            $string = preg_replace("/(<br\/>)+$/", "", $string);
+            $string = trim($string);
+        } while($string !== $before); // Repeat until no changes are done
+        return $string;
+    }
+
     protected function sanitizeOpenXMLString($string): ?string
     {
         if(is_null($string)){ return null; }

@@ -84,24 +84,24 @@ class Biblio extends AbstractEntity
 
     public function getTitreAbrege(): ?string
     {
-        return $this->sanitizeOpenXMLString($this->titreAbrege);
+        return $this->sanitizeWysiwygString($this->sanitizeOpenXMLString($this->titreAbrege));
     }
 
     public function setTitreAbrege(?string $titreAbrege): self
     {
-        $this->titreAbrege = $this->sanitizeOpenXMLString($titreAbrege);
+        $this->titreAbrege = $this->sanitizeWysiwygString($this->sanitizeOpenXMLString($titreAbrege));
 
         return $this;
     }
 
     public function getTitreComplet(): ?string
     {
-        return $this->sanitizeOpenXMLString($this->titreComplet);
+        return $this->sanitizeWysiwygString($this->sanitizeOpenXMLString($this->titreComplet));
     }
 
     public function setTitreComplet(?string $titreComplet): self
     {
-        $this->titreComplet = $this->sanitizeOpenXMLString($titreComplet);
+        $this->titreComplet = $this->sanitizeWysiwygString($this->sanitizeOpenXMLString($titreComplet));
 
         return $this;
     }

@@ -192,12 +192,12 @@ class ContientElement extends AbstractEntity
 
     public function getEnContexte(): ?string
     {
-        return $this->sanitizeOpenXMLString($this->enContexte);
+        return $this->sanitizeWysiwygString($this->sanitizeOpenXMLString($this->enContexte));
     }
 
     public function setEnContexte(?string $enContexte): self
     {
-        $this->enContexte = $this->sanitizeOpenXMLString($enContexte);
+        $this->enContexte = $this->sanitizeWysiwygString($this->sanitizeOpenXMLString($enContexte));
 
         return $this;
     }

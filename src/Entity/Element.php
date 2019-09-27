@@ -150,12 +150,12 @@ class Element extends AbstractEntity
 
     public function getEtatAbsolu(): ?string
     {
-        return $this->sanitizeOpenXMLString($this->etatAbsolu);
+        return $this->sanitizeWysiwygString($this->sanitizeOpenXMLString($this->etatAbsolu));
     }
 
     public function setEtatAbsolu(?string $etatAbsolu): self
     {
-        $this->etatAbsolu = $this->sanitizeOpenXMLString($etatAbsolu);
+        $this->etatAbsolu = $this->sanitizeWysiwygString($this->sanitizeOpenXMLString($etatAbsolu));
         return $this;
     }
 

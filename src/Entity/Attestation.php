@@ -133,6 +133,7 @@ class Attestation extends AbstractEntity
      * @var \Doctrine\Common\Collections\Collection
      *
      * @ORM\OneToMany(targetEntity="Agent", mappedBy="attestation", orphanRemoval=true, cascade={"persist"})
+     * @ORM\OrderBy({"id" = "ASC"})
      */
     private $agents;
 

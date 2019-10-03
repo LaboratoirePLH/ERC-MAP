@@ -147,7 +147,7 @@ class Attestation extends AbstractEntity
     /**
      * @var \Doctrine\Common\Collections\Collection
      *
-     * @ORM\OneToMany(targetEntity="ContientElement", mappedBy="attestation")
+     * @ORM\OneToMany(targetEntity="ContientElement", mappedBy="attestation", orphanRemoval=true)
      * @ORM\OrderBy({"positionElement" = "ASC"})
      * @Assert\Valid
      * @Assert\Expression(

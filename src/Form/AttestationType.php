@@ -185,15 +185,15 @@ class AttestationType extends AbstractType
             ])
 
             ->add('commentaireFr', CKEditorType::class, array(
-                'config_name' => 'text_styling_only',
+                'config_name' => 'styling_and_font',
+                'attr'        => ['class' => 'semitic_keyboard', 'rows' => 2],
                 'label'       => 'generic.fields.commentaire_fr',
-                'attr'        => ['rows' => 2],
                 'required'    => false
             ))
             ->add('commentaireEn', CKEditorType::class, array(
-                'config_name' => 'text_styling_only',
+                'config_name' => 'styling_and_font',
+                'attr'        => ['class' => 'semitic_keyboard', 'rows' => 2],
                 'label'       => 'generic.fields.commentaire_en',
-                'attr'        => ['rows' => 2],
                 'required'    => false
             ))
             ->add('contientElements', CollectionType::class, [

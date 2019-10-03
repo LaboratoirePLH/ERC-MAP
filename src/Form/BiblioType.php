@@ -25,12 +25,14 @@ class BiblioType extends AbstractType
                 ]
             ])
             ->add('titreAbrege', CKEditorType::class, [
-                'config_name' => 'text_styling_only',
+                'config_name' => 'styling_and_font',
+                'attr'        => ['class' => 'semitic_keyboard'],
                 'label'       => 'biblio.fields.titre_abrege',
                 'required'    => false
             ])
             ->add('titreComplet', CKEditorType::class, array(
-                'config_name' => 'text_styling_only',
+                'config_name' => 'styling_and_font',
+                'attr'        => ['class' => 'semitic_keyboard'],
                 'label'       => 'biblio.fields.titre_complet',
                 'required'    => false
             ))

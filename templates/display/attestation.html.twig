@@ -17,7 +17,7 @@
                 {{ 'source_biblio.fields.edition_principale'|trans}}
             </th>
             <td>
-                {{ attestation.source.editionPrincipaleBiblio is not empty ? attestation.source.editionPrincipaleBiblio.biblio.titreAbrege }}
+                {{ attestation.source.editionPrincipaleBiblio is not empty ? attestation.source.editionPrincipaleBiblio.biblio.titreAbrege|raw : ''}}
             </td>
         </tr>
         <tr>
@@ -25,7 +25,7 @@
                 {{ 'source.fields.source_biblio'|trans}}
             </th>
             <td>
-                {{ attestation.source.editionPrincipaleBiblio is not empty ? attestation.source.editionPrincipaleBiblio.referenceSource }}
+                {{ attestation.source.editionPrincipaleBiblio is not empty ? attestation.source.editionPrincipaleBiblio.referenceSource|raw : ''}}
             </td>
         </tr>
         <tr>

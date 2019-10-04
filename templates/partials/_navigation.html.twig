@@ -46,14 +46,14 @@
             </div>
         </div>
     </div>
-    <nav id="navigation" class="container-fluid">
+    <nav id="navigation" class="container-fluid px-0 px-lg-2">
         {# <div class="container"> #}
-        <div class="col-12">
+        <div class="col-12 px-0 px-lg-2">
             <ul class="nav nav-fill">
                 <li class="nav-item {{ app.request.uri == url('home') ? 'active' : '' }}">
                     <a class="nav-link" href="{{ url('home') }}">
                         <i class="fas {{ icons.home }}"></i>
-                        {{ 'nav.home'|trans }}
+                        <span class="d-none d-lg-inline">{{ 'nav.home'|trans }}</span>
                     </a>
                 </li>
                 <li class="nav-item {{ controller_name == 'SourceController' ? 'active' : '' }}">
@@ -89,7 +89,7 @@
                 <li class="nav-item {{ app.request.uri == url('contact') ? 'active' : '' }}">
                     <a class="nav-link" href="{{ url('contact') }}">
                         <i class="fas fa-envelope"></i>
-                        {{ 'nav.contact'|trans }}
+                        <span class="d-none d-lg-inline">{{ 'nav.contact'|trans }}</span>
                     </a>
                 </li>
             </ul>

@@ -148,9 +148,11 @@ var get_browser = function () {
         }
         var hasElements = false;
         for (var e of formulaElements) {
-            if (e.type == 'element' && elementCpt[e.id] <= 1) {
-                e.index = null;
+            if (e.type == 'element') {
                 hasElements = true;
+                if (elementCpt[e.id] <= 1) {
+                    e.index = null;
+                }
             }
         }
         if (!hasElements) {
@@ -233,7 +235,7 @@ var get_browser = function () {
 
         var blockRenderer = function (label, blockClass, buttons, errors) {
             var buttonWrapper = $('<div/>', {
-                class: 'col-9 d-flex justify-content-center ' + blockClass
+                class: 'col-9 d-flex flex-wrap justify-content-center ' + blockClass
             });
 
             if (errors !== false) {

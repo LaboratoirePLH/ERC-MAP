@@ -109,7 +109,7 @@ generic:
     help:
         edition_principale: "Au moins une référence doit être spécifiée en tant qu'Édition Principale"
         city_search: "Entrez un nom de ville et/ou un numéro Pléiades, puis cliquez le bouton \"Chercher dans la base\". Si un résultat unique est trouvé, les champs correspondants seront remplis avec ses données"
-        pleiades_number: "Entrez le numéro Pléiades et cliquez sur le bouton \"Chercher sur Pléiades\" pour consulter la base de données Pléiades. Si un résultat est trouvé, les champs correspondants seront remplis avec ses données et verrouillés. Cliquez sur le bouton \"Effacer\" pour effacer les champs"
+        pleiades_number: "Entrez le numéro Pléiades et cliquez sur le bouton \"Chercher sur Pléiades\" pour consulter la base de données Pléiades. Si un résultat est trouvé, les champs correspondants seront remplis avec ses données et verrouillés. Cliquez sur le bouton \"Effacer\" pour effacer les champs, ou sur le bouton \"Visualiser\" pour ouvrir Pléiades avec le numéro saisi."
         regional_data: >
             <a href="https://geoapps.huma-num.fr/adws/app/8cc4e1b9-3a92-11e9-8702-e571f836e404/index.html" target="_blank" rel="noopener">Aide au webmapping des données régionales</a>
 

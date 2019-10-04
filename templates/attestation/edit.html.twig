@@ -15,10 +15,10 @@
 {% endif %}
 
 <div class="row justify-content-center">
-    <div class="col-sm-3">
+    <div class="col-6 col-xl-3 order-2 order-xl-1 d-flex justify-content-center align-items-center">
         {% include "partials/_formbuttons.html.twig" with {'exitUrl' : action == 'edit' ? url('attestation_canceledit', {'id': attestation.id}) : url('attestation_cancelcreate', {source_id: source.id})} %}
     </div>
-    <div class="col-sm-6 text-center">
+    <div class="col-12 col-xl-6 mb-2 mb-xl-0 order-1 order-xl-2 text-center">
         {% if action == 'edit' %}
         {% spaceless %}
         {{ 'generic.fields.date_creation'|trans }}&nbsp;:&nbsp;
@@ -33,13 +33,18 @@
         {% endspaceless %}
         <br />
         {{ 'generic.fields.version'|trans }}&nbsp;{{ attestation.version }}&rarr;{{ attestation.version+1 }}
-        {% endif %}
         <br />
-        {{ form_row(form.etatFiche) }}
+        {% endif %}
+        <div class="row justify-content-center">
+            {{ form_label(form.etatFiche) }}
+            <div class="col-10 col-xl-8 mb-0">
+                {{ form_widget(form.etatFiche) }}
+            </div>
+        </div>
     </div>
-    <div class="col-sm-3 text-right">
+    <div class="col-6 col-xl-3 order-3 d-flex justify-content-center align-items-center">
         {{ 'generic.fields.to_translate'|trans }} :
-        {{ form_widget(form.traduireFr) }}
+        <span class="mx-2">{{ form_widget(form.traduireFr) }}</span>
         {{ form_widget(form.traduireEn) }}
     </div>
 </div>
@@ -381,65 +386,66 @@
             }
         });
 
-        const elements = {{ attestation.elementsFormule|default({})|json_encode|raw }};
-        if ("{{ action }}" == "edit" && Object.keys(elements).length > 0) {
-            $('div#attestation_formules').collectionField({
-                confirmationModal: $('#confirm_remove_item'),
-                deleteLinkGenerator: function (el) {
-                    if ($(el).find("input[name$='[createurId]']").val() == "{{ app.user.id }}"
-                        || $(el).find("input[name$='[id]']").val() == "") {
-                        return $(
-                            '<a href="#" class="btn btn-danger ml-2 mb-1" title="{{"generic.delete"|trans}}"><i class="fas fa-trash fa-fw"></i></a>'
-                        )
-                    }
-                    return '<span class="text-center">' + $(el).find("input[name$='[createur]']").val() + '</span>';
-                },
-                inline: true,
-                autoAdd: false,
-                setupListener: function (el) {
-                    $(el).formulaEditor({
-                        elements: elements,
-                        labels: {
-                            formule: "{{ 'formule.fields.formule'|trans }}",
-                            elements: "{{ 'attestation.sections.elements'|trans }}",
-                            operateurs: "{{ 'formule.fields.operateurs'|trans }}"
-                        },
-                        errors: {
-                            valid: "{{ 'formule.errors.valid'|trans }}",
-                            unknown_element: "{{ 'formule.errors.unknown_element'|trans }}",
-                            no_element: "{{ 'formule.errors.no_element'|trans }}",
-                            brackets: "{{ 'formule.errors.brackets'|trans }}",
-                            parenthesis: "{{ 'formule.errors.parenthesis'|trans }}",
-                            operator: "{{ 'formule.errors.operator'|trans }}",
-                        },
-                        help: "{{ 'formule.help'|trans|replace({'\n': '', '\r\n': '', '\t': '', '\n\r': ''}) }}"
-                    });
-                },
-                addListener: function (newEl, idx) {
-                    $('#counter-formules').text(parseInt($('#counter-formules').text(), 10) + 1);
-                    $(newEl).find("input[name$='[positionFormule]']").val("" + idx);
-                },
-                deleteListener: function (oldEl) {
-                    $('#counter-formules').text(parseInt($('#counter-formules').text(), 10) - 1);
-                },
-            });
-        }
-        else {
-            $('div#section-formules').html('<h4 class="text-center text-danger">{{"attestation.messages.formules_unavailable"|trans}}</h4>')
-        }
-
-
-        $('.selectorcreate').selectOrCreate();
-
-        $('select.autocomplete').chosen(CHOSEN_SETTINGS);
-
-        $.fn.dependentFields(dependentFieldsSettings);
-
-        $('.localisation_form').localisationForm(localisationFormSettings);
-
-        $('#attestation_localisation_grandeSousRegion').dependentSelects({
-            data_url: "{{ url('data_sous_region') }}"
+        const elements = {{ attestation.elementsFormule|default ({}) | json_encode | raw
+    }};
+    if ("{{ action }}" == "edit" && Object.keys(elements).length > 0) {
+        $('div#attestation_formules').collectionField({
+            confirmationModal: $('#confirm_remove_item'),
+            deleteLinkGenerator: function (el) {
+                if ($(el).find("input[name$='[createurId]']").val() == "{{ app.user.id }}"
+                    || $(el).find("input[name$='[id]']").val() == "") {
+                    return $(
+                        '<a href="#" class="btn btn-danger ml-2 mb-1" title="{{"generic.delete"|trans}}"><i class="fas fa-trash fa-fw"></i></a>'
+                    )
+                }
+                return '<span class="text-center">' + $(el).find("input[name$='[createur]']").val() + '</span>';
+            },
+            inline: true,
+            autoAdd: false,
+            setupListener: function (el) {
+                $(el).formulaEditor({
+                    elements: elements,
+                    labels: {
+                        formule: "{{ 'formule.fields.formule'|trans }}",
+                        elements: "{{ 'attestation.sections.elements'|trans }}",
+                        operateurs: "{{ 'formule.fields.operateurs'|trans }}"
+                    },
+                    errors: {
+                        valid: "{{ 'formule.errors.valid'|trans }}",
+                        unknown_element: "{{ 'formule.errors.unknown_element'|trans }}",
+                        no_element: "{{ 'formule.errors.no_element'|trans }}",
+                        brackets: "{{ 'formule.errors.brackets'|trans }}",
+                        parenthesis: "{{ 'formule.errors.parenthesis'|trans }}",
+                        operator: "{{ 'formule.errors.operator'|trans }}",
+                    },
+                    help: "{{ 'formule.help'|trans|replace({'\n': '', '\r\n': '', '\t': '', '\n\r': ''}) }}"
+                });
+            },
+            addListener: function (newEl, idx) {
+                $('#counter-formules').text(parseInt($('#counter-formules').text(), 10) + 1);
+                $(newEl).find("input[name$='[positionFormule]']").val("" + idx);
+            },
+            deleteListener: function (oldEl) {
+                $('#counter-formules').text(parseInt($('#counter-formules').text(), 10) - 1);
+            },
         });
+    }
+    else {
+        $('div#section-formules').html('<h4 class="text-center text-danger">{{"attestation.messages.formules_unavailable"|trans}}</h4>')
+    }
+
+
+    $('.selectorcreate').selectOrCreate();
+
+    $('select.autocomplete').chosen(CHOSEN_SETTINGS);
+
+    $.fn.dependentFields(dependentFieldsSettings);
+
+    $('.localisation_form').localisationForm(localisationFormSettings);
+
+    $('#attestation_localisation_grandeSousRegion').dependentSelects({
+        data_url: "{{ url('data_sous_region') }}"
+    });
 
     });
 </script>

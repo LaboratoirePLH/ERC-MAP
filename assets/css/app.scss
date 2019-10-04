@@ -206,6 +206,16 @@ body {
             @extend .btn-sm;
         }
     }
+
+    .formula-status {
+        i.fa, i.fas {
+            font-size: 2em;
+
+            @include media-breakpoint-up(xl) {
+                font-size: 4em;
+            }
+        }
+    }
 }
 
 table { page-break-inside:auto }

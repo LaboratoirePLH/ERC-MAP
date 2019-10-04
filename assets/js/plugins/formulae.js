@@ -244,8 +244,8 @@ var get_browser = function () {
                 });
                 var statusWrapper = $('<div/>', {
                     class: 'col-1 text-center formula-status',
-                    html: '<i class="fas fa-4x fa-check-circle text-success' + (errors.length > 0 ? ' d-none' : '') + '" data-toggle="tooltip" data-html="true" data-placement="left" title="' + settings.errors.valid + '" ></i>'
-                        + '<i class="fas fa-4x fa-exclamation-triangle text-danger' + (errors.length == 0 ? ' d-none' : '') + '" data-toggle="tooltip" data-html="true" data-placement="left" title="' + errors.join('<br/>') + '" ></i>'
+                    html: '<i class="fas fa-check-circle text-success' + (errors.length > 0 ? ' d-none' : '') + '" data-toggle="tooltip" data-html="true" data-placement="left" title="' + settings.errors.valid + '" ></i>'
+                        + '<i class="fas fa-exclamation-triangle text-danger' + (errors.length == 0 ? ' d-none' : '') + '" data-toggle="tooltip" data-html="true" data-placement="left" title="' + errors.join('<br/>') + '" ></i>'
                 })
             } else {
                 errors = "";

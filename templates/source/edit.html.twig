@@ -11,10 +11,10 @@
 {% endif %}
 
 <div class="row justify-content-center">
-    <div class="col-sm-3">
+    <div class="col-6 col-xl-3 order-2 order-xl-1 d-flex justify-content-center align-items-center">
         {% include "partials/_formbuttons.html.twig" with {'exitUrl' : action == "edit" ? url('source_canceledit', {'id': source.id}) : url('source_list')} %}
     </div>
-    <div class="col-sm-6 text-center">
+    <div class="col-12 col-xl-6 mb-2 mb-xl-0 order-1 order-xl-2 text-center">
         {% if action == 'edit' %}
         {% spaceless %}
         {{ 'generic.fields.date_creation'|trans }}&nbsp;:&nbsp;
@@ -29,17 +29,18 @@
         {% endspaceless %}
         <br />
         {{ 'generic.fields.version'|trans }}&nbsp;{{ source.version }}&rarr;{{ source.version+1 }}
-        {% endif %}
         <br />
+        {% endif %}
         <div class="row justify-content-center">
-            <div class="col-sm-6">
-                {{ form_row(form.projet) }}
+            {{ form_label(form.projet) }}
+            <div class="col-10 col-xl-8 mb-0">
+                {{ form_widget(form.projet) }}
             </div>
         </div>
     </div>
-    <div class="col-sm-3">
+    <div class="col-6 col-xl-3 order-3 d-flex justify-content-center align-items-center">
         {{ 'generic.fields.to_translate'|trans }} :
-        {{ form_widget(form.traduireFr) }}
+        <span class="mx-2">{{ form_widget(form.traduireFr) }}</span>
         {{ form_widget(form.traduireEn) }}
     </div>
 </div>

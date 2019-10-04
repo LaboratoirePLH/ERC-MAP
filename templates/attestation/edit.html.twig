@@ -334,6 +334,20 @@
             deleteLink: '{{ "generic.delete"|trans }}',
             confirmationModal: $('#confirm_remove_item'),
             setupListener: function (el) {
+                $(el).find('.selectorcreate_selection option').each(function () {
+                    $(this).html(decodeEntities($(this).html()));
+                });
+                $(el).find('.selectorcreate_selection')
+                    .find('select.autocomplete').on('chosen:ready', function () {
+                        $(this).parent()
+                            .find('.chosen-container:not(.chosen-container-single-nosearch)')
+                            .find('input.chosen-search-input')
+                            .semiticKeyboard(
+                                $(this).parent().find('div.chosen-drop'),
+                                'right top',
+                                'right top'
+                            );
+                    });
                 $(el).find('select.autocomplete').chosen(CHOSEN_SETTINGS);
                 $(el).find('.selectorcreate').selectOrCreate();
                 $(el).find('.element_traductions').after($('<a href="#" class="btn btn-primary collection-add-link link-add-traduction"><i class="fa fa-plus"></i>&nbsp;{{ "element.add_traduction"|trans }}</a>'));

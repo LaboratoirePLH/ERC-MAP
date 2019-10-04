@@ -195,6 +195,20 @@
             },
             confirmationModal: $('#confirm_remove_item'),
             setupListener: function (el) {
+                $(el).find('.selectorcreate_selection option').each(function () {
+                    $(this).html(decodeEntities($(this).html()));
+                });
+                $(el).find('.selectorcreate_selection')
+                    .find('select.autocomplete').on('chosen:ready', function () {
+                        $(this).parent()
+                            .find('.chosen-container:not(.chosen-container-single-nosearch)')
+                            .find('input.chosen-search-input')
+                            .semiticKeyboard(
+                                $(this).parent().find('div.chosen-drop'),
+                                'right top',
+                                'right top'
+                            );
+                    });
                 $(el).find('.selectorcreate').selectOrCreate();
                 $.fn.dependentFields({
                     corpus: {
@@ -246,6 +260,17 @@
                     },
                     inline: true
                 });
+                $(el).find('.selectorcreate_selection')
+                    .find('select.autocomplete').on('chosen:ready', function () {
+                        $(this).parent()
+                            .find('.chosen-container:not(.chosen-container-single-nosearch)')
+                            .find('input.chosen-search-input')
+                            .semiticKeyboard(
+                                $(this).parent().find('div.chosen-drop'),
+                                'right top',
+                                'right top'
+                            );
+                    });
                 $(el).find('.selectorcreate').selectOrCreate();
                 $(el).find('select.autocomplete:not(.autocomplete-max-3)').chosen(CHOSEN_SETTINGS);
                 $(el).find('select.autocomplete.autocomplete-max-3').chosen(chosenSettingsMax3);
@@ -289,6 +314,17 @@
                     },
                     inline: true
                 });
+                $(el).find('.selectorcreate_selection')
+                    .find('select.autocomplete').on('chosen:ready', function () {
+                        $(this).parent()
+                            .find('.chosen-container:not(.chosen-container-single-nosearch)')
+                            .find('input.chosen-search-input')
+                            .semiticKeyboard(
+                                $(this).parent().find('div.chosen-drop'),
+                                'right top',
+                                'right top'
+                            );
+                    });
                 $(el).find('.selectorcreate').selectOrCreate();
                 $(el).find('select.autocomplete:not(.autocomplete-max-3)').chosen(CHOSEN_SETTINGS);
                 $(el).find('select.autocomplete.autocomplete-max-3').chosen(chosenSettingsMax3);

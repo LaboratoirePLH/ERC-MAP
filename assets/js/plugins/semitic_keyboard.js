@@ -12,14 +12,21 @@ SEMITIC_KEYS = [
 ];
 
 (function ($) {
-    $.fn.semiticKeyboard = function (positionEl) {
+    $.fn.semiticKeyboard = function (positionEl, alignmentMy, alignmentAt) {
         return this.each(function () {
-            var my;
-            if (positionEl === undefined) {
+            var my,
+                at = 'left bottom';
+            if (positionEl === undefined || positionEl === null) {
                 positionEl = $(this);
                 my = 'left top';
             } else {
                 my = 'left bottom';
+            }
+            if (alignmentMy !== undefined && alignmentMy !== null) {
+                my = alignmentMy;
+            }
+            if (alignmentAt !== undefined && alignmentAt !== null) {
+                at = alignmentAt;
             }
             $(this).keyboard({
                 layout: 'custom',
@@ -31,8 +38,8 @@ SEMITIC_KEYS = [
                 position: {
                     of: positionEl,
                     my: my,
-                    at: 'left bottom',
-                    at2: 'left bottom'
+                    at: at,
+                    at2: at
                 },
                 autoAccept: true,
                 autoAcceptOnEsc: true,

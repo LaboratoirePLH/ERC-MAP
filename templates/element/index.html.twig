@@ -175,15 +175,17 @@
             }
         });
         var dt = $('#element_list').DataTable({
+            responsive: true,
             autoWidth: true,
             lengthChange: true,
             scrollX: false,
             searching: true,
             ordering: true,
-            columns: [null, null, null, null, null, null, null, null, {
+            columns: [{ responsivePriority: 1 }, null, null, null, null, null, null, null, {
                 searchable: false,
                 orderable: false,
-                width: 110
+                width: 110,
+                responsivePriority: 1
             }],
             order: [
                 [6, 'desc']

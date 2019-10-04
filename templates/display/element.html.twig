@@ -21,6 +21,7 @@
                 {{ 'generic.fields.translations'|trans}}
             </th>
             <td class="p-0">
+                {% if element.traductions is not empty %}
                 <table class="table table-sm text-center mb-0">
                     <thead>
                         <tr>
@@ -37,6 +38,7 @@
                         {% endfor %}
                     </tbody>
                 </table>
+                {% endif %}
             </td>
         </tr>
         <tr>
@@ -107,6 +109,7 @@
                 {{ 'biblio.list'|trans}}
             </th>
             <td class="p-0">
+                {% if element.elementBiblios is not empty %}
                 <table class="table table-sm text-center mb-0">
                     <thead>
                         <tr>
@@ -131,6 +134,7 @@
                         {% endfor %}
                     </tbody>
                 </table>
+                {% endif %}
             </td>
         </tr>
         <tr>

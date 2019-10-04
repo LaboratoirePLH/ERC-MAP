@@ -369,6 +369,7 @@ formule:
     errors:
         valid: "La Formule est valide"
         unknown_element: "Élément inconnu"
+        no_element: "Aucun élément dans la formule"
         brackets: "Erreur d'ordre de crochets"
         parenthesis: "Erreur d'ordre de parenthèses"
         operator: "Erreur d'opérateur"

@@ -115,9 +115,11 @@ var get_browser = function () {
                         }
                         break;
                     default:
-                        const isValid = (formulaElements[formulaElements.length - 1].type !== "operator");
+                        // Prevent an operator at the start or the end of the formula
+                        const isValid = (formulaElements.length > 0
+                            && formulaElements[formulaElements.length - 1].type !== "operator");
                         if (!isValid) {
-                            errors.push(settings.errors.operator)
+                            errors.push(settings.errors.operator);
                         }
                         formulaElements.push({
                             type: 'operator',
@@ -144,10 +146,15 @@ var get_browser = function () {
                 });
             }
         }
+        var hasElements = false;
         for (var e of formulaElements) {
             if (e.type == 'element' && elementCpt[e.id] <= 1) {
                 e.index = null;
+                hasElements = true;
             }
+        }
+        if (!hasElements) {
+            errors.push(settings.errors.no_element);
         }
         if (parenthesisIndex > 0) {
             errors.push(settings.errors.parenthesis)
@@ -213,6 +220,7 @@ var get_browser = function () {
             errors: {
                 valid: "Formula is valid",
                 unknown_element: "Unknown element",
+                no_element: "No element in the formula",
                 brackets: "Brackets order error",
                 parenthesis: "Parenthesis order error",
                 operator: "Operator error"

@@ -220,6 +220,7 @@ attestation:
         element_n : "Élément #"
         element_invariant: "Élément (Invariant)"
     fiabilite:
+        niveau_0: "Indéterminé"
         niveau_1: "(1) Lecture Assurée"
         niveau_2: "(2) Lecture Probable"
         niveau_3: "(3) Lecture Incertaine"

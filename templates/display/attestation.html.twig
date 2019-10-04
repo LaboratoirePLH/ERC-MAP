@@ -108,7 +108,7 @@
                 {{ 'generic.fields.fiabilite'|trans}}
             </th>
             <td>
-                {{ ('attestation.fiabilite.niveau_' ~ attestation.fiabiliteAttestation)|trans }}
+                {{ ('attestation.fiabilite.niveau_' ~ attestation.fiabiliteAttestation|default(0))|trans }}
             </td>
         </tr>
         <tr>

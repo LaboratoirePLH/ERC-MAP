@@ -81,7 +81,10 @@
                     </a>
                 </li>
                 <li class="nav-item {{ controller_name == 'RequetesController' ? 'active' : '' }}">
-                    <a class="nav-link" href="{{ url('requetes_list') }}">{{ 'nav.requete'|trans }}</a>
+                    <a class="nav-link" href="{{ url('requetes_list') }}">
+                        <i class="fas {{ icons.queries }}"></i>
+                        {{ 'nav.requete'|trans }}
+                    </a>
                 </li>
                 <li class="nav-item {{ app.request.uri == url('contact') ? 'active' : '' }}">
                     <a class="nav-link" href="{{ url('contact') }}">

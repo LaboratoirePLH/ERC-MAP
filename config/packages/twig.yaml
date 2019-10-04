@@ -12,3 +12,4 @@ twig:
             attestation: 'fa-file-alt'
             element: 'fa-atom'
             bibliography: 'fa-book-open'
+            queries: 'fa-search'

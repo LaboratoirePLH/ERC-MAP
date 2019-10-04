@@ -84,7 +84,7 @@
         </tr>
         <tr>
             <th scope="row">
-                {{ 'source.fields.type_support'|trans}}
+                {{ 'source.fields.support'|trans}}
             </th>
             <td>
                 {{ source.typeSupport is not empty ? source.typeSupport.getNom(locale) : '' }}
@@ -117,6 +117,7 @@
                 {{ 'biblio.list'|trans}}
             </th>
             <td class="p-0">
+                {% if source.sourceBiblios is not empty %}
                 <table class="table table-sm text-center mb-0">
                     <thead>
                         <tr>
@@ -130,10 +131,10 @@
                         <tr>
                             <td>
                                 {% include "partials/_entitylink.html.twig" with {
-                                            'entity': 'biblio',
-                                            'link': url('bibliography_show', {'id': sourceBiblio.biblio.id}),
-                                            'text': '#' ~ sourceBiblio.biblio.id ~ " " ~ (sourceBiblio.biblio.titreAbrege|raw|striptags)
-                                        } %}
+                                                'entity': 'biblio',
+                                                'link': url('bibliography_show', {'id': sourceBiblio.biblio.id}),
+                                                'text': '#' ~ sourceBiblio.biblio.id ~ " " ~ (sourceBiblio.biblio.titreAbrege|raw|striptags)
+                                            } %}
                             </td>
                             <td>
                                 {% if sourceBiblio.editionPrincipale %}
@@ -147,6 +148,7 @@
                         {% endfor %}
                     </tbody>
                 </table>
+                {% endif %}
             </td>
         </tr>
         {% if source.estDatee %}

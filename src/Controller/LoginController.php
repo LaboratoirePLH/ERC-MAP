@@ -15,9 +15,6 @@ class LoginController extends Controller
      */
     public function index(AuthenticationUtils $authenticationUtils)
     {
-        if($this->get('security.token_storage')->getToken()->isAuthenticated()){
-            return $this->redirectToRoute('home');
-        }
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
         // last username entered by the user

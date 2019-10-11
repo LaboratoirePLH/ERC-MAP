@@ -19,7 +19,7 @@ class ContientElement extends AbstractEntity
      * @ORM\Id
      * @ORM\ManyToOne(targetEntity="Attestation", inversedBy="contientElements", fetch="EXTRA_LAZY")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_attestation", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="id_attestation", referencedColumnName="id", onDelete="CASCADE")
      * })
      */
     private $attestation;
@@ -30,7 +30,7 @@ class ContientElement extends AbstractEntity
      * @ORM\Id
      * @ORM\ManyToOne(targetEntity="Element", inversedBy="contientElements", fetch="EXTRA_LAZY")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_element", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="id_element", referencedColumnName="id", onDelete="CASCADE")
      * })
      */
     private $element;

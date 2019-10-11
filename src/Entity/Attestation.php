@@ -148,7 +148,7 @@ class Attestation extends AbstractEntity
     /**
      * @var \Doctrine\Common\Collections\Collection
      *
-     * @ORM\OneToMany(targetEntity="ContientElement", mappedBy="attestation", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="ContientElement", mappedBy="attestation")
      * @ORM\OrderBy({"positionElement" = "ASC"})
      * @Assert\Valid
      * @Assert\Expression(
@@ -392,7 +392,7 @@ class Attestation extends AbstractEntity
         if ($this->contientElements->contains($contientElement)) {
             $this->contientElements->removeElement($contientElement);
             // set the owning side to null (unless already changed)
-            if ($contientElement->getElement() === $this) {
+            if ($contientElement->getAttestation() === $this) {
                 $contientElement->setAttestation(null);
             }
         }

@@ -2,7 +2,8 @@ require('../css/form_page.scss');
 
 require('./base.js');
 
-require('chosen-js');
+require('./plugins/chosen.jquery.js');
+
 require('form-serializer');
 require('virtual-keyboard');
 require('./plugins/collection.js');

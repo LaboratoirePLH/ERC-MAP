@@ -12,7 +12,7 @@ SEMITIC_KEYS = [
 ];
 
 (function ($) {
-    $.fn.semiticKeyboard = function (positionEl, alignmentMy, alignmentAt) {
+    $.fn.semiticKeyboard = function (positionEl, alignmentMy, alignmentAt, forceEvent) {
         return this.each(function () {
             var my,
                 at = 'left bottom';
@@ -28,7 +28,8 @@ SEMITIC_KEYS = [
             if (alignmentAt !== undefined && alignmentAt !== null) {
                 at = alignmentAt;
             }
-            $(this).keyboard({
+            var me = this;
+            $(me).keyboard({
                 layout: 'custom',
                 customLayout: {
                     'normal': [
@@ -44,6 +45,11 @@ SEMITIC_KEYS = [
                 autoAccept: true,
                 autoAcceptOnEsc: true,
                 usePreview: false,
+                change: function (e, keyboard, el) {
+                    if (forceEvent === true && keyboard.last.virtual) {
+                        $(me).trigger("keyup", { which: 16 });
+                    }
+                }
             })
         })
     }

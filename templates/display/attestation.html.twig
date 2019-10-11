@@ -85,6 +85,7 @@
                 {{ 'generic.fields.translations'|trans}}
             </th>
             <td class="p-0">
+                {% if attestation.traductions is not empty %}
                 <table class="table table-sm text-center mb-0">
                     <thead>
                         <tr>
@@ -101,6 +102,7 @@
                         {% endfor %}
                     </tbody>
                 </table>
+                {% endif %}
             </td>
         </tr>
         <tr>
@@ -129,6 +131,7 @@
                 {{ 'attestation.fields.occasions'|trans}}
             </th>
             <td class="p-0">
+                {% if attestation.occasions is not empty %}
                 <table class="table table-sm text-center mb-0">
                     <thead>
                         <tr>
@@ -149,6 +152,7 @@
                         {% endfor %}
                     </tbody>
                 </table>
+                {% endif %}
             </td>
         </tr>
         <tr>
@@ -156,6 +160,7 @@
                 {{ 'attestation.fields.materiel'|trans}}
             </th>
             <td class="p-0">
+                {% if attestation.attestationMateriels is not empty %}
                 <table class="table table-sm text-center mb-0">
                     <thead>
                         <tr>
@@ -177,6 +182,7 @@
                         {% endfor %}
                     </tbody>
                 </table>
+                {% endif %}
             </td>
         </tr>
         <tr>
@@ -184,6 +190,7 @@
                 {{ 'attestation.sections.agents'|trans}}
             </th>
             <td class="p-0">
+                {% if attestation.agents is not empty %}
                 <table class="table table-sm text-center mb-0">
                     <tbody>
                         {% for agent in attestation.agents %}
@@ -270,6 +277,7 @@
                         {% endfor %}
                     </tbody>
                 </table>
+                {% endif %}
             </td>
         </tr>
         {% if attestation.estDatee %}
@@ -315,6 +323,7 @@
                 {{ 'attestation.sections.elements'|trans}}
             </th>
             <td class="p-0">
+                {% if attestation.contientElements is not empty %}
                 <table class="table table-sm text-center mb-0">
                     <tbody>
                         {% for ce in attestation.contientElements %}
@@ -363,6 +372,7 @@
                         {% endfor %}
                     </tbody>
                 </table>
+                {% endif %}
             </td>
         </tr>
         <tr>
@@ -370,6 +380,7 @@
                 {{ 'attestation.sections.formules'|trans}}
             </th>
             <td class="p-0">
+                {% if attestation.formules is not empty %}
                 <table class="table table-sm text-center mb-0">
                     <thead>
                         <tr>
@@ -388,6 +399,7 @@
                         {% endfor %}
                     </tbody>
                 </table>
+                {% endif %}
             </td>
         </tr>
     </tbody>

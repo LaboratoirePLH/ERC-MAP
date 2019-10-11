@@ -45,6 +45,7 @@ SEMITIC_KEYS = [
                 autoAccept: true,
                 autoAcceptOnEsc: true,
                 usePreview: false,
+                useCombos: false,
                 change: function (e, keyboard, el) {
                     if (forceEvent === true && keyboard.last.virtual) {
                         $(me).trigger("keyup", { which: 16 });

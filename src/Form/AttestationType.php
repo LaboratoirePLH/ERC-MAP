@@ -67,7 +67,7 @@ class AttestationType extends AbstractType
                 'mapped'   => false,
                 'disabled' => true,
                 'required' => false,
-                'data'     => $editionPrincipale ? $editionPrincipale->getBiblio()->getTitreAbrege() : ""
+                'data'     => html_entity_decode($editionPrincipale ? $editionPrincipale->getBiblio()->getTitreAbrege() : "")
             ])
             ->add('sourceBiblio', TextType::class, [
                 'label'    => 'source.fields.source_biblio',

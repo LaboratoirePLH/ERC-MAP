@@ -268,12 +268,16 @@ class Agent extends AbstractEntity
 
     public function isBlank() :bool
     {
-        return !is_null($this->designation)
-            && strlen($this->designation) > 0
-            && !$this->statutAffiches->isEmpty()
-            && !$this->natures->isEmpty()
-            && !$this->genres->isEmpty()
-            && !$this->activites->isEmpty()
-            && !$this->agentivites->isEmpty();
+        return !(
+               strlen($this->designation) > 0
+            || !$this->agentivites->isEmpty()
+            || !$this->statutAffiches->isEmpty()
+            || !$this->natures->isEmpty()
+            || !$this->genres->isEmpty()
+            || !$this->activites->isEmpty()
+            || !is_null($this->localisation)
+            || strlen($this->commentaireFr) > 0
+            || strlen($this->commentaireEn) > 0
+        );
     }
 }

@@ -171,6 +171,7 @@ class AttestationController extends AbstractController
                     $em->persist($a);
                 } else {
                     $attestation->removeAgent($a);
+                    $em->remove($a);
                 }
             }
             foreach($attestation->getContientElements() as $ce){

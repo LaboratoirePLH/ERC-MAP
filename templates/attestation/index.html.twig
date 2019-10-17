@@ -155,7 +155,7 @@
             <th>{{ 'source_biblio.fields.reference_source'|trans }}</th>
             <th>{{ 'attestation.fields.passage'|trans }}</th>
             <th>{{ 'attestation.fields.translitteration'|trans }}</th>
-            <th>{{ 'generic.fields.date_creation'|trans }}</th>
+            <th data-value="{{ app.user.prenomNom }}">{{ 'generic.fields.date_creation'|trans }}</th>
             <th>{{ 'generic.fields.date_modification'|trans }}</th>
             <th>{{ 'generic.fields.to_translate'|trans }}</th>
             <th></th>
@@ -178,11 +178,15 @@
     $(document).ready(function () {
         $('#attestation_list tfoot th').each(function () {
             var title = $(this).text();
+            var value = $(this).data('value');
             if (title != "") {
                 $(this).html(
                     '<input type="text" class="w-100 form-control form-control-sm" placeholder="{{"generic.search"|trans}}' +
                     ' ' + title + '" />'
                 );
+                if (value != null) {
+                    $(this).children('input').val(value);
+                }
             }
         });
         var dt = $('#attestation_list').DataTable({
@@ -232,6 +236,12 @@
                         // Remove accented characters from search string
                         jQuery.fn.DataTable.ext.type.search.string(this.value)
                     ).draw();
+                }
+            })
+            $('input', this.footer()).each(function () {
+                if ($(this).val() != "") {
+                    console.log('test');
+                    $(this).trigger('change');
                 }
             })
         });

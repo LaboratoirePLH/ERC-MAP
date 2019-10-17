@@ -142,7 +142,7 @@
             <th>{{ 'element.fields.nature'|trans }}</th>
             <th>{{ 'element.fields.traductions'|trans }}</th>
             <th>{{ 'element.fields.categories_invariantes'|trans }}</th>
-            <th>{{ 'generic.fields.date_creation'|trans }}</th>
+            <th data-value="{{ app.user.prenomNom }}">{{ 'generic.fields.date_creation'|trans }}</th>
             <th>{{ 'generic.fields.date_modification'|trans }}</th>
             <th>{{ 'generic.fields.to_translate'|trans }}</th>
             <th></th>
@@ -167,11 +167,15 @@
     $(document).ready(function () {
         $('#element_list tfoot th').each(function () {
             var title = $(this).text();
+            var value = $(this).data('value');
             if (title != "") {
                 $(this).html(
                     '<input type="text" class="w-100 form-control form-control-sm" placeholder="{{"generic.search"|trans}}' +
                     ' ' + title + '" />'
                 );
+                if (value != null) {
+                    $(this).children('input').val(value);
+                }
             }
         });
         var dt = $('#element_list').DataTable({
@@ -221,6 +225,12 @@
                         // Remove accented characters from search string
                         jQuery.fn.DataTable.ext.type.search.string(this.value)
                     ).draw();
+                }
+            })
+            $('input', this.footer()).each(function () {
+                if ($(this).val() != "") {
+                    console.log('test');
+                    $(this).trigger('change');
                 }
             })
         });

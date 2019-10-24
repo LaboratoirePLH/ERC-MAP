@@ -122,7 +122,7 @@ class LocalisationType extends AbstractType
                 'required'   => false,
             ])
             ->add('pleiadesSite', PleiadesType::class, [
-                'label_attr'   => ['id' => 'localisation_site_id'],
+                'label_attr'   => ['id' => 'localisation_site_id', 'class' => 'citysearch_field'],
                 'attr'         => ['min' => 0, 'step' => 1],
                 'label'        => 'localisation.fields.pleiades_site',
                 'search_label' => 'localisation.search_pleiades',
@@ -131,7 +131,7 @@ class LocalisationType extends AbstractType
                 'required'     => false
             ])
             ->add('nomSite', TextType::class, [
-                'label_attr' => ['id' => 'localisation_site_nom', 'class' => 'pleiades_field'],
+                'label_attr' => ['id' => 'localisation_site_nom', 'class' => 'pleiades_field citysearch_field'],
                 'label'      => 'localisation.fields.nom_site',
                 'required'   => false
             ])

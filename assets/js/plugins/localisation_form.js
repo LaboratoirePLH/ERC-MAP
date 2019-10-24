@@ -127,8 +127,11 @@
                     // Get the fields to fill if the request is successful
                     rootForm.find('.citysearch_field').each(function () {
                         var seg = $(this).attr('id').split('_');
-                        if (seg[0] == labelSeg[0] && seg[1] == labelSeg[1]) {
-                            fields[seg[2]] = $(this).siblings().find('input,select');
+                        if (seg[0] == labelSeg[0]) {
+                            if (seg[1] == labelSeg[1])
+                                fields[seg[2]] = $(this).siblings().find('input,select');
+                            else if (seg[1] == "site")
+                                fields["site_" + seg[2]] = $(this).siblings().find('input,select');
                         }
                     });
 
@@ -143,11 +146,13 @@
                                 var a = $('<a>');
 
                                 var rowData = [
-                                    '#', row.id, ': ',
-                                    row.nom, '(',
-                                    row.latitude, ', ',
-                                    row.longitude, ')'
+                                    '#', row.id, ': ', row.nom
                                 ];
+                                if (row.nomSite != "") {
+                                    rowData = rowData.concat([
+                                        " > ", '#', row.idSite, ': ', row.nomSite
+                                    ]);
+                                }
                                 a.text(rowData.join(''));
                                 a.prop('href', '#');
                                 a.on('click', function (e) {
@@ -158,6 +163,8 @@
                                     fields.id.val(row.id);
                                     fields.longitude.val(row.longitude);
                                     fields.latitude.val(row.latitude);
+                                    fields.site_id.val(row.idSite);
+                                    fields.site_nom.val(row.nomSite);
                                     cityInput.val(row.nom);
                                     resultsEl.empty();
                                     return false;

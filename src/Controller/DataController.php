@@ -146,6 +146,8 @@ class DataController extends AbstractController
                 "sousregion" => $row->getSousRegion() ? $row->getSousRegion()->getId() : "",
                 "id" => $row->getPleiadesVille() ?? "",
                 "nom" => $row->getNomVille() ?? "",
+                "idSite" => $row->getPleiadesSite() ?? "",
+                "nomSite" => $row->getNomSite() ?? "",
                 "latitude" => $row->getLatitude() ?? "",
                 "longitude" => $row->getLongitude() ?? ""
             ];

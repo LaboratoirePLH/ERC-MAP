@@ -167,6 +167,7 @@
                             resultsEl.append(ul);
                         })
                         .fail(function (jqXHR, textStatus, errorThrown) {
+                            resultsEl.empty();
                             var error = settings.errorMessage;
                             if (errorThrown === "Not Found") {
                                 error = settings.notFoundErrorMessage;

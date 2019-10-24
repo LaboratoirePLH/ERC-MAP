@@ -8,6 +8,7 @@ use App\Entity\Source;
 use App\Entity\VerrouEntite;
 use App\Form\AttestationType;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
@@ -297,6 +298,13 @@ class AttestationController extends AbstractController
             return $this->redirectToRoute('attestation_list');
         }
 
+        $contientElements = new ArrayCollection();
+
+        // Create an ArrayCollection of the current ContientElement objects in the database
+        foreach ($attestation->getContientElements() as $ce) {
+            $contientElements->add($ce);
+        }
+
         $form   = $this->get('form.factory')->create(AttestationType::class, $attestation, [
             'source'       => $attestation->getSource(),
             'locale'       => $request->getLocale(),
@@ -346,6 +354,11 @@ class AttestationController extends AbstractController
                     $em->persist($ce);
                 } else {
                     $attestation->removeContientElement($ce);
+                }
+            }
+            foreach($contientElements as $ce){
+                if (false === $attestation->getContientElements()->contains($ce)) {
+                    $em->remove($ce);
                 }
             }
 

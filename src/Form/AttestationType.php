@@ -136,9 +136,9 @@ class AttestationType extends AbstractType
                         ->orderBy('e.nom'.ucfirst($locale), 'ASC');
                 }
             ])
-            ->add('occasions', CollectionType::class, [
+            ->add('attestationOccasions', CollectionType::class, [
                 'label'         => false,
-                'entry_type'    => OccasionType::class,
+                'entry_type'    => AttestationOccasionType::class,
                 'entry_options' => array_intersect_key($options, array_flip(["translations", "locale"])),
                 'allow_add'     => true,
                 'allow_delete'  => true,

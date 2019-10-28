@@ -131,7 +131,7 @@
                 {{ 'attestation.fields.occasions'|trans}}
             </th>
             <td class="p-0">
-                {% if attestation.occasions is not empty %}
+                {% if attestation.attestationOccasions is not empty %}
                 <table class="table table-sm text-center mb-0">
                     <thead>
                         <tr>
@@ -140,13 +140,13 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for occasion in attestation.occasions %}
+                        {% for ao in attestation.attestationOccasions %}
                         <tr>
                             <td>
-                                {{ occasion.categorieOccasion.getNom(locale) }}
+                                {{ ao.categorieOccasion is not empty ? ao.categorieOccasion.getNom(locale) : "" }}
                             </td>
                             <td>
-                                {{ occasion.getNom(locale) }}
+                                {{ ao.occasion is not empty ? ao.occasion.getNom(locale) : "" }}
                             </td>
                         </tr>
                         {% endfor %}
@@ -173,10 +173,10 @@
                         {% for am in attestation.attestationMateriels %}
                         <tr>
                             <td>
-                                {{ am.materiel.categorieMateriel.getNom(locale) }}
+                                {{ am.categorieMateriel is not empty ? am.categorieMateriel.getNom(locale) : "" }}
                             </td>
                             <td>
-                                {{ am.materiel.getNom(locale) }}
+                                {{ am.materiel is not empty ? am.materiel.getNom(locale) : "" }}
                             </td>
                             <td>
                                 {{ am.quantite }}

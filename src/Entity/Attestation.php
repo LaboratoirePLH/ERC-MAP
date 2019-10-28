@@ -110,17 +110,9 @@ class Attestation extends AbstractEntity
     /**
      * @var \Doctrine\Common\Collections\Collection
      *
-     * @ORM\ManyToMany(targetEntity="Occasion")
-     * @ORM\JoinTable(name="attestation_occasion",
-     *   joinColumns={
-     *     @ORM\JoinColumn(name="id_attestation", referencedColumnName="id")
-     *   },
-     *   inverseJoinColumns={
-     *     @ORM\JoinColumn(name="id_occasion", referencedColumnName="id")
-     *   }
-     * )
+     * @ORM\OneToMany(targetEntity="AttestationOccasion", mappedBy="attestation", orphanRemoval=true)
      */
-    private $occasions;
+    private $attestationOccasions;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
@@ -170,10 +162,10 @@ class Attestation extends AbstractEntity
     {
         $this->pratiques = new ArrayCollection();
         $this->attestationMateriels = new ArrayCollection();
+        $this->attestationOccasions = new ArrayCollection();
         $this->agents = new ArrayCollection();
         $this->formules = new ArrayCollection();
         $this->contientElements = new ArrayCollection();
-        $this->occasions = new ArrayCollection();
         $this->traductions = new ArrayCollection();
     }
 
@@ -321,6 +313,31 @@ class Attestation extends AbstractEntity
     }
 
     /**
+     * @return Collection|AttestationOccasion[]
+     */
+    public function getAttestationOccasions(): Collection
+    {
+        return $this->attestationOccasions;
+    }
+
+    public function addAttestationOccasion(AttestationOccasion $attestationOccasion): self
+    {
+        if (!$this->attestationOccasions->contains($attestationOccasion)) {
+            $this->attestationOccasions[] = $attestationOccasion;
+            $attestationOccasion->setAttestation($this);
+        }
+        return $this;
+    }
+
+    public function removeAttestationOccasion(AttestationOccasion $attestationOccasion): self
+    {
+        if ($this->attestationOccasions->contains($attestationOccasion)) {
+            $this->attestationOccasions->removeElement($attestationOccasion);
+        }
+        return $this;
+    }
+
+    /**
      * @return Collection|Agent[]
      */
     public function getAgents(): Collection
@@ -407,32 +424,6 @@ class Attestation extends AbstractEntity
     public function setVerrou(?VerrouEntite $verrou): self
     {
         $this->verrou = $verrou;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Occasion[]
-     */
-    public function getOccasions(): Collection
-    {
-        return $this->occasions;
-    }
-
-    public function addOccasion($occasion): self
-    {
-        if (!$this->occasions->contains($occasion)) {
-            $this->occasions[] = $occasion;
-        }
-
-        return $this;
-    }
-
-    public function removeOccasion(Occasion $occasion): self
-    {
-        if ($this->occasions->contains($occasion)) {
-            $this->occasions->removeElement($occasion);
-        }
 
         return $this;
     }

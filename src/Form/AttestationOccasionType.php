@@ -2,6 +2,7 @@
 
 namespace App\Form;
 
+use App\Entity\AttestationOccasion;
 use App\Entity\Occasion;
 use App\Entity\CategorieOccasion;
 
@@ -13,8 +14,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Doctrine\ORM\EntityRepository;
 
-
-class OccasionType extends AbstractType implements DataMapperInterface
+class AttestationOccasionType extends AbstractType // implements DataMapperInterface
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -57,43 +57,43 @@ class OccasionType extends AbstractType implements DataMapperInterface
                 ]
             ])
         ;
-        $builder->setDataMapper($this);
+        // $builder->setDataMapper($this);
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => Occasion::class,
+            'data_class' => AttestationOccasion::class,
         ]);
         $resolver->setRequired('translations');
         $resolver->setDefined('locale');
     }
 
-    public function mapFormsToData($forms, &$data)
-    {
-        /** @var FormInterface[] $forms */
-        $forms = iterator_to_array($forms);
+    // public function mapFormsToData($forms, &$data)
+    // {
+    //     /** @var FormInterface[] $forms */
+    //     $forms = iterator_to_array($forms);
 
-        $formData = $forms['typeCategorieOccasion']->getData();
+    //     $formData = $forms['typeCategorieOccasion']->getData();
 
-        $data = $formData['occasion'] ?? null;
-    }
+    //     $data = $formData['occasion'] ?? null;
+    // }
 
-    public function mapDataToForms($data, $forms)
-    {
-        /** @var FormInterface[] $forms */
-        $forms = iterator_to_array($forms);
+    // public function mapDataToForms($data, $forms)
+    // {
+    //     /** @var FormInterface[] $forms */
+    //     $forms = iterator_to_array($forms);
 
-        // initialize form field values
-        // there is no data yet, set decision to default choice
-        $newData = [
-            "categorieOccasion" => null,
-            "occasion" => null,
-        ];
-        if ($data !== null) {
-            $newData['occasion'] = $data;
-            $newData['categorieOccasion'] = $data->getCategorieOccasion();
-        }
-        $forms['typeCategorieOccasion']->setData($newData);
-    }
+    //     // initialize form field values
+    //     // there is no data yet, set decision to default choice
+    //     $newData = [
+    //         "categorieOccasion" => null,
+    //         "occasion" => null,
+    //     ];
+    //     if ($data !== null) {
+    //         $newData['occasion'] = $data;
+    //         $newData['categorieOccasion'] = $data->getCategorieOccasion();
+    //     }
+    //     $forms['typeCategorieOccasion']->setData($newData);
+    // }
 }

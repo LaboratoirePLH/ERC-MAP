@@ -95,8 +95,8 @@
     } only %}
     <div class="collapse show" id="section-contexte">
         {{ form_row(form.pratiques) }}
-        {{ form_errors(form.occasions) }}
-        {{ form_widget(form.occasions) }}
+        {{ form_errors(form.attestationOccasions) }}
+        {{ form_widget(form.attestationOccasions) }}
         <div class="form-group row">
             <div class="col-sm-10 offset-sm-2">
                 <a href="#" class="btn btn-primary collection-add-link">
@@ -291,7 +291,7 @@
             },
             inline: true
         });
-        $('div#attestation_occasions').collectionField({
+        $('div#attestation_attestationOccasions').collectionField({
             blockTitle: '{{ "attestation.fields.occasion_n"|trans }}',
             deleteLink: '{{ "generic.delete"|trans }}',
             confirmationModal: $('#confirm_remove_item'),

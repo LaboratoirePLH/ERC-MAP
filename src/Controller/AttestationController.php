@@ -159,11 +159,19 @@ class AttestationController extends AbstractController
             $em = $this->getDoctrine()->getManager();
             $em->persist($attestation);
             foreach($attestation->getAttestationMateriels() as $am){
-                if($am->getMateriel() !== null){
+                if($am->getMateriel() !== null || $am->getCategorieMateriel() !== null){
                     $am->setAttestation($attestation);
                     $em->persist($am);
                 } else {
                     $attestation->removeAttestationMateriel($am);
+                }
+            }
+            foreach($attestation->getAttestationOccasions() as $ao){
+                if($ao->getOccasion() !== null || $ao->getCategorieOccasion() !== null){
+                    $ao->setAttestation($attestation);
+                    $em->persist($ao);
+                } else {
+                    $attestation->removeAttestationOccasion($ao);
                 }
             }
             foreach($attestation->getAgents() as $a){
@@ -318,13 +326,26 @@ class AttestationController extends AbstractController
             $em = $this->getDoctrine()->getManager();
             $attestation->setDernierEditeur($user);
             foreach($attestation->getAttestationMateriels() as $am){
-                if($am->getMateriel() !== null){
+                if($am->getMateriel() !== null || $am->getCategorieMateriel() !== null){
                     $am->setAttestation($attestation);
                     if(!$em->contains($am)){
                         $em->persist($am);
                     }
                 } else {
                     $attestation->removeAttestationMateriel($am);
+                    if($em->contains($am)){
+                        $em->remove($am);
+                    }
+                }
+            }
+            foreach($attestation->getAttestationOccasions() as $am){
+                if($am->getOccasion() !== null || $am->getCategorieOccasion() !== null){
+                    $am->setAttestation($attestation);
+                    if(!$em->contains($am)){
+                        $em->persist($am);
+                    }
+                } else {
+                    $attestation->removeAttestationOccasion($am);
                     if($em->contains($am)){
                         $em->remove($am);
                     }

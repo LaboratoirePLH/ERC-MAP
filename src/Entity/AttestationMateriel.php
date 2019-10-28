@@ -12,10 +12,11 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class AttestationMateriel extends AbstractEntity
 {
+    use Traits\EntityId;
+
     /**
      * @var \Attestation
      *
-     * @ORM\Id
      * @ORM\ManyToOne(targetEntity="Attestation", inversedBy="attestationMateriels", fetch="EXTRA_LAZY")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_attestation", referencedColumnName="id")
@@ -26,13 +27,22 @@ class AttestationMateriel extends AbstractEntity
     /**
      * @var \Materiel
      *
-     * @ORM\Id
      * @ORM\ManyToOne(targetEntity="Materiel")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_materiel", referencedColumnName="id")
      * })
      */
     private $materiel;
+
+    /**
+     * @var \CategorieMateriel
+     *
+     * @ORM\ManyToOne(targetEntity="CategorieMateriel")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_categorie_materiel", referencedColumnName="id")
+     * })
+     */
+    private $categorieMateriel;
 
     /**
      * @var bool|null
@@ -63,9 +73,21 @@ class AttestationMateriel extends AbstractEntity
         return $this;
     }
 
+    public function getCategorieMateriel(): ?CategorieMateriel
+    {
+        return $this->categorieMateriel;
+    }
+
+    public function setCategorieMateriel(?CategorieMateriel $categorieMateriel): self
+    {
+        $this->categorieMateriel = $categorieMateriel;
+        return $this;
+    }
+
     public function setTypeCategorieMateriel($data): self
     {
         $this->setMateriel($data['materiel'] ?? null);
+        $this->setCategorieMateriel($data['categorieMateriel'] ?? null);
         return $this;
     }
 
@@ -73,7 +95,7 @@ class AttestationMateriel extends AbstractEntity
     {
         return [
             'materiel' => $this->getMateriel() ?? null,
-            'categorieMateriel' => $this->getMateriel() ? $this->getMateriel()->getCategorieMateriel() : null,
+            'categorieMateriel' => $this->getCategorieMateriel() ?? null,
         ];
     }
 
@@ -90,6 +112,10 @@ class AttestationMateriel extends AbstractEntity
 
     public function __toString(): string
     {
-        return "Attestation #" . $this->getAttestation()->getId() . " / Matériel #" . $this->getMateriel()->getId();
+        return implode(" / ", [
+            "Attestation #" . $this->getAttestation()->getId(),
+            "Catégoriel Matériel #" . $this->getCategorieMateriel()->getId() ?? "",
+            "Matériel #" . $this->getMateriel()->getId() ?? ""
+        ]);
     }
 }

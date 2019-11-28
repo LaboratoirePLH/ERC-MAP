@@ -2,13 +2,14 @@ require('./jquery.ui.position.js');
 
 // "n(a):title_or_tooltip"; n = new key, (a) = actual key (optional), ":label" = title_or_tooltip (use an underscore "_" in place of a space " ")
 SEMITIC_KEYS = [
-    't\u0323:Tet',
-    's\u0323:Tsade',
-    's\u030c:Shin',
-    's\u0301:Sin',
-    '\u02be:Ayn',
-    '\u02bf:Aleph',
-    'h\u0323:Het',
+    // ṭṣšśʾʿḥ
+    'ṭ:Tet',
+    'ṣ:Tsade',
+    'š:Shin',
+    'ś:Sin',
+    'ʾ:Ayn',
+    'ʿ:Aleph',
+    'ḥ:Het',
 ];
 
 (function ($) {

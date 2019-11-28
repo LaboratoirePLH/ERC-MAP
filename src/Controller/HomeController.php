@@ -61,9 +61,9 @@ class HomeController extends AbstractController
             'controller_name' => 'HomeController',
             'user_name' => $user->getPrenomNom(),
             'counters' => [
-                'source'      => rand(10, 100000),//$sourceCount,
-                'attestation' => rand(10, 100000),//$attestationCount,
-                'element'     => rand(10, 100000),//$elementCount,
+                'source'      => $sourceCount,
+                'attestation' => $attestationCount,
+                'element'     => $elementCount,
             ]
         ]);
     }

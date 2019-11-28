@@ -69,8 +69,7 @@ class Titre extends AbstractEntity
         foreach($this->getAuteurs() as $a){
             $auteurs[] = $a->getNom($lang);
         }
-        $auteurs = !empty($auteurs) ? implode(', ', $auteurs) : "?";
-        return \sprintf("%s (%s)", $this->getNom($lang), $auteurs);
+        return $this->getNom($lang) . (!empty($auteurs) ? ('('.implode(', ', $auteurs).')') : '');
     }
     public function getAffichageFr(): string
     {

@@ -8,6 +8,59 @@
 </h4>
 <section id="homepage">
     <div class="row justify-content-center">
+        <div class="col-10 col-lg-4">
+            <div class="homeblock px-1 py-3 mx-2 my-3 row">
+                <div class="col-md-2">
+                    <i class="fas fa-fw fa-2x {{ icons.source }}"></i>
+                </div>
+                <div class="col-md-10">
+                    <h3>
+                        <a href="{{ url('source_list') }}">
+                            <span class="counter">
+                                {{ counters.source|number_format(0, '.', ',') }}
+                            </span>
+                            {{ 'nav.source_list'|trans }}
+                        </a>
+                    </h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-10 col-lg-4">
+            <div class="homeblock px-1 py-3 mx-2 my-3 row">
+                <div class="col-md-2">
+                    <i class="fas fa-fw fa-2x {{ icons.element }}"></i>
+                </div>
+                <div class="col-md-10">
+                    <h3>
+                        <a href="{{ url('attestation_list') }}">
+                            <span class="counter">
+                                {{ counters.element|number_format(0, '.', ',') }}
+                            </span>
+                            {{ 'nav.element'|trans }}
+                        </a>
+                    </h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-10 col-lg-4">
+            <div class="homeblock px-1 py-3 mx-2 my-3 row">
+                <div class="col-md-2">
+                    <i class="fas fa-fw fa-2x {{ icons.attestation }}"></i>
+                </div>
+                <div class="col-md-10">
+                    <h3>
+                        <a href="{{ url('element_list') }}">
+                            <span class="counter">
+                                {{ counters.attestation|number_format(0, '.', ',') }}
+                            </span>
+                            {{ 'nav.attestation'|trans }}
+                        </a>
+                    </h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row justify-content-center">
         <div class="col-10 col-lg-6 col-xl-4">
             <div class="homeblock p-3 mx-2 my-4 row">
                 <div class="col-md-2">
@@ -80,4 +133,20 @@
         </div>
     </div>
 </section>
+{% endblock %}
+{% block javascripts %}
+{{ encore_entry_script_tags('page') }}
+<script type="text/javascript">
+    $(document).ready(function () {
+        const el = document.querySelectorAll('.counter');
+
+        for (var i in el) {
+            if (!el.hasOwnProperty(i)) { continue; }
+            counterUp(el[i], {
+                duration: 1000,
+                delay: 16,
+            })
+        }
+    });
+</script>
 {% endblock %}

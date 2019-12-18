@@ -82,7 +82,7 @@ class Element extends AbstractEntity
     /**
      * @var \Doctrine\Common\Collections\Collection
      *
-     * @ORM\OneToMany(targetEntity="ElementBiblio", mappedBy="element")
+     * @ORM\OneToMany(targetEntity="ElementBiblio", mappedBy="element", orphanRemoval=true)
      */
     private $elementBiblios;
 

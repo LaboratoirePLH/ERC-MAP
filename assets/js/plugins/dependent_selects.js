@@ -14,11 +14,14 @@
 
             selectFirst.on('change', function () {
                 var me = $(this);
+
                 if (me.val() == "" || me.val() == null) {
-                    selectLast.html('');
+                    selectLast.empty();
                     selectLast.attr('disabled', true);
                     if (selectLast.hasClass('autocomplete')) {
-                        selectLast.trigger('chosen:updated');
+                        const options = selectLast.chosen().options;
+                        selectLast.chosen("destroy");
+                        selectLast.chosen(options);
                     }
                     return;
                 }
@@ -28,14 +31,16 @@
                         parentId: me.val()
                     },
                     success: function (rows) {
-                        selectLast.html('');
-                        selectLast.append('<option value selected></option>');
+                        selectLast.empty();
+                        selectLast.append('<option value ></option>');
                         $.each(rows, function (key, row) {
                             selectLast.append('<option value="' + row.id + '">' + row.name + '</option>');
                         });
                         selectLast.attr('disabled', rows.length == 0);
                         if (selectLast.hasClass('autocomplete')) {
-                            selectLast.trigger('chosen:updated');
+                            const options = selectLast.chosen().options;
+                            selectLast.chosen("destroy");
+                            selectLast.chosen(options);
                         }
                         selectFirst.trigger('dependent:updated');
                     },
@@ -44,8 +49,14 @@
                     }
                 });
             });
-
-            selectFirst.val(selectFirst.val()).trigger('change');
+            // If a value is select in the first list at render time,
+            // Load the second list if and only if it doesn't already have values
+            if (selectFirst.val() != "" &&
+                (selectLast.find('option').length === 0 ||
+                    (selectLast.find('option').length === 1 && selectLast.find('option').first().text() === '')
+                )) {
+                selectFirst.trigger('change');
+            }
         });
     }
 })(jQuery);

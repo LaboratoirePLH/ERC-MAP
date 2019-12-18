@@ -67,7 +67,7 @@ class LocalisationType extends AbstractType
                     'label'        => 'localisation.fields.grande_region',
                     'label_attr'   => [
                         'id' => 'localisation_ville_granderegion',
-                        'class' => 'citysearch_field' . ($options['region_required'] ? ' required' : '')
+                        'class' => 'citysearch_field'
                     ],
                     'required'     => $options['region_required'],
                     'class'        => GrandeRegion::class,

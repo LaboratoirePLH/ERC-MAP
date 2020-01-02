@@ -31,7 +31,6 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use FOS\CKEditorBundle\Form\Type\CKEditorType;
 
 class SourceType extends AbstractType
 {
@@ -81,15 +80,13 @@ class SourceType extends AbstractType
                 ],
                 'required' => false
             ])
-            ->add('commentaireFr', CKEditorType::class, array(
-                'config_name' => 'styling_and_font',
-                'attr'        => ['class' => 'semitic_keyboard', 'rows' => 2],
+            ->add('commentaireFr', TextareaType::class, array(
+                'attr'        => ['class' => 'froala', 'rows' => 2],
                 'label'       => 'generic.fields.commentaire_fr',
                 'required'    => false
             ))
-            ->add('commentaireEn', CKEditorType::class, array(
-                'config_name' => 'styling_and_font',
-                'attr'        => ['class' => 'semitic_keyboard', 'rows' => 2],
+            ->add('commentaireEn', TextareaType::class, array(
+                'attr'        => ['class' => 'froala', 'rows' => 2],
                 'label'       => 'generic.fields.commentaire_en',
                 'required'    => false
             ))

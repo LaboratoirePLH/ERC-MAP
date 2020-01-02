@@ -4,6 +4,11 @@ global.$ = global.jQuery = $;
 
 require('bootstrap');
 
+var FroalaEditor = require('froala-editor');
+
+// Load a plugin.
+require('froala-editor/js/plugins/align.min');
+
 decodeEntities = function (encodedString) {
     var textArea = document.createElement('textarea');
     textArea.innerHTML = encodedString;
@@ -34,4 +39,10 @@ decodeEntities = function (encodedString) {
     }
 
     $('[data-toggle="tooltip"]').tooltip();
+
+    if ($('.froala').length) {
+        $('.froala').each(function () {
+            var editor = new FroalaEditor('#' + $(this).attr('id'));
+        });
+    }
 })(jQuery);

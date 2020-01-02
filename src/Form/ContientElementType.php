@@ -18,8 +18,8 @@ use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use FOS\CKEditorBundle\Form\Type\CKEditorType;
 
 class ContientElementType extends AbstractType
 {
@@ -46,9 +46,8 @@ class ContientElementType extends AbstractType
                         ->orderBy('e.id', 'DESC');
                 }
             ])
-            ->add('enContexte', CKEditorType::class, [
-                'config_name' => 'styling_and_font',
-                'attr'        => ['class' => 'semitic_keyboard'],
+            ->add('enContexte', TextareaType::class, [
+                'attr'        => ['class' => 'froala'],
                 'label'       => 'element.fields.en_contexte',
                 'required'    => false
             ])

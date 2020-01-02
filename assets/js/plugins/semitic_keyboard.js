@@ -55,19 +55,19 @@ SEMITIC_KEYS = [
             })
         })
     }
-    if (typeof CKEDITOR !== "undefined") {
-        CKEDITOR.on('instanceReady', function (e) {
-            if ($(e.editor.element.$).hasClass('semitic_keyboard')) {
-                var keyboardTarget = $(e.editor.ui.contentsElement.$).find('iframe').contents().find('body');
-                keyboardTarget.semiticKeyboard($(e.editor.container.$));
-                e.editor.on('focus', function () {
-                    keyboardTarget.data('keyboard').reveal();
-                });
-                e.editor.on('blur', function () {
-                    keyboardTarget.data('keyboard').accept();
-                });
-            }
-            return true;
-        });
-    }
+    // if (typeof CKEDITOR !== "undefined") {
+    //     CKEDITOR.on('instanceReady', function (e) {
+    //         if ($(e.editor.element.$).hasClass('semitic_keyboard')) {
+    //             var keyboardTarget = $(e.editor.ui.contentsElement.$).find('iframe').contents().find('body');
+    //             keyboardTarget.semiticKeyboard($(e.editor.container.$));
+    //             e.editor.on('focus', function () {
+    //                 keyboardTarget.data('keyboard').reveal();
+    //             });
+    //             e.editor.on('blur', function () {
+    //                 keyboardTarget.data('keyboard').accept();
+    //             });
+    //         }
+    //         return true;
+    //     });
+    // }
 })(jQuery);

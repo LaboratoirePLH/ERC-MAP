@@ -21,7 +21,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use FOS\CKEditorBundle\Form\Type\CKEditorType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 
@@ -96,15 +96,13 @@ class AttestationType extends AbstractType
                 'allow_delete'  => true,
                 'required'      => false,
             ])
-            ->add('extraitAvecRestitution', CKEditorType::class, [
-                'config_name' => 'styling_and_font',
-                'attr'        => ['class' => 'semitic_keyboard'],
+            ->add('extraitAvecRestitution', TextareaType::class, [
+                'attr'        => ['class' => 'froala'],
                 'label'       => 'attestation.fields.extrait_avec_restitution',
                 'required'    => false
             ])
-            ->add('translitteration', CKEditorType::class, [
-                'config_name' => 'styling_and_font',
-                'attr'        => ['class' => 'semitic_keyboard'],
+            ->add('translitteration', TextareaType::class, [
+                'attr'        => ['class' => 'froala'],
                 'label'       => 'attestation.fields.translitteration',
                 'required'    => false
             ])
@@ -184,15 +182,13 @@ class AttestationType extends AbstractType
                 'translations'    => $options['translations'],
             ])
 
-            ->add('commentaireFr', CKEditorType::class, array(
-                'config_name' => 'styling_and_font',
-                'attr'        => ['class' => 'semitic_keyboard', 'rows' => 2],
+            ->add('commentaireFr', TextareaType::class, array(
+                'attr'        => ['class' => 'froala', 'rows' => 2],
                 'label'       => 'generic.fields.commentaire_fr',
                 'required'    => false
             ))
-            ->add('commentaireEn', CKEditorType::class, array(
-                'config_name' => 'styling_and_font',
-                'attr'        => ['class' => 'semitic_keyboard', 'rows' => 2],
+            ->add('commentaireEn', TextareaType::class, array(
+                'attr'        => ['class' => 'froala', 'rows' => 2],
                 'label'       => 'generic.fields.commentaire_en',
                 'required'    => false
             ))

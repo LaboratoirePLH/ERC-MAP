@@ -10,7 +10,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use FOS\CKEditorBundle\Form\Type\CKEditorType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class BiblioType extends AbstractType
 {
@@ -24,15 +24,13 @@ class BiblioType extends AbstractType
                     'class' => 'dependent_field_corpus_main'
                 ]
             ])
-            ->add('titreAbrege', CKEditorType::class, [
-                'config_name' => 'styling_and_font',
-                'attr'        => ['class' => 'semitic_keyboard'],
+            ->add('titreAbrege', TextareaType::class, [
+                'attr'        => ['class' => 'froala'],
                 'label'       => 'biblio.fields.titre_abrege',
                 'required'    => false
             ])
-            ->add('titreComplet', CKEditorType::class, array(
-                'config_name' => 'styling_and_font',
-                'attr'        => ['class' => 'semitic_keyboard'],
+            ->add('titreComplet', TextareaType::class, array(
+                'attr'        => ['class' => 'froala'],
                 'label'       => 'biblio.fields.titre_complet',
                 'required'    => false
             ))

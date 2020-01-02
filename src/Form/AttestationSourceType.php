@@ -11,7 +11,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use FOS\CKEditorBundle\Form\Type\CKEditorType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 
 class AttestationSourceType extends AbstractType
@@ -26,9 +26,8 @@ class AttestationSourceType extends AbstractType
                 'label'       => 'attestation.fields.passage',
                 'required'    => true
             ])
-            ->add('extraitAvecRestitution', CKEditorType::class, [
-                'config_name' => 'styling_and_font',
-                'attr'        => ['class' => 'semitic_keyboard'],
+            ->add('extraitAvecRestitution', TextareaType::class, [
+                'attr'        => ['class' => 'froala'],
                 'label'       => 'attestation.fields.extrait_avec_restitution',
                 'required'    => false
             ])

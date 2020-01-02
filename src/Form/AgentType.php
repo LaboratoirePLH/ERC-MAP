@@ -15,8 +15,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Doctrine\ORM\EntityRepository;
 
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use FOS\CKEditorBundle\Form\Type\CKEditorType;
 
 class AgentType extends AbstractType
 {
@@ -24,10 +24,9 @@ class AgentType extends AbstractType
     {
         $locale = $options['locale'];
         $builder
-            ->add('designation', CKEditorType::class, [
+            ->add('designation', TextareaType::class, [
                 'label'       => 'agent.fields.designation',
-                'config_name' => 'styling_and_font',
-                'attr'        => ['class' => 'semitic_keyboard'],
+                'attr'        => ['class' => 'froala'],
                 'required'    => false
             ])
             ->add('agentivites', EntityType::class, [
@@ -125,15 +124,13 @@ class AgentType extends AbstractType
                 'locale'          => $options['locale'],
                 'translations'    => $options['translations'],
             ])
-            ->add('commentaireFr', CKEditorType::class, array(
-                'config_name' => 'styling_and_font',
-                'attr'        => ['class' => 'semitic_keyboard', 'rows' => 2],
+            ->add('commentaireFr', TextareaType::class, array(
+                'attr'        => ['class' => 'froala', 'rows' => 2],
                 'label'       => 'generic.fields.commentaire_fr',
                 'required'    => false
             ))
-            ->add('commentaireEn', CKEditorType::class, array(
-                'config_name' => 'styling_and_font',
-                'attr'        => ['class' => 'semitic_keyboard', 'rows' => 2],
+            ->add('commentaireEn', TextareaType::class, array(
+                'attr'        => ['class' => 'froala', 'rows' => 2],
                 'label'       => 'generic.fields.commentaire_en',
                 'required'    => false
             ))

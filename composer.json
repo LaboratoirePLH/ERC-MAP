@@ -7,7 +7,6 @@
         "ext-iconv": "*",
         "easycorp/easyadmin-bundle": "^2.0",
         "excelwebzone/recaptcha-bundle": "^1.5",
-        "friendsofsymfony/ckeditor-bundle": "^2.0",
         "jsor/doctrine-postgis": "^1.7",
         "sensio/framework-extra-bundle": "^5.2",
         "symfony/apache-pack": "^1.0",

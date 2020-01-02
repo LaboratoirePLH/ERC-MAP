@@ -373,8 +373,8 @@
             addListener: function (newEl, idx) {
                 $(newEl).find('input[type=number]').val(idx);
                 $('#counter-elements').text(parseInt($('#counter-elements').text(), 10) + 1);
-                CKEDITOR.instances[$(newEl).find("textarea[id$='enContexte']").prop('id')].setData(
-                    CKEDITOR.instances['attestation_extraitAvecRestitution'].getData()
+                $(newEl).find("textarea[id$='enContexte']").val(
+                    $('#attestation_extraitAvecRestitution').val()
                 );
             },
             deleteListener: function (oldEl) {

@@ -3,7 +3,7 @@ require('./jquery.ui.position.js');
 
 // Disable virtual keyboard enter and backspace listeners, interfering with WYSIWYG library
 $.keyboard.keyaction.enter = function () { };
-$.keyboard.keyaction.bksp = function () { };
+// $.keyboard.keyaction.bksp = function () { };
 
 // "n(a):title_or_tooltip"; n = new key, (a) = actual key (optional), ":label" = title_or_tooltip (use an underscore "_" in place of a space " ")
 SEMITIC_KEYS = [
@@ -18,7 +18,7 @@ SEMITIC_KEYS = [
 ];
 
 (function ($) {
-    $.fn.semiticKeyboard = function (positionEl, alignmentMy, alignmentAt, forceEvent) {
+    $.fn.semiticKeyboard = function (positionEl, alignmentMy, alignmentAt, forceEvent, forceStayOpen) {
         return this.each(function () {
             var my,
                 at = 'left bottom';

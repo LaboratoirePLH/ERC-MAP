@@ -80,23 +80,7 @@ decodeEntities = function (encodedString) {
             });
 
             const keyboardTarget = $(this).find('.ql-editor');
-            keyboardTarget.semiticKeyboard();
-            // quill.on('selection-change', function (range, oldRange, source) {
-            //     if (range === null && oldRange !== null) {
-            //         // blur
-            //         keyboardTarget.data('keyboard').accept();
-            //     }
-            //     else if (range !== null && oldRange === null) {
-            //         // focus
-            //         keyboardTarget.data('keyboard').reveal();
-            //     }
-            // });
-            // $(this).on('focus', function () {
-            //     keyboardTarget.data('keyboard').reveal();
-            // });
-            // $(this).on('blur', function () {
-            //     keyboardTarget.data('keyboard').accept();
-            // });
+            keyboardTarget.semiticKeyboard($(this), 'left bottom', 'left bottom', false, true);
         });
     }
 })(jQuery);

@@ -16,7 +16,6 @@ use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 class ElementType extends AbstractType
@@ -37,8 +36,8 @@ class ElementType extends AbstractType
                 'label'    => 'element.fields.etat_absolu',
                 'required' => false
             ])
-            ->add('etatAbsolu', TextareaType::class, [
-                'attr'     => ['class' => 'froala'],
+            ->add('etatAbsolu', Type\QuillType::class, [
+                'attr'     => ['class' => 'wysiwyg-editor'],
                 'label'    => 'element.fields.etat_absolu',
                 'required' => false
             ])
@@ -160,13 +159,13 @@ class ElementType extends AbstractType
                 'allow_delete'  => true,
                 'required'      => false,
             ])
-            ->add('commentaireFr', TextareaType::class, array(
-                'attr'     => ['class' => 'froala', 'rows' => 2],
+            ->add('commentaireFr', Type\QuillType::class, array(
+                'attr'     => ['class' => 'wysiwyg-editor', 'rows' => 2],
                 'label'    => 'generic.fields.commentaire_fr',
                 'required' => false
             ))
-            ->add('commentaireEn', TextareaType::class, array(
-                'attr'     => ['class' => 'froala', 'rows' => 2],
+            ->add('commentaireEn', Type\QuillType::class, array(
+                'attr'     => ['class' => 'wysiwyg-editor', 'rows' => 2],
                 'label'    => 'generic.fields.commentaire_en',
                 'required' => false
             ))

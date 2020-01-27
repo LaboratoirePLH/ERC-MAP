@@ -19,7 +19,7 @@ class Biblio extends AbstractEntity
     /**
      * @var string|null
      *
-     * @ORM\Column(name="titre_abrege", type="string", length=255, nullable=true)
+     * @ORM\Column(name="titre_abrege", type="text", nullable=true)
      */
     private $titreAbrege;
 

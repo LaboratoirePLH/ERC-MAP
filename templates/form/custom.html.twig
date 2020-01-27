@@ -121,3 +121,12 @@
 {%- endif -%}
 {% endfor %}
 {%- endblock choice_widget_options -%}
+
+{% block quill_widget %}
+{% spaceless %}
+<div class="quill" data-id="{{ id }}" style="height: {{(rows|default(5))*1.5}}rem;">
+    {{ value|raw }}
+</div>
+<input type="hidden" {{ block('widget_attributes') }} value="{{ value }}" />
+{% endspaceless %}
+{% endblock %}

@@ -4,14 +4,16 @@ global.$ = global.jQuery = $;
 
 require('bootstrap');
 
-var FroalaEditor = require('froala-editor');
+// Import Quill
+window.Quill = require('quill');
+// Add fonts to whitelist
+var Font = Quill.import('attributors/style/font');
+// We do not add Aref Ruqaa since it is the default
+Font.whitelist = ['arial', 'ifaogreek'];
+Quill.register(Font, true);
 
-// Load a plugin.
-require('froala-editor/js/plugins/char_counter.min.js');
-require('froala-editor/js/plugins/font_family.min.js');
-require('froala-editor/js/plugins/special_characters.min.js');
-
-FroalaEditor.DefineIcon('specialCharacters', { NAME: 'keyboard', template: 'font_awesome_5' });
+// Import semitic keyboard
+require('./plugins/semitic_keyboard.js');
 
 decodeEntities = function (encodedString) {
     var textArea = document.createElement('textarea');
@@ -44,37 +46,57 @@ decodeEntities = function (encodedString) {
 
     $('[data-toggle="tooltip"]').tooltip();
 
-    if ($('.froala').length) {
+    if ($('.quill').length) {
 
-        $('.froala').each(function () {
-            new FroalaEditor('#' + $(this).attr('id'), {
-                charCounterCount: true,
-                enter: FroalaEditor.ENTER_BR,
-                fontFamily: {
-                    'Arial': 'Arial',
-                    'IFAOGreek': 'IFAO Greek'
+        $('.quill').each(function () {
+            const quillContainer = $(this).get(0);
+            var textareaId = $(quillContainer).data('id');
+            var quill = new Quill(quillContainer, {
+                modules: {
+                    toolbar: [
+                        ['bold', 'italic', 'underline', 'strike'],
+                        [{ 'script': 'sub' }, { 'script': 'super' }],
+                        [{ 'font': ['arial', 'ifaogreek'] }]
+                    ],
+                    keyboard: {
+                        bindings: {
+                            tab: {
+                                key: 9,
+                                handler: function () {
+                                    $(quillContainer).closest(".form-group.row")
+                                        .next(".form-group.row")
+                                        .find(':input,.ql-editor')
+                                        .first()
+                                        .focus();
+                                }
+                            }
+                        }
+                    },
                 },
-                pastePlain: true,
-                pluginsEnabled: ['charCounter', 'fontFamily', 'specialCharacters'],
-                specialCharactersSets: [
-                    {
-                        title: "Semitic", "char": "&scaron;", list: [
-                            { "char": "ṭ", "desc": "Tet" },
-                            { "char": "ṣ", "desc": "Tsade" },
-                            { "char": "š", "desc": "Shin" },
-                            { "char": "ś", "desc": "Sin" },
-                            { "char": "ʾ", "desc": "Ayn" },
-                            { "char": "ʿ", "desc": "Aleph" },
-                            { "char": "ḥ", "desc": "Het" },
-                        ]
-                    }
-                ],
-                spellcheck: false,
-                toolbarButtons: [
-                    ['bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript'],
-                    ['fontFamily', 'specialCharacters', 'clearFormatting']
-                ]
+                theme: 'snow'
             });
+            quill.on('text-change', function (delta, oldDelta, source) {
+                $("#" + textareaId).val(quill.root.innerHTML);//.replace(/"/g, '\''));
+            });
+
+            const keyboardTarget = $(this).find('.ql-editor');
+            keyboardTarget.semiticKeyboard();
+            // quill.on('selection-change', function (range, oldRange, source) {
+            //     if (range === null && oldRange !== null) {
+            //         // blur
+            //         keyboardTarget.data('keyboard').accept();
+            //     }
+            //     else if (range !== null && oldRange === null) {
+            //         // focus
+            //         keyboardTarget.data('keyboard').reveal();
+            //     }
+            // });
+            // $(this).on('focus', function () {
+            //     keyboardTarget.data('keyboard').reveal();
+            // });
+            // $(this).on('blur', function () {
+            //     keyboardTarget.data('keyboard').accept();
+            // });
         });
     }
 })(jQuery);

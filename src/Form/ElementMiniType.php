@@ -13,7 +13,6 @@ use Doctrine\ORM\EntityRepository;
 
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 class ElementMiniType extends AbstractType
@@ -22,8 +21,8 @@ class ElementMiniType extends AbstractType
     {
         $locale = $options['locale'];
         $builder
-            ->add('etatAbsolu', TextareaType::class, [
-                'attr'        => ['class' => 'froala'],
+            ->add('etatAbsolu', Type\QuillType::class, [
+                'attr'        => ['class' => 'wysiwyg-editor'],
                 'label'       => 'element.fields.etat_absolu',
                 'required'    => false
             ])

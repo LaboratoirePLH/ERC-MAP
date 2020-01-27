@@ -21,7 +21,6 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 
@@ -96,13 +95,13 @@ class AttestationType extends AbstractType
                 'allow_delete'  => true,
                 'required'      => false,
             ])
-            ->add('extraitAvecRestitution', TextareaType::class, [
-                'attr'        => ['class' => 'froala'],
+            ->add('extraitAvecRestitution', Type\QuillType::class, [
+                'attr'        => ['class' => 'wysiwyg-editor'],
                 'label'       => 'attestation.fields.extrait_avec_restitution',
                 'required'    => false
             ])
-            ->add('translitteration', TextareaType::class, [
-                'attr'        => ['class' => 'froala'],
+            ->add('translitteration', Type\QuillType::class, [
+                'attr'        => ['class' => 'wysiwyg-editor'],
                 'label'       => 'attestation.fields.translitteration',
                 'required'    => false
             ])
@@ -182,13 +181,13 @@ class AttestationType extends AbstractType
                 'translations'    => $options['translations'],
             ])
 
-            ->add('commentaireFr', TextareaType::class, array(
-                'attr'        => ['class' => 'froala', 'rows' => 2],
+            ->add('commentaireFr', Type\QuillType::class, array(
+                'attr'        => ['class' => 'wysiwyg-editor', 'rows' => 2],
                 'label'       => 'generic.fields.commentaire_fr',
                 'required'    => false
             ))
-            ->add('commentaireEn', TextareaType::class, array(
-                'attr'        => ['class' => 'froala', 'rows' => 2],
+            ->add('commentaireEn', Type\QuillType::class, array(
+                'attr'        => ['class' => 'wysiwyg-editor', 'rows' => 2],
                 'label'       => 'generic.fields.commentaire_en',
                 'required'    => false
             ))

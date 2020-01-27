@@ -8,7 +8,6 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class DatationType extends AbstractType
 {
@@ -23,13 +22,13 @@ class DatationType extends AbstractType
                 'label'    => 'datation.fields.ante_quem',
                 'required' => false
             ])
-            ->add('commentaireFr', TextareaType::class, array(
-                'attr'        => ['class' => 'froala', 'rows' => 2],
+            ->add('commentaireFr', Type\QuillType::class, array(
+                'attr'        => ['class' => 'wysiwyg-editor', 'rows' => 2],
                 'label'       => 'generic.fields.commentaire_fr',
                 'required'    => false
             ))
-            ->add('commentaireEn', TextareaType::class, array(
-                'attr'        => ['class' => 'froala', 'rows' => 2],
+            ->add('commentaireEn', Type\QuillType::class, array(
+                'attr'        => ['class' => 'wysiwyg-editor', 'rows' => 2],
                 'label'       => 'generic.fields.commentaire_en',
                 'required'    => false
             ))

@@ -20,7 +20,6 @@ use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
@@ -167,13 +166,13 @@ class LocalisationType extends AbstractType
                         ->orderBy('e.nom'.ucfirst($locale), 'ASC');
                 }
             ])
-            ->add('commentaireFr', TextareaType::class, array(
-                'attr'        => ['class' => 'froala', 'rows' => 2],
+            ->add('commentaireFr', Type\QuillType::class, array(
+                'attr'        => ['class' => 'wysiwyg-editor', 'rows' => 2],
                 'label'       => 'generic.fields.commentaire_fr',
                 'required'    => false
             ))
-            ->add('commentaireEn', TextareaType::class, array(
-                'attr'        => ['class' => 'froala', 'rows' => 2],
+            ->add('commentaireEn', Type\QuillType::class, array(
+                'attr'        => ['class' => 'wysiwyg-editor', 'rows' => 2],
                 'label'       => 'generic.fields.commentaire_en',
                 'required'    => false
             ))

@@ -15,7 +15,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Doctrine\ORM\EntityRepository;
 
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 class AgentType extends AbstractType
@@ -24,9 +23,9 @@ class AgentType extends AbstractType
     {
         $locale = $options['locale'];
         $builder
-            ->add('designation', TextareaType::class, [
+            ->add('designation', Type\QuillType::class, [
                 'label'       => 'agent.fields.designation',
-                'attr'        => ['class' => 'froala'],
+                'attr'        => ['class' => 'wysiwyg-editor'],
                 'required'    => false
             ])
             ->add('agentivites', EntityType::class, [
@@ -124,13 +123,13 @@ class AgentType extends AbstractType
                 'locale'          => $options['locale'],
                 'translations'    => $options['translations'],
             ])
-            ->add('commentaireFr', TextareaType::class, array(
-                'attr'        => ['class' => 'froala', 'rows' => 2],
+            ->add('commentaireFr', Type\QuillType::class, array(
+                'attr'        => ['class' => 'wysiwyg-editor', 'rows' => 2],
                 'label'       => 'generic.fields.commentaire_fr',
                 'required'    => false
             ))
-            ->add('commentaireEn', TextareaType::class, array(
-                'attr'        => ['class' => 'froala', 'rows' => 2],
+            ->add('commentaireEn', Type\QuillType::class, array(
+                'attr'        => ['class' => 'wysiwyg-editor', 'rows' => 2],
                 'label'       => 'generic.fields.commentaire_en',
                 'required'    => false
             ))

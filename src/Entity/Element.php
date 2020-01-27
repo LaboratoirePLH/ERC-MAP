@@ -25,7 +25,7 @@ class Element extends AbstractEntity
     /**
      * @var string|null
      *
-     * @ORM\Column(name="etat_absolu", type="string", length=255, nullable=true)
+     * @ORM\Column(name="etat_absolu", type="text", nullable=true)
      */
     private $etatAbsolu;
 

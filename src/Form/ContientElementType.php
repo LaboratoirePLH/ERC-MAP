@@ -18,7 +18,6 @@ use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 class ContientElementType extends AbstractType
@@ -46,8 +45,8 @@ class ContientElementType extends AbstractType
                         ->orderBy('e.id', 'DESC');
                 }
             ])
-            ->add('enContexte', TextareaType::class, [
-                'attr'        => ['class' => 'froala'],
+            ->add('enContexte', Type\QuillType::class, [
+                'attr'        => ['class' => 'wysiwyg-editor'],
                 'label'       => 'element.fields.en_contexte',
                 'required'    => false
             ])

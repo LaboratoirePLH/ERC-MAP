@@ -3,6 +3,38 @@
 @import "./component-chosen.css";
 @import "~virtual-keyboard/dist/css/keyboard.min.css";
 
+@import "~quill/dist/quill.snow.css";
+
+.quill, .ql-toolbar {
+    background: white;
+}
+
+/* Configuration des polices de caractères pour l'éditeur Quill */
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value='ifaogreek']::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value='ifaogreek']::before
+{
+  content: 'IFAOGreek';
+  font-family: 'IFAOGreek';
+}
+
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value='arial']::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value='arial']::before
+{
+  content: 'Arial';
+  font-family: 'Arial';
+}
+
+/****************************************************
+Set the font-family content used for the HTML content.
+*****************************************************/
+.ql-font-arial {
+  font-family: 'Arial';
+}
+
+.ql-font-ifaogreek {
+  font-family: 'IFAOGreek';
+}
+
 /* Texte par défaut du choix multiple */
 .chosen-container-multi .chosen-choices .search-field input[type="text"] {
     color: lighten($body-color, 60%);

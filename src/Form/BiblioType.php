@@ -10,7 +10,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class BiblioType extends AbstractType
 {
@@ -24,13 +23,13 @@ class BiblioType extends AbstractType
                     'class' => 'dependent_field_corpus_main'
                 ]
             ])
-            ->add('titreAbrege', TextareaType::class, [
-                'attr'        => ['class' => 'froala'],
+            ->add('titreAbrege', Type\QuillType::class, [
+                'attr'        => ['class' => 'wysiwyg-editor'],
                 'label'       => 'biblio.fields.titre_abrege',
                 'required'    => false
             ])
-            ->add('titreComplet', TextareaType::class, array(
-                'attr'        => ['class' => 'froala'],
+            ->add('titreComplet', Type\QuillType::class, array(
+                'attr'        => ['class' => 'wysiwyg-editor'],
                 'label'       => 'biblio.fields.titre_complet',
                 'required'    => false
             ))

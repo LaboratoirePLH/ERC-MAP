@@ -124,7 +124,8 @@
 
 {% block quill_widget %}
 {% spaceless %}
-<div class="quill" data-id="{{ id }}" style="height: {{(rows|default(5))*1.5}}rem;">
+<div class="quill" id="quill_{{ id }}" data-id="{{ id }}" style="height: {{(rows|default(5))*1.5}}rem;"
+    spellcheck="false">
     {{ value|raw }}
 </div>
 <input type="hidden" {{ block('widget_attributes') }} value="{{ value }}" />

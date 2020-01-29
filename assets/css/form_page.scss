@@ -9,30 +9,37 @@
     background: white;
 }
 
-/* Configuration des polices de caractères pour l'éditeur Quill */
-.ql-snow .ql-picker.ql-font .ql-picker-label[data-value='ifaogreek']::before,
-.ql-snow .ql-picker.ql-font .ql-picker-item[data-value='ifaogreek']::before
-{
-  content: 'IFAOGreek';
-  font-family: 'IFAOGreek';
+.ql-editor {
+    font-size: 140%;
 }
 
-.ql-snow .ql-picker.ql-font .ql-picker-label[data-value='arial']::before,
-.ql-snow .ql-picker.ql-font .ql-picker-item[data-value='arial']::before
-{
-  content: 'Arial';
-  font-family: 'Arial';
-}
+.ql-toolbar.ql-snow {
 
-/****************************************************
-Set the font-family content used for the HTML content.
-*****************************************************/
-.ql-font-arial {
-  font-family: 'Arial';
-}
+    .ql-formats {
+        border-right: 1px solid #cccccc;
+        &:last-child {
+            border-right: none;
+        }
 
-.ql-font-ifaogreek {
-  font-family: 'IFAOGreek';
+        margin-left: 0px;
+        padding-right: 15px;
+
+        button {
+            border: 1px solid #cccccc;
+            border-radius: 5px;
+            margin: 0 1px;
+        }
+
+    }
+
+    button.ql-ifao {
+        padding-top: 0px;
+        width: 45px;
+
+        &:after {
+            content: "IFAO";
+        }
+    }
 }
 
 /* Texte par défaut du choix multiple */

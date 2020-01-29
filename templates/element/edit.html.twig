@@ -219,6 +219,7 @@
                         }
                     }
                 });
+                $(el).find('.quill').quill();
             },
             addListener: function (newEl, idx) {
                 $('#counter-biblio').text(parseInt($('#counter-biblio').text(), 10) + 1);
@@ -276,6 +277,7 @@
                 $(el).find('.selectorcreate').selectOrCreate();
                 $(el).find('select.autocomplete:not(.autocomplete-max-3)').chosen(CHOSEN_SETTINGS);
                 $(el).find('select.autocomplete.autocomplete-max-3').chosen(chosenSettingsMax3);
+                $(el).find('.quill').quill();
             },
             viewLinkGenerator: function (entry) {
                 const entryId = $(entry).find('.selectorcreate_selection').find('select').val();
@@ -331,6 +333,7 @@
                 $(el).find('.selectorcreate').selectOrCreate();
                 $(el).find('select.autocomplete:not(.autocomplete-max-3)').chosen(CHOSEN_SETTINGS);
                 $(el).find('select.autocomplete.autocomplete-max-3').chosen(chosenSettingsMax3);
+                $(el).find('.quill').quill();
             },
             viewLinkGenerator: function (entry) {
                 const entryId = $(entry).find('.selectorcreate_selection').find('select').val();
@@ -363,8 +366,6 @@
             },
         });
 
-
-
         $('.localisation_form').localisationForm({
             errorMessage: "{{'generic.messages.error_unknown'|trans}}",
             notFoundErrorMessage: "{{'generic.messages.error_not_found'|trans}}",
@@ -375,6 +376,8 @@
         $('#element_localisation_grandeSousRegion').dependentSelects({
             data_url: "{{ url('data_sous_region') }}"
         });
+
+        $('.quill').quill();
     });
 </script>
 {% endblock %}

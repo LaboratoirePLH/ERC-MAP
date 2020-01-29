@@ -242,6 +242,7 @@
                         }
                     }
                 });
+                $(el).find('.quill').quill();
             },
             addListener: function (newEl, idx) {
                 // If we are adding the first reference (i.e. source creation) we check the "main source" field
@@ -282,6 +283,9 @@
             },
             deleteListener: function (oldEl) {
                 $('#counter-attestations').text(parseInt($('#counter-attestations').text(), 10) - 1);
+            },
+            setupListener: function (el) {
+                $(el).find('.quill').quill();
             }
         });
 
@@ -422,6 +426,8 @@
                 else { return 0; }
             }
         });
+
+        $('.quill').quill();
     });
 </script>
 {% endblock %}

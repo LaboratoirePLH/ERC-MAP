@@ -395,6 +395,13 @@
 
         const elements = {{ attestation.elementsFormule|default({})|json_encode|raw }};
         if ("{{ action }}" == "edit" && Object.keys(elements).length > 0) {
+            resetFormulaIndexes = function(container){
+                $(container).children().each(function(index){
+                    $(this).find('legend').text('#' + (index+1));
+                    $(this).find("input[name$='[positionFormule]']").val("" + (index+1));
+                })
+            }
+
             $('div#attestation_formules').collectionField({
                 confirmationModal: $('#confirm_remove_item'),
                 deleteLinkGenerator: function (el) {
@@ -429,10 +436,11 @@
                 },
                 addListener: function (newEl, idx) {
                     $('#counter-formules').text(parseInt($('#counter-formules').text(), 10) + 1);
-                    $(newEl).find("input[name$='[positionFormule]']").val("" + idx);
+                    resetFormulaIndexes(newEl.parent());
                 },
                 deleteListener: function (oldEl) {
                     $('#counter-formules').text(parseInt($('#counter-formules').text(), 10) - 1);
+                    resetFormulaIndexes($('div#attestation_formules'));
                 },
             });
         }

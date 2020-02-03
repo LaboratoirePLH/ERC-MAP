@@ -3,6 +3,14 @@
 {{ ('source.view')|trans({'%id%': source.id}) }}
 {% endblock %}
 {% block content %}
+{% if is_granted('ROLE_MODERATOR') or source.createur.id == app.user.id %}
+<div class="text-center">
+    <a href="{{ url('source_edit', {'id': source.id}) }}" class="btn btn-sm my-1 btn-warning">
+        <i class="fas fa-fw fa-edit"></i>
+        {{ 'generic.edit'|trans }}
+    </a>
+</div>
+{% endif %}
 <hr />
 {% include "display/source.html.twig" with {'source': source} %}
 <hr />

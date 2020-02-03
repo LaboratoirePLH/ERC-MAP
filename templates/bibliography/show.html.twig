@@ -3,6 +3,12 @@
 {{ ('biblio.view')|trans({'%id%': bibliography.id}) }}
 {% endblock %}
 {% block content %}
+<div class="text-center">
+    <a href="{{ url('bibliography_edit', {'id': bibliography.id}) }}" class="btn btn-sm my-1 btn-warning">
+        <i class="fas fa-fw fa-edit"></i>
+        {{ 'generic.edit'|trans }}
+    </a>
+</div>
 <hr />
 {% include "display/bibliography.html.twig" with {'bibliography': bibliography} %}
 <hr />

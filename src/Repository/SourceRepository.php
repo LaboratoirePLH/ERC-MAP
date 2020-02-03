@@ -29,7 +29,7 @@ class SourceRepository extends ServiceEntityRepository
                 'partial s.{id, dateCreation, dateModification, version, inSitu, estDatee, traduireFr, traduireEn}',
                 'projet',
                 'langues',
-                'typeSource',
+                'typeSources',
                 'categorieSource',
                 'createur',
                 'dernierEditeur',
@@ -40,12 +40,13 @@ class SourceRepository extends ServiceEntityRepository
                 'datation',
                 'partial sourceBiblios.{source, biblio, editionPrincipale, referenceSource}',
                 'partial biblio.{id, titreAbrege}',
-                'verrou'
+                'verrou',
+                'verrouCreateur'
             ])
             ->from('App\Entity\Source', 's')
             ->leftJoin('s.projet', 'projet')
             ->leftJoin('s.langues', 'langues')
-            ->leftJoin('s.typeSource', 'typeSource')
+            ->leftJoin('s.typeSources', 'typeSources')
             ->leftJoin('s.categorieSource', 'categorieSource')
             ->leftJoin('s.createur', 'createur')
             ->leftJoin('s.dernierEditeur', 'dernierEditeur')
@@ -57,6 +58,7 @@ class SourceRepository extends ServiceEntityRepository
             ->leftJoin('s.sourceBiblios', 'sourceBiblios', 'WITH', 'sourceBiblios.editionPrincipale = true')
             ->leftJoin('sourceBiblios.biblio', 'biblio')
             ->leftJoin('s.verrou', 'verrou')
+            ->leftJoin('verrou.createur', 'verrouCreateur')
             ->orderBy('s.dateModification', 'DESC')
             ->getQuery();
 

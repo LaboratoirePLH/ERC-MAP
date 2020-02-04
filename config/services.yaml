@@ -6,8 +6,8 @@
 parameters:
     showcase_website_url: https://map-polytheisms.huma-num.fr/
     duree_verrou: 30 #durée des verrous sur les données (en minutes)
-    from_email: erc-map-bd@univ-tlse2.fr
-    from_name: "ERC-MAP"
+    from_email: map.polytheisms@gmail.com
+    from_name: "ERC-MAP-BD"
     google_recaptcha_site_key: '%env(GOOGLE_RECAPTCHA_SITE_KEY)%'
 
 services:

@@ -1,0 +1,4 @@
+swiftmailer:
+    transport: sendmail
+    spool:
+        type: 'memory'

@@ -375,7 +375,7 @@
             addListener: function (newEl, idx) {
                 $(newEl).find('input[type=number]').val(idx);
                 $('#counter-elements').text(parseInt($('#counter-elements').text(), 10) + 1);
-                $(newEl).find("textarea[id$='enContexte']").val(
+                $(newEl).find("input[id$='enContexte']").siblings().find('.ql-editor').html(
                     $('#attestation_extraitAvecRestitution').val()
                 );
             },
@@ -395,10 +395,10 @@
 
         const elements = {{ attestation.elementsFormule|default({})|json_encode|raw }};
         if ("{{ action }}" == "edit" && Object.keys(elements).length > 0) {
-            resetFormulaIndexes = function(container){
-                $(container).children().each(function(index){
-                    $(this).find('legend').text('#' + (index+1));
-                    $(this).find("input[name$='[positionFormule]']").val("" + (index+1));
+            resetFormulaIndexes = function (container) {
+                $(container).children().each(function (index) {
+                    $(this).find('legend').text('#' + (index + 1));
+                    $(this).find("input[name$='[positionFormule]']").val("" + (index + 1));
                 })
             }
 

@@ -481,4 +481,37 @@ class Attestation extends AbstractEntity
 
         return $this;
     }
+
+    public function toArray(): array
+    {
+        $getTranslatedName = function($entry){ return $entry->getTranslatedName(); };
+
+        return [
+            'source'                 => $this->source->getId(),
+            'passage'                => $this->passage,
+            'extraitAvecRestitution' => $this->extraitAvecRestitution,
+            'translitteration'       => $this->translitteration,
+            'traductions'            => $this->traductions->map($getTranslatedName)->getValues(),
+            'pratiques'              => $this->pratiques->map($getTranslatedName)->getValues(),
+            'materiels'              => $this->attestationMateriels->map(function($am){
+                return [
+                    'categorieMateriel' => $am->getCategorieMateriel() === null ? null : $am->getCategorieMateriel()->getTranslatedName(),
+                    'materiel'          => $am->getMateriel() === null ? null : $am->getMateriel()->getTranslatedName(),
+                    'quantite'          => $am->getQuantite()
+                ];
+            })->getValues(),
+            'occasions' => $this->attestationOccasions->map(function($ao){
+                return [
+                    'categorieOccasion' => $ao->getCategorieOccasion() === null ? null : $ao->getCategorieOccasion()->getTranslatedName(),
+                    'occasion'          => $ao->getOccasion() === null ? null : $ao->getOccasion()->getTranslatedName()
+                ];
+            })->getValues(),
+            'agents'        => $this->agents->map(function($a){ return $a->toArray(); })->getValues(),
+            'datation'      => $this->datation === null ? null : $this->datation->toArray(),
+            'localisation'  => $this->localisation === null ? null : $this->localisation->toArray(),
+            'elements'      => $this->contientElements->map(function($e){ return $e->toArray(); })->getValues(),
+            'commentaireFr' => $this->commentaireFr,
+            'commentaireEn' => $this->commentaireEn
+        ];
+    }
 }

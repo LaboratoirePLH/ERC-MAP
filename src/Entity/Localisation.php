@@ -347,11 +347,27 @@ class Localisation extends AbstractEntity
      * @ORM\PrePersist
      * @ORM\PreUpdate
      */
-    public function _updateGeometry(){
+    public function _updateGeometry()
+    {
         if(($lon = $this->getLongitude()) !== null && ($lat = $this->getLatitude()) !== null){
             $this->setGeom("SRID=4326;POINT({$lon} {$lat})");
         }
     }
 
-
+    public function toArray(): array
+    {
+        return [
+            'entitePolitique' => $this->entitePolitique === null ? null : $this->entitePolitique->toArray(),
+            'grandeRegion'    => $this->grandeRegion === null ? null : $this->grandeRegion->getTranslatedName(),
+            'sousRegion'      => $this->sousRegion === null ? null : $this->sousRegion->getTranslatedName(),
+            'pleiadesVille'   => $this->pleiadesVille,
+            'nomVille'        => $this->nomVille,
+            'pleiadesSite'    => $this->pleiadesSite,
+            'nomSite'         => $this->nomSite,
+            'topographies'    => $this->topographies->map(function($entry){ return $entry->getTranslatedName(); })->getValues(),
+            'fonctions'       => $this->fonctions->map(function($entry){ return $entry->getTranslatedName(); })->getValues(),
+            'commentaireFr'   => $this->commentaireFr,
+            'commentaireEn'   => $this->commentaireEn
+        ];
+    }
 }

@@ -201,4 +201,16 @@ class ContientElement extends AbstractEntity
 
         return $this;
     }
+
+    public function toArray(): array
+    {
+        return [
+            'element'           => $this->element->toArray(),
+            'enContexte'        => $this->enContexte,
+            'etatMorphologique' => $this->etatMorphologique,
+            'genreElement'      => $this->genreElement === null ? null : $this->genreElement->getTranslatedName(),
+            'nombreElement'     => $this->nombreElement === null ? null : $this->nombreElement->getTranslatedName(),
+            'categorieElement'  => $this->categorieElement === null ? null : $this->categorieElement->getTranslatedName()
+        ];
+    }
 }

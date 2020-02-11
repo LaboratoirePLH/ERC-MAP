@@ -620,4 +620,40 @@ class Source extends AbstractEntity
 
         return $this;
     }
+
+    public function toArray(): array
+    {
+        $getTranslatedName = function($entry){ return $entry->getTranslatedName(); };
+
+        $data = [
+            'categorieSource' => $this->categorieSource->getTranslatedName(),
+            'typeSource'      => $this->typeSources->map($getTranslatedName)->getValues(),
+            'langues'         => $this->langues->map($getTranslatedName)->getValues(),
+            'auteurs'         => $this->auteurs->map($getTranslatedName)->getValues(),
+            'titrePrincipal'  => $this->titrePrincipal === null ? null : array_merge(
+                $this->titrePrincipal->getTranslatedName(),
+                ['auteurs' => $this->titrePrincipal->getAuteurs()->map($getTranslatedName)->getValues()]
+            ),
+            'categorieMateriau' => $this->categorieMateriau === null ? null : $this->categorieMateriau->getTranslatedName(),
+            'typeMateriau'      => $this->materiau === null ? null : $this->materiau->getTranslatedName(),
+            'categorieSupport'  => $this->categorieSupport === null ? null : $this->categorieSupport->getTranslatedName(),
+            'typeSupport'       => $this->typeSupport === null ? null : $this->typeSupport->getTranslatedName(),
+            'datation'          => $this->datation === null ? null : $this->datation->toArray(),
+            'lieuDecouverte'    => $this->lieuDecouverte === null ? null : $this->lieuDecouverte->toArray(),
+            'lieuOrigine'       => $this->inSitu
+                ? ($this->lieuDecouverte === null ? null : $this->lieuDecouverte->toArray())
+                : ($this->lieuOrigine === null ? null : $this->lieuOrigine->toArray()),
+            'sourceBiblios' => $this->sourceBiblios->map(function($sb){
+                return array_merge($sb->getBiblio()->toArray(), [
+                    'editionPrincipale' => $sb->getEditionPrincipale(),
+                    'reference'         => $sb->getReferenceSource()
+                ]);
+            })->getValues(),
+            'attestations'  => $this->attestations->map(function($att) { return $att->getId(); })->toArray(),
+            'commentaireFr' => $this->commentaireFr,
+            'commentaireEn' => $this->commentaireEn
+        ];
+
+        return $data;
+    }
 }

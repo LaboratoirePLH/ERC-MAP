@@ -64,4 +64,14 @@ class Datation extends AbstractEntity
             || $this->getAnteQuem() === null
             || $this->getPostQuem() <= $this->getAnteQuem();
     }
+
+    public function toArray(): array
+    {
+        return [
+            'postQuem'      => $this->postQuem,
+            'anteQuem'      => $this->anteQuem,
+            'commentaireFr' => $this->commentaireFr,
+            'commentaireEn' => $this->commentaireEn
+        ];
+    }
 }

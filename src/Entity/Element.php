@@ -401,4 +401,23 @@ class Element extends AbstractEntity
 
         return $this;
     }
+
+    public function toArray(): array
+    {
+        return [
+            'etatAbsolu'     => $this->etatAbsolu,
+            'betaCode'       => $this->betaCode,
+            'traductions'    => $this->traductions->map(function($entry){ return $entry->getTranslatedName(); })->getValues(),
+            'natureElement'  => $this->natureElement === null ? null : $this->natureElement->getTranslatedName(),
+            'categories'     => $this->categories->map(function($entry){ return $entry->getTranslatedName(); })->getValues(),
+            'localisation'   => $this->localisation === null ? null : $this->localisation->toArray(),
+            'elementBiblios' => $this->elementBiblios->map(function($eb){
+                return array_merge($eb->getBiblio()->toArray(), [
+                    'reference'         => $eb->getReferenceElement()
+                ]);
+            })->getValues(),
+            'commentaireFr' => $this->commentaireFr,
+            'commentaireEn' => $this->commentaireEn
+        ];
+    }
 }

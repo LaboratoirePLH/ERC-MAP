@@ -10,9 +10,9 @@ services:
             - php
         volumes:
             # Logs
-            - ./logs/nginx:/var/logs/nginx:cached
+            - ./logs/nginx:/var/logs/nginx:delegated
             # Code
-            - .:/var/www/html:cached
+            - .:/var/www/html:delegated
         ports:
             - "80:80"
 
@@ -23,23 +23,26 @@ services:
             - db
         volumes:
             # Logs
-            - ./logs/symfony:/var/www/html/var/log:cached
+            - ./logs/symfony:/var/www/html/var/log:delegated
             # Code
-            - .:/var/www/html:cached
+            - .:/var/www/html:delegated
             # Vendor délégués au container
             - ./vendor:/var/www/html/vendor:delegated
         ports:
             - "9000:9001"
 
     db:
-        image: kartoza/postgis:9.6-2.4
+        build: ./.docker/pgsql
         volumes:
-            - pgdata:/var/lib/postgresql/data
+            - pgdata:/var/lib/postgresql/data:delegated
         environment:
             # Nécessaire
-            - POSTGRES_USER=polytheisms
-            - POSTGRES_PASSWORD=polytheisms
-            - POSTGRES_DB=polytheisms
+            # - POSTGRES_USER=polytheisms
+            # - POSTGRES_PASSWORD=polytheisms
+            # - POSTGRES_DB=polytheisms
+            # - DEFAULT_COLLATION="fr_FR.UTF-8"
+            # - DEFAULT_ENCODING="UTF8"
+            # - DEFAULT_CTYPE="fr_FR.UTF-8"
             - ALLOW_IP_RANGE="0.0.0.0/0"
         ports:
             # local 5432:5432 remote
@@ -53,7 +56,7 @@ services:
         command: sh -c "yarn install && yarn watch"
         volumes:
             # Code
-            - .:/var/www/html
+            - .:/var/www/html:delegated
             # node_modules et build sont délégués au container
             - ./node_modules:/var/www/html/node_modules:delegated
             - ./public/build:/var/www/html/public/build:delegated

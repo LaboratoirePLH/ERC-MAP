@@ -60,12 +60,14 @@ generic:
     back: "Back"
     stay: "Stay"
     choose: "Choose"
+    confirm: "Confirm"
     toggle_section: "Show/Hide section"
     export_csv: "Export as CSV file"
     locked: "Locked"
     fields:
         id: "ID"
         createur: "Creator"
+        date: "Date"
         date_creation: "Creation"
         date_modification: "Latest Edition"
         by: "by"
@@ -89,6 +91,9 @@ generic:
         est_datee: "Is Dated ?"
         est_localisee: "Location ?"
         position: "Position"
+        lieu: "Location"
+        categorie: "Category"
+        champ: "Field"
     choices :
         new: "New"
         existing: "Existing"
@@ -306,6 +311,7 @@ element:
         indetermine: "Undetermined"
 
 agent:
+    name: 'Agent'
     fields:
         designation: "Designation"
         agentivite: "Agency"
@@ -385,6 +391,9 @@ modals:
     confirm_exit_dirty:
         title: "Confirm exit"
         body: "You have unsaved changes. Are you sure you want to exit ?"
+    confirm_search_reindex:
+        title: "Confirm search index rebuild"
+        body: "Are you sure you want to rebuild the search index ? This action will take several minutes and cannot be interrupted."
 
 datatable:
     all: "All"
@@ -422,6 +431,20 @@ mails:
         title: "ERC-MAP - Contact"
         text: "A user sent you a message through the contact form : "
 
+search:
+    title: "Query Interface"
+    simple: "Simple"
+    guided: "Guided"
+    advanced: "Advanced"
+    elements: "Elements"
+    mode: "Query Type"
+    criteria: "Query Criteria"
+    results: "Query Results"
+    coverage: "Corpus Coverage"
+    reindex: "Rebuild Search Index"
+    new_query: "New Query"
+    messages:
+        reindex_done: "The Search Index has been rebuilt (%records% records, %time% seconds)"
 
 requetes:
     title: "Query interface"

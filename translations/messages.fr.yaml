@@ -59,12 +59,14 @@ generic:
     back: "Retour"
     stay: "Rester"
     choose: "Choisir"
+    confirm: "Confirmer"
     toggle_section: "Afficher/Cacher la section"
     export_csv: "Exporter en CSV"
     locked: "Verrouillé"
     fields:
         id: "ID"
         createur: "Créateur"
+        date: "Date"
         date_creation: "Création"
         date_modification: "Dernière Modification"
         by: "par"
@@ -88,6 +90,9 @@ generic:
         est_datee: "Est Daté(e) ?"
         est_localisee: "Localisation ?"
         position: "Position"
+        lieu: "Lieu"
+        categorie: "Catégorie"
+        champ: "Champ"
     choices :
         new: "Nouveau"
         existing: "Existant"
@@ -306,6 +311,7 @@ element:
 
 
 agent:
+    name: 'Agent'
     fields:
         designation: "Désignation"
         agentivite: "Agentivité"
@@ -385,6 +391,9 @@ modals:
     confirm_exit_dirty:
         title: "Confirmer la sortie"
         body: "Vous avez des modifications non sauvegardées. Êtes-vous sûr de vouloir quitter ?"
+    confirm_search_reindex:
+        title: "Confirmer la réindexation"
+        body: "Êtes-vous sûr de vouloir reconstruire l'index de recherche ? Cette action peut durer plusieurs minutes et ne pourra pas être interrompue."
 
 
 datatable:
@@ -421,6 +430,21 @@ mails:
     contact:
         title: "ERC-MAP - Contact"
         text: "Un utilisateur vous a envoyé un message via le formulaire de contact :"
+
+search:
+    title: "Interface de Requêtes"
+    simple: "Simple"
+    guided: "Guidée"
+    advanced: "Advancée"
+    elements: "Élements"
+    mode: "Type de Requête"
+    criteria: "Critères de la Requête"
+    results: "Résultats de la requête"
+    coverage: "Etat de dépouillement du corpus"
+    reindex: "Reconstruire l'Index de Recherche"
+    new_query: "Nouvelle Requête"
+    messages:
+        reindex_done: "L'Index de Recherche a bien été reconstruit (%records% enregistrements, %time% secondes)"
 
 requetes:
     title: "Interface de requête"

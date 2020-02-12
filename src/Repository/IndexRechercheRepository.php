@@ -110,7 +110,10 @@ class IndexRechercheRepository extends ServiceEntityRepository
             function($carry, $item){ return ($item['editionPrincipale'] ?? false) ? $item : $carry; }
         );
         $reference = $mainEdition === null ? null
-            : $mainEdition['titreAbrege'].' '.$mainEdition['reference'];
+            : implode(' ', array_filter([
+                $mainEdition['titreAbrege'] ?? null,
+                $mainEdition['reference'] ?? null
+            ]));
 
         $localisation = $source['lieuOrigine'] ?? $source['lieuDecouverte'] ?? null;
         if($localisation !== null){
@@ -127,7 +130,7 @@ class IndexRechercheRepository extends ServiceEntityRepository
             )
         ) : null;
 
-        $attestationIds = implode(',', $source['attestations']);
+        $attestationIds = implode(',', $source['attestations'] ?? []);
         $query = $this->getEntityManager()
                       ->createQuery("SELECT a.extraitAvecRestitution FROM \App\Entity\Attestation a WHERE a.id IN ($attestationIds)");
         $extraits = $query->getResult();

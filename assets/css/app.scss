@@ -222,6 +222,17 @@ body {
     }
 }
 
+#search-panel {
+    .nav-pills, .tab-content {
+        border: 1px solid $map-yellow;
+        border-radius: 5px;
+    }
+}
+
+.border-map-yellow {
+    border: 1px solid $map-yellow;
+}
+
 table { page-break-inside:auto }
 tr    { page-break-inside:avoid; page-break-after:auto }
 thead { display:table-header-group }

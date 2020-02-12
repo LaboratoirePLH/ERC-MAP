@@ -35,7 +35,10 @@ Parameters :
                     <button type="submit"
                         class="btn btn-danger modal-accept-button">{{ confirmationLabel|trans }}</button>
                     {% else %}
-                    <a class="btn btn-danger modal-accept-button">{{ confirmationLabel|trans }}</a>
+                    <a class="btn btn-danger modal-accept-button" {% if targetUrl is defined %}href="{{targetUrl}}"
+                        {% endif %}>
+                        {{ confirmationLabel|trans }}
+                    </a>
                     {% endif %}
 
                     {% if useForm %}

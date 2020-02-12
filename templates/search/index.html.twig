@@ -1,0 +1,91 @@
+{% extends 'page.html.twig' %}
+{% block title %}
+{{ ('search.title')|trans }}
+{% endblock %}
+{% block content %}
+<div class="row my-3">
+    <div class="col-sm-12 col-md-8 text-center" id="search-panel">
+        <ul class="nav nav-pills nav-fill" id="myTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="simple-tab" data-toggle="tab" href="#simple" role="tab"
+                    aria-controls="simple" aria-selected="true">
+                    {{ ('search.simple')|trans }}
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="guided-tab" data-toggle="tab" href="#guided" role="tab" aria-controls="guided"
+                    aria-selected="false">
+                    {{ ('search.guided')|trans }}
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="advanced-tab" data-toggle="tab" href="#advanced" role="tab"
+                    aria-controls="advanced" aria-selected="false">
+                    {{ ('search.advanced')|trans }}
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="elements-tab" data-toggle="tab" href="#elements" role="tab"
+                    aria-controls="elements" aria-selected="false">
+                    {{ ('search.elements')|trans }}
+                </a>
+            </li>
+        </ul>
+        <div class="tab-content" id="searchTabs">
+            <div class="tab-pane fade show active p-3" id="simple" role="tabpanel" aria-labelledby="simple-tab">
+                <form action="{{ url('search_simple') }}" class="form-inline" method="post">
+                    <input class="form-control form-control-lg mx-2 flex-grow-1" type="text" name="search_value"
+                        placeholder="" />
+                    <button class="btn btn-primary mx-2" type="submit" name="search">
+                        <i class="fas fa-search fa-fw"></i>
+                        {{ 'generic.search'|trans }}
+                    </button>
+                </form>
+            </div>
+            <div class="tab-pane fade" id="guided" role="tabpanel" aria-labelledby="guided-tab">
+                Recherche Guidée
+            </div>
+            <div class="tab-pane fade" id="advanced" role="tabpanel" aria-labelledby="advanced-tab">
+                Recherche avancée
+            </div>
+            <div class="tab-pane fade" id="elements" role="tabpanel" aria-labelledby="elements-tab">
+                Recherche éléments
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-12 col-md-4">
+        <ul class="nav nav-pills nav-fill" id="myTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" role="tab">
+                    {{ ('search.coverage')|trans }}
+                </a>
+            </li>
+        </ul>
+        <div class="tab-content" id="coverageTab">
+            <div class="tab-pane show active" role="tabpanel">
+                Coverage
+            </div>
+        </div>
+    </div>
+</div>
+{% if is_granted('ROLE_ADMIN') %}
+<hr />
+<div class="row">
+    <div class="col-12 text-center">
+        <button type="button" class="btn my-1 btn-danger" id="search-reindex" data-toggle="modal"
+            data-target="#search-reindex-modal">
+            <i class="fas fa-fw fa-sync"></i>
+            {{ 'search.reindex'|trans }}
+        </button>
+        {% include "modals/confirmation.html.twig" with {
+            'modalName': 'confirm_search_reindex',
+            'uuid': 'search-reindex-modal',
+            'targetUrl': url('search_reindex'),
+            'confirmationLabel': 'generic.confirm',
+            'useForm': false
+        } %}
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}

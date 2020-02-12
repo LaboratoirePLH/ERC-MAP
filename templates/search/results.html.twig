@@ -1,0 +1,187 @@
+{% extends 'list_page.html.twig' %}
+{% block title %}
+{{ ('search.results')|trans }}
+{% endblock %}
+{% block content %}
+<div class="row my-3">
+    <div class="col-5 table-buttons" id="search-results-actions">
+        <a class="btn btn-primary" href="{{ url('search') }}" role="button">
+            <i class="fas fa-plus fa-fw"></i>
+            {{ 'search.new_query'|trans }}
+        </a>
+        <a class="btn btn-warning" href="#" role="button">
+            <i class="fas fa-save fa-fw"></i>
+            {{ 'generic.save'|trans }}
+        </a>
+    </div>
+    <div class="col-7 border-map-yellow" id="search-criteria">
+        <strong>{{ ('search.mode')|trans }}</strong> : {{ ('search.'~mode)|trans }}
+        <br />
+        <strong>{{ ('search.criteria')|trans }}</strong> : {{ criteria|join(', ') }}
+    </div>
+</div>
+<table class="table table-striped table-hover table-bordered w-100 text-center list_table" id="search-results">
+    <thead>
+        <tr>
+            <th scope="col">
+                {{ 'source.fields.source_biblio'|trans }}
+            </th>
+            <th scope="col">
+                {{ 'generic.fields.lieu'|trans }}
+            </th>
+            <th scope="col">
+                {{ 'generic.fields.date'|trans }}
+            </th>
+            <th scope="col">
+                {{ 'attestation.sections.texte_attestation'|trans }}
+            </th>
+            <th scope="col">
+                {{ 'generic.fields.categorie'|trans }}
+            </th>
+            <th scope="col">
+                {{ 'generic.fields.champ'|trans }}
+            </th>
+            <th scope="col">
+                {{ 'generic.view'|trans }}
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for result in results %}
+        <tr>
+            <td>
+                {{ result.reference }}
+            </td>
+            <td>
+                {{ result.localisation }}
+            </td>
+            <td>
+                {{ result.datation }}
+            </td>
+            <td>
+                {{ result.text|join('<br/>')|raw }}
+            </td>
+            <td>
+                {{ result.type|trans }}
+            </td>
+            <td>
+                {% for f in result.field %}
+                {{ f|trans }}
+                {% if not loop.last %}
+                &gt;
+                {% endif %}
+                {% endfor %}
+            </td>
+            <td class="py-0 px-1">
+                {% include "partials/_entitylink.html.twig" with {
+                    'entity': result.linkType,
+                    'link': url(result.linkType ~ '_show', {'id': result.linkId}),
+                    'text': '#' ~ result.linkId
+                } %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    <tfoot>
+        <tr>
+            <th>{{ 'source.fields.source_biblio'|trans }}</th>
+            <th>{{ 'generic.fields.lieu'|trans }}</th>
+            <th>{{ 'generic.fields.date'|trans }}</th>
+            <th>{{ 'attestation.sections.texte_attestation'|trans }}</th>
+            <th>{{ 'generic.fields.categorie'|trans }}</th>
+            <th>{{ 'generic.fields.champ'|trans }}</th>
+            <th></th>
+        </tr>
+    </tfoot>
+</table>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#search-results tfoot th').each(function () {
+            var title = $(this).text();
+            var value = $(this).data('value');
+            if (title != "") {
+                $(this).html(
+                    '<input type="text" class="w-100 form-control form-control-sm" placeholder="{{"generic.search"|trans}}' +
+                    ' ' + title + '" />'
+                );
+                if (value != null) {
+                    $(this).children('input').val(value);
+                }
+            }
+        });
+        var dt = $('#search-results').DataTable({
+            responsive: true,
+            autoWidth: true,
+            lengthChange: true,
+            scrollX: false,
+            searching: false,
+            ordering: true,
+            columns: [{ responsivePriority: 1 }, null, null, null, null, null, {
+                searchable: false,
+                orderable: false,
+                width: 110,
+                responsivePriority: 1
+            }],
+            order: [
+                [0, 'asc']
+            ],
+            language: $.parseJSON('{{ "datatable.language"|trans|raw }}'),
+            pageLength: 10,
+            lengthMenu: [
+                [
+                    10, 25, 50, -1
+                ],
+                [
+                    10, 25, 50, "{{'datatable.all'|trans}}"
+                ]
+            ],
+            buttons: [{
+                extend: 'csv',
+                filename: "{{ 'app_name'|trans }}-{{ 'search.results'|trans }}",
+                text: "{{'generic.export_csv'|trans}}",
+                customize: function (document) {
+                    return document.replace(/(\s)\s+/g, "$1");
+                },
+                exportOptions: {
+                    columns: [0, 1, 2, 3, 4, 5]
+                }
+            }]
+        });
+        $('#search-results_wrapper select').removeClass('custom-select');
+        dt.columns().every(function () {
+            var me = this;
+            $('input', this.footer()).on('keyup change', function () {
+                if (me.search() !== this.value) {
+                    me.search(
+                        // Remove accented characters from search string
+                        jQuery.fn.DataTable.ext.type.search.string(this.value)
+                    ).draw();
+                }
+            })
+            $('input', this.footer()).each(function () {
+                if ($(this).val() != "") {
+                    console.log('test');
+                    $(this).trigger('change');
+                }
+            })
+        });
+        $('input[type=search]').on('keyup change', function () {
+            dt.search(
+                // Remove accented characters from search string
+                jQuery.fn.DataTable.ext.type.search.string(this.value)
+            ).draw();
+        })
+        dt.buttons().container().appendTo('.table-buttons');
+        $('.clear-filter-button').on('click', function (e) {
+            e.preventDefault();
+            dt.columns().every(function () {
+                $('input', this.footer()).val("").trigger('change');
+            });
+        })
+    });
+</script>
+{% endblock %}

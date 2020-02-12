@@ -218,7 +218,6 @@ class Biblio extends AbstractEntity
     public function toArray(): array
     {
         return [
-            'type'         => $this->estCorpus ? 'corpus' : 'bibliographique',
             'titreAbrege'  => $this->titreAbrege,
             'titreComplet' => $this->titreComplet,
             'annee'        => $this->annee,

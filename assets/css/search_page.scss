@@ -1,0 +1,38 @@
+@import "app.scss";
+
+@import "./component-chosen.css";
+
+/* Texte par défaut du choix multiple */
+.chosen-container-multi .chosen-choices .search-field input[type="text"] {
+    color: lighten($body-color, 60%);
+}
+
+/* Texte par défaut du choix simple */
+.chosen-container-single a:not([href]):not([tabindex]) {
+    color: lighten($body-color, 60%) !important;
+}
+
+/* Correction de l'affichage du groupe */
+.chosen-container-single .chosen-single .group-name {
+    padding-right: 5px;
+
+    &::after {
+        content: " > ";
+    }
+}
+
+/* Sélection du choix simple */
+.chosen-container-single a:not([href]):not([tabindex]).chosen-single:not(.chosen-default) {
+    color: $body-color !important;
+}
+
+select:invalid {
+    height: 0px !important;
+    opacity: 0 !important;
+    position: absolute !important;
+    display: flex !important;
+}
+
+select:invalid[multiple] {
+   margin-top: 15px !important;
+}

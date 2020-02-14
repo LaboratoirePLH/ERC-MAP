@@ -2,6 +2,9 @@
 {% block title %}
 {{ ('search.title')|trans }}
 {% endblock %}
+{% block stylesheets %}
+{{ encore_entry_link_tags('search_page') }}
+{% endblock %}
 {% block content %}
 <div class="row my-3">
     <div class="col-sm-12 col-md-8 text-center" id="search-panel">
@@ -32,7 +35,7 @@
             </li>
         </ul>
         <div class="tab-content" id="searchTabs">
-            <div class="tab-pane fade show active p-3" id="simple" role="tabpanel" aria-labelledby="simple-tab">
+            <div class="tab-pane fade p-3" id="simple" role="tabpanel" aria-labelledby="simple-tab">
                 <form action="{{ url('search_simple') }}" class="form-inline" method="post">
                     <input class="form-control form-control-lg mx-2 flex-grow-1" type="text" name="search_value"
                         placeholder="" />
@@ -42,8 +45,107 @@
                     </button>
                 </form>
             </div>
-            <div class="tab-pane fade" id="guided" role="tabpanel" aria-labelledby="guided-tab">
-                Recherche Guidée
+            <div class="tab-pane fade p-3 show active" id="guided" role="tabpanel" aria-labelledby="guided-tab">
+                <form action="{{ url('search_guided') }}" method="post">
+                    <div class="form-group row">
+                        <label for="inputName"
+                            class="col-sm-2 col-form-label">{{ ('generic.fields.nom')|trans }}</label>
+                        <div class="col-sm-10">
+                            <select class="form-control autocomplete" name="names[]" id="inputName" multiple
+                                data-placeholder="{{('autocomplete.select_multiple')|trans}}">
+                                <option value></option>
+                                {% for id,value in data.names %}
+                                <option value="{{id}}">{{value}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="inputLanguage"
+                            class="col-sm-2 col-form-label">{{ ('generic.fields.langue')|trans }}</label>
+                        <div class="col-sm-10">
+                            <select class="form-control autocomplete" name="languages[]" id="inputLanguage" multiple
+                                data-placeholder="{{('autocomplete.select_multiple')|trans}}">
+                                <option value></option>
+                                {% for id,value in data.languages %}
+                                <option value="{{id}}">{{value}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">{{ ('generic.fields.datation')|trans }}</label>
+                        <div class="col">
+                            <input type="number" step="1" class="form-control" name="post_quem" id="inputPostQuem"
+                                placeholder="{{('datation.fields.post_quem')|trans}}">
+                        </div>
+                        <div class="col">
+                            <input type="number" step="1" class="form-control" name="ante_quem" id="inputAnteQuem"
+                                placeholder="{{('datation.fields.ante_quem')|trans}}">
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="datation_exact"
+                                    value="datation_exact" id="inputDatationExact" />
+                                <label class="form-check-label" for="inputDatationExact">
+                                    {{ ('generic.fields.exact')|trans }}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="inputLocation"
+                            class="col-sm-2 col-form-label">{{ ('generic.fields.lieu')|trans }}</label>
+                        <div class="col-sm-10">
+                            <select class="form-control autocomplete" name="locations[]" id="inputLocation" multiple
+                                data-placeholder="{{('autocomplete.select_multiple')|trans}}">
+                                <option value></option>
+                                {% for id,value in data.locations %}
+                                <option value="{{id}}">{{value}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="inputSourceType" class="col-sm-2 col-form-label">{{ ('source.name')|trans }}</label>
+                        <div class="col-sm-10">
+                            <select class="form-control autocomplete" name="sourceTypes[]" id="inputSourceType" multiple
+                                data-placeholder="{{('autocomplete.select_multiple')|trans}}">
+                                <option value></option>
+                                {% for id,value in data.sourceTypes %}
+                                <option value="{{id}}">{{value}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="inputAgents" class="col-sm-2 col-form-label">{{ ('agent.name')|trans }}</label>
+                        <div class="col-sm-10">
+                            <select class="form-control autocomplete" name="agents[]" id="inputAgents" multiple
+                                data-placeholder="{{('autocomplete.select_multiple')|trans}}">
+                                <option value></option>
+                                <optgroup label="{{('agent.fields.activite')|trans}}">
+                                    {% for id,value in data.agents.activites %}
+                                    <option value="{{id}}">{{value}}</option>
+                                    {% endfor %}
+                                </optgroup>
+                                <optgroup label="{{('agent.fields.agentivite')|trans}}">
+                                    {% for id,value in data.agents.agentivites %}
+                                    <option value="{{id}}">{{value}}</option>
+                                    {% endfor %}
+                                </optgroup>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-10">
+                            <button class="btn btn-primary mx-2" type="submit" name="search">
+                                <i class="fas fa-search fa-fw"></i>
+                                {{ 'generic.search'|trans }}
+                            </button>
+                        </div>
+                    </div>
+                </form>
             </div>
             <div class="tab-pane fade" id="advanced" role="tabpanel" aria-labelledby="advanced-tab">
                 Recherche avancée
@@ -88,4 +190,12 @@
 </div>
 {% endif %}
 
+{% endblock %}
+{% block javascripts %}
+{{ encore_entry_script_tags('search_page') }}
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('select.autocomplete').chosen(CHOSEN_SETTINGS);
+    });
+</script>
 {% endblock %}

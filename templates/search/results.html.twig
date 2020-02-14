@@ -49,7 +49,7 @@
         {% for result in results %}
         <tr>
             <td>
-                {{ result.reference }}
+                {{ result.reference|raw }}
             </td>
             <td>
                 {{ result.localisation }}
@@ -58,7 +58,7 @@
                 {{ result.datation }}
             </td>
             <td>
-                {{ result.text|join('<br/>')|raw }}
+                {{ result.text|join('<hr/>')|raw }}
             </td>
             <td>
                 {{ result.type|trans }}

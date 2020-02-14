@@ -232,9 +232,17 @@ body {
 #search-results {
     border-collapse: collapse !important;
 
-    tbody tr:hover {
-        border: 3px solid $map-yellow !important;
-        background-color: #cabb9c !important;
+    tbody {
+        tr{
+            &:hover {
+                border: 3px solid $map-yellow !important;
+                background-color: #cabb9c !important;
+            }
+            td hr {
+                margin-top: initial !important;
+                margin-bottom: initial !important;
+            }
+        }
     }
 }
 

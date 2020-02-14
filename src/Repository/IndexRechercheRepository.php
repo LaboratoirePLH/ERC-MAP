@@ -131,10 +131,13 @@ class IndexRechercheRepository extends ServiceEntityRepository
         ) : null;
 
         $attestationIds = implode(',', $source['attestations'] ?? []);
-        $query = $this->getEntityManager()
-                      ->createQuery("SELECT a.extraitAvecRestitution FROM \App\Entity\Attestation a WHERE a.id IN ($attestationIds)");
-        $extraits = $query->getResult();
-        $extraits = array_column($extraits, 'extraitAvecRestitution');
+        $extraits = [];
+        if(!empty($attestationIds)){
+            $query = $this->getEntityManager()
+                          ->createQuery("SELECT a.extraitAvecRestitution FROM \App\Entity\Attestation a WHERE a.id IN ($attestationIds)");
+            $extraits = $query->getResult();
+            $extraits = array_column($extraits, 'extraitAvecRestitution');
+        }
 
         return [
             "reference" => $reference,

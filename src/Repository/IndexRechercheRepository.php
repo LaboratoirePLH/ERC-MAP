@@ -279,7 +279,7 @@ class IndexRechercheRepository extends ServiceEntityRepository
         // array_filter et strip_tags recursif
         foreach($entityData as &$value){
             if(is_string($value)){
-                $value = trim(html_entity_decode(strip_tags($value)));
+                $value = trim(html_entity_decode($value));
             }
             else if(is_array($value)) {
                 $value = $this->_cleanData($value);

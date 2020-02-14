@@ -6,7 +6,6 @@
 <div class="row my-3">
     <div class="col-5 table-buttons" id="search-results-actions">
         <a class="btn btn-primary" href="{{ url('search') }}" role="button">
-            <i class="fas fa-plus fa-fw"></i>
             {{ 'search.new_query'|trans }}
         </a>
         <a class="btn btn-warning" href="#" role="button">
@@ -118,7 +117,7 @@
             autoWidth: true,
             lengthChange: true,
             scrollX: false,
-            searching: false,
+            searching: true,
             ordering: true,
             columns: [{ responsivePriority: 1 }, null, null, null, null, null, {
                 searchable: false,

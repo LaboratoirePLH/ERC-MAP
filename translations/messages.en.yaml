@@ -445,6 +445,7 @@ search:
     new_query: "New Query"
     messages:
         reindex_done: "The Search Index has been rebuilt (%records% records, %time% seconds)"
+        no_empty_search: "You must input a value in the search field"
 
 requetes:
     title: "Query interface"

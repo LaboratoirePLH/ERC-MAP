@@ -445,6 +445,7 @@ search:
     new_query: "Nouvelle Requête"
     messages:
         reindex_done: "L'Index de Recherche a bien été reconstruit (%records% enregistrements, %time% secondes)"
+        no_empty_search: "Vous devez saisir une valeur dans le champ de recherche"
 
 requetes:
     title: "Interface de requête"

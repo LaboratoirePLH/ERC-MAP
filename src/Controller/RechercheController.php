@@ -29,8 +29,14 @@ class RechercheController extends AbstractController
      */
     public function simpleSearch(Request $request, TranslatorInterface $translator)
     {
-        $search = $request->request->get('search_value');
-        // TODO : If search is empty, go back to form
+        $search = $request->request->get('search_value', '');
+        if(!strlen($search)){
+            $request->getSession()->getFlashBag()->add(
+                'error',
+                'search.messages.no_empty_search'
+            );
+            return $this->redirectToRoute('search');
+        }
         $results = $this->getDoctrine()
                         ->getRepository(\App\Entity\IndexRecherche::class)
                         ->simpleSearch($search, $request->getLocale());

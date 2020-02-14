@@ -229,6 +229,15 @@ body {
     }
 }
 
+#search-results {
+    border-collapse: collapse !important;
+
+    tbody tr:hover {
+        border: 3px solid $map-yellow !important;
+        background-color: #cabb9c !important;
+    }
+}
+
 .border-map-yellow {
     border: 1px solid $map-yellow;
 }

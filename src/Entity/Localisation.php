@@ -358,8 +358,8 @@ class Localisation extends AbstractEntity
     {
         return [
             'entitePolitique' => $this->entitePolitique === null ? null : $this->entitePolitique->toArray(),
-            'grandeRegion'    => $this->grandeRegion === null ? null : $this->grandeRegion->getTranslatedName(),
-            'sousRegion'      => $this->sousRegion === null ? null : $this->sousRegion->getTranslatedName(),
+            'grandeRegion'    => $this->grandeRegion === null ? null : $this->grandeRegion->toArray(),
+            'sousRegion'      => $this->sousRegion === null ? null : $this->sousRegion->toArray(),
             'pleiadesVille'   => $this->pleiadesVille,
             'nomVille'        => $this->nomVille,
             'pleiadesSite'    => $this->pleiadesSite,

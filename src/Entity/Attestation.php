@@ -510,6 +510,7 @@ class Attestation extends AbstractEntity
             'datation'      => $this->datation === null ? null : $this->datation->toArray(),
             'localisation'  => $this->localisation === null ? null : $this->localisation->toArray(),
             'elements'      => $this->contientElements->map(function($e){ return $e->toArray(); })->getValues(),
+            'elementIds'    => $this->contientElements->map(function($e){ return $e->getElement()->getId(); })->getValues(),
             'commentaireFr' => $this->commentaireFr,
             'commentaireEn' => $this->commentaireEn
         ];

@@ -625,10 +625,10 @@ class Source extends AbstractEntity
     {
         $getTranslatedName = function($entry){ return $entry->getTranslatedName(); };
 
-        $data = [
-            'categorieSource' => $this->categorieSource->getTranslatedName(),
-            'typeSource'      => $this->typeSources->map($getTranslatedName)->getValues(),
-            'langues'         => $this->langues->map($getTranslatedName)->getValues(),
+        return [
+            'categorieSource' => $this->categorieSource->toArray(),
+            'typeSource'      => $this->typeSources->map(function($t) { return $t->toArray(); })->getValues(),
+            'langues'         => $this->langues->map(function($l) { return $l->toArray(); })->getValues(),
             'auteurs'         => $this->auteurs->map($getTranslatedName)->getValues(),
             'titrePrincipal'  => $this->titrePrincipal === null ? null : array_merge(
                 $this->titrePrincipal->getTranslatedName(),
@@ -653,7 +653,5 @@ class Source extends AbstractEntity
             'commentaireFr' => $this->commentaireFr,
             'commentaireEn' => $this->commentaireEn
         ];
-
-        return $data;
     }
 }

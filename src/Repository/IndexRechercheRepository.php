@@ -76,31 +76,259 @@ class IndexRechercheRepository extends ServiceEntityRepository
                         ->getResult();
 
         $response = [];
-        foreach($results as $result){
-            $resultData = $result->getData();
-
-            if($result->getEntite() == "Source"){
-                $r = $this->_prepareSourceResult($resultData, $locale);
-                $r['linkType'] = "source";
-                $r['linkId'] = $result->getId();
-                $r['type'] = "source.name";
-                $r['field'] = $this->_cleanFieldName(
-                    $this->_array_search($resultData, $search)
-                );
-                $response[] = $r;
-            }
-            else if($result->getEntite() == "Attestation"){
-                $r = $this->_prepareAttestationResult($resultData, $locale);
-                $r['linkType'] = "attestation";
-                $r['linkId'] = $result->getId();
-                $r['type'] = "attestation.name";
-                $r['field'] = $this->_cleanFieldName(
-                    $this->_array_search($resultData, $search)
-                );
-                $response[] = $r;
+        foreach($results as $entity){
+            $prepared = $this->_prepareResult($entity, $locale, $search);
+            if($prepared !== false){
+                $response[] = $prepared;
             }
         }
         return $response;
+    }
+
+    public function guidedSearch(array $criteria, string $locale): array
+    {
+        // Get all data and sort it by entity type
+        $all = $this->findAll();
+        $sources = [];
+        $attestations = [];
+        $elements = [];
+        foreach($all as $e){
+            $targetArray = strtolower($e->getEntite()) . 's';
+            $$targetArray[$e->getId()] = $e->getData();
+        }
+
+        $response = [];
+        foreach($all as $e){
+            $entityData = $e->getData();
+            // Filter by names
+            if(array_key_exists('names', $criteria)){
+                $names = array_map('intval', $criteria['names']);
+
+                if($e->getEntite() === 'Element' && !in_array($entityData['id'], $names)){ continue; }
+                else if($e->getEntite() === 'Attestation' && empty(array_intersect($entityData['elementIds'], $names))){ continue; }
+                else if($e->getEntite() === 'Source'){
+                    $elements = [];
+                    foreach($entityData['attestations'] as $aId){
+                        if(array_key_exists($aId, $attestations)){
+                            $elements = array_merge($elements, $attestations[$aId]['elementIds']);
+                        }
+                    }
+                    if(empty(array_intersect($elements, $names))){ continue; }
+                }
+            }
+
+            // Filter by languages
+            if(array_key_exists('languages', $criteria)){
+                $languages = array_map('intval', $criteria['languages']);
+                $eLanguages = [];
+                if($e->getEntite() === 'Element'){
+                    // TODO : Add language filtering on elements ?
+                    continue;
+                }
+                else if($e->getEntite() === 'Attestation'){
+                    $sourceId = $entityData['source'];
+                    if(array_key_exists($sourceId, $sources)){
+                        $eLanguages = $sources[$sourceId]['langues'];
+                    }
+                }
+                else if($e->getEntite() === 'Source'){
+                    $eLanguages = $entityData['langues'];
+                }
+
+                $eLanguages = array_map(function($l){ return $l['id']; }, $eLanguages);
+
+                if(empty(array_intersect($eLanguages, $languages))){ continue; }
+            }
+
+            // Filter by datation
+            if(!empty(array_intersect(array_keys($criteria['datation'] ?? []), ['post_quem', 'ante_quem']))){
+                $post_quem = intval($criteria['datation']['post_quem']) ?? null;
+                $ante_quem = intval($criteria['datation']['ante_quem']) ?? null;
+                $exact = $criteria['datation']['datation_exact'] ?? false;
+                if(!is_null($post_quem) || !is_null($ante_quem)){
+                    $datation = null;
+                    if($e->getEntite() === 'Element'){
+                        // TODO : Add datation filtering on elements ?
+                        continue;
+                    }
+                    else if($e->getEntite() === 'Attestation'){
+                        $sourceId = $entityData['source'];
+                        $datation = $entityData['datation'] ?? null;
+                        if($datation == null && array_key_exists($sourceId, $sources)){
+                            $datation = $sources[$sourceId]['datation'] ?? null;
+                        }
+                    }
+                    else if($e->getEntite() === 'Source'){
+                        $datation = $entityData['datation'] ?? null;
+                    }
+                    if($datation === null) { continue; }
+                    else if(!!$exact && !is_null($post_quem) && !is_null($ante_quem)){
+                        if(is_null($datation['postQuem']) || is_null($datation['anteQuem'])){ continue; }
+                        if($datation['postQuem'] < $post_quem || $datation['anteQuem'] > $ante_quem){ continue; }
+                    }
+                    else {
+                        continue;
+                        // $strike = 0;
+                        // if(!is_null($post_quem) && (is_null($datation['postQuem']) || $datation['postQuem'] < $post_quem)){ $strike++; }
+                        // if(!is_null($ante_quem) && (is_null($datation['anteQuem']) || $datation['anteQuem'] > $ante_quem)){ $strike++; }
+
+                        // if($score == 0){ continue; }
+                    }
+                }
+            }
+
+            // Filter by localisation
+            if(array_key_exists('locations', $criteria)){
+                $locations = array_map(function($l){ return array_map('intval', json_decode($l)); }, $criteria['locations']);
+                $eLocations = [];
+                if($e->getEntite() === 'Element' || $e->getEntite() === 'Attestation'){
+                    $eLocations[] = $entityData['localisation'] ?? null;
+                }
+                else if($e->getEntite() === 'Source'){
+                    $eLocations[] = $entityData['lieuDecouverte'] ?? null;
+                    $eLocations[] = $entityData['lieuOrigine'] ?? null;
+                }
+                $eLocations = array_filter($eLocations);
+                $matched = false;
+                foreach($eLocations as $el){
+                    foreach($locations as $l){
+                        switch(count($l)){
+                            case 1:
+                                if($l[0] == $el['grandeRegion']['id']){
+                                    $matched = true;
+                                    break 3; // Break switch + 2x foreach loops
+                                }
+                                break;
+                            case 2:
+                                if($l[0] == $el['grandeRegion']['id'] && $l[1] == $el['sousRegion']['id']){
+                                    $matched = true;
+                                    break 3; // Break switch + 2x foreach loops
+                                }
+                                break;
+                            case 3:
+                                if($l[2] == $el['pleiadesVille']){
+                                    $matched = true;
+                                    break 3; // Break switch + 2x foreach loops
+                                }
+                                break;
+                        }
+                    }
+                }
+                if(!$matched){
+                    continue;
+                }
+            }
+
+            // Filter by source categories/types
+            if(array_key_exists('sourceTypes', $criteria)){
+                $sourceTypes = array_map(function($l){ return array_map('intval', json_decode($l)); }, $criteria['sourceTypes']);
+                $sourceData = null;
+                if($e->getEntite() === 'Element'){
+                    // TODO : Add language filtering on elements ?
+                    continue;
+                }
+                else if($e->getEntite() === 'Attestation'){
+                    $sourceId = $entityData['source'];
+                    if(array_key_exists($sourceId, $sources)){
+                        $sourceData = $sources[$sourceId];
+                    }
+                }
+                else if($e->getEntite() === 'Source'){
+                    $sourceData = $entityData;
+                }
+                if($sourceData == null){ continue; }
+                $matched = false;
+                foreach($sourceTypes as $st){
+                    if(count($st) === 1 && $st[0] == $sourceData['categorieSource']['id']){
+                        $matched = true;
+                        break;
+                    }
+                    if(count($st) === 2 && in_array($st[1], array_column($sourceData['typeSource'], 'id'))){
+                        $matched = true;
+                        break;
+                    }
+                }
+                if(!$matched){
+                    continue;
+                }
+            }
+
+            // Filter by agents
+            if(array_key_exists('agents', $criteria)){
+                $agents = array_map(function($a){
+                    $a = json_decode($a);
+                    return [$a[0], intval($a[1])];
+                }, $criteria['agents']);
+
+                $eAgents = [];
+                if($e->getEntite() === 'Element'){
+                    // TODO : Add agents filtering on elements ?
+                    continue;
+                }
+                else if($e->getEntite() === 'Attestation'){
+                    $eAgents = array_merge($eAgents, $entityData['agents']);
+                }
+                else if($e->getEntite() === 'Source'){
+                    foreach($entityData['attestations'] as $aId){
+                        if(array_key_exists($aId, $attestations)){
+                            $eAgents = array_merge($eAgents, $attestations[$aId]['agents']);
+                        }
+                    }
+                }
+                if(empty($agents)){ continue; }
+
+                $matched = false;
+                foreach($eAgents as $ea){
+                    foreach($agents as $a){
+                        if(in_array($a[1], array_column($ea[$a[0] . 's'], 'id'))){
+                            $matched = true;
+                            break 2; // break 2x foreach
+                        }
+                    }
+                }
+                if(!$matched){
+                    continue;
+                }
+            }
+
+            // If we get here, then we matched all the given filters, so we add the record
+            $prepared = $this->_prepareResult($e, $locale);
+            if($prepared !== false){
+                $response[] = $prepared;
+            }
+        }
+        return $response;
+    }
+
+    private function _prepareResult(IndexRecherche $entity, string $locale, $search = null)
+    {
+        $entityData = $entity->getData();
+        if($entity->getEntite() == "Source"){
+            $r = $this->_prepareSourceResult($entityData, $locale);
+            $r['linkType'] = "source";
+            $r['linkId'] = $entity->getId();
+            $r['type'] = "source.name";
+            // TODO : how do we determine the "field" column in non textual searches ?
+            $r['field'] = $search === null ? [] : $this->_cleanFieldName(
+                $this->_array_search($entityData, $search)
+            );
+            return $r;
+        }
+        else if($entity->getEntite() == "Attestation"){
+            $r = $this->_prepareAttestationResult($entityData, $locale);
+            $r['linkType'] = "attestation";
+            $r['linkId'] = $entity->getId();
+            $r['type'] = "attestation.name";
+            // TODO : how do we determine the "field" column in non textual searches ?
+            $r['field'] = $search === null ? [] : $this->_cleanFieldName(
+                $this->_array_search($entityData, $search)
+            );
+            return $r;
+        }
+        else if($entity->getEntite() == "Element"){
+            return false;
+        }
+        return false;
     }
 
     private function _prepareSourceResult(array $source, string $locale): array

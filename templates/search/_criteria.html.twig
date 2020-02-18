@@ -1,0 +1,23 @@
+<strong>{{ ('search.mode')|trans }}</strong> : {{ ('search.'~mode)|trans }}
+<br />
+<strong>{{ ('search.criteria')|trans }}</strong> :
+{% if mode == 'simple' %}
+{{ criteria }}
+{% elseif mode == 'guided' %}
+<ul>
+    {% for key, value in criteria %}
+    <li>
+        <u>{{ key|trans }}</u> :
+        {% if value is iterable %}
+        <ul>
+            {% for subvalue in value %}
+            <li>{{ subvalue }}</li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        {{value}}
+        {% endif %}
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}

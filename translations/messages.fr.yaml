@@ -95,7 +95,7 @@ generic:
         lieu: "Lieu"
         categorie: "Catégorie"
         champ: "Champ"
-        exact: "Éxact ?"
+        strict: "Strict"
     choices :
         new: "Nouveau"
         existing: "Existant"
@@ -446,6 +446,13 @@ search:
     coverage: "Etat de dépouillement du corpus"
     reindex: "Reconstruire l'Index de Recherche"
     new_query: "Nouvelle Requête"
+    criteria_labels:
+        names: "Noms"
+        languages: "Langue"
+        datation: "Datation"
+        locations: "Lieu"
+        sourceTypes: "Source"
+        agents: "Agent"
     messages:
         reindex_done: "L'Index de Recherche a bien été reconstruit (%records% enregistrements, %time% secondes)"
         no_empty_search: "Vous devez saisir une valeur dans le champ de recherche"

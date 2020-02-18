@@ -35,4 +35,9 @@ class TypeSource extends AbstractEntity
         $this->categorieSource = $categorieSource;
         return $this;
     }
+
+    public function toArray(): array
+    {
+        return array_merge(['id' => $this->id], $this->getTranslatedName());
+    }
 }

@@ -5,7 +5,7 @@
 {% block content %}
 <div class="row my-3">
     <div class="col-5 table-buttons" id="search-results-actions">
-        <a class="btn btn-primary" href="{{ url('search') }}" role="button">
+        <a class="btn btn-primary" href="{{ url('search') }}#{{mode}}" role="button">
             {{ 'search.new_query'|trans }}
         </a>
         <a class="btn btn-warning" href="#" role="button">
@@ -14,9 +14,10 @@
         </a>
     </div>
     <div class="col-7 border-map-yellow" id="search-criteria">
-        <strong>{{ ('search.mode')|trans }}</strong> : {{ ('search.'~mode)|trans }}
-        <br />
-        <strong>{{ ('search.criteria')|trans }}</strong> : {{ criteria|join(', ') }}
+        {% include "search/_criteria.html.twig" with {
+            'mode' : mode,
+            'criteria' : criteriaDisplay
+        } %}
     </div>
 </div>
 <table class="table table-striped table-hover table-bordered w-100 text-center list_table" id="search-results">

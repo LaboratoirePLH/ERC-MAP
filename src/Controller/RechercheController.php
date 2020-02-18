@@ -10,7 +10,7 @@ use Symfony\Component\Translation\TranslatorInterface;
 class RechercheController extends AbstractController
 {
     /**
-     * @Route("/search/", name="search")
+     * @Route("/search", name="search")
      */
     public function index(Request $request, TranslatorInterface $translator)
     {
@@ -36,7 +36,9 @@ class RechercheController extends AbstractController
                 'error',
                 'search.messages.no_empty_search'
             );
-            return $this->redirectToRoute('search');
+            return $this->redirect(
+                $this->get('router')->generate('search', ['_fragment' => 'simple'])
+            );
         }
         $results = $this->getDoctrine()
                         ->getRepository(\App\Entity\IndexRecherche::class)
@@ -48,6 +50,7 @@ class RechercheController extends AbstractController
             'results'         => $results,
             'mode'            => 'simple',
             'criteria'        => [$search],
+            'criteriaDisplay' => $this->_prepareCriteriaDisplay('guided', [$search], $request->getLocale(), $translator),
             'breadcrumbs'     => [
                 ['label' => 'nav.home', 'url' => $this->generateUrl('home')],
                 ['label' => 'search.title', 'url' => $this->generateUrl('search')],
@@ -61,25 +64,41 @@ class RechercheController extends AbstractController
      */
     public function guidedSearch(Request $request, TranslatorInterface $translator)
     {
-        var_dump($request->request->all());die;
-        $search = $request->request->get('search_value', '');
-        if(!strlen($search)){
+        $criteria = array_filter(
+            $request->request->all(),
+            function($value, $key){
+                return in_array(
+                    $key,
+                    [
+                        'names', 'languages',
+                        'datation', 'locations',
+                        'sourceTypes', 'agents'
+                    ]
+                    ) && !empty($value);
+            },
+            ARRAY_FILTER_USE_BOTH
+        );
+        if(!count(array_keys($criteria))){
             $request->getSession()->getFlashBag()->add(
                 'error',
                 'search.messages.no_empty_search'
             );
-            return $this->redirectToRoute('search');
+            return $this->redirect(
+                $this->get('router')->generate('search', ['_fragment' => 'guided'])
+            );
         }
+
         $results = $this->getDoctrine()
                         ->getRepository(\App\Entity\IndexRecherche::class)
-                        ->simpleSearch($search, $request->getLocale());
+                        ->guidedSearch($criteria, $request->getLocale());
 
         return $this->render('search/results.html.twig', [
             'controller_name' => 'RechercheController',
             'locale'          => $request->getLocale(),
             'results'         => $results,
-            'mode'            => 'simple',
-            'criteria'        => [$search],
+            'mode'            => 'guided',
+            'criteria'        => $criteria,
+            'criteriaDisplay' => $this->_prepareCriteriaDisplay('guided', $criteria, $request->getLocale(), $translator),
             'breadcrumbs'     => [
                 ['label' => 'nav.home', 'url' => $this->generateUrl('home')],
                 ['label' => 'search.title', 'url' => $this->generateUrl('search')],
@@ -111,6 +130,64 @@ class RechercheController extends AbstractController
             ])
         );
         return $this->redirectToRoute('search');
+    }
+
+    private function _prepareCriteriaDisplay($mode, $criteria, $locale, TranslatorInterface $translator) {
+        $em = $this->getDoctrine()->getEntityManager();
+        $nameField = "nom" . ucfirst(strtolower($locale));
+
+        if($mode == "simple"){
+            return $criteria;
+        }
+        if($mode == "guided"){
+            $formData = $this->_prepareFormData($locale);
+            $response = [];
+            foreach($criteria as $key => $value){
+                switch($key){
+                    case 'names':
+                    case 'languages':
+                    case 'locations':
+                    case 'sourceTypes':
+                        $response['search.criteria_labels.'.$key] = array_values(array_filter(
+                            $formData[$key],
+                            function($id) use ($value) {
+                                return in_array($id, $value);
+                            },
+                            ARRAY_FILTER_USE_KEY
+                        ));
+                        break;
+                    case 'datation':
+                        $v = array_filter([
+                            ($value['post_quem']
+                                ? ($translator->trans('datation.fields.post_quem') . ' : ' . $value['post_quem'])
+                                : null
+                            ),
+                            ($value['ante_quem']
+                                ? ($translator->trans('datation.fields.ante_quem') . ' : ' . $value['ante_quem'])
+                                : null
+                            ),
+                            ((($value['datation_exact'] ?? null) === 'datation_exact')
+                                ? $translator->trans('generic.fields.strict')
+                                : null
+                            )
+                        ]);
+                        if(!empty($v)){
+                            $response['search.criteria_labels.'.$key] = implode(' ; ', $v);
+                        }
+                    break;
+                    case 'agents':
+                        $response['search.criteria_labels.'.$key] = array_values(array_filter(
+                            array_merge($formData[$key]['activites'], $formData[$key]['agentivites']),
+                            function($id) use ($value) {
+                                return in_array($id, $value);
+                            },
+                            ARRAY_FILTER_USE_KEY
+                        ));
+                        break;
+                }
+            }
+            return $response;
+        }
     }
 
     private function _prepareFormData($locale){
@@ -152,7 +229,7 @@ class RechercheController extends AbstractController
         $grandeRegions = $query->getArrayResult();
         $query = $em->createQuery("SELECT partial r.{id, {$nameField}}, partial gr.{id, {$nameField}} FROM \App\Entity\SousRegion r LEFT JOIN r.grandeRegion gr");
         $sousRegions = $query->getArrayResult();
-        $query = $em->createQuery("SELECT partial l.{id, nomVille}, partial sr.{id, {$nameField}}, partial gr.{id, {$nameField}}
+        $query = $em->createQuery("SELECT partial l.{id, pleiadesVille, nomVille}, partial sr.{id, {$nameField}}, partial gr.{id, {$nameField}}
                                     FROM \App\Entity\Localisation l LEFT JOIN l.sousRegion sr LEFT JOIN l.grandeRegion gr
                                     WHERE l.nomVille IS NOT NULL");
         $lieux = $query->getArrayResult();
@@ -169,7 +246,7 @@ class RechercheController extends AbstractController
             $id = json_encode([
                 $l['grandeRegion']['id'] ?? 0,
                 $l['sousRegion']['id'] ?? 0,
-                $l['id']
+                $l['pleiadesVille']
             ]);
             $value = ($l['grandeRegion'][$nameField] ?? '').' > '.($l['sousRegion'][$nameField] ?? '').' > '.$l['nomVille'];
             $value = str_replace('>  >', '>>', $value);

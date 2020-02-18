@@ -55,4 +55,9 @@ class SousRegion extends AbstractEntity
 
         return $this;
     }
+
+    public function toArray(): array
+    {
+        return array_merge(['id' => $this->id], $this->getTranslatedName());
+    }
 }

@@ -405,6 +405,7 @@ class Element extends AbstractEntity
     public function toArray(): array
     {
         return [
+            'id'             => $this->id,
             'etatAbsolu'     => $this->etatAbsolu,
             'betaCode'       => $this->betaCode,
             'traductions'    => $this->traductions->map(function($entry){ return $entry->getTranslatedName(); })->getValues(),

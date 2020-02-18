@@ -96,7 +96,7 @@ generic:
         lieu: "Location"
         categorie: "Category"
         champ: "Field"
-        exact: "Exact ?"
+        strict: "Strict"
     choices :
         new: "New"
         existing: "Existing"
@@ -446,6 +446,13 @@ search:
     coverage: "Corpus Coverage"
     reindex: "Rebuild Search Index"
     new_query: "New Query"
+    criteria_labels:
+        names: "Name"
+        languages: "Language"
+        datation: "Datation"
+        locations: "Location"
+        sourceTypes: "Source"
+        agents: "Agent"
     messages:
         reindex_done: "The Search Index has been rebuilt (%records% records, %time% seconds)"
         no_empty_search: "You must input a value in the search field"

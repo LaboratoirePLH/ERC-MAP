@@ -287,11 +287,11 @@ class Agent extends AbstractEntity
 
         return [
             'designation'    => $this->designation,
-            'agentivites'    => $this->agentivites->map($getTranslatedName)->getValues(),
+            'agentivites'    => $this->agentivites->map(function($a) { return $a->toArray(); })->getValues(),
             'natures'        => $this->natures->map($getTranslatedName)->getValues(),
             'genres'         => $this->genres->map($getTranslatedName)->getValues(),
             'statutAffiches' => $this->statutAffiches->map($getTranslatedName)->getValues(),
-            'activites'      => $this->activites->map($getTranslatedName)->getValues(),
+            'activites'      => $this->activites->map(function($a) { return $a->toArray(); })->getValues(),
             'localisation'   => $this->localisation === null ? null : $this->localisation->toArray(),
             'commentaireFr'  => $this->commentaireFr,
             'commentaireEn'  => $this->commentaireEn

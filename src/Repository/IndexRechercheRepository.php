@@ -167,12 +167,10 @@ class IndexRechercheRepository extends ServiceEntityRepository
                         if(is_null($datation['anteQuem'] ?? null) || $datation['anteQuem'] > $ante_quem){ continue; }
                     }
                     else {
-                        continue;
-                        // $strike = 0;
-                        // if(!is_null($post_quem) && (is_null($datation['postQuem']) || $datation['postQuem'] < $post_quem)){ $strike++; }
-                        // if(!is_null($ante_quem) && (is_null($datation['anteQuem']) || $datation['anteQuem'] > $ante_quem)){ $strike++; }
-
-                        // if($score == 0){ continue; }
+                        if(!(($datation['post_quem'] ?? -3000) <= ($ante_quem ?? 3000)
+                            && ($datation['ante_quem'] ?? 3000) >= ($post_quem ?? -3000))){
+                                continue;
+                            }
                     }
                 }
             }

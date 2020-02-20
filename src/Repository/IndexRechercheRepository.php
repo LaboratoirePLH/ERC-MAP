@@ -109,7 +109,7 @@ class IndexRechercheRepository extends ServiceEntityRepository
                 else if($e->getEntite() === 'Source'){
                     $elements = [];
                     foreach($entityData['attestations'] as $aId){
-                        if(array_key_exists($aId, $attestations)){
+                        if(array_key_exists($aId, $attestations) && array_key_exists('elementsIds', $attestations[$aId])){
                             $elements = array_merge($elements, $attestations[$aId]['elementIds']);
                         }
                     }

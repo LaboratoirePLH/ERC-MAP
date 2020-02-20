@@ -50,7 +50,7 @@ class RechercheController extends AbstractController
             'results'         => $results,
             'mode'            => 'simple',
             'criteria'        => [$search],
-            'criteriaDisplay' => $this->_prepareCriteriaDisplay('guided', [$search], $request->getLocale(), $translator),
+            'criteriaDisplay' => $this->_prepareCriteriaDisplay('simple', [$search], $request->getLocale(), $translator),
             'breadcrumbs'     => [
                 ['label' => 'nav.home', 'url' => $this->generateUrl('home')],
                 ['label' => 'search.title', 'url' => $this->generateUrl('search')],

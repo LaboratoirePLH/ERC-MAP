@@ -78,6 +78,12 @@ class RechercheController extends AbstractController
             },
             ARRAY_FILTER_USE_BOTH
         );
+        if(array_key_exists('datation', $criteria)
+            && $criteria['datation']['post_quem'] == ''
+            && $criteria['datation']['ante_quem'] = '')
+        {
+            unset($criteria['datation']);
+        }
         if(!count(array_keys($criteria))){
             $request->getSession()->getFlashBag()->add(
                 'error',

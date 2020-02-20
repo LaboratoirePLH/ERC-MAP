@@ -172,7 +172,7 @@ class RechercheController extends AbstractController
                                 ? ($translator->trans('datation.fields.ante_quem') . ' : ' . $value['ante_quem'])
                                 : null
                             ),
-                            ((($value['datation_exact'] ?? null) === 'datation_exact')
+                            ((($value['exact'] ?? null) === 'datation_exact')
                                 ? $translator->trans('generic.fields.strict')
                                 : null
                             )

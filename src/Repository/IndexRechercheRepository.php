@@ -144,7 +144,7 @@ class IndexRechercheRepository extends ServiceEntityRepository
             if(!empty(array_intersect(array_keys($criteria['datation'] ?? []), ['post_quem', 'ante_quem']))){
                 $post_quem = intval($criteria['datation']['post_quem']) ?? null;
                 $ante_quem = intval($criteria['datation']['ante_quem']) ?? null;
-                $exact = $criteria['datation']['datation_exact'] ?? false;
+                $exact = $criteria['datation']['exact'] ?? false;
                 if(!is_null($post_quem) || !is_null($ante_quem)){
                     $datation = null;
                     if($e->getEntite() === 'Element'){
@@ -163,7 +163,7 @@ class IndexRechercheRepository extends ServiceEntityRepository
                     }
                     if($datation === null) { continue; }
                     else if(!!$exact && !is_null($post_quem) && !is_null($ante_quem)){
-                        if(is_null($datation['postQuem']) || is_null($datation['anteQuem'])){ continue; }
+                        if(is_null($datation['postQuem']) || is_null($datation['anteQuem'])){ continue; }
                         if($datation['postQuem'] < $post_quem || $datation['anteQuem'] > $ante_quem){ continue; }
                     }
                     else {

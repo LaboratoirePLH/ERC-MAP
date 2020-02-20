@@ -2,7 +2,7 @@
 <br />
 <strong>{{ ('search.criteria')|trans }}</strong> :
 {% if mode == 'simple' %}
-{{ criteria }}
+{{ criteria|join(' ') }}
 {% elseif mode == 'guided' %}
 <ul>
     {% for key, value in criteria %}

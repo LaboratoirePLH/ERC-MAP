@@ -70,8 +70,8 @@ class IndexRechercheRepository extends ServiceEntityRepository
     {
         $results = $this->createQueryBuilder('i')
                         ->select('i')
-                        ->where('i.data LIKE :search')
-                        ->setParameter('search', '%'.addcslashes($search, '%_').'%')
+                        ->where('lower(i.data) LIKE :search')
+                        ->setParameter('search', '%'.addcslashes(strtolower($search), '%_').'%')
                         ->getQuery()
                         ->getResult();
 

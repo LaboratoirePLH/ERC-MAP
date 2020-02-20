@@ -80,7 +80,7 @@ class RechercheController extends AbstractController
         );
         if(array_key_exists('datation', $criteria)
             && $criteria['datation']['post_quem'] == ''
-            && $criteria['datation']['ante_quem'] = '')
+            && $criteria['datation']['ante_quem'] == '')
         {
             unset($criteria['datation']);
         }

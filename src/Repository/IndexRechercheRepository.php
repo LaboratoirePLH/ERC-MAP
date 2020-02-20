@@ -68,10 +68,11 @@ class IndexRechercheRepository extends ServiceEntityRepository
 
     public function simpleSearch(string $search, string $locale): array
     {
+        $normalized_search = strtolower(\App\Utils\StringHelper::removeAccents($search));
         $results = $this->createQueryBuilder('i')
                         ->select('i')
-                        ->where('lower(i.data) LIKE :search')
-                        ->setParameter('search', '%'.addcslashes(strtolower($search), '%_').'%')
+                        ->where('unaccent(lower(i.data)) LIKE :search')
+                        ->setParameter('search', '%'.addcslashes($normalized_search, '%_').'%')
                         ->getQuery()
                         ->getResult();
 

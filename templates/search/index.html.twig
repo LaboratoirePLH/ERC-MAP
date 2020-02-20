@@ -55,7 +55,7 @@
                                 data-placeholder="{{('autocomplete.select_multiple')|trans}}">
                                 <option value></option>
                                 {% for id,value in data.names %}
-                                <option value="{{id}}">{{value}}</option>
+                                <option value="{{ id }}">{{ value|raw }}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -68,7 +68,7 @@
                                 data-placeholder="{{('autocomplete.select_multiple')|trans}}">
                                 <option value></option>
                                 {% for id,value in data.languages %}
-                                <option value="{{id}}">{{value}}</option>
+                                <option value="{{ id }}">{{ value|raw }}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -101,7 +101,7 @@
                                 data-placeholder="{{('autocomplete.select_multiple')|trans}}">
                                 <option value></option>
                                 {% for id,value in data.locations %}
-                                <option value="{{id}}">{{value}}</option>
+                                <option value="{{ id }}">{{ value|raw }}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -113,7 +113,7 @@
                                 data-placeholder="{{('autocomplete.select_multiple')|trans}}">
                                 <option value></option>
                                 {% for id,value in data.sourceTypes %}
-                                <option value="{{id}}">{{value}}</option>
+                                <option value="{{ id }}">{{ value|raw }}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -126,12 +126,12 @@
                                 <option value></option>
                                 <optgroup label="{{('agent.fields.activite')|trans}}">
                                     {% for id,value in data.agents.activites %}
-                                    <option value="{{id}}">{{value}}</option>
+                                    <option value="{{ id }}">{{ value|raw }}</option>
                                     {% endfor %}
                                 </optgroup>
                                 <optgroup label="{{('agent.fields.agentivite')|trans}}">
                                     {% for id,value in data.agents.agentivites %}
-                                    <option value="{{id}}">{{value}}</option>
+                                    <option value="{{ id }}">{{ value|raw }}</option>
                                     {% endfor %}
                                 </optgroup>
                             </select>

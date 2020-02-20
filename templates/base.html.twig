@@ -40,6 +40,9 @@
         function removeAccents(str) {
             return str.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
         }
+        function normalizeDiacritics(str) {
+            return str.normalize('NFC');
+        }
 
         CHOSEN_SETTINGS = {
             disable_search: false,

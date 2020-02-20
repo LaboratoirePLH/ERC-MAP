@@ -48,29 +48,28 @@
     </thead>
     <tbody>
         {% for result in results %}
+        {% set field = [] %}
+        {% for f in result.field %}
+        {% set field = field|merge([f|trans]) %}
+        {% endfor %}
         <tr>
-            <td>
+            <td data-search="{{ result.reference|striptags|remove_accents|raw }}">
                 {{ result.reference|raw }}
             </td>
-            <td>
+            <td data-search="{{ result.localisation|striptags|remove_accents|raw }}">
                 {{ result.localisation }}
             </td>
-            <td>
+            <td data-search="{{ result.datation }}">
                 {{ result.datation }}
             </td>
-            <td>
+            <td data-search="{{ result.text|join(' ')|striptags|remove_accents|raw }}">
                 {{ result.text|join('<hr/>')|raw }}
             </td>
-            <td>
+            <td data-search="{{ result.type|striptags|remove_accents|raw }}">
                 {{ result.type|trans }}
             </td>
-            <td>
-                {% for f in result.field %}
-                {{ f|trans }}
-                {% if not loop.last %}
-                &gt;
-                {% endif %}
-                {% endfor %}
+            <td data-search="{{ field|join(' ')|striptags|remove_accents|raw }}">
+                {{ field|join(' &gt;&nbsp;')|raw }}
             </td>
             <td class="py-0 px-1">
                 {% include "partials/_entitylink.html.twig" with {
@@ -158,7 +157,7 @@
                 if (me.search() !== this.value) {
                     me.search(
                         // Remove accented characters from search string
-                        jQuery.fn.DataTable.ext.type.search.string(this.value)
+                        jQuery.fn.DataTable.ext.type.search.string(removeAccents(this.value))
                     ).draw();
                 }
             })
@@ -172,7 +171,7 @@
         $('input[type=search]').on('keyup change', function () {
             dt.search(
                 // Remove accented characters from search string
-                jQuery.fn.DataTable.ext.type.search.string(this.value)
+                jQuery.fn.DataTable.ext.type.search.string(removeAccents(this.value))
             ).draw();
         })
         dt.buttons().container().appendTo('.table-buttons');

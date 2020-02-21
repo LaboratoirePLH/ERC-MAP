@@ -106,12 +106,12 @@ class IndexRechercheRepository extends ServiceEntityRepository
                 $names = array_map('intval', $criteria['names']);
 
                 if($e->getEntite() === 'Element' && !in_array($entityData['id'], $names)){ continue; }
-                else if($e->getEntite() === 'Attestation' && empty(array_intersect($entityData['elementIds'], $names))){ continue; }
+                else if($e->getEntite() === 'Attestation' && empty(array_intersect(($entityData['elementIds'] ?? []), $names))){ continue; }
                 else if($e->getEntite() === 'Source'){
                     $elements = [];
                     foreach($entityData['attestations'] as $aId){
                         if(array_key_exists($aId, $attestations) && array_key_exists('elementsIds', $attestations[$aId])){
-                            $elements = array_merge($elements, $attestations[$aId]['elementIds']);
+                            $elements = array_merge($elements, ($attestations[$aId]['elementIds'] ?? []));
                         }
                     }
                     if(empty(array_intersect($elements, $names))){ continue; }

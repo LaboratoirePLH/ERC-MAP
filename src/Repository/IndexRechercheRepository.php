@@ -302,15 +302,22 @@ class IndexRechercheRepository extends ServiceEntityRepository
     private function _prepareResult(IndexRecherche $entity, string $locale, $search = null)
     {
         $entityData = $entity->getData();
+
+        if($search !== null){
+            $fieldName = $this->_cleanFieldName($this->_array_search($entityData, $search));
+            // If field name is empty, it means it is not a real match (for exemple a partial match on a numeric value)
+            if(empty($fieldName)){
+                return false;
+            }
+        }
+
         if($entity->getEntite() == "Source"){
             $r = $this->_prepareSourceResult($entityData, $locale);
             $r['linkType'] = "source";
             $r['linkId'] = $entity->getId();
             $r['type'] = "source.name";
             // TODO : how do we determine the "field" column in non textual searches ?
-            $r['field'] = $search === null ? [] : $this->_cleanFieldName(
-                $this->_array_search($entityData, $search)
-            );
+            $r['field'] = $search === null ? [] : $fieldName;
             return $r;
         }
         else if($entity->getEntite() == "Attestation"){
@@ -319,9 +326,7 @@ class IndexRechercheRepository extends ServiceEntityRepository
             $r['linkId'] = $entity->getId();
             $r['type'] = "attestation.name";
             // TODO : how do we determine the "field" column in non textual searches ?
-            $r['field'] = $search === null ? [] : $this->_cleanFieldName(
-                $this->_array_search($entityData, $search)
-            );
+            $r['field'] = $search === null ? [] : $fieldName;
             return $r;
         }
         else if($entity->getEntite() == "Element"){
@@ -417,7 +422,7 @@ class IndexRechercheRepository extends ServiceEntityRepository
     private function _array_search(array $data, string $search)
     {
         foreach($data as $key => $value){
-            if((is_string($value) && \stripos($value, $search) !== false)
+            if((is_string($value) && \stripos($value, strval($search)) !== false)
              || (is_numeric($value) && $value == $search)){
                 return [$key];
             }

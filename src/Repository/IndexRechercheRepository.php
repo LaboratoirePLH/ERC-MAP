@@ -193,13 +193,14 @@ class IndexRechercheRepository extends ServiceEntityRepository
                     foreach($locations as $l){
                         switch(count($l)){
                             case 1:
-                                if($l[0] == $el['grandeRegion']['id']){
+                                if(array_key_exists('grandeRegion', $el) && $l[0] == $el['grandeRegion']['id']){
                                     $matched = true;
                                     break 3; // Break switch + 2x foreach loops
                                 }
                                 break;
                             case 2:
-                                if($l[0] == $el['grandeRegion']['id'] && $l[1] == $el['sousRegion']['id']){
+                                if(array_key_exists('grandeRegion', $el) && $l[0] == $el['grandeRegion']['id']
+                                && array_key_exists('sousRegion', $el) && $l[1] == $el['sousRegion']['id']){
                                     $matched = true;
                                     break 3; // Break switch + 2x foreach loops
                                 }

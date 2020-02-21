@@ -362,8 +362,11 @@ class IndexRechercheRepository extends ServiceEntityRepository
         if(!empty($attestationIds)){
             $query = $this->getEntityManager()
                           ->createQuery("SELECT a.extraitAvecRestitution FROM \App\Entity\Attestation a WHERE a.id IN ($attestationIds)");
-            $extraits = $query->getResult();
-            $extraits = array_column($extraits, 'extraitAvecRestitution');
+            $result = $query->getResult();
+            foreach($result as $row){
+                $text = $row['extraitAvecRestitution'] ?? $row['translitteration'] ?? "";
+                $extraits[] = \App\Utils\StringHelper::ellipsis($text);
+            }
         }
 
         return [
@@ -401,11 +404,13 @@ class IndexRechercheRepository extends ServiceEntityRepository
             )
         ) : null;
 
+        $text = $attestation['extraitAvecRestitution'] ?? $attestation['translitteration'] ?? "";
+
         return [
             "reference" => $reference,
             "localisation" => $localisation,
             "datation" => $datation,
-            "text" => [$attestation['extraitAvecRestitution']]
+            "text" => [\App\Utils\StringHelper::ellipsis($text)]
         ];
     }
 

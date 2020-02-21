@@ -14,4 +14,11 @@ class StringHelper
     {
         return \Normalizer::normalize($input, \Normalizer::FORM_C);
     }
+
+    public static function ellipsis(string $input, int $length = 200): string
+    {
+        // TODO : improve function to prevent unclosed or truncated HTML tags (<spa...)
+        // see : https://stackoverflow.com/questions/8933491/php-substr-but-keep-html-tags
+        return strlen($input) > $length ? (substr($input, 0, $length) . '&hellip;') : $input;
+    }
 }

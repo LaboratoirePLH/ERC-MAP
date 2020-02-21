@@ -239,11 +239,13 @@ class IndexRechercheRepository extends ServiceEntityRepository
                 if($sourceData == null){ continue; }
                 $matched = false;
                 foreach($sourceTypes as $st){
-                    if(count($st) === 1 && $st[0] == $sourceData['categorieSource']['id']){
+                    if(count($st) === 1 && array_key_exists('categorieSource', $sourceData)
+                        && $st[0] == $sourceData['categorieSource']['id']){
                         $matched = true;
                         break;
                     }
-                    if(count($st) === 2 && in_array($st[1], array_column($sourceData['typeSource'], 'id'))){
+                    if(count($st) === 2 && array_key_exists('typeSource', $sourceData)
+                        && in_array($st[1], array_column($sourceData['typeSource'], 'id'))){
                         $matched = true;
                         break;
                     }

@@ -11,11 +11,11 @@
         {% if value is iterable %}
         <ul>
             {% for subvalue in value %}
-            <li>{{ subvalue }}</li>
+            <li>{{ subvalue|raw }}</li>
             {% endfor %}
         </ul>
         {% else %}
-        {{value}}
+        {{ value|raw }}
         {% endif %}
     </li>
     {% endfor %}

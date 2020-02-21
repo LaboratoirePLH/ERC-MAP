@@ -279,7 +279,7 @@ class IndexRechercheRepository extends ServiceEntityRepository
                 $matched = false;
                 foreach($eAgents as $ea){
                     foreach($agents as $a){
-                        if(in_array($a[1], array_column($ea[$a[0] . 's'], 'id'))){
+                        if(in_array($a[1], array_column($ea[$a[0] . 's'] ?? [], 'id'))){
                             $matched = true;
                             break 2; // break 2x foreach
                         }

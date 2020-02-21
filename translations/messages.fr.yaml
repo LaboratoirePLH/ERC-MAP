@@ -448,8 +448,10 @@ search:
     reindex: "Reconstruire l'Index de Recherche"
     new_query: "Nouvelle Requête"
     criteria_labels:
-        names: "Noms"
+        names: "Nom"
+        names_all: "Nom (Tous)"
         languages: "Langue"
+        languages_all: "Langue (Tous)"
         datation: "Datation"
         locations: "Lieu"
         sourceTypes: "Source"

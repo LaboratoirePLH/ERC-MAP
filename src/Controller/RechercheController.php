@@ -191,7 +191,17 @@ class RechercheController extends AbstractController
                             ARRAY_FILTER_USE_KEY
                         ));
                         break;
+                    default:
+                        break;
                 }
+            }
+            if(($criteria['names_mode'] ?? 'one') === 'all'){
+                $response['search.criteria_labels.names_all'] = $response['search.criteria_labels.names'];
+                unset($response['search.criteria_labels.names']);
+            }
+            if(($criteria['languages_mode'] ?? 'one') === 'all'){
+                $response['search.criteria_labels.languages_all'] = $response['search.criteria_labels.languages'];
+                unset($response['search.criteria_labels.languages']);
             }
             return $response;
         }

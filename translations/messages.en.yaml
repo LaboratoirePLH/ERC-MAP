@@ -449,7 +449,9 @@ search:
     new_query: "New Query"
     criteria_labels:
         names: "Name"
+        names_all: "Name (All)"
         languages: "Language"
+        languages_all: "Language (All)"
         datation: "Datation"
         locations: "Location"
         sourceTypes: "Source"

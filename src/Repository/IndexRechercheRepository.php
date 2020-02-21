@@ -268,12 +268,12 @@ class IndexRechercheRepository extends ServiceEntityRepository
                     continue;
                 }
                 else if($e->getEntite() === 'Attestation'){
-                    $eAgents = array_merge($eAgents, $entityData['agents']);
+                    $eAgents = array_merge($eAgents, $entityData['agents'] ?? []);
                 }
                 else if($e->getEntite() === 'Source'){
                     foreach($entityData['attestations'] as $aId){
                         if(array_key_exists($aId, $attestations)){
-                            $eAgents = array_merge($eAgents, $attestations[$aId]['agents']);
+                            $eAgents = array_merge($eAgents, $attestations[$aId]['agents'] ?? []);
                         }
                     }
                 }

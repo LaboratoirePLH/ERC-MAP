@@ -70,7 +70,8 @@ class RechercheController extends AbstractController
                 return in_array(
                     $key,
                     [
-                        'names', 'languages',
+                        'names', 'names_mode',
+                        'languages', 'languages_mode',
                         'datation', 'locations',
                         'sourceTypes', 'agents'
                     ]
@@ -78,6 +79,7 @@ class RechercheController extends AbstractController
             },
             ARRAY_FILTER_USE_BOTH
         );
+        var_dump($criteria); die;
         if(array_key_exists('datation', $criteria)
             && $criteria['datation']['post_quem'] == ''
             && $criteria['datation']['ante_quem'] == '')

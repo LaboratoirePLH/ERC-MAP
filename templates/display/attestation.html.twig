@@ -333,7 +333,7 @@
                                 {% include "partials/_entitylink.html.twig" with {
                                         'entity': 'element',
                                         'link': url('element_show', {'id': ce.element.id}),
-                                        'text': '#' ~ ce.element.id ~ " " ~ (ce.element.etatAbsolu|raw|striptags)
+                                        'text': '#' ~ ce.element.id ~ " " ~ (ce.element.etatAbsolu|raw|striptags('<span>'))
                                     } %}
                             </td>
                         </tr>

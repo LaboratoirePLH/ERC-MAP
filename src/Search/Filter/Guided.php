@@ -196,8 +196,8 @@ class Guided
             //  - Default Post Quem = -3000
             //  - Default Ante Quem = 3000
             // TODO : What should we do if entity datation has neither PostQuem nor AnteQuem ? Currently such cases will be considered acceptable
-            return ($entityDatation['post_quem'] ?? self::DEFAULT_POST_QUEM) <= ($criteriaAnteQuem ?? self::DEFAULT_ANTE_QUEM)
-                && ($entityDatation['ante_quem'] ?? self::DEFAULT_ANTE_QUEM) >= ($criteriaPostQuem ?? self::DEFAULT_POST_QUEM);
+            return ($entityDatation['postQuem'] ?? self::DEFAULT_POST_QUEM) <= ($criteriaAnteQuem ?? self::DEFAULT_ANTE_QUEM)
+                && ($entityDatation['anteQuem'] ?? self::DEFAULT_ANTE_QUEM) >= ($criteriaPostQuem ?? self::DEFAULT_POST_QUEM);
         }
     }
 

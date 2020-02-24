@@ -97,7 +97,7 @@ generic:
         categorie: "Category"
         champ: "Field"
         strict: "Strict"
-        require_all: "Require All"
+        require_all: "Require all"
     choices :
         new: "New"
         existing: "Existing"

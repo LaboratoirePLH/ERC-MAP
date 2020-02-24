@@ -195,11 +195,13 @@ class RechercheController extends AbstractController
                         break;
                 }
             }
-            if(($criteria['names_mode'] ?? 'one') === 'all'){
+            if(($criteria['names_mode'] ?? 'one') === 'all'
+                && array_key_exists('names', $criteria)){
                 $response['search.criteria_labels.names_all'] = $response['search.criteria_labels.names'];
                 unset($response['search.criteria_labels.names']);
             }
-            if(($criteria['languages_mode'] ?? 'one') === 'all'){
+            if(($criteria['languages_mode'] ?? 'one') === 'all'
+                && array_key_exists('languages', $criteria)){
                 $response['search.criteria_labels.languages_all'] = $response['search.criteria_labels.languages'];
                 unset($response['search.criteria_labels.languages']);
             }
@@ -260,6 +262,7 @@ class RechercheController extends AbstractController
             $locations[$id] = $sr['grandeRegion'][$nameField].' > '.$sr[$nameField];
         }
         foreach($lieux as $l){
+            // TODO : Manage case where we have 2 nomVille with identical grandeRegion & sousRegion, but no pleiades ID
             $id = json_encode([
                 $l['grandeRegion']['id'] ?? 0,
                 $l['sousRegion']['id'] ?? 0,

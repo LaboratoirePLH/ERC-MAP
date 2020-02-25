@@ -180,7 +180,26 @@ class AttestationType extends AbstractType
                 'locale'          => $options['locale'],
                 'translations'    => $options['translations'],
             ])
-
+            ->add('attestationsLiees', EntityType::class, [
+                'label'        => 'attestation.fields.attestations_liees',
+                'required'     => false,
+                'multiple'     => true,
+                'expanded'     => false,
+                'class'        => Attestation::class,
+                'by_reference' => false,
+                'choice_label' => function($attestation){ return $attestation->getAffichage(); },
+                'attr'         => [
+                    'class' => 'autocomplete',
+                    'data-placeholder' => $options['translations']['autocomplete.select_multiple']
+                ],
+                'query_builder' => function (EntityRepository $er) use ($options) {
+                    $qb = $er->createQueryBuilder('e');
+                    if($options['attestation']->getId() !== null){
+                        $qb = $qb->where($qb->expr()->neq('e.id', $options['attestation']->getId()));
+                    }
+                    return $qb->orderBy('e.id', 'ASC');
+                }
+            ])
             ->add('commentaireFr', Type\QuillType::class, array(
                 'attr'        => ['class' => 'wysiwyg-editor', 'rows' => 2],
                 'label'       => 'generic.fields.commentaire_fr',
@@ -215,6 +234,7 @@ class AttestationType extends AbstractType
             'data_class' => Attestation::class
         ]);
         $resolver->setRequired('source');
+        $resolver->setRequired('attestation');
         $resolver->setRequired('translations');
         $resolver->setDefined('locale');
     }

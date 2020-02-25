@@ -145,6 +145,7 @@ class AttestationController extends AbstractController
 
         $form   = $this->get('form.factory')->create(AttestationType::class, $attestation, [
             'source'       => $source,
+            'attestation'  => $attestation,
             'locale'       => $request->getLocale(),
             'translations' => [
                 'autocomplete.select_element'  => $translator->trans('autocomplete.select_element'),
@@ -315,6 +316,7 @@ class AttestationController extends AbstractController
 
         $form   = $this->get('form.factory')->create(AttestationType::class, $attestation, [
             'source'       => $attestation->getSource(),
+            'attestation'  => $attestation,
             'locale'       => $request->getLocale(),
             'translations' => [
                 'autocomplete.select_element'  => $translator->trans('autocomplete.select_element'),

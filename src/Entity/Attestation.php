@@ -42,6 +42,11 @@ class Attestation extends AbstractEntity
 
     /**
      * @var string|null
+     */
+    private $affichage;
+
+    /**
+     * @var string|null
      *
      * @ORM\Column(name="extrait_avec_restitution", type="text", nullable=true)
      */
@@ -151,6 +156,19 @@ class Attestation extends AbstractEntity
     private $contientElements;
 
     /**
+     * @ORM\ManyToMany(targetEntity="Attestation")
+     * @ORM\JoinTable(name="lien_attestation",
+     *   joinColumns={
+     *     @ORM\JoinColumn(name="id_attestation1", referencedColumnName="id")
+     *   },
+     *   inverseJoinColumns={
+     *     @ORM\JoinColumn(name="id_attestation2", referencedColumnName="id")
+     *   }
+     * )
+     */
+    private $attestationsLiees;
+
+    /**
      * @ORM\ManyToOne(targetEntity="App\Entity\VerrouEntite", inversedBy="attestations", fetch="EAGER")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="verrou_id", referencedColumnName="id", nullable=true, onDelete="SET NULL")
@@ -167,6 +185,7 @@ class Attestation extends AbstractEntity
         $this->formules = new ArrayCollection();
         $this->contientElements = new ArrayCollection();
         $this->traductions = new ArrayCollection();
+        $this->attestationsLiees = new ArrayCollection();
     }
 
     // Hack for attestationSource form
@@ -184,6 +203,18 @@ class Attestation extends AbstractEntity
     {
         $this->passage = $passage;
         return $this;
+    }
+
+    public function getAffichage(): string
+    {
+        $source = $this->getSource();
+        $editionPrincipale = $source->getEditionPrincipaleBiblio();
+        return sprintf('#%d : %s %s, %s',
+            $this->getId(),
+            $editionPrincipale->getBiblio()->getTitreAbrege(),
+            $editionPrincipale->getReferenceSource(),
+            $this->getPassage()
+        );
     }
 
     public function getExtraitAvecRestitution(): ?string
@@ -514,5 +545,33 @@ class Attestation extends AbstractEntity
             'commentaireFr' => $this->commentaireFr,
             'commentaireEn' => $this->commentaireEn
         ];
+    }
+
+    /**
+     * @return Collection|Attestation[]
+     */
+    public function getAttestationsLiees(): Collection
+    {
+        return $this->attestationsLiees;
+    }
+
+    public function addAttestationsLiee(Attestation $attestationLiee): self
+    {
+        if (!$this->attestationsLiees->contains($attestationLiee)) {
+            $this->attestationsLiees[] = $attestationLiee;
+            $attestationLiee->addAttestationsLiee($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAttestationsLiee(Attestation $attestationLiee): self
+    {
+        if ($this->attestationsLiees->contains($attestationLiee)) {
+            $this->attestationsLiees->removeElement($attestationLiee);
+            $attestationLiee->removeAttestationsLiee($this);
+        }
+
+        return $this;
     }
 }

@@ -447,6 +447,7 @@ search:
     mode: "Query Type"
     criteria: "Query Criteria"
     results: "Query Results"
+    results_count: "%records% record%plural%"
     coverage: "Corpus Coverage"
     reindex: "Rebuild Search Index"
     new_query: "New Query"

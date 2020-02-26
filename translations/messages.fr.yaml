@@ -447,6 +447,7 @@ search:
     mode: "Type de Requête"
     criteria: "Critères de la Requête"
     results: "Résultats de la requête"
+    results_count: "%records% enregistrement%plural%"
     coverage: "Etat de dépouillement du corpus"
     reindex: "Reconstruire l'Index de Recherche"
     new_query: "Nouvelle Requête"

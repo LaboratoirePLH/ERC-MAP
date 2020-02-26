@@ -176,6 +176,10 @@ class Guided
             return false;
         }
 
+        // if($e->getEntite() === 'Attestation' && $e->getId() === 7){
+        //     var_dump()
+        // }
+
         // If exact is checked, we need to have both PostQuem and AnteQuem criteria set
         // Otherwise we consider exact is not checked
         if(!!$criteriaExact && !is_null($criteriaPostQuem) && !is_null($criteriaAnteQuem))

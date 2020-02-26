@@ -211,7 +211,7 @@ class IndexRechercheRepository extends ServiceEntityRepository
                 array_filter([
                     $attestation['datation']['postQuem'] ?? null,
                     $attestation['datation']['anteQuem'] ?? null
-                ])
+                ], function($v){ return !is_null($v); })
             )
         ) : null;
 
@@ -328,6 +328,8 @@ class IndexRechercheRepository extends ServiceEntityRepository
                 $value = $this->_cleanData($value);
             }
         }
-        return array_filter($entityData);
+        return array_filter($entityData, function($value) {
+            return is_array($value) ? count($value) : !is_null($value);
+        });
     }
 }

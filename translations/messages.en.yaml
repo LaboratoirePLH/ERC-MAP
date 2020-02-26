@@ -408,8 +408,8 @@ datatable:
     "infoEmpty":"No data available","infoFiltered":"(filtered from _MAX_ total records)","lengthMenu":"Display _MENU_ items per page","search":"Search :","zeroRecords":"No result","paginate":{"first":"First","last":"Last","next":"Next","previous":"Previous"},"aria":{"sortAscending":"Activate to sort column ascending","sortDescending":"Activate to sort column descending"}}'
 
 autocomplete:
-    select_element: "Select an element (type text to filter)"
-    select_multiple: "Select elements (type text to filter)"
+    select_element: "Select a value (type text to filter)"
+    select_multiple: "Select values (type text to filter)"
     no_matches: "No matches found for : "
 
 misc:

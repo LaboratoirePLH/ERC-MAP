@@ -100,10 +100,10 @@
                                 id="inputAnteQuem" placeholder="{{('datation.fields.ante_quem')|trans}}">
                         </div>
                         <div class="col-sm-2">
-                            <div class="form-check pt-1">
-                                <input class="form-check-input" type="checkbox" name="datation[exact]"
-                                    value="datation_exact" id="inputDatationExact" checked />
-                                <label class="form-check-label" for="inputDatationExact">
+                            <div class="custom-control custom-switch pt-2">
+                                <input type="checkbox" class="custom-control-input" id="inputDatationExact"
+                                    name="datation[exact]" value="datation_exact" checked>
+                                <label class="custom-control-label" for="inputDatationExact">
                                     {{ ('generic.fields.strict')|trans }}
                                 </label>
                             </div>

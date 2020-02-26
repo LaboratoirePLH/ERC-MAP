@@ -303,7 +303,7 @@ class Guided
                 if(count($st) === 2)
                 {
                     // Double ID is source category + source type
-                    if(array_key_exists('typeSource', $sourceData) && in_array($st[0], array_column($sourceData['typeSource'], 'id')))
+                    if(array_key_exists('typeSource', $sourceData) && in_array($st[1], array_column($sourceData['typeSource'], 'id')))
                     {
                         return true;
                     }

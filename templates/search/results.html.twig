@@ -52,6 +52,15 @@
                 {{ 'generic.view'|trans }}
             </th>
         </tr>
+        <tr id="filterRow">
+            <th>{{ 'source.fields.source_biblio'|trans }}</th>
+            <th>{{ 'generic.fields.lieu'|trans }}</th>
+            <th>{{ 'generic.fields.date'|trans }}</th>
+            <th>{{ 'attestation.sections.texte_attestation'|trans }}</th>
+            <th>{{ 'generic.fields.categorie'|trans }}</th>
+            <th>{{ 'generic.fields.champ'|trans }}</th>
+            <th></th>
+        </tr>
     </thead>
     <tbody>
         {% for result in results %}
@@ -88,17 +97,6 @@
         </tr>
         {% endfor %}
     </tbody>
-    <tfoot>
-        <tr>
-            <th>{{ 'source.fields.source_biblio'|trans }}</th>
-            <th>{{ 'generic.fields.lieu'|trans }}</th>
-            <th>{{ 'generic.fields.date'|trans }}</th>
-            <th>{{ 'attestation.sections.texte_attestation'|trans }}</th>
-            <th>{{ 'generic.fields.categorie'|trans }}</th>
-            <th>{{ 'generic.fields.champ'|trans }}</th>
-            <th></th>
-        </tr>
-    </tfoot>
 </table>
 {% endblock %}
 
@@ -106,7 +104,7 @@
 {{ parent() }}
 <script type="text/javascript">
     $(document).ready(function () {
-        $('#search-results tfoot th').each(function () {
+        $('#search-results thead tr#filterRow th').each(function () {
             var title = $(this).text();
             var value = $(this).data('value');
             if (title != "") {
@@ -170,7 +168,7 @@
         $('#search-results_wrapper select').removeClass('custom-select');
         dt.columns().every(function () {
             var me = this;
-            $('input', this.footer()).on('keyup change', function () {
+            $('input', this.header()).on('keyup change', function () {
                 if (me.search() !== this.value) {
                     me.search(
                         // Remove accented characters from search string
@@ -178,11 +176,8 @@
                     ).draw();
                 }
             })
-            $('input', this.footer()).each(function () {
-                if ($(this).val() != "") {
-                    console.log('test');
-                    $(this).trigger('change');
-                }
+            $('input', this.header()).on('click', function (e) {
+                e.stopPropagation();
             })
         });
         $('input[type=search]').on('keyup change', function () {

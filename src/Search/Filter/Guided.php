@@ -171,14 +171,9 @@ class Guided
             $entityDatation = $eData['datation'] ?? null;
         }
 
-        if($entityDatation === null)
-        {
+        if($entityDatation === null) {
             return false;
         }
-
-        // if($e->getEntite() === 'Attestation' && $e->getId() === 7){
-        //     var_dump()
-        // }
 
         // If exact is checked, we need to have both PostQuem and AnteQuem criteria set
         // Otherwise we consider exact is not checked
@@ -193,6 +188,9 @@ class Guided
         }
         else
         {
+            if(is_null($entityDatation['postQuem'] ?? null) && is_null($entityDatation['anteQuem'] ?? null)){
+                return false;
+            }
             // To accept the record (in non-exact filtering), 2 conditions need to be met :
             //  - datation PostQuem <= criteria AnteQuem
             //  - datation AnteQuem >= criteria PostQuem

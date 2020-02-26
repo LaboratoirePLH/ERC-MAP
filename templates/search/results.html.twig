@@ -150,10 +150,20 @@
                 filename: "{{ 'app_name'|trans }}-{{ 'search.results'|trans }}",
                 text: "{{'generic.export_csv'|trans}}",
                 customize: function (document) {
-                    return document.replace(/(\s)\s+/g, "$1");
+                    var data = document.split("\n").map(function (row, index) {
+                        var rowData = row.split(",");
+                        if (index == 0) {
+                            rowData[0] = '"ID"';
+                        }
+                        else {
+                            rowData[0] = '"' + rowData[5].replace(/\"/g, "") + " " + rowData[0].replace(/\"/g, "") + '"';
+                        }
+                        return rowData.join(",");
+                    }).join("\n");
+                    return data.replace(/(\s)\s+/g, "$1");
                 },
                 exportOptions: {
-                    columns: [0, 1, 2, 3, 4, 5]
+                    columns: [6, 0, 1, 2, 3, 4, 5]
                 }
             }]
         });

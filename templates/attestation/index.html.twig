@@ -6,7 +6,7 @@
 {% block content %}
 {% set createUrl = url('attestation_create') %}
 {% if source is defined %}
-{% set createUrl = url('attestation_create_source', { 'source_id' : source.id}) %}
+{% set createUrl = url('attestation_create_source', { 'source_id' : source.id }) %}
 {% endif %}
 <div class="row">
     <div class="col-12 table-buttons">
@@ -144,6 +144,11 @@
                 } %}
                 {% endif %}
                 {% endif %}
+                <a href="{{ url('attestation_create_source', { 'source_id' : 0, 'cloneFrom': attestation.id }) }}"
+                    class="btn btn-sm btn-block my-1 btn-secondary">
+                    <i class="fas fa-fw fa-copy"></i>
+                    {{ 'generic.clone'|trans }}
+                </a>
             </td>
         </tr>
         {% endfor %}

@@ -51,6 +51,7 @@ generic:
     saveclose: "Save & Close"
     view: "View"
     edit: "Edit"
+    clone: "Clone"
     delete: "Delete"
     add: "Add"
     clear: "Clear"

@@ -232,6 +232,47 @@ class Source extends AbstractEntity
         $this->typeSources = new ArrayCollection();
     }
 
+    /**
+     * Clone magic method
+     */
+    public function __clone()
+    {
+        if($this->id) {
+            $this->id = null;
+
+            // Reset tracking fields
+            $this->dateCreation     = null;
+            $this->dateModification = null;
+            $this->createur         = null;
+            $this->dernierEditeur   = null;
+            $this->version          = null;
+            $this->verrou           = null;
+
+            // Clone datation and localizations
+            if($this->datation !== null){
+                $this->datation = clone $this->datation;
+            }
+            if($this->lieuDecouverte !== null){
+                $this->lieuDecouverte = clone $this->lieuDecouverte;
+            }
+            if($this->lieuOrigine !== null){
+                $this->lieuOrigine = clone $this->lieuOrigine;
+            }
+
+            // Clone sourceBiblios
+            $cloneSourceBiblios = new ArrayCollection();
+            foreach($this->sourceBiblios as $sb){
+                $cloneSb = clone $sb;
+                $cloneSb->setSource($this);
+                $cloneSourceBiblios->add($cloneSb);
+            }
+            $this->sourceBiblios = $cloneSourceBiblios;
+
+            // Do not clone Attestations
+            $this->attestations = new ArrayCollection();
+        }
+    }
+
     public function getTitrePrincipal(): ?Titre
     {
         return $this->titrePrincipal;

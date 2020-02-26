@@ -78,8 +78,21 @@ class Biblio extends AbstractEntity
      */
     public function __construct()
     {
-        $this->sourceBiblios = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->elementBiblios = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->sourceBiblios = new ArrayCollection();
+        $this->elementBiblios = new ArrayCollection();
+    }
+
+    /**
+     * Clone magic method
+     */
+    public function __clone()
+    {
+        if($this->id !== null){
+            $this->id             = null;
+            $this->verrou         = null;
+            $this->sourceBiblios  = new ArrayCollection();
+            $this->elementBiblios = new ArrayCollection();
+        }
     }
 
     public function getTitreAbrege(): ?string

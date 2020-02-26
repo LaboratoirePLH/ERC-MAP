@@ -118,4 +118,14 @@ class AttestationMateriel extends AbstractEntity
             "Matériel #" . $this->getMateriel()->getId() ?? ""
         ]);
     }
+
+    /**
+     * Clone magic method
+     */
+    public function __clone()
+    {
+        if($this->id !== null){
+            $this->id = null;
+        }
+    }
 }

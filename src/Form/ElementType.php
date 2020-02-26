@@ -180,5 +180,6 @@ class ElementType extends AbstractType
         $resolver->setRequired('locale');
         $resolver->setRequired('translations');
         $resolver->setRequired('element');
+        $resolver->setDefault('isClone', false);
     }
 }

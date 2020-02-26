@@ -86,4 +86,15 @@ class Formule extends AbstractEntity
         return $this->getFormule();
     }
 
+    /**
+     * Clone magic method
+     */
+    public function __clone()
+    {
+        if($this->id !== null){
+            $this->id = null;
+            $this->createur = null;
+            $this->createurId = null;
+        }
+    }
 }

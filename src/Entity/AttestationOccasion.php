@@ -100,4 +100,14 @@ class AttestationOccasion extends AbstractEntity
             "Occasion #" . $this->getOccasion()->getId() ?? ""
         ]);
     }
+
+    /**
+     * Clone magic method
+     */
+    public function __clone()
+    {
+        if($this->id !== null){
+            $this->id = null;
+        }
+    }
 }

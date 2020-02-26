@@ -137,6 +137,52 @@ class Element extends AbstractEntity
         $this->traductions = new ArrayCollection();
     }
 
+    /**
+     * Clone magic method
+     */
+    public function __clone()
+    {
+        if($this->id) {
+            $this->id = null;
+
+            // Reset tracking fields
+            $this->dateCreation     = null;
+            $this->dateModification = null;
+            $this->createur         = null;
+            $this->dernierEditeur   = null;
+            $this->version          = null;
+            $this->verrou           = null;
+
+            // Clone localisation
+            if($this->localisation !== null){
+                $this->localisation = clone $this->localisation;
+            }
+
+            // Clone Traductions
+            $cloneTraductions = new ArrayCollection();
+            foreach($this->traductions as $t){
+                $cloneT = clone $t;
+                $cloneT->setElement($this);
+                $cloneTraductions->add($cloneT);
+            }
+            $this->traductions = $cloneTraductions;
+
+            // Clone elementBiblios
+            $cloneElementBiblios = new ArrayCollection();
+            foreach($this->elementBiblios as $eb){
+                $cloneEb = clone $eb;
+                $cloneEb->setElement($this);
+                $cloneElementBiblios->add($cloneEb);
+            }
+            $this->elementBiblios = $cloneElementBiblios;
+
+            // Do not clone contextual data, theonymes implicites and theonymes construits
+            $this->contientElements    = new ArrayCollection();
+            $this->theonymesImplicites = new ArrayCollection();
+            $this->theonymesConstruits = new ArrayCollection();
+        }
+    }
+
     // Hack for elementMini form
     public function setId(int $id): self
     {

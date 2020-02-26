@@ -99,4 +99,14 @@ class TraductionAttestation extends AbstractEntity
     {
         return parent::__toString() . $this->getNomFr() . '/' . $this->getNomEn();
     }
+
+    /**
+     * Clone magic method
+     */
+    public function __clone()
+    {
+        if($this->id !== null){
+            $this->id = null;
+        }
+    }
 }

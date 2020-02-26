@@ -106,15 +106,44 @@ class AttestationController extends AbstractController
     {
         $user = $this->get('security.token_storage')->getToken()->getUser();
 
-        $source = $this->getDoctrine()
-        ->getRepository(Source::class)
-        ->find($source_id);
-        if(is_null($source)){
-            $request->getSession()->getFlashBag()->add(
-                'error',
-                $translator->trans('source.messages.missing', ['%id%' => $source_id])
-            );
-            return $this->redirectToRoute('attestation_list');
+        if(($cloneId = $request->query->get('cloneFrom', null)) !== null)
+        {
+            $attestation = $this->getDoctrine()
+                                ->getRepository(Attestation::class)
+                                ->find($cloneId);
+
+            if(is_null($attestation)){
+                $request->getSession()->getFlashBag()->add(
+                    'error',
+                    $translator->trans('attestation.messages.missing', ['%id%' => $cloneId])
+                );
+                return $this->redirectToRoute('attestation_list');
+            }
+            $source = $attestation->getSource();
+            $attestation = clone $attestation;
+            $clone = true;
+        }
+        else
+        {
+            $source = $this->getDoctrine()
+                           ->getRepository(Source::class)
+                           ->find($source_id);
+            if(is_null($source)){
+                $request->getSession()->getFlashBag()->add(
+                    'error',
+                    $translator->trans('source.messages.missing', ['%id%' => $source_id])
+                );
+                return $this->redirectToRoute('attestation_list');
+            }
+
+            $attestation = new Attestation();
+            $attestation->setSource($source);
+            $etatFiche = $this->getDoctrine()
+                              ->getRepository(EtatFiche::class)
+                              ->find(1);
+            $attestation->setEtatFiche($etatFiche);
+
+            $clone = false;
         }
 
         if($source->getVerrou() === null){
@@ -136,16 +165,10 @@ class AttestationController extends AbstractController
             return $this->redirectToRoute('attestation_create');
         }
 
-        $attestation = new Attestation();
-        $attestation->setSource($source);
-        $etatFiche = $this->getDoctrine()
-                        ->getRepository(EtatFiche::class)
-                        ->find(1);
-        $attestation->setEtatFiche($etatFiche);
-
         $form   = $this->get('form.factory')->create(AttestationType::class, $attestation, [
             'source'       => $source,
             'attestation'  => $attestation,
+            'isClone'      => $clone,
             'locale'       => $request->getLocale(),
             'translations' => [
                 'autocomplete.select_element'  => $translator->trans('autocomplete.select_element'),
@@ -214,6 +237,7 @@ class AttestationController extends AbstractController
             'locale'          => $request->getLocale(),
             'form'            => $form->createView(),
             'source'          => $source,
+            'attestation'     => $attestation,
             'breadcrumbs'     => [
                 ['label' => 'nav.home', 'url' => $this->generateUrl('home')],
                 ['label' => 'source.list', 'url' => $this->generateUrl('source_list')],

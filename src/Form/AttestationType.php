@@ -237,5 +237,6 @@ class AttestationType extends AbstractType
         $resolver->setRequired('attestation');
         $resolver->setRequired('translations');
         $resolver->setDefined('locale');
+        $resolver->setDefault('isClone', false);
     }
 }

@@ -188,6 +188,81 @@ class Attestation extends AbstractEntity
         $this->attestationsLiees = new ArrayCollection();
     }
 
+    /**
+     * Clone magic method
+     */
+    public function __clone()
+    {
+        if($this->id) {
+            $this->id = null;
+
+            // Reset tracking fields
+            $this->dateCreation     = null;
+            $this->dateModification = null;
+            $this->createur         = null;
+            $this->dernierEditeur   = null;
+            $this->version          = null;
+            $this->verrou           = null;
+
+            // Clone datation and localization
+            if($this->datation !== null){
+                $this->datation = clone $this->datation;
+            }
+            if($this->localisation !== null){
+                $this->localisation = clone $this->localisation;
+            }
+
+            // Clone agents
+            $cloneAgents = new ArrayCollection();
+            foreach($this->agents as $a){
+                $cloneA = clone $a;
+                $cloneA->setAttestation($this);
+                $cloneAgents->add($cloneA);
+            }
+            $this->agents = $cloneAgents;
+
+            // Clone Occasions
+            $cloneOccasions = new ArrayCollection();
+            foreach($this->attestationOccasions as $ao){
+                $cloneAo = clone $ao;
+                $cloneAo->setAttestation($this);
+                $cloneOccasions->add($cloneAo);
+            }
+            $this->attestationOccasions = $cloneOccasions;
+
+            // Clone Matériels
+            $cloneMateriels = new ArrayCollection();
+            foreach($this->attestationMateriels as $am){
+                $cloneAm = clone $am;
+                $cloneAm->setAttestation($this);
+                $cloneMateriels->add($cloneAm);
+            }
+            $this->attestationMateriels = $cloneMateriels;
+
+            // Clone Traductions
+            $cloneTraductions = new ArrayCollection();
+            foreach($this->traductions as $t){
+                $cloneT = clone $t;
+                $cloneT->setAttestation($this);
+                $cloneTraductions->add($cloneT);
+            }
+            $this->traductions = $cloneTraductions;
+
+            // Clone contextual elements
+            $cloneElements = new ArrayCollection();
+            foreach($this->contientElements as $ce){
+                $cloneCe = clone $ce;
+                $cloneCe->setAttestation($this);
+                $cloneElements->add($cloneCe);
+            }
+            $this->contientElements = $cloneElements;
+
+            // Do not clone Attestations Liées or Formules
+            $this->attestationsLiees = new ArrayCollection();
+            $this->formules          = new ArrayCollection();
+        }
+    }
+
     // Hack for attestationSource form
     public function setId(int $id): self
     {

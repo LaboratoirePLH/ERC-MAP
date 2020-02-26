@@ -52,6 +52,7 @@ generic:
     edit: "Modifier"
     delete: "Supprimer"
     add: "Ajouter"
+    clone: "Dupliquer"
     clear: "Effacer"
     clear_filters: "Réinitialiser les filtres"
     send: "Envoyer"

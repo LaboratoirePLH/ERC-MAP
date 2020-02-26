@@ -78,6 +78,7 @@ class SelectOrCreateType extends AbstractType implements DataMapperInterface
         $resolver->setRequired(['locale', 'translations', 'field_name', 'object_class', 'creation_form_class', 'selection_query_builder', 'selection_choice_label']);
         $resolver->setDefault('locale', 'en');
         $resolver->setDefault('allow_none', false);
+        $resolver->setDefault('isClone', false);
         $resolver->setDefault('default_decision', null);
         $resolver->setDefault('action', null);
     }
@@ -119,7 +120,8 @@ class SelectOrCreateType extends AbstractType implements DataMapperInterface
         // initialize form field values
         // there is no data yet, set decision to default choice
         $action = $forms['decision']->getParent()->getConfig()->getOption('action');
-        if (null === $data && $action === "create") {
+        $isClone = $forms['decision']->getParent()->getConfig()->getOption('isClone');
+        if (null === $data && $action === "create" && !$isClone) {
             $forms['decision']->setData(
                 $forms['decision']->getParent()->getConfig()->getOption('default_decision')
             );

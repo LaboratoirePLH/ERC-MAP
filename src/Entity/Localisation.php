@@ -142,6 +142,16 @@ class Localisation extends AbstractEntity
         $this->fonctions = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
+    /**
+     * Clone magic method
+     */
+    public function __clone()
+    {
+        if($this->id !== null){
+            $this->id = null;
+        }
+    }
+
     // Hack for localisation form
     public function setId(int $id): self
     {

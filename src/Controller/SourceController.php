@@ -51,14 +51,36 @@ class SourceController extends AbstractController
      */
     public function create(Request $request, TranslatorInterface $translator){
         $user = $this->get('security.token_storage')->getToken()->getUser();
-        $source = new Source();
-        $catSource = $this->getDoctrine()
-                       ->getRepository(CategorieSource::class)
-                       ->findOneBy(['nomEn' => 'Epigraphy']);
-        $source->setCategorieSource($catSource);
+
+        if(($cloneId = $request->query->get('cloneFrom', null)) !== null)
+        {
+            $source = $this->getDoctrine()
+                       ->getRepository(Source::class)
+                       ->find($cloneId);
+
+            if(is_null($source)){
+                $request->getSession()->getFlashBag()->add(
+                    'error',
+                    $translator->trans('source.messages.missing', ['%id%' => $cloneId])
+                );
+                return $this->redirectToRoute('source_list');
+            }
+            $source = clone $source;
+            $clone = true;
+        }
+        else
+        {
+            $source = new Source();
+            $catSource = $this->getDoctrine()
+                           ->getRepository(CategorieSource::class)
+                           ->findOneBy(['nomEn' => 'Epigraphy']);
+            $source->setCategorieSource($catSource);
+            $clone = false;
+        }
 
         $form   = $this->get('form.factory')->create(SourceType::class, $source, [
             'action'       => 'create',
+            'isClone'      => $clone,
             'user'         => $user,
             'locale'       => $request->getLocale(),
             'translations' => [

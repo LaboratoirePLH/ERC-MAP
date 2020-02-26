@@ -85,11 +85,32 @@ class ElementController extends AbstractController
     {
         $user = $this->get('security.token_storage')->getToken()->getUser();
 
-        $element = new Element();
-        // $element->setAReference(true);
+        if(($cloneId = $request->query->get('cloneFrom', null)) !== null)
+        {
+            $element = $this->getDoctrine()
+                       ->getRepository(Element::class)
+                       ->find($cloneId);
+
+            if(is_null($element)){
+                $request->getSession()->getFlashBag()->add(
+                    'error',
+                    $translator->trans('element.messages.missing', ['%id%' => $cloneId])
+                );
+                return $this->redirectToRoute('element_list');
+            }
+
+            $element = clone $element;
+            $clone = true;
+        }
+        else
+        {
+            $element = new Element();
+            $clone = false;
+        }
 
         $form   = $this->get('form.factory')->create(ElementType::class, $element, [
             'element'      => $element,
+            'isClone'      => $clone,
             'locale'       => $request->getLocale(),
             'translations' => [
                 'autocomplete.select_element'  => $translator->trans('autocomplete.select_element'),
@@ -151,6 +172,7 @@ class ElementController extends AbstractController
         return $this->render('element/edit.html.twig', [
             'controller_name' => 'ElementController',
             'action'          => 'create',
+            'element'         => $element,
             'locale'          => $request->getLocale(),
             'form'            => $form->createView(),
             'breadcrumbs'     => [

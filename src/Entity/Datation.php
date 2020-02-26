@@ -74,4 +74,11 @@ class Datation extends AbstractEntity
             'commentaireEn' => $this->commentaireEn
         ];
     }
+
+    public function __clone()
+    {
+        if($this->id !== null){
+            $this->id = null;
+        }
+    }
 }

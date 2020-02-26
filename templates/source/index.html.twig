@@ -114,11 +114,11 @@
                 {% if action == 'select' %}
                 {% if source.verrou != null and not source.verrou.isWritable(app.user) %}
                 {% set error = "generic.messages.error_locked"|trans({
-                    '%type%': 'source.name'|trans,
-                    '%id%'  : source.id,
-                    '%user%': source.verrou.createur.prenomNom,
-                    '%time%': source.verrou.dateFin|date(('locale_datetime'|trans), "Europe/Paris")
-                }) %}
+                            '%type%': 'source.name'|trans,
+                            '%id%'  : source.id,
+                            '%user%': source.verrou.createur.prenomNom,
+                            '%time%': source.verrou.dateFin|date(('locale_datetime'|trans), "Europe/Paris")
+                        }) %}
                 <button type="button" class="btn btn-sm btn-block my-1 btn-danger disabled" data-toggle="tooltip"
                     data-placement="left" title="{{ error }}">
                     <i class="fas fa-fw fa-lock"></i>
@@ -143,11 +143,11 @@
                 </a>
                 {% if source.verrou != null and not source.verrou.isWritable(app.user) %}
                 {% set error = "generic.messages.error_locked"|trans({
-                    '%type%': 'source.name'|trans,
-                    '%id%' : source.id,
-                    '%user%': source.verrou.createur.prenomNom,
-                    '%time%': source.verrou.dateFin|date(('locale_datetime'|trans), "Europe/Paris")
-                }) %}
+                            '%type%': 'source.name'|trans,
+                            '%id%' : source.id,
+                            '%user%': source.verrou.createur.prenomNom,
+                            '%time%': source.verrou.dateFin|date(('locale_datetime'|trans), "Europe/Paris")
+                        }) %}
                 <button type="button" class="btn btn-sm btn-block my-1 btn-danger disabled" data-toggle="tooltip"
                     data-placement="left" title="{{ error }}">
                     <i class="fas fa-fw fa-lock"></i>
@@ -168,14 +168,19 @@
                     {{ 'generic.delete'|trans }}
                 </button>
                 {% include "modals/confirmation.html.twig" with {
-                    'modalName': 'confirm_deletion',
-                    'uuid': uuid,
-                    'targetUrl': url('source_delete', {'id' : source.id}),
-                    'confirmationLabel': 'generic.delete',
-                    'csrfToken': 'delete_source_' ~ source.id,
-                } %}
+                                'modalName': 'confirm_deletion',
+                                'uuid': uuid,
+                                'targetUrl': url('source_delete', {'id' : source.id}),
+                                'confirmationLabel': 'generic.delete',
+                                'csrfToken': 'delete_source_' ~ source.id,
+                            } %}
                 {% endif %}
                 {% endif %}
+                <a href="{{ url('source_create', {'cloneFrom': source.id}) }}"
+                    class="btn btn-sm btn-block my-1 btn-secondary">
+                    <i class="fas fa-fw fa-copy"></i>
+                    {{ 'generic.clone'|trans }}
+                </a>
                 {% endif %}
             </td>
         </tr>

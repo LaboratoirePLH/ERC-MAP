@@ -123,6 +123,21 @@ class Agent extends AbstractEntity
         $this->agentivites    = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
+    /**
+     * Clone magic method
+     */
+    public function __clone()
+    {
+        if($this->id !== null){
+            $this->id = null;
+
+            // Clone localisation
+            if($this->localisation !== null){
+                $this->localisation = clone $this->localisation;
+            }
+        }
+    }
+
     public function getDesignation(): ?string
     {
         return $this->sanitizeWysiwygString($this->sanitizeOpenXMLString($this->designation));

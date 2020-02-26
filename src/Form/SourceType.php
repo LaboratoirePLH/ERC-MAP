@@ -250,6 +250,7 @@ class SourceType extends AbstractType
                 'allow_none'              => true,
                 'default_decision'        => 'select',
                 'action'                  => $options['action'],
+                'isClone'                 => $options['isClone'],
                 'selection_query_builder' => function (EntityRepository $er) use ($locale) {
                     return $er->createQueryBuilder('e')
                         ->orderBy('e.nom'.ucfirst($locale), 'ASC');
@@ -301,5 +302,6 @@ class SourceType extends AbstractType
         $resolver->setRequired('translations');
         $resolver->setRequired('action');
         $resolver->setRequired('user');
+        $resolver->setDefault('isClone', false);
     }
 }

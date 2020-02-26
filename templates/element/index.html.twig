@@ -98,11 +98,11 @@
                 </a>
                 {% if element.verrou != null and not element.verrou.isWritable(app.user) %}
                 {% set error = "generic.messages.error_locked"|trans({
-                                    '%type%': 'element.name'|trans,
-                                    '%id%' : element.id,
-                                    '%user%': element.verrou.createur.prenomNom,
-                                    '%time%': element.verrou.dateFin|date(('locale_datetime'|trans), "Europe/Paris")
-                                }) %}
+                                        '%type%': 'element.name'|trans,
+                                        '%id%' : element.id,
+                                        '%user%': element.verrou.createur.prenomNom,
+                                        '%time%': element.verrou.dateFin|date(('locale_datetime'|trans), "Europe/Paris")
+                                    }) %}
                 <button type="button" class="btn btn-sm btn-block my-1 btn-danger disabled" data-toggle="tooltip"
                     data-placement="left" title="{{ error }}">
                     <i class="fas fa-fw fa-lock"></i>
@@ -123,14 +123,19 @@
                     {{ 'generic.delete'|trans }}
                 </button>
                 {% include "modals/confirmation.html.twig" with {
-                    'modalName': 'confirm_deletion',
-                    'uuid': uuid,
-                    'targetUrl': url('element_delete', {'id' : element.id}),
-                    'confirmationLabel': 'generic.delete',
-                    'csrfToken': 'delete_element_' ~ element.id,
-                } %}
+                            'modalName': 'confirm_deletion',
+                            'uuid': uuid,
+                            'targetUrl': url('element_delete', {'id' : element.id}),
+                            'confirmationLabel': 'generic.delete',
+                            'csrfToken': 'delete_element_' ~ element.id,
+                        } %}
                 {% endif %}
                 {% endif %}
+                <a href="{{ url('element_create', {'cloneFrom': element.id}) }}"
+                    class="btn btn-sm btn-block my-1 btn-secondary">
+                    <i class="fas fa-fw fa-copy"></i>
+                    {{ 'generic.clone'|trans }}
+                </a>
             </td>
         </tr>
         {% endfor %}

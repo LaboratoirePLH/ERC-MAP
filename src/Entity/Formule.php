@@ -30,6 +30,13 @@ class Formule extends AbstractEntity
     private $positionFormule;
 
     /**
+     * @var int
+     *
+     * @ORM\Column(name="puissances_divines", type="smallint", nullable=false, options={"unsigned": true, "default":1})
+     */
+    private $puissancesDivines = 1;
+
+    /**
      * @var \Attestation
      *
      * @ORM\ManyToOne(targetEntity="Attestation", inversedBy="formules")
@@ -65,6 +72,18 @@ class Formule extends AbstractEntity
     public function setPositionFormule(int $positionFormule): self
     {
         $this->positionFormule = $positionFormule;
+
+        return $this;
+    }
+
+    public function getPuissancesDivines(): ?int
+    {
+        return $this->puissancesDivines;
+    }
+
+    public function setPuissancesDivines(int $puissancesDivines): self
+    {
+        $this->puissancesDivines = $puissancesDivines;
 
         return $this;
     }

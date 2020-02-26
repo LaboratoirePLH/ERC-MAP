@@ -10,6 +10,7 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 
 class FormuleType extends AbstractType
 {
@@ -32,6 +33,12 @@ class FormuleType extends AbstractType
             ->add('createur', HiddenType::class, [
                 'required' => false,
                 'mapped'   => false
+            ])
+            ->add('puissancesDivines', IntegerType::class, [
+                'label'      => 'formule.fields.puissances_divines',
+                'attr'       => ['min' => 0],
+                'empty_data' => 1,
+                'required'   => false
             ])
         ;
 

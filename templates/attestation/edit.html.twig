@@ -434,6 +434,10 @@
                         },
                         help: "{{ 'formule.help'|trans|replace({'\n': '', '\r\n': '', '\t': '', '\n\r': ''}) }}"
                     });
+                    var puissancesInput = $(el).find("input[name$='[puissancesDivines]']");
+                    if(puissancesInput.length === 1 && !$.isNumeric(puissancesInput.val())) {
+                        puissancesInput.val(1);
+                    }
                 },
                 addListener: function (newEl, idx) {
                     $('#counter-formules').text(parseInt($('#counter-formules').text(), 10) + 1);

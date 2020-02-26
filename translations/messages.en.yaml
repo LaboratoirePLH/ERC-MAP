@@ -372,6 +372,7 @@ formule:
     fields:
         formule: "Formula"
         operateurs: "Operators"
+        puissances_divines: "Divine Powers"
     help: >
         Drag and drop the elements and operators
         <ul>

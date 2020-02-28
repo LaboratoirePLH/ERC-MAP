@@ -448,6 +448,7 @@ search:
     criteria: "Query Criteria"
     results: "Query Results"
     results_count: "%records% record%plural%"
+    results_count_filtered: "%records% record%plural% displayed (out of %total% total)"
     coverage: "Corpus Coverage"
     reindex: "Rebuild Search Index"
     new_query: "New Query"

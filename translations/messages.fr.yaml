@@ -448,6 +448,7 @@ search:
     criteria: "Critères de la Requête"
     results: "Résultats de la requête"
     results_count: "%records% enregistrement%plural%"
+    results_count_filtered: "%records% enregistrement%plural% affiché%plural% (sur un total de %total%)"
     coverage: "Etat de dépouillement du corpus"
     reindex: "Reconstruire l'Index de Recherche"
     new_query: "Nouvelle Requête"

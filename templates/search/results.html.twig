@@ -5,7 +5,7 @@
 {% block content %}
 <div class="row">
     <div class="col-12">
-        <h3 class="text-center">
+        <h3 class="text-center" id="search-results-count">
             {{ ('search.results_count')|trans({'%records%': results|length, '%plural%': results|length != 1 ? 's' : ''}) }}
         </h3>
     </div>
@@ -165,6 +165,27 @@
                 }
             }]
         });
+
+        var updateCounter = function (data) {
+            var total = data.recordsTotal,
+                displayed = data.recordsDisplay,
+                labelAll = "{{ 'search.results_count'|trans }}",
+                labelFiltered = "{{ 'search.results_count_filtered'|trans }}",
+                counter = $('#search-results-count'),
+                str;
+
+            if (total === displayed) {
+                str = labelAll.replace(/%records%/g, total)
+                    .replace(/%plural%/g, (total === 1 ? '' : 's'));
+            }
+            else {
+                str = labelFiltered.replace(/%records%/g, displayed)
+                    .replace(/%plural%/g, (displayed === 1 ? '' : 's'))
+                    .replace(/%total%/g, total);
+            }
+            counter.text(str);
+        };
+
         $('#search-results_wrapper select').removeClass('custom-select');
         dt.columns().every(function () {
             var me = this;
@@ -174,6 +195,7 @@
                         // Remove accented characters from search string
                         jQuery.fn.DataTable.ext.type.search.string(removeAccents(this.value))
                     ).draw();
+                    updateCounter(dt.page.info());
                 }
             })
             $('input', this.header()).on('click', function (e) {
@@ -185,6 +207,7 @@
                 // Remove accented characters from search string
                 jQuery.fn.DataTable.ext.type.search.string(removeAccents(this.value))
             ).draw();
+            updateCounter(dt.page.info());
         })
         dt.buttons().container().appendTo('.table-buttons');
         $('.clear-filter-button').on('click', function (e) {
@@ -193,6 +216,7 @@
                 $('input', this.footer()).val("").trigger('change');
             });
         })
+        updateCounter(dt.page.info());
     });
 </script>
 {% endblock %}

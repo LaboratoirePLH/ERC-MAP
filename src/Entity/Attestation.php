@@ -204,6 +204,9 @@ class Attestation extends AbstractEntity
             $this->version          = null;
             $this->verrou           = null;
 
+            // Reset passage field
+            $this->passage = "";
+
             // Clone datation and localization
             if($this->datation !== null){
                 $this->datation = clone $this->datation;

@@ -221,6 +221,13 @@ class Guided
         else if($e->getEntite() === 'Attestation')
         {
             $entityLocations[] = $eData['localisation'] ?? null;
+
+            // Also get the localisations from the source
+            $sourceId = $eData['source'];
+            if(array_key_exists($sourceId, $this->sortedData['sources'])){
+                $entityLocations[] = $this->sortedData['sources'][$sourceId]['lieuDecouverte'] ?? null;
+                $entityLocations[] = $this->sortedData['sources'][$sourceId]['lieuOrigine'] ?? null;
+            }
         }
         else if($e->getEntite() === 'Source'){
             $entityLocations[] = $eData['lieuDecouverte'] ?? null;

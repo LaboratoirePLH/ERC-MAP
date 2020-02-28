@@ -154,23 +154,34 @@
             ],
             buttons: [{
                 extend: 'csv',
-                filename: "{{ 'app_name'|trans }}-{{ 'search.results'|trans }}",
+                filename: "{{ 'app_name'|trans }}-{{ 'search.results'|trans }} {{ ('search.'~mode)|trans }}",
                 text: "{{'generic.export_csv'|trans}}",
                 customize: function (document) {
-                    var data = document.split("\n").map(function (row, index) {
-                        var rowData = row.split(",");
-                        if (index == 0) {
-                            rowData[0] = '"ID"';
+                    var papadata = Papa.parse(document);
+                    var data = papadata.data;
+                    data[0] = [
+                        "ID",
+                        "{{ 'source.fields.source_biblio'|trans|raw }}",
+                        "{{ 'generic.fields.lieu'|trans|raw }}",
+                        "{{ 'generic.fields.date'|trans|raw }}",
+                        "{{ 'attestation.sections.texte_attestation'|trans|raw }}",
+                        "{{ 'generic.fields.categorie'|trans|raw }}",
+                    ];
+                    if (mode === 'simple') {
+                        data[0].push("{{ 'generic.fields.champ'|trans|raw }}");
+                    }
+                    data = data.map((row, index) => {
+                        if (index > 0) {
+                            row[0] = row[5] + ' ' + row[0];
                         }
-                        else {
-                            rowData[0] = '"' + rowData[5].replace(/\"/g, "") + " " + rowData[0].replace(/\"/g, "") + '"';
-                        }
-                        return rowData.join(",");
-                    }).join("\n");
-                    return data.replace(/(\s)\s+/g, "$1");
+                        return row;
+                    });
+                    return Papa.unparse(data, {
+                        quotes: true
+                    });
                 },
                 exportOptions: {
-                    columns: [6, 0, 1, 2, 3, 4, 5]
+                    columns: mode == "simple" ? [6, 0, 1, 2, 3, 4, 5] : [6, 0, 1, 2, 3, 4]
                 }
             }]
         });

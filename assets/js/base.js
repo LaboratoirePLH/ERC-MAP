@@ -2,6 +2,8 @@ window.Popper = require("popper.js").default;
 var $ = require('jquery');
 global.$ = global.jQuery = $;
 
+window.Papa = global.Papa = require('papaparse');
+
 require('bootstrap');
 
 decodeEntities = function (encodedString) {

@@ -12,6 +12,7 @@ class AppExtension extends AbstractExtension
         return [
             new TwigFilter('json_decode', [$this, 'jsonDecode']),
             new TwigFilter('remove_accents', [$this, 'removeAccents']),
+            new TwigFilter('ellipsis', [$this, 'ellipsis']),
         ];
     }
 
@@ -23,6 +24,11 @@ class AppExtension extends AbstractExtension
     public function removeAccents($text)
     {
         return \App\Utils\StringHelper::removeAccents($text);
+    }
+
+    public function ellipsis($text, $length)
+    {
+        return \App\Utils\StringHelper::ellipsis($text, $length);
     }
 }
 

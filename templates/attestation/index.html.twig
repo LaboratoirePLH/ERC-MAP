@@ -74,7 +74,7 @@
             </td>
             <td>
                 {% set cellValue = attestation.translitteration|length > 0 ? attestation.translitteration : attestation.extraitAvecRestitution %}
-                {{ (cellValue | length > 250 ? cellValue|slice(0,250) ~ "&hellip;" : cellValue)|raw }}
+                {{ cellValue|ellipsis(200)|raw }}
             </td>
             <td data-order="{{ attestation.dateCreation|date('U') }}">
                 {{ attestation.dateCreation|date(('locale_datetime'|trans), "Europe/Paris") }}

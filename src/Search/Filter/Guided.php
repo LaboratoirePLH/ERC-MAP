@@ -352,7 +352,7 @@ class Guided
         else if($e->getEntite() === 'Source')
         {
             // We fetch all the agents from all the attestations of the source
-            foreach($eData['attestations'] as $aId)
+            foreach(($eData['attestations'] ?? []) as $aId)
             {
                 if(array_key_exists($aId, $this->sortedData['attestations'])
                     && array_key_exists('agents', $this->sortedData['attestations'][$aId]))

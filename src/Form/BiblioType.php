@@ -57,6 +57,5 @@ class BiblioType extends AbstractType
         ]);
         $resolver->setRequired('translations');
         $resolver->setDefined('locale');
-        $resolver->setDefault('isClone', false);
     }
 }

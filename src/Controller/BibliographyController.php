@@ -46,32 +46,10 @@ class BibliographyController extends AbstractController
      */
     public function create(Request $request, TranslatorInterface $translator)
     {
-        if(($cloneId = $request->query->get('cloneFrom', null)) !== null)
-        {
-            $biblio = $this->getDoctrine()
-                       ->getRepository(Biblio::class)
-                       ->find($cloneId);
-
-            if(is_null($biblio)){
-                $request->getSession()->getFlashBag()->add(
-                    'error',
-                    $translator->trans('biblio.messages.missing', ['%id%' => $cloneId])
-                );
-                return $this->redirectToRoute('bibliography_list');
-            }
-
-            $biblio = clone $biblio;
-            $clone = true;
-        }
-        else
-        {
-            $biblio = new Biblio();
-            $clone = false;
-        }
+        $biblio = new Biblio();
 
         $form   = $this->get('form.factory')->create(BiblioType::class, $biblio, [
             'action'       => 'create',
-            'isClone'      => $clone,
             'locale'       => $request->getLocale(),
             'translations' => [
                 'autocomplete.select_element'  => $translator->trans('autocomplete.select_element'),

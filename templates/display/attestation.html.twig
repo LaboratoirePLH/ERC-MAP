@@ -399,6 +399,7 @@
                         <tr>
                             <th scope="col">{{ 'generic.fields.position'|trans }}</th>
                             <th scope="col">{{ 'formule.fields.formule'|trans }}</th>
+                            <th scope="col">{{ 'formule.fields.puissances_divines'|trans }}</th>
                             <th scope="col">{{ 'generic.fields.createur'|trans }}</th>
                         </tr>
                     </thead>
@@ -407,6 +408,7 @@
                         <tr>
                             <td>#{{ formule.positionFormule }}</td>
                             <td class="formula-cell">{{ formule.formule }}</td>
+                            <td>{{ formule.puissancesDivines }}</td>
                             <td>{{ formule.createur.prenomNom }}</td>
                         </tr>
                         {% endfor %}

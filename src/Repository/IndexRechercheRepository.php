@@ -256,7 +256,7 @@ class IndexRechercheRepository extends ServiceEntityRepository
             'localisation'           => 'generic.fields.localisation',
             'categorieSource'        => 'source.fields.categorie_source',
             'typeSource'             => 'source.fields.types_source',
-            'langues'                => 'source.fields.languages',
+            'langues'                => 'source.fields.langues',
             'typeMateriau'           => 'source.fields.materiau',
             'categorieMateriau'      => 'source.fields.categorie_materiau',
             'typeSupport'            => 'source.fields.support',

@@ -103,6 +103,7 @@
 {% block javascripts %}
 {{ parent() }}
 <script type="text/javascript">
+    var mode = "{{ mode }}";
     $(document).ready(function () {
         $('#search-results thead tr#filterRow th').each(function () {
             var title = $(this).text();
@@ -124,12 +125,20 @@
             scrollX: false,
             searching: true,
             ordering: true,
-            columns: [{ responsivePriority: 1 }, null, null, null, null, null, {
-                searchable: false,
-                orderable: false,
-                width: 110,
-                responsivePriority: 1
-            }],
+            columns: [
+                { responsivePriority: 1 },
+                null,
+                { width: '110px' }, // Column "date" is fixed width
+                { width: '40%' },
+                { width: '110px' }, // Column "catégorie" is fixed width
+                { visible: mode == "simple" }, // Column "champ" is hidden except on simple search
+                {
+                    searchable: false,
+                    orderable: false,
+                    width: 110,
+                    responsivePriority: 1
+                }
+            ],
             order: [
                 [0, 'asc']
             ],

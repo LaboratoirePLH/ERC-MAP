@@ -27,7 +27,7 @@
 {{ encore_entry_script_tags('attestation_view_page') }}
 <script type="text/javascript">
     (function ($) {
-        const elements = $.parseJSON('{{ attestation.elementsFormule|default([])|json_encode()|raw }}');
+        const elements = {{ attestation.elementsFormule|default({})|json_encode|raw }};
         $('td.formula-cell').each(function () {
             var me = $(this);
             var formule = me.text();

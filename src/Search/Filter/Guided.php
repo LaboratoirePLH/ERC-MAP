@@ -161,6 +161,11 @@ class Guided
         else if($e->getEntite() === 'Attestation'){
             $entityDatation = $eData['datation'] ?? null;
 
+            // Consider that a datation missing both postQuem and anteQuem is non-existent
+            if(is_null($entityDatation['postQuem'] ?? null) && is_null($entityDatation['anteQuem'] ?? null)){
+                $entityDatation = null;
+            }
+
             // If attestation has no datation, we get it from the source
             $sourceId = $eData['source'];
             if($entityDatation === null && array_key_exists($sourceId, $this->sortedData['sources'])){
@@ -197,7 +202,6 @@ class Guided
             // Any missing value in those 4 will be replaced by default values :
             //  - Default Post Quem = -3000
             //  - Default Ante Quem = 3000
-            // TODO : What should we do if entity datation has neither PostQuem nor AnteQuem ? Currently such cases will be considered acceptable
             return ($entityDatation['postQuem'] ?? self::DEFAULT_POST_QUEM) <= ($criteriaAnteQuem ?? self::DEFAULT_ANTE_QUEM)
                 && ($entityDatation['anteQuem'] ?? self::DEFAULT_ANTE_QUEM) >= ($criteriaPostQuem ?? self::DEFAULT_POST_QUEM);
         }

@@ -173,8 +173,9 @@
                             row[0] = row[5] + ' ' + id;
                             row.push(link);
 
-                            // Add newlines to "Texte de l'Attestation" column
-                            row[4] = row[4].replace(/<(br|hr)[\s]*[\/]?>/gi, "\n");
+                            // Keep newlines in "Texte de l'Attestation" column
+                            row[4] = row[4].replace(/<(br)[\s]*[\/]?>/gi, "\n")
+                                .replace(/<(hr)[\s]*[\/]?>/gi, "\n-----\n");
                         }
                         return row.map(col => $("<div/>").html(col).text());
                     });

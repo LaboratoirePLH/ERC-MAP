@@ -211,10 +211,55 @@
 {{ encore_entry_script_tags('search_page') }}
 <script type="text/javascript">
     $(document).ready(function () {
+        populateCriteriaData = function (mode, data) {
+            if (mode === "simple") {
+                $('#simple').find('input[name="search_value"]').val(data[0]);
+            }
+            else if (mode === "guided") {
+                $.each(data, function (criteria, value) {
+                    switch (criteria) {
+                        case 'names':
+                        case 'languages':
+                        case 'locations':
+                        case 'sourceTypes':
+                        case 'agents':
+                            $('#guided').find('select[name="' + criteria + '[]"]')
+                                .val(value)
+                                .trigger('chosen:updated');
+                            break;
+                        case 'datation':
+                            $('#guided').find('input[name="datation[post_quem]"]').val(value.post_quem);
+                            $('#guided').find('input[name="datation[ante_quem]"]').val(value.ante_quem);
+                            $('#guided').find('input[name="datation[exact]"]').attr('checked', value.exact === "datation_exact");
+                            break;
+                        case 'names_mode':
+                        case 'languages_mode':
+                            if (value === "all") {
+                                $('#guided').find('input[name="' + criteria + '"]').attr('checked', true);
+                            }
+                            break;
+                    }
+                });
+            }
+        }
+
+
         $('select.autocomplete').chosen(CHOSEN_SETTINGS);
 
-        var url = document.location.toString();
-        if (url.match('#')) {
+        var url = document.location.toString(),
+            populate_mode = "{{ populate.mode }}";
+
+        if (populate_mode != "") {
+            // Populate mode from POST parameters if any
+            $('#searchTabLinks a[href="#' + populate_mode + '"]').tab('show');
+
+            // Populate criteria
+            var populate_criteria = "{{populate.criteria|e('js')}}";
+            if (populate_criteria != "") {
+                populateCriteriaData(populate_mode, $.parseJSON(populate_criteria));
+            }
+        }
+        else if (url.match('#')) {
             $('#searchTabLinks a[href="#' + url.split('#')[1] + '"]').tab('show');
         }
 

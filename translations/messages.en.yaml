@@ -453,6 +453,7 @@ search:
     coverage: "Corpus Coverage"
     reindex: "Rebuild Search Index"
     new_query: "New Query"
+    edit_query: "Edit Query"
     criteria_labels:
         names: "Name"
         names_all: "Name (All)"

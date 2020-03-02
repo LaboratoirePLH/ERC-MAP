@@ -8,6 +8,15 @@
         <a class="btn btn-primary" href="{{ url('search') }}#{{mode}}" role="button">
             {{ 'search.new_query'|trans }}
         </a>
+        <div class="d-inline-block">
+            <form action="{{ url('search') }}#{{mode}}" method="post">
+                <input type="hidden" name="populate_mode" value="{{mode}}">
+                <input type="hidden" name="populate_criteria" value="{{criteria|json_encode|url_encode|raw}}">
+                <button class="btn btn-secondary" type="submit">
+                    {{ 'search.edit_query'|trans }}
+                </button>
+            </form>
+        </div>
         <a class="btn btn-warning" href="#" role="button">
             <i class="fas fa-save fa-fw"></i>
             {{ 'generic.save'|trans }}

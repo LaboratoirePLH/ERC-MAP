@@ -14,10 +14,17 @@ class RechercheController extends AbstractController
      */
     public function index(Request $request, TranslatorInterface $translator)
     {
+        $populate_mode = $request->request->get('populate_mode', '');
+        $populate_criteria = urldecode($request->request->get('populate_criteria', ''));
+
         return $this->render('search/index.html.twig', [
             'controller_name' => 'RechercheController',
             'locale'          => $request->getLocale(),
             'data'            => $this->_prepareFormData($request->getLocale()),
+            'populate'        => [
+                'mode'     => $populate_mode,
+                'criteria' => $populate_criteria,
+            ],
             'breadcrumbs'     => [
                 ['label' => 'nav.home', 'url' => $this->generateUrl('home')],
                 ['label' => 'search.title']

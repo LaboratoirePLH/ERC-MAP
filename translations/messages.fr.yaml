@@ -453,6 +453,7 @@ search:
     coverage: "Etat de dépouillement du corpus"
     reindex: "Reconstruire l'Index de Recherche"
     new_query: "Nouvelle Requête"
+    edit_query: "Modifier la Requête"
     criteria_labels:
         names: "Nom"
         names_all: "Nom (Tous)"

@@ -170,18 +170,29 @@
                     if (mode === 'simple') {
                         data[0].push("{{ 'generic.fields.champ'|trans|raw }}");
                     }
+                    data[0].push("{{ 'generic.link'|trans|raw }}");
+
                     data = data.map((row, index) => {
                         if (index > 0) {
-                            row[0] = row[5] + ' ' + row[0];
+                            // Prepare ID Column
+                            var id = $("<div/>").html(row[0]).text().trim();
+                            var link = $("<div />").html(row[0]).find("a").attr("href");
+                            row[0] = row[5] + ' ' + id;
+                            row.push(link);
+
+                            // Add newlines to "Texte de l'Attestation" column
+                            row[4] = row[4].replace(/<(br|hr)[\s]*[\/]?>/gi, "\n");
                         }
-                        return row;
+                        return row.map(col => $("<div/>").html(col).text());
                     });
                     return Papa.unparse(data, {
                         quotes: true
                     });
                 },
                 exportOptions: {
-                    columns: mode == "simple" ? [6, 0, 1, 2, 3, 4, 5] : [6, 0, 1, 2, 3, 4]
+                    columns: mode == "simple" ? [6, 0, 1, 2, 3, 4, 5] : [6, 0, 1, 2, 3, 4],
+                    stripHtml: false,
+                    stripNewlines: false,
                 }
             }]
         });

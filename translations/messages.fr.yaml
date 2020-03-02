@@ -64,6 +64,7 @@ generic:
     toggle_section: "Afficher/Cacher la section"
     export_csv: "Exporter en CSV"
     locked: "Verrouillé"
+    link: "Lien"
     fields:
         id: "ID"
         createur: "Créateur"

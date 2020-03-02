@@ -145,8 +145,8 @@ class Guided
 
     protected function filterByDatation(IndexRecherche $e, array $criteriaValues): bool
     {
-        $criteriaPostQuem = intval($criteriaValues['post_quem']) ?? null;
-        $criteriaAnteQuem = intval($criteriaValues['ante_quem']) ?? null;
+        $criteriaPostQuem = is_numeric($criteriaValues['post_quem']) ? intval($criteriaValues['post_quem']) : null;
+        $criteriaAnteQuem = is_numeric($criteriaValues['ante_quem']) ? intval($criteriaValues['ante_quem']) : null;
         $criteriaExact    = $criteriaValues['exact'] ?? false;
 
         $eData = $e->getData();

@@ -3,8 +3,9 @@
 <strong>{{ ('search.criteria')|trans }}</strong> :
 {% if mode == 'simple' %}
 {{ criteria|join(' ') }}
+<br />
 {% elseif mode == 'guided' %}
-<ul>
+<ul class="mb-0">
     {% for key, value in criteria %}
     <li>
         <u>{{ key|trans }}</u> :
@@ -21,5 +22,4 @@
     {% endfor %}
 </ul>
 {% endif %}
-<br />
 <strong>{{ ('search.results')|trans }}</strong> : <span id="search-results-count"></span>

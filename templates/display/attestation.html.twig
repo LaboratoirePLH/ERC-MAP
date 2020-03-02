@@ -46,6 +46,20 @@
         </tr>
         <tr>
             <th scope="row">
+                {{ 'attestation.fields.attestations_liees'|trans}}
+            </th>
+            <td>
+                {% for al in attestation.attestationsLiees %}
+                {% include "partials/_entitylink.html.twig" with {
+                                    'entity': 'attestation',
+                                    'link': url('attestation_show', {'id': al.id}),
+                                    'text': al.affichage
+                                } %}
+                {% endfor %}
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">
                 {{ 'attestation.fields.prose'|trans}}
             </th>
             <td>
@@ -315,20 +329,6 @@
                 {{ attestation.getCommentaire(locale)|raw }}
                 <br />
                 <small>{{ attestation.getCommentaire(locale == "fr" ? "en" : "fr")|raw }}</small>
-            </td>
-        </tr>
-        <tr>
-            <th scope="row">
-                {{ 'attestation.fields.attestations_liees'|trans}}
-            </th>
-            <td>
-                {% for al in attestation.attestationsLiees %}
-                {% include "partials/_entitylink.html.twig" with {
-                            'entity': 'attestation',
-                            'link': url('attestation_show', {'id': al.id}),
-                            'text': al.affichage
-                        } %}
-                {% endfor %}
             </td>
         </tr>
         <tr>

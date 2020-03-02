@@ -7,7 +7,7 @@
 {% endblock %}
 {% block content %}
 <div class="row my-3">
-    <div class="col-sm-12 col-md-8 text-center" id="search-panel">
+    <div class="col-sm-12 col-md-12 text-center" id="search-panel">
         <ul class="nav nav-pills nav-fill" id="searchTabLinks" role="tablist">
             <li class="nav-item">
                 <a class="nav-link font-weight-bolder active" id="simple-tab" data-toggle="tab" href="#simple"
@@ -21,13 +21,13 @@
                     {{ ('search.guided')|trans }}
                 </a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item d-none">
                 <a class="nav-link font-weight-bolder" id="advanced-tab" data-toggle="tab" href="#advanced" role="tab"
                     aria-controls="advanced" aria-selected="false">
                     {{ ('search.advanced')|trans }}
                 </a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item d-none">
                 <a class="nav-link font-weight-bolder" id="elements-tab" data-toggle="tab" href="#elements" role="tab"
                     aria-controls="elements" aria-selected="false">
                     {{ ('search.elements')|trans }}
@@ -163,15 +163,15 @@
                     </div>
                 </form>
             </div>
-            <div class="tab-pane fade" id="advanced" role="tabpanel" aria-labelledby="advanced-tab">
+            <div class="tab-pane fade d-none" id="advanced" role="tabpanel" aria-labelledby="advanced-tab">
                 Recherche avancée
             </div>
-            <div class="tab-pane fade" id="elements" role="tabpanel" aria-labelledby="elements-tab">
+            <div class="tab-pane fade d-none" id="elements" role="tabpanel" aria-labelledby="elements-tab">
                 Recherche éléments
             </div>
         </div>
     </div>
-    <div class="col-sm-12 col-md-4">
+    <div class="col-sm-12 col-md-4 d-none">
         <ul class="nav nav-pills nav-fill" id="myTab" role="tablist">
             <li class="nav-item">
                 <a class="nav-link active" role="tab">

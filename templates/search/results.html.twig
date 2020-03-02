@@ -4,7 +4,7 @@
 {% endblock %}
 {% block content %}
 <div class="row my-3">
-    <div class="col-5 table-buttons" id="search-results-actions">
+    <div class="col-5 table-buttons d-flex justify-content-around align-items-end" id="search-results-actions">
         <a class="btn btn-primary" href="{{ url('search') }}#{{mode}}" role="button">
             {{ 'search.new_query'|trans }}
         </a>
@@ -17,7 +17,7 @@
                 </button>
             </form>
         </div>
-        <a class="btn btn-warning" href="#" role="button">
+        <a class="btn btn-warning d-none" href="#" role="button">
             <i class="fas fa-save fa-fw"></i>
             {{ 'generic.save'|trans }}
         </a>

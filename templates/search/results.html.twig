@@ -3,13 +3,6 @@
 {{ ('search.results')|trans }}
 {% endblock %}
 {% block content %}
-<div class="row">
-    <div class="col-12">
-        <h3 class="text-center" id="search-results-count">
-            {{ ('search.results_count')|trans({'%records%': results|length, '%plural%': results|length != 1 ? 's' : ''}) }}
-        </h3>
-    </div>
-</div>
 <div class="row my-3">
     <div class="col-5 table-buttons" id="search-results-actions">
         <a class="btn btn-primary" href="{{ url('search') }}#{{mode}}" role="button">

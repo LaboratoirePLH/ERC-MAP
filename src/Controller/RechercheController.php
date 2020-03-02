@@ -165,11 +165,11 @@ class RechercheController extends AbstractController
                         break;
                     case 'datation':
                         $v = array_filter([
-                            (!is_null($value['post_quem'])
+                            ((!is_null($value['post_quem']) && $value['post_quem'] !== "")
                                 ? ($translator->trans('datation.fields.post_quem') . ' : ' . $value['post_quem'])
                                 : null
                             ),
-                            (!is_null($value['ante_quem'])
+                            ((!is_null($value['ante_quem']) && $value['ante_quem'] !== "")
                                 ? ($translator->trans('datation.fields.ante_quem') . ' : ' . $value['ante_quem'])
                                 : null
                             ),

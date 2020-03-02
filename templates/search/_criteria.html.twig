@@ -1,25 +1,42 @@
-<strong>{{ ('search.mode')|trans }}</strong> : {{ ('search.'~mode)|trans }}
-<br />
-<strong>{{ ('search.criteria')|trans }}</strong> :
-{% if mode == 'simple' %}
-{{ criteria|join(' ') }}
-<br />
-{% elseif mode == 'guided' %}
-<ul class="mb-0">
-    {% for key, value in criteria %}
-    <li>
-        <u>{{ key|trans }}</u> :
-        {% if value is iterable %}
-        <ul>
-            {% for subvalue in value %}
-            <li>{{ subvalue|raw }}</li>
-            {% endfor %}
-        </ul>
-        {% else %}
-        {{ value|raw }}
-        {% endif %}
-    </li>
-    {% endfor %}
-</ul>
-{% endif %}
-<strong>{{ ('search.results')|trans }}</strong> : <span id="search-results-count"></span>
+<div class="col-{{width}}" id="search-criteria">
+    <div class="card border-color-map-yellow">
+        <div class="card-header border-color-map-yellow text-center">
+            <strong>{{ ('search.mode')|trans }}</strong> : {{ ('search.'~mode)|trans }}
+        </div>
+        <div class="card-body">
+            {% if mode == 'simple' %}
+            <div class="text-center">
+                {{ criteria|join(' ') }}
+            </div>
+            {% elseif mode == 'guided' %}
+            <div class="d-flex justify-content-around">
+                {% for key, value in criteria %}
+                <div class="card">
+                    {% if value is iterable %}
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item background-map-yellow font-weight-bolder text-uppercase">
+                            {{ key|trans }}</li>
+                        {% for subvalue in value %}
+                        <li class="list-group-item">
+                            {{ subvalue|raw }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <div class="card-body p-1">
+                        <h5 class="card-title">{{ key|trans }}</h5>
+                        <p class="card-text">
+                            {{ value|raw }}
+                        </p>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+        <div class="card-footer border-color-map-yellow text-center">
+            <strong>{{ ('search.results')|trans }}</strong> : <span id="search-results-count"></span>
+        </div>
+    </div>
+</div>

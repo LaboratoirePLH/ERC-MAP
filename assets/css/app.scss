@@ -250,6 +250,22 @@ body {
     border: 1px solid $map-yellow;
 }
 
+.border-color-map-yellow {
+    border-color: $map-yellow;
+}
+
+.border-color-map-grey {
+    border-color: $map-grey;
+}
+
+.background-map-yellow {
+    background-color: $map-yellow;
+}
+
+.background-map-grey {
+    background-color: $map-grey;
+}
+
 table { page-break-inside:auto }
 tr    { page-break-inside:avoid; page-break-after:auto }
 thead { display:table-header-group }

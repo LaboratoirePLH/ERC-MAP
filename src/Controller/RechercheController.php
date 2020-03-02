@@ -232,7 +232,8 @@ class RechercheController extends AbstractController
             ]));
         }
         uasort($elements, function($a, $b){
-            return strip_tags($a) <=> strip_tags($b);
+            return \App\Utils\StringHelper::removeAccents(strip_tags($a))
+                <=> \App\Utils\StringHelper::removeAccents(strip_tags($b));
         });
 
         // Get Languages
@@ -241,7 +242,10 @@ class RechercheController extends AbstractController
             array_column($query->getArrayResult(), 'id'),
             array_column($query->getArrayResult(), $nameField)
         );
-        asort($languages);
+        uasort($languages, function($a, $b){
+            return \App\Utils\StringHelper::removeAccents($a)
+                <=> \App\Utils\StringHelper::removeAccents($b);
+        });
 
         // Get Locations
         $query = $em->createQuery("SELECT partial r.{id, {$nameField}} FROM \App\Entity\GrandeRegion r");
@@ -272,7 +276,10 @@ class RechercheController extends AbstractController
             $value = str_replace('>  >', '>>', $value);
             $locations[$id] = $value;
         }
-        asort($locations);
+        uasort($locations, function($a, $b){
+            return \App\Utils\StringHelper::removeAccents($a)
+                <=> \App\Utils\StringHelper::removeAccents($b);
+        });
 
         // Get Source Types
         $query = $em->createQuery("SELECT partial c.{id, {$nameField}} FROM \App\Entity\CategorieSource c");
@@ -288,7 +295,10 @@ class RechercheController extends AbstractController
             $id = json_encode([$ts['categorieSource']['id'], $ts['id']]);
             $sourceTypes[$id] = $ts['categorieSource'][$nameField].' > '.$ts[$nameField];
         }
-        asort($sourceTypes);
+        uasort($sourceTypes, function($a, $b){
+            return \App\Utils\StringHelper::removeAccents($a)
+                <=> \App\Utils\StringHelper::removeAccents($b);
+        });
 
         // Get Agents
         $query = $em->createQuery("SELECT partial aa.{id, {$nameField}} FROM \App\Entity\ActiviteAgent aa");
@@ -296,14 +306,20 @@ class RechercheController extends AbstractController
             array_map(function($a){ return json_encode(['activite', $a]); }, array_column($query->getArrayResult(), 'id')),
             array_column($query->getArrayResult(), $nameField)
         );
-        asort($activites);
+        uasort($activites, function($a, $b){
+            return \App\Utils\StringHelper::removeAccents($a)
+                <=> \App\Utils\StringHelper::removeAccents($b);
+        });
 
         $query = $em->createQuery("SELECT partial ag.{id, {$nameField}} FROM \App\Entity\Agentivite ag");
         $agentivites = array_combine(
             array_map(function($a){ return json_encode(['agentivite', $a]); }, array_column($query->getArrayResult(), 'id')),
             array_column($query->getArrayResult(), $nameField)
         );
-        asort($agentivites);
+        uasort($agentivites, function($a, $b){
+            return \App\Utils\StringHelper::removeAccents($a)
+                <=> \App\Utils\StringHelper::removeAccents($b);
+        });
 
         return [
             'names'       => $elements,

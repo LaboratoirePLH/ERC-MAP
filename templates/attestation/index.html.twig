@@ -144,11 +144,19 @@
                 } %}
                 {% endif %}
                 {% endif %}
-                <a href="{{ url('attestation_create_source', { 'source_id' : 0, 'cloneFrom': attestation.id }) }}"
+                {% if source is defined %}
+                <a href="{{ url('attestation_create_source', { 'source_id' : source.id, 'cloneFrom': attestation.id }) }}"
                     class="btn btn-sm btn-block my-1 btn-secondary">
                     <i class="fas fa-fw fa-copy"></i>
                     {{ 'generic.clone'|trans }}
                 </a>
+                {% else %}
+                <a href="{{ url('attestation_create', { 'cloneFrom': attestation.id }) }}"
+                    class="btn btn-sm btn-block my-1 btn-secondary">
+                    <i class="fas fa-fw fa-copy"></i>
+                    {{ 'generic.clone'|trans }}
+                </a>
+                {% endif %}
             </td>
         </tr>
         {% endfor %}

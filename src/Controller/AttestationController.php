@@ -84,8 +84,8 @@ class AttestationController extends AbstractController
                         ->getRepository(Source::class)
                         ->findAll();
 
-        return $this->render('source/index.html.twig', [
-            'controller_name' => 'SourceController',
+        $data = [
+            'controller_name' => 'AttestationController',
             'action'          => 'select',
             'selectionRoute'  => 'attestation_create_source',
             'title'           => 'attestation.choose_source',
@@ -96,7 +96,14 @@ class AttestationController extends AbstractController
                 ['label' => 'attestation.create'],
                 ['label' => 'source.select']
             ]
-        ]);
+        ];
+
+        if(($cloneId = $request->query->get('cloneFrom', null)) !== null)
+        {
+            $data['cloneFrom'] = $cloneId;
+        }
+
+        return $this->render('source/index.html.twig', $data);
     }
 
     /**
@@ -105,6 +112,17 @@ class AttestationController extends AbstractController
     public function createForSource($source_id, Request $request, TranslatorInterface $translator)
     {
         $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        $source = $this->getDoctrine()
+                       ->getRepository(Source::class)
+                       ->find($source_id);
+        if(is_null($source)){
+            $request->getSession()->getFlashBag()->add(
+                'error',
+                $translator->trans('source.messages.missing', ['%id%' => $source_id])
+            );
+            return $this->redirectToRoute('attestation_list');
+        }
 
         if(($cloneId = $request->query->get('cloneFrom', null)) !== null)
         {
@@ -119,25 +137,13 @@ class AttestationController extends AbstractController
                 );
                 return $this->redirectToRoute('attestation_list');
             }
-            $source = $attestation->getSource();
             $attestation = clone $attestation;
             $clone = true;
         }
         else
         {
-            $source = $this->getDoctrine()
-                           ->getRepository(Source::class)
-                           ->find($source_id);
-            if(is_null($source)){
-                $request->getSession()->getFlashBag()->add(
-                    'error',
-                    $translator->trans('source.messages.missing', ['%id%' => $source_id])
-                );
-                return $this->redirectToRoute('attestation_list');
-            }
 
             $attestation = new Attestation();
-            $attestation->setSource($source);
             $etatFiche = $this->getDoctrine()
                               ->getRepository(EtatFiche::class)
                               ->find(1);
@@ -145,6 +151,8 @@ class AttestationController extends AbstractController
 
             $clone = false;
         }
+
+        $attestation->setSource($source);
 
         if($source->getVerrou() === null){
             $verrou = $this->getDoctrine()->getRepository(VerrouEntite::class)->create($source, $user, $this->dureeVerrou);

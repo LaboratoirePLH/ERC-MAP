@@ -125,11 +125,19 @@
                     {{ 'generic.locked'|trans }}
                 </button>
                 {% else %}
+                {% if cloneFrom is defined %}
+                <a href="{{ url(selectionRoute, {'source_id': source.id, 'cloneFrom': cloneFrom }) }}"
+                    class="btn btn-sm btn-block my-1 btn-success">
+                    <i class="fas fa-fw fa-check"></i>
+                    {{ 'generic.choose'|trans }}
+                </a>
+                {% else %}
                 <a href="{{ url(selectionRoute, {'source_id': source.id}) }}"
                     class="btn btn-sm btn-block my-1 btn-success">
                     <i class="fas fa-fw fa-check"></i>
                     {{ 'generic.choose'|trans }}
                 </a>
+                {% endif %}
                 {% endif %}
                 {% else %}
                 <a href="{{ url('attestation_source', {'source_id': source.id}) }}"

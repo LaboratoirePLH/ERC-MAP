@@ -28,7 +28,7 @@ class StringHelper
      * @return string Trimmed string.
      */
     public static function ellipsis($text, $length = 200, $ending = '&hellip;', $exact = true, $considerHtml = true) {
-        $text = html_entity_decode($text);
+        $text = self::normalizeDiacritics(html_entity_decode($text));
         if ($considerHtml) {
             // if the plain text is shorter than the maximum length, return the whole text
             if (strlen(preg_replace('/<.*?>/', '', $text)) <= $length) {

@@ -61,7 +61,7 @@
             <th>{{ 'attestation.sections.texte_attestation'|trans }}</th>
             <th>{{ 'generic.fields.categorie'|trans }}</th>
             <th>{{ 'generic.fields.champ'|trans }}</th>
-            <th></th>
+            <th>{{ 'generic.fields.id'|trans }}</th>
         </tr>
     </thead>
     <tbody>
@@ -89,7 +89,7 @@
             <td data-search="{{ field|join(' ')|striptags|remove_accents|raw }}">
                 {{ field|join(' &gt;&nbsp;')|raw }}
             </td>
-            <td class="py-0 px-1">
+            <td class="py-0 px-1" data-search="#{{ result.linkId }}" data-sort="#{{ result.linkId }}">
                 {% include "partials/_entitylink.html.twig" with {
                     'entity': result.linkType,
                     'link': url(result.linkType ~ '_show', {'id': result.linkId}),
@@ -135,8 +135,6 @@
                 { width: '110px' }, // Column "catégorie" is fixed width
                 { visible: mode == "simple" }, // Column "champ" is hidden except on simple search
                 {
-                    searchable: false,
-                    orderable: false,
                     width: 110,
                     responsivePriority: 1
                 }

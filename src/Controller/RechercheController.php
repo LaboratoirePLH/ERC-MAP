@@ -186,7 +186,7 @@ class RechercheController extends AbstractController
                             )
                         ]);
                         if(!empty($v)){
-                            $response['search.criteria_labels.'.$key] = implode(' ; ', $v);
+                            $response['search.criteria_labels.'.$key] = $v;
                         }
                     break;
                     case 'agents':

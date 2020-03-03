@@ -18,6 +18,7 @@ class Attestation extends AbstractEntity
 {
     use Traits\Dated;
     use Traits\EntityId;
+    use Traits\Indexed;
     use Traits\Located;
     use Traits\Tracked;
     use Traits\Translatable;

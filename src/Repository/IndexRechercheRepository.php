@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\AbstractEntity;
 use App\Entity\IndexRecherche;
 use App\Search\Filter\Guided as GuidedSearchFilter;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -65,6 +66,51 @@ class IndexRechercheRepository extends ServiceEntityRepository
 
         $em->flush();
         return count($all);
+    }
+
+    public function rebuildEntry(string $entityType, int $entityId)
+    {
+        // Ensure $entityType has correct case
+        $entityType = \ucfirst(\strtolower($entityType));
+
+        // Removes existing data
+        $this->deleteEntry($entityType, $entityId);
+
+        // Fetch up-to-date data
+        $query = $this->getEntityManager()->createQuery("SELECT e FROM \App\Entity\\$entityType e WHERE e.id = $entityId");
+        $entity = $query->getOneOrNullResult();
+
+        // If entity is found
+        if($entity !== null){
+            // call toArray function
+           $entityData = $entity->toArray();
+           // Clean data to optimize it for indexation
+           $entityData = $this->_cleanData($entityData);
+
+           // store given data
+           $newEntry = new IndexRecherche;
+           $newEntry->setEntite($entityType);
+           $newEntry->setId($entity->getId());
+           $newEntry->setData($entityData);
+           $this->getEntityManager()->persist($newEntry);
+           $this->getEntityManager()->flush();
+        }
+    }
+
+    public function deleteEntry(string $entityType, int $entityId)
+    {
+        // Ensure $entityType has correct case
+        $entityType = \ucfirst(\strtolower($entityType));
+
+        // Remove all of entity type
+        $this->createQueryBuilder('clear_index')
+             ->delete("App\Entity\IndexRecherche", "i")
+             ->where('i.entite = :entityType')
+             ->andWhere('i.id = :entityId')
+             ->setParameter('entityType', $entityType)
+             ->setParameter('entityId', $entityId)
+             ->getQuery()
+             ->execute();
     }
 
     public function simpleSearch(string $search, string $locale): array

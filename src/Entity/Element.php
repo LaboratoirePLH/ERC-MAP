@@ -17,6 +17,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Element extends AbstractEntity
 {
     use Traits\EntityId;
+    use Traits\Indexed;
     use Traits\Located;
     use Traits\Tracked;
     use Traits\Translatable;

@@ -18,6 +18,7 @@ class Source extends AbstractEntity
 {
     use Traits\DatedWithFiability;
     use Traits\EntityId;
+    use Traits\Indexed;
     use Traits\Tracked;
     use Traits\Translatable;
     use Traits\TranslatedComment;

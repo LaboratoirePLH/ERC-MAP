@@ -18,10 +18,16 @@
                 </button>
             </form>
         </div>
-        <a class="btn btn-warning mb-1" href="#" role="button">
+        <button type="button" class="btn btn-warning mb-1" id="query-save-button" data-toggle="modal"
+            data-target="#query-save-modal">
             <i class="fas fa-save fa-fw"></i>
             {{ 'generic.save'|trans }}
-        </a>
+        </button>
+        {% include "modals/query_save.html.twig" with {
+            'targetUrl': url('search_save'),
+            'queryMode': mode,
+            'queryCriteria': criteria
+        } %}
     </div>
     {% include "search/_criteria.html.twig" with {
         'mode' : mode,
@@ -249,6 +255,37 @@
             });
         })
         updateCounter(dt.page.info());
+
+
+        // Manage query save
+        $('#query-save-modal form').on('submit', function (e) {
+            e.preventDefault();
+            const formData = $(this).serializeObject();
+            var spinner = $(this).find('#submit-spinner');
+            var results = $(this).find('#save-query-result');
+
+            spinner.removeClass('d-none');
+
+            results.removeClass('alert-success alert-danger');
+            results.addClass('d-none');
+            results.text('');
+
+            $.post($(this).get(0).action, formData)
+                .done(function (response) {
+                    results.addClass('alert-success');
+                    results.text(response.message);
+
+                    setTimeout(() => { $('#query-save-modal').modal('hide') }, 2000);
+                })
+                .fail(function (response) {
+                    results.addClass('alert-danger');
+                    results.text(response.responseJSON.message);
+                })
+                .always(function () {
+                    results.removeClass('d-none');
+                    spinner.addClass('d-none');
+                });
+        })
     });
 </script>
 {% endblock %}

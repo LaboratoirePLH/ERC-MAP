@@ -251,19 +251,19 @@ body {
 }
 
 .border-color-map-yellow {
-    border-color: $map-yellow;
+    border-color: $map-yellow !important;
 }
 
 .border-color-map-grey {
-    border-color: $map-grey;
+    border-color: $map-grey !important;
 }
 
 .background-map-yellow {
-    background-color: $map-yellow;
+    background-color: $map-yellow !important;
 }
 
 .background-map-grey {
-    background-color: $map-grey;
+    background-color: $map-grey !important;
 }
 
 table { page-break-inside:auto }

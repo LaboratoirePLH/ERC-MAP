@@ -54,6 +54,7 @@ generic:
     add: "Ajouter"
     clone: "Dupliquer"
     clear: "Effacer"
+    load: "Charger"
     clear_filters: "Réinitialiser les filtres"
     send: "Envoyer"
     exit: "Quitter"
@@ -106,6 +107,7 @@ generic:
         oui: "Oui"
         non: "Non"
     messages:
+        failed_csrf: "Echec, token CSRF invalide"
         deletion_failed_csrf: "Echec de la suppression, token CSRF invalide"
         deletion_failed_missing: "Echec de la suppression, entité non trouvée"
         unknown_user: "Nom d'utilisateur inconnu"
@@ -402,6 +404,9 @@ modals:
     confirm_search_reindex:
         title: "Confirmer la réindexation"
         body: "Êtes-vous sûr de vouloir reconstruire l'index de recherche ? Cette action peut durer plusieurs minutes et ne pourra pas être interrompue."
+    query_save:
+        title: "Enregistrement de la requête"
+        body: "Veuillez saisir un nom pour votre requête"
 
 
 datatable:
@@ -454,6 +459,7 @@ search:
     reindex: "Reconstruire l'Index de Recherche"
     new_query: "Nouvelle Requête"
     edit_query: "Modifier la Requête"
+    saved_queries: "Requêtes Enregistrées"
     criteria_labels:
         names: "Nom"
         names_all: "Nom (Tous)"
@@ -466,6 +472,11 @@ search:
     messages:
         reindex_done: "L'Index de Recherche a bien été reconstruit (%records% enregistrements, %time% secondes)"
         no_empty_search: "Vous devez saisir une valeur dans le champ de recherche"
+        invalid_empty_name: "Le nom de la requête ne peut pas être vide"
+        invalid_query_mode: "Type de requête invalide : '%mode%'"
+        invalid_empty_criteria: "Les critères de requête ne peuvent pas être vides"
+        query_saved: "La requête a bien été enregistrée. Cette fenêtre va se fermer automatiquement"
+        query_deleted: "La requête a bien été supprimée"
 
 requetes:
     title: "Interface de requête"

@@ -7,7 +7,7 @@
 {% endblock %}
 {% block content %}
 <div class="row my-3">
-    <div class="col-sm-12 col-md-12 text-center" id="search-panel">
+    <div class="col-sm-12 col-md-8 text-center" id="search-panel">
         <ul class="nav nav-pills nav-fill" id="searchTabLinks" role="tablist">
             <li class="nav-item">
                 <a class="nav-link font-weight-bolder active" id="simple-tab" data-toggle="tab" href="#simple"
@@ -155,6 +155,11 @@
                     </div>
                     <div class="form-group row">
                         <div class="col-sm-10">
+                            <button class="btn btn-secondary btn-sm mx-2" type="reset" name="reset"
+                                class="reset-button">
+                                <i class="fas fa-eraser fa-fw"></i>
+                                {{ 'generic.clear'|trans }}
+                            </button>
                             <button class="btn btn-primary mx-2" type="submit" name="search">
                                 <i class="fas fa-search fa-fw"></i>
                                 {{ 'generic.search'|trans }}
@@ -171,17 +176,21 @@
             </div>
         </div>
     </div>
-    <div class="col-sm-12 col-md-4 d-none">
+    <div class="col-sm-12 col-md-4">
         <ul class="nav nav-pills nav-fill" id="myTab" role="tablist">
             <li class="nav-item">
-                <a class="nav-link active" role="tab">
-                    {{ ('search.coverage')|trans }}
+                <a class="nav-link text-white background-map-grey" role="tab">
+                    {{ ('search.saved_queries')|trans }}
                 </a>
             </li>
         </ul>
-        <div class="tab-content" id="coverageTab">
+        <div class="tab-content overflow-auto" id="savedQueriesTab" style="max-height: 200px; ">
             <div class="tab-pane show active" role="tabpanel">
-                Coverage
+                <ul class="list-group list-group-flush">
+                    {% for query in saved_queries %}
+                    {% include "search/_saved_query.html.twig" with {'query': query} only %}
+                    {% endfor %}
+                </ul>
             </div>
         </div>
     </div>
@@ -211,11 +220,29 @@
 {{ encore_entry_script_tags('search_page') }}
 <script type="text/javascript">
     $(document).ready(function () {
+        changeMode = function (mode) {
+            $('#searchTabLinks a[href="#' + mode + '"]').tab('show');
+        };
+
+        adjustSavedQueriesHeight = function (currentMode) {
+            if (currentMode === "simple") {
+                $("#savedQueriesTab").animate({
+                    maxHeight: '200px'
+                }, 500);
+            } else {
+                var height = $('div.tab-pane#' + currentMode).outerHeight();
+                $("#savedQueriesTab").animate({
+                    maxHeight: height + 'px'
+                }, 500);
+            }
+        };
+
         populateCriteriaData = function (mode, data) {
             if (mode === "simple") {
                 $('#simple').find('input[name="search_value"]').val(data[0]);
             }
             else if (mode === "guided") {
+                $('#guided').find('button[type=reset]').click();
                 $.each(data, function (criteria, value) {
                     switch (criteria) {
                         case 'names':
@@ -251,7 +278,7 @@
 
         if (populate_mode != "") {
             // Populate mode from POST parameters if any
-            $('#searchTabLinks a[href="#' + populate_mode + '"]').tab('show');
+            changeMode(populate_mode);
 
             // Populate criteria
             var populate_criteria = "{{populate.criteria|e('js')}}";
@@ -260,13 +287,36 @@
             }
         }
         else if (url.match('#')) {
-            $('#searchTabLinks a[href="#' + url.split('#')[1] + '"]').tab('show');
+            changeMode(url.split('#')[1]);
         }
 
         // Change hash for page-reload
         $('#searchTabLinks a').on('shown.bs.tab', function (e) {
             window.location.hash = e.target.hash;
+            adjustSavedQueriesHeight(e.target.hash.replace('#', ''));
         })
+
+        // Watch reset buttons
+        $('#guided').on('reset', function (e) {
+            var form = $(this);
+            setTimeout(() => {
+                form.find('select').trigger('chosen:updated');
+                form.find('input[name$="_mode"]').attr('checked', false);
+                form.find('input[name="datation[exact]"]').attr('checked', true);
+            }, 10);
+        })
+
+        // Watch query load buttons
+        $('button.query-load-button').on('click', function (e) {
+            var data = $(this).data();
+            changeMode(data.queryMode);
+            populateCriteriaData(
+                data.queryMode,
+                $.parseJSON(
+                    decodeURIComponent(data.queryCriteria)
+                )
+            );
+        });
     });
 </script>
 {% endblock %}

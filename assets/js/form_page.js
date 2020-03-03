@@ -4,7 +4,6 @@ require('./base.js');
 
 require('./plugins/chosen.jquery.js');
 
-require('form-serializer');
 require('./plugins/collection.js');
 require('./plugins/dependent_fields.js');
 require('./plugins/dependent_selects.js');

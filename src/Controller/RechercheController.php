@@ -2,7 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\RechercheEnregistree;
+
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -17,6 +20,12 @@ class RechercheController extends AbstractController
         $populate_mode = $request->request->get('populate_mode', '');
         $populate_criteria = urldecode($request->request->get('populate_criteria', ''));
 
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        $queries = $this->getDoctrine()
+                        ->getRepository(RechercheEnregistree::class)
+                        ->findAllByChercheur($user);
+
         return $this->render('search/index.html.twig', [
             'controller_name' => 'RechercheController',
             'locale'          => $request->getLocale(),
@@ -25,7 +34,8 @@ class RechercheController extends AbstractController
                 'mode'     => $populate_mode,
                 'criteria' => $populate_criteria,
             ],
-            'breadcrumbs'     => [
+            'saved_queries' => $queries,
+            'breadcrumbs'   => [
                 ['label' => 'nav.home', 'url' => $this->generateUrl('home')],
                 ['label' => 'search.title']
             ]
@@ -119,6 +129,89 @@ class RechercheController extends AbstractController
                 ['label' => 'search.results']
             ]
         ]);
+    }
+
+    /**
+     * @Route("/search/save", name="search_save")
+     */
+    public function searchSave(Request $request, TranslatorInterface $translator)
+    {
+        $submittedToken = $request->request->get('token');
+        $query_name = $request->request->get('query_name', '');
+        $query_mode = $request->request->get('query_mode', '');
+        $query_criteria = urldecode($request->request->get('query_criteria', '{}'));
+
+        if (!$this->isCsrfTokenValid('query_save', $submittedToken)) {
+            return new JsonResponse([
+                'success' => false,
+                'message' => $translator->trans('generic.messages.failed_csrf')
+            ], 400);
+        }
+        if(!strlen($query_name)){
+            return new JsonResponse([
+                'success' => false,
+                'message' => $translator->trans('search.messages.invalid_empty_name')
+            ], 400);
+        }
+        if(!in_array($query_mode, ['simple', 'guided', 'advanced', 'elements'])){
+            return new JsonResponse([
+                'success' => false,
+                'message' => $translator->trans('search.messages.invalid_query_mode', [
+                    '%mode%' => $query_mode
+                ])
+            ], 400);
+        }
+        if(empty(json_decode($query_criteria, true))){
+            return new JsonResponse([
+                'success' => false,
+                'message' => $translator->trans('search.messages.invalid_empty_criteria')
+            ], 400);
+        }
+
+        $query = new RechercheEnregistree;
+        $query->setNom($query_name);
+        $query->setMode($query_mode);
+        $query->setCriteria($query_criteria);
+        $query->setCreateur(
+            $this->get('security.token_storage')->getToken()->getUser()
+        );
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($query);
+        $em->flush();
+
+        return new JsonResponse([
+            'success' => true,
+            'message' => $translator->trans('search.messages.query_saved')
+        ], 201);
+    }
+
+    /**
+     * @Route("/search/{id}/delete", name="search_delete")
+     */
+    public function searchDelete($id, Request $request){
+        $submittedToken = $request->request->get('token');
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        if ($this->isCsrfTokenValid('delete_query_'.$id, $submittedToken)) {
+            $repository = $this->getDoctrine()->getRepository(RechercheEnregistree::class);
+            $query = $repository->find($id);
+            if($query instanceof RechercheEnregistree){
+                if($query->getCreateur()->getId() === $user->getId()){
+                    $em = $this->getDoctrine()->getManager();
+                    $em->remove($query);
+                    $em->flush();
+                    $request->getSession()->getFlashBag()->add('success', 'search.messages.query_deleted');
+                } else {
+                    $request->getSession()->getFlashBag()->add('error', 'generic.messages.error_unauthorized');
+                }
+            } else {
+                $request->getSession()->getFlashBag()->add('error', 'generic.messages.deletion_failed_missing');
+            }
+        } else {
+            $request->getSession()->getFlashBag()->add('error', 'generic.messages.deletion_failed_csrf');
+        }
+        return $this->redirectToRoute('search');
     }
 
     /**

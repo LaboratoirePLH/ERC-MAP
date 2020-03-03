@@ -55,6 +55,7 @@ generic:
     delete: "Delete"
     add: "Add"
     clear: "Clear"
+    load: "Load"
     clear_filters: "Clear filters"
     send: "Send"
     exit: "Exit"
@@ -107,6 +108,7 @@ generic:
         oui: "Yes"
         non: "No"
     messages:
+        failed_csrf: "Failure, invalid CSRF Token"
         deletion_failed_csrf: "Deletion failed, invalid CSRF Token"
         deletion_failed_missing: "Deletion failed, record not found"
         unknown_user: "Unknown username"
@@ -402,6 +404,9 @@ modals:
     confirm_search_reindex:
         title: "Confirm search index rebuild"
         body: "Are you sure you want to rebuild the search index ? This action will take several minutes and cannot be interrupted."
+    query_save:
+        title: "Query save"
+        body: "Please enter a name for your query"
 
 datatable:
     all: "All"
@@ -454,6 +459,7 @@ search:
     reindex: "Rebuild Search Index"
     new_query: "New Query"
     edit_query: "Edit Query"
+    saved_queries: "Saved Queries"
     criteria_labels:
         names: "Name"
         names_all: "Name (All)"
@@ -466,6 +472,11 @@ search:
     messages:
         reindex_done: "The Search Index has been rebuilt (%records% records, %time% seconds)"
         no_empty_search: "You must input a value in the search field"
+        invalid_empty_name: "Query name cannot be empty"
+        invalid_query_mode: "Invalid query type : '%mode%'"
+        invalid_empty_criteria: "Query criteria cannot be empty"
+        query_saved: "Query was successfully saved. This window will close automatically"
+        query_deleted: "Query was successfully deleted"
 
 requetes:
     title: "Query interface"

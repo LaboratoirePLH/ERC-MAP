@@ -5,6 +5,7 @@ global.$ = global.jQuery = $;
 window.Papa = global.Papa = require('papaparse');
 
 require('bootstrap');
+require('form-serializer');
 
 decodeEntities = function (encodedString) {
     var textArea = document.createElement('textarea');

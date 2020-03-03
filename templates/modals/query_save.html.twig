@@ -1,0 +1,44 @@
+{#
+Modal component.
+Parameters :
+- targetUrl : URL to send data to
+- queryMode : Query mode
+- queryCriteria : Query criteria
+#}
+<div class="modal fade" id="query-save-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{ ('modals.query_save.title')|trans }}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="{{ 'generic.close'|trans}}">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{{ targetUrl|default('') }}" method="POST">
+                <div class="modal-body">
+                    <p>{{ ('modals.query_save.body')|trans }}</p>
+                    <p>
+                        <input type="text" name="query_name" id="query_name" class="form-control"
+                            placeholder="{{ 'generic.fields.nom'|trans }}" />
+                        <input type="hidden" name="token" value="{{ csrf_token("query_save") }}" />
+                        <input type="hidden" name="query_mode" value="{{ queryMode }}" />
+                        <input type="hidden" name="query_criteria"
+                            value="{{ queryCriteria|json_encode|url_encode|raw }}" />
+                    </p>
+                    <div class="alert d-none" id="save-query-result" role="alert"></div>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-secondary"
+                        data-dismiss="modal">{{ cancelLabel|default('generic.cancel')|trans }}</a>
+
+                    <button type="submit" class="btn btn-success modal-accept-button">
+                        <span class="spinner-border spinner-border-sm d-none" id="submit-spinner" role="status"
+                            aria-hidden="true"></span>
+                        {{ 'generic.save'|trans }}
+                    </button>
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

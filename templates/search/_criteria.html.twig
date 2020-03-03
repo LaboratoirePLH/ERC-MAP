@@ -3,7 +3,7 @@
         <div class="card-header border-color-map-yellow text-center">
             <strong>{{ ('search.mode')|trans }}</strong> : {{ ('search.'~mode)|trans }}
         </div>
-        <div class="card-body">
+        <div class="card-body p-1">
             {% if mode == 'simple' %}
             <div class="text-center">
                 {{ criteria|join(' ') }}

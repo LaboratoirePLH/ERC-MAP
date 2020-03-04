@@ -54,9 +54,6 @@
                             <select class="form-control autocomplete" name="names[]" id="inputName" multiple
                                 data-placeholder="{{('autocomplete.select_multiple')|trans}}">
                                 <option value></option>
-                                {% for id,value in data.names %}
-                                <option value="{{ id }}">{{ value|raw }}</option>
-                                {% endfor %}
                             </select>
                         </div>
                         <div class="col-sm-2">
@@ -75,9 +72,6 @@
                             <select class="form-control autocomplete" name="languages[]" id="inputLanguage" multiple
                                 data-placeholder="{{('autocomplete.select_multiple')|trans}}">
                                 <option value></option>
-                                {% for id,value in data.languages %}
-                                <option value="{{ id }}">{{ value|raw }}</option>
-                                {% endfor %}
                             </select>
                         </div>
                         <div class="col-sm-2">
@@ -116,9 +110,6 @@
                             <select class="form-control autocomplete" name="locations[]" id="inputLocation" multiple
                                 data-placeholder="{{('autocomplete.select_multiple')|trans}}">
                                 <option value></option>
-                                {% for id,value in data.locations %}
-                                <option value="{{ id }}">{{ value|raw }}</option>
-                                {% endfor %}
                             </select>
                         </div>
                     </div>
@@ -128,9 +119,6 @@
                             <select class="form-control autocomplete" name="sourceTypes[]" id="inputSourceType" multiple
                                 data-placeholder="{{('autocomplete.select_multiple')|trans}}">
                                 <option value></option>
-                                {% for id,value in data.sourceTypes %}
-                                <option value="{{ id }}">{{ value|raw }}</option>
-                                {% endfor %}
                             </select>
                         </div>
                     </div>
@@ -140,16 +128,6 @@
                             <select class="form-control autocomplete" name="agents[]" id="inputAgents" multiple
                                 data-placeholder="{{('autocomplete.select_multiple')|trans}}">
                                 <option value></option>
-                                <optgroup label="{{('agent.fields.activite')|trans}}">
-                                    {% for id,value in data.agents.activites %}
-                                    <option value="{{ id }}">{{ value|raw }}</option>
-                                    {% endfor %}
-                                </optgroup>
-                                <optgroup label="{{('agent.fields.agentivite')|trans}}">
-                                    {% for id,value in data.agents.agentivites %}
-                                    <option value="{{ id }}">{{ value|raw }}</option>
-                                    {% endfor %}
-                                </optgroup>
                             </select>
                         </div>
                     </div>
@@ -269,6 +247,53 @@
                 });
             }
         }
+
+        loadCriteria = function (criteriaName, target, optgroups) {
+
+            var createOptions = function (data, select) {
+                Object.entries(data)
+                    .sort((a, b) => removeAccents(a[1]).localeCompare(removeAccents(b[1])))
+                    .forEach(([value, label]) => {
+                        select.append(
+                            $('<option />').attr('value', value).html(label)
+                        );
+                    });
+            }
+
+            var url = "{{ url('search_criteria', {'criteriaName': '_crit_'})|raw }}".replace('_crit_', criteriaName);
+            target.parent().append($('<div class="spinner-border chosen-spinner" role="status"></div>'));
+            $.get(url)
+                .done(function (response) {
+                    //console.log(criteriaName, response.data);
+                    if (optgroups !== undefined) {
+                        Object.entries(optgroups).forEach(([datakey, grouplabel]) => {
+                            if (response.data.hasOwnProperty(datakey)) {
+                                var optgroup = $('<optgroup/>').attr('label', grouplabel);
+                                createOptions(response.data[datakey], optgroup);
+                                target.append(optgroup);
+                            }
+                        })
+                    } else {
+                        createOptions(response.data, target);
+                    }
+                    target.trigger('chosen:updated');
+                })
+                .fail(function (response) {
+                    console.error(criteriaName, response);
+                })
+                .always(function () {
+                    target.siblings('.chosen-spinner').remove();
+                });
+        }
+
+        loadCriteria('names', $('#guided select[name="names[]"]'));
+        loadCriteria('languages', $('#guided select[name="languages[]"]'));
+        loadCriteria('locations', $('#guided select[name="locations[]"]'));
+        loadCriteria('sourceTypes', $('#guided select[name="sourceTypes[]"]'));
+        loadCriteria('agents', $('#guided select[name="agents[]"]'), {
+            activites: "{{('agent.fields.activite')|trans}}",
+            agentivites: "{{('agent.fields.agentivite')|trans}}",
+        });
 
 
         $('select.autocomplete').chosen(CHOSEN_SETTINGS);

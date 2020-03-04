@@ -36,3 +36,9 @@ select:invalid {
 select:invalid[multiple] {
    margin-top: 15px !important;
 }
+
+.chosen-spinner {
+    position: absolute;
+    top: 4px;
+    left: 20px;
+}

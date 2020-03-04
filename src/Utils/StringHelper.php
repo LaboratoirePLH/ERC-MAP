@@ -4,6 +4,11 @@ namespace App\Utils;
 
 class StringHelper
 {
+    public static function snakeCase(string $input): string
+    {
+        return strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $input));
+    }
+
     public static function removeAccents(string $input): string
     {
         $transliterator = \Transliterator::createFromRules(':: NFD; :: [:Nonspacing Mark:] Remove; :: NFC;', \Transliterator::FORWARD);

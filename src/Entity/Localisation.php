@@ -16,6 +16,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Localisation extends AbstractEntity
 {
     use Traits\EntityId;
+    use Traits\Cached;
     use Traits\TranslatedComment;
 
     /**

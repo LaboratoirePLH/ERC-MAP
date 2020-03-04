@@ -37,7 +37,7 @@ class SourceTypes implements CriteriaDataInterface {
 
     public static function getCacheTags(): array
     {
-        return ['categorie_source', 'type_source'];
+        return ['CategorieSource', 'TypeSource'];
     }
 
     public static function getCacheLifetime(): int

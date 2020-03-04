@@ -9,10 +9,12 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="agentivite")
  * @ORM\Entity
+ * @ORM\HasLifecycleCallbacks()
  */
 class Agentivite extends AbstractEntity
 {
     use Traits\EntityId;
+    use Traits\Cached;
     use Traits\TranslatedName;
 
     public function toArray(): array

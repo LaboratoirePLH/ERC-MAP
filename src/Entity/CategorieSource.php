@@ -9,10 +9,12 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="categorie_source")
  * @ORM\Entity
+ * @ORM\HasLifecycleCallbacks()
  */
 class CategorieSource extends AbstractEntity
 {
     use Traits\EntityId;
+    use Traits\Cached;
     use Traits\TranslatedName;
 
     public function toArray(): array

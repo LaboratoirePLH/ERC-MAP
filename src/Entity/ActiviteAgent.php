@@ -9,10 +9,12 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="activite_agent")
  * @ORM\Entity
+ * @ORM\HasLifecycleCallbacks()
  */
 class ActiviteAgent extends AbstractEntity
 {
     use Traits\EntityId;
+    use Traits\Cached;
     use Traits\TranslatedName;
 
     public function toArray(): array

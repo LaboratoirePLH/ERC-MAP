@@ -16,17 +16,17 @@
     </div>
     <div class="col-12 col-xl-6 mb-2 mb-xl-0 order-1 order-xl-2 text-center">
         {% if action == 'edit' %}
-        {% spaceless %}
+        {% apply spaceless %}
         {{ 'generic.fields.date_creation'|trans }}&nbsp;:&nbsp;
         {{ element.dateCreation|date(('locale_datetime'|trans), "Europe/Paris") }}&nbsp;
         {{ 'generic.fields.by'|trans }}&nbsp;{{ element.createur.prenomNom }}
-        {% endspaceless %}
+        {% endapply %}
         <br />
-        {% spaceless %}
+        {% apply spaceless %}
         {{ 'generic.fields.date_modification'|trans }}&nbsp;:&nbsp;
         {{ element.dateModification|date(('locale_datetime'|trans), "Europe/Paris") }}&nbsp;
         {{ 'generic.fields.by'|trans }}&nbsp;{{ element.dernierEditeur.prenomNom }}
-        {% endspaceless %}
+        {% endapply %}
         <br />
         {{ 'generic.fields.version'|trans }}&nbsp;{{ element.version }}&rarr;{{ element.version+1 }}
         {% endif %}

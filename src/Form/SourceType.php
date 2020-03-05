@@ -188,7 +188,7 @@ class SourceType extends AbstractType
                 'required'      => true,
                 'class'         => Projet::class,
                 'choice_label'  => 'nom'.ucfirst($locale),
-                'disabled'      => ($options['action'] !== "create"),
+                'disabled'      => ($options['formAction'] !== "create"),
                 'attr'          => [
                     'class' => 'autocomplete',
                     'data-placeholder' => $options['translations']['autocomplete.select_element']
@@ -249,7 +249,7 @@ class SourceType extends AbstractType
                 'selection_choice_label'  => 'affichage'.ucfirst($locale),
                 'allow_none'              => true,
                 'default_decision'        => 'select',
-                'action'                  => $options['action'],
+                'formAction'                  => $options['formAction'],
                 'isClone'                 => $options['isClone'],
                 'selection_query_builder' => function (EntityRepository $er) use ($locale) {
                     return $er->createQueryBuilder('e')
@@ -300,7 +300,7 @@ class SourceType extends AbstractType
         ]);
         $resolver->setRequired('locale');
         $resolver->setRequired('translations');
-        $resolver->setRequired('action');
+        $resolver->setRequired('formAction');
         $resolver->setRequired('user');
         $resolver->setDefault('isClone', false);
     }

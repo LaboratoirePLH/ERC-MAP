@@ -80,7 +80,7 @@ class SelectOrCreateType extends AbstractType implements DataMapperInterface
         $resolver->setDefault('allow_none', false);
         $resolver->setDefault('isClone', false);
         $resolver->setDefault('default_decision', null);
-        $resolver->setDefault('action', null);
+        $resolver->setDefault('formAction', null);
     }
 
     public function buildView(FormView $view, FormInterface $form, array $options)
@@ -119,9 +119,9 @@ class SelectOrCreateType extends AbstractType implements DataMapperInterface
 
         // initialize form field values
         // there is no data yet, set decision to default choice
-        $action = $forms['decision']->getParent()->getConfig()->getOption('action');
+        $formAction = $forms['decision']->getParent()->getConfig()->getOption('formAction');
         $isClone = $forms['decision']->getParent()->getConfig()->getOption('isClone');
-        if (null === $data && $action === "create" && !$isClone) {
+        if (null === $data && $formAction === "create" && !$isClone) {
             $forms['decision']->setData(
                 $forms['decision']->getParent()->getConfig()->getOption('default_decision')
             );

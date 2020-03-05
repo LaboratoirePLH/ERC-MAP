@@ -79,7 +79,7 @@ class SourceController extends AbstractController
         }
 
         $form   = $this->get('form.factory')->create(SourceType::class, $source, [
-            'action'       => 'create',
+            'formAction'   => 'create',
             'isClone'      => $clone,
             'user'         => $user,
             'locale'       => $request->getLocale(),
@@ -218,7 +218,7 @@ class SourceController extends AbstractController
         }
 
         $form   = $this->get('form.factory')->create(SourceType::class, $source, [
-            'action'       => 'edit',
+            'formAction'   => 'edit',
             'user'         => $user,
             'locale'       => $request->getLocale(),
             'translations' => [

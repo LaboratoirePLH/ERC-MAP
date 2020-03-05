@@ -28,7 +28,7 @@ class LoginType extends AbstractType
         ;
     }
 
-    public function getBlockPrefix() {}
+    public function getBlockPrefix() { return ''; }
 
     public function configureOptions(OptionsResolver $resolver)
     {

@@ -2,9 +2,10 @@
 
 namespace App\Entity\Traits;
 
-use App\Utils\CacheEngine;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Component\Cache\Adapter\TagAwareAdapter;
 
 trait Cached
 {
@@ -17,7 +18,9 @@ trait Cached
         $rc = new \ReflectionClass($this);
         $entityType = $rc->getShortName();
 
-        $cache = new CacheEngine;
+        $cache = new TagAwareAdapter(
+            new FilesystemAdapter('.map.cache.inner')
+        );
         $cache->invalidateTags([$entityType]);
     }
 }

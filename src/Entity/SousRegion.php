@@ -9,12 +9,10 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="sous_region")
  * @ORM\Entity
- * @ORM\HasLifecycleCallbacks()
  */
 class SousRegion extends AbstractEntity
 {
     use Traits\EntityId;
-    use Traits\Cached;
     use Traits\TranslatedName;
 
     /**

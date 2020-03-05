@@ -9,12 +9,10 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="grande_region")
  * @ORM\Entity
- * @ORM\HasLifecycleCallbacks()
  */
 class GrandeRegion extends AbstractEntity
 {
     use Traits\EntityId;
-    use Traits\Cached;
     use Traits\TranslatedName;
 
     /**

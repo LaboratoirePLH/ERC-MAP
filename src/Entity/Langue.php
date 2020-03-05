@@ -9,12 +9,10 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="langue")
  * @ORM\Entity
- * @ORM\HasLifecycleCallbacks()
  */
 class Langue extends AbstractEntity
 {
     use Traits\EntityId;
-    use Traits\Cached;
     use Traits\TranslatedName;
 
     public function toArray(): array

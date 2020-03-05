@@ -4,12 +4,12 @@ namespace App\Controller;
 
 use App\Entity\RechercheEnregistree;
 use App\Search\Criteria;
-use App\Utils\CacheEngine;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Cache\TagAwareCacheInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class RechercheController extends AbstractController
@@ -235,9 +235,9 @@ class RechercheController extends AbstractController
     /**
      * @Route("/search/clear_cache", name="search_clear_cache")
      */
-    public function clearCache(Request $request, TranslatorInterface $translator, CacheEngine $cacheEngine)
+    public function clearCache(Request $request, TranslatorInterface $translator, TagAwareCacheInterface $mapCache)
     {
-        $cacheEngine->invalidateTags(['Recherche']);
+        $mapCache->invalidateTags(['Recherche']);
         // Message de confirmation
         $request->getSession()->getFlashBag()->add(
             'success',

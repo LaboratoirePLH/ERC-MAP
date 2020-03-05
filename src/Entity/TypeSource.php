@@ -9,12 +9,10 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="type_source")
  * @ORM\Entity
- * @ORM\HasLifecycleCallbacks()
  */
 class TypeSource extends AbstractEntity
 {
     use Traits\EntityId;
-    use Traits\Cached;
     use Traits\TranslatedName;
 
     /**

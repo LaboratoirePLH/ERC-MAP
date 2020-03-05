@@ -9,12 +9,10 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="traduction_element")
  * @ORM\Entity
- * @ORM\HasLifecycleCallbacks()
  */
 class TraductionElement extends AbstractEntity
 {
     use Traits\EntityId;
-    use Traits\Cached;
     use Traits\TranslatedName;
 
     /**

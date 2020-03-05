@@ -2,8 +2,8 @@
 
 namespace App\Search;
 
-use App\Utils\CacheEngine;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Contracts\Cache\TagAwareCacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 
 class Criteria
@@ -20,10 +20,10 @@ class Criteria
      */
     private $cache;
 
-    public function __construct(EntityManagerInterface $em, CacheEngine $cacheEngine)
+    public function __construct(EntityManagerInterface $em, TagAwareCacheInterface $mapCache)
     {
         $this->em    = $em;
-        $this->cache = $cacheEngine;
+        $this->cache = $mapCache;
     }
 
     public function getData(string $criteriaName, string $locale): array

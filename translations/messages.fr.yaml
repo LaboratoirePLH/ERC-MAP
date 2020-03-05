@@ -457,6 +457,7 @@ search:
     results_count_filtered: "%records% enregistrement%plural% affiché%plural% (sur un total de %total%)"
     coverage: "Etat de dépouillement du corpus"
     reindex: "Reconstruire l'Index de Recherche"
+    clear_cache: "Effacer le cache"
     new_query: "Nouvelle Requête"
     edit_query: "Modifier la Requête"
     saved_queries: "Requêtes Enregistrées"
@@ -471,6 +472,7 @@ search:
         agents: "Agent"
     messages:
         reindex_done: "L'Index de Recherche a bien été reconstruit (%records% enregistrements, %time% secondes)"
+        cache_cleared: "Le cache de Recherche a bien été effacé"
         no_empty_search: "Vous devez saisir une valeur dans le champ de recherche"
         invalid_empty_name: "Le nom de la requête ne peut pas être vide"
         invalid_query_mode: "Type de requête invalide : '%mode%'"

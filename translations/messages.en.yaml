@@ -457,6 +457,7 @@ search:
     results_count_filtered: "%records% record%plural% displayed (out of %total% total)"
     coverage: "Corpus Coverage"
     reindex: "Rebuild Search Index"
+    clear_cache: "Clear Cache"
     new_query: "New Query"
     edit_query: "Edit Query"
     saved_queries: "Saved Queries"
@@ -471,6 +472,7 @@ search:
         agents: "Agent"
     messages:
         reindex_done: "The Search Index has been rebuilt (%records% records, %time% seconds)"
+        cache_cleared: "The Search cache has been cleared"
         no_empty_search: "You must input a value in the search field"
         invalid_empty_name: "Query name cannot be empty"
         invalid_query_mode: "Invalid query type : '%mode%'"

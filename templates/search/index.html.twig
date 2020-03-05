@@ -189,6 +189,10 @@
             'confirmationLabel': 'generic.confirm',
             'useForm': false
         } %}
+        <a href="{{ url('search_clear_cache') }}" class="btn btn-danger">
+            <i class="fas fa-fw fa-trash"></i>
+            {{ 'search.clear_cache'|trans }}
+        </a>
     </div>
 </div>
 {% endif %}

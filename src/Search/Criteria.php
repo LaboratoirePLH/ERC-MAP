@@ -41,9 +41,14 @@ class Criteria
                     return [];
                 }
 
-                // Compute data
+                // Set Expiration date
                 $item->expiresAfter($cls::getCacheLifetime());
-                $item->tag($cls::getCacheTags());
+
+                // Set tags : those given by the data class and a global one to reset all cache entries on demand
+                $dataTags = $cls::getCacheTags();
+                $item->tag(array_merge($dataTags, ['Recherche']));
+
+                // Compute data
                 return $cls::compute($em, $locale);
             }
         );

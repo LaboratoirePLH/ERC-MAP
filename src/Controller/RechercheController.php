@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\RechercheEnregistree;
 use App\Search\Criteria;
+use App\Utils\CacheEngine;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -232,9 +233,23 @@ class RechercheController extends AbstractController
     }
 
     /**
+     * @Route("/search/clear_cache", name="search_clear_cache")
+     */
+    public function clearCache(Request $request, TranslatorInterface $translator, CacheEngine $cacheEngine)
+    {
+        $cacheEngine->invalidateTags(['Recherche']);
+        // Message de confirmation
+        $request->getSession()->getFlashBag()->add(
+            'success',
+            $translator->trans('search.messages.cache_cleared')
+        );
+        return $this->redirectToRoute('search');
+    }
+
+    /**
      * @Route("/search/rebuild_index", name="search_reindex")
      */
-    public function rebuild(Request $request, TranslatorInterface $translator)
+    public function rebuildIndex(Request $request, TranslatorInterface $translator)
     {
         set_time_limit(3600);
         $start = microtime(true);

@@ -6,7 +6,7 @@ use App\Entity\AbstractEntity;
 use App\Entity\IndexRecherche;
 use App\Search\Filter\Guided as GuidedSearchFilter;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @method IndexRecherche|null find($id, $lockMode = null, $lockVersion = null)

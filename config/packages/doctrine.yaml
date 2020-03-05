@@ -19,17 +19,14 @@ doctrine:
         types:
             geography:
                 class: 'Jsor\Doctrine\PostGIS\Types\GeographyType'
-                commented: false
             geometry:
                 class: 'Jsor\Doctrine\PostGIS\Types\GeometryType'
-                commented: false
             raster:
                 class: 'Jsor\Doctrine\PostGIS\Types\RasterType'
-                commented: false
 
     orm:
         auto_generate_proxy_classes: true
-        naming_strategy: doctrine.orm.naming_strategy.underscore
+        naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
         auto_mapping: true
         mappings:
             App:

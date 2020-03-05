@@ -9,7 +9,7 @@ use App\Entity\Element;
 use App\Entity\Source;
 use App\Entity\VerrouEntite;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @method VerrouEntite|null find($id, $lockMode = null, $lockVersion = null)
@@ -19,7 +19,7 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  */
 class VerrouEntiteRepository extends ServiceEntityRepository
 {
-    public function __construct(RegistryInterface $registry)
+    public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, VerrouEntite::class);
     }

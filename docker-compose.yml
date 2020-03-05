@@ -10,7 +10,7 @@ services:
             - php
         volumes:
             # Logs
-            - ./logs/nginx:/var/logs/nginx:delegated
+            - ./logs/nginx:/var/log/nginx:delegated
             # Code
             - .:/var/www/html:delegated
         ports:

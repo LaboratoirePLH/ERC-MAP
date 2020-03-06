@@ -38,7 +38,7 @@ class TraductionAttestation extends AbstractEntity
     /**
      * @var string|null
      *
-     * @ORM\Column(name="nom_fr", type="string", length=500, nullable=true)
+     * @ORM\Column(name="nom_fr", type="string", length=1000, nullable=true)
      */
     private $nomFr;
 
@@ -56,7 +56,7 @@ class TraductionAttestation extends AbstractEntity
     /**
      * @var string|null
      *
-     * @ORM\Column(name="nom_en", type="string", length=500, nullable=true)
+     * @ORM\Column(name="nom_en", type="string", length=1000, nullable=true)
      */
     private $nomEn;
 

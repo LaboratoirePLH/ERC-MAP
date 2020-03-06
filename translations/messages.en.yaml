@@ -522,3 +522,7 @@ requetes:
     erreur_champ_affiche: "Please fill out the fields to display."
     erreur_ordre: "One or more fields to display have the same order."
     erreur_nom_requete: "Please name your query."
+
+maintenance:
+    title: "Database Maintenance"
+    beta_codes: "List of out of format Beta Codes"

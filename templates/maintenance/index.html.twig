@@ -1,0 +1,52 @@
+{% extends 'page.html.twig' %}
+{% block title %}
+{{ 'maintenance.title'|trans }}
+{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-12 d-flex justify-content-around">
+        <a href="{{ url('maintenance_beta_codes') }}" class="btn btn-warning">
+            <i class="fas fa-fw fa-language"></i>
+            {{ 'maintenance.beta_codes'|trans }}
+        </a>
+    </div>
+</div>
+<hr />
+{% if beta_codes is defined %}
+<h4 class="text-center">
+    {{ 'maintenance.beta_codes'|trans }} ({{ beta_codes|length }})
+</h4>
+<div class="row">
+    <div class="col-12">
+        <table class="table table-bordered table-striped table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">{{'element.fields.etat_absolu'|trans}}</th>
+                    <th scope="col">{{'element.fields.beta_code'|trans}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for element in beta_codes %}
+                <tr>
+                    <th scope="row">
+                        {% include "partials/_entitylink.html.twig" with {
+                                'entity': 'element',
+                                'link': url('element_show', {'id': element.id}),
+                                'text': '#' ~ element.id
+                            } %}
+                    </th>
+                    <td>
+                        {{ element.etatAbsolu|raw }}
+                    </td>
+                    <td>
+                        {{ element.betaCode|raw }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

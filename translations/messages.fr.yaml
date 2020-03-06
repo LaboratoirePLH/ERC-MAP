@@ -522,3 +522,7 @@ requetes:
     erreur_champ_affiche: "Vous devez compléter les champs à afficher."
     erreur_ordre: "Vous avez deux ou plusieurs ordres identiques."
     erreur_nom_requete: "Vous devez donner un nom à la requête."
+
+maintenance:
+    title: "Maintenance de la Base de Données"
+    beta_codes: "Liste des Beta Codes hors format"

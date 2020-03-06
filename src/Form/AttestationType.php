@@ -224,6 +224,9 @@ class AttestationType extends AbstractType
                 'allow_add'     => true,
                 'allow_delete'  => true,
                 'required'      => false,
+                'entry_options' => [
+                    'undeterminedPlaceholder' => $options['translations']['formule.undetermined']
+                ]
             ])
         ;
     }

@@ -406,10 +406,12 @@
                     <tbody>
                         {% for formule in attestation.formules %}
                         <tr>
-                            <td>#{{ formule.positionFormule }}</td>
+                            <td class="align-middle">#{{ formule.positionFormule }}</td>
                             <td class="formula-cell">{{ formule.formule }}</td>
-                            <td>{{ formule.puissancesDivines }}</td>
-                            <td>{{ formule.createur.prenomNom }}</td>
+                            <td class="align-middle">
+                                {{ formule.puissancesDivines|default('element.etat_morphologique.indetermine'|trans) }}
+                            </td>
+                            <td class="align-middle">{{ formule.createur.prenomNom }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>

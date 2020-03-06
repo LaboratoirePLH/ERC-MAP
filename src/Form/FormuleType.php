@@ -36,8 +36,10 @@ class FormuleType extends AbstractType
             ])
             ->add('puissancesDivines', IntegerType::class, [
                 'label'      => 'formule.fields.puissances_divines',
-                'attr'       => ['min' => 0],
-                'empty_data' => 1,
+                'attr'       => [
+                    'min'         => 0,
+                    'placeholder' => $options['undeterminedPlaceholder']
+                ],
                 'required'   => false
             ])
         ;
@@ -57,5 +59,6 @@ class FormuleType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Formule::class,
         ]);
+        $resolver->setRequired('undeterminedPlaceholder');
     }
 }

@@ -15,7 +15,7 @@
 </div>
 {% endfor %}
 
-{% for child in form if not child.vars.valid %}
+{% for child in form %}
 
 {% if child.vars.compound and not child.vars.valid %}
 {{ forms.display_error(child) }}

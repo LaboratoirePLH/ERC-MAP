@@ -383,6 +383,8 @@ formule:
             <li>inside the formula zone to reorder them</li>
             <li>from the formula zone to their original zone to remove them</li>
         </ul>
+    messages:
+        undetermined: "Leave value empty for undetermined number"
     errors:
         valid: "Formula is valid"
         unknown_element: "Unknown element"

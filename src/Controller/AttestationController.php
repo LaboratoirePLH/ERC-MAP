@@ -180,7 +180,8 @@ class AttestationController extends AbstractController
             'locale'       => $request->getLocale(),
             'translations' => [
                 'autocomplete.select_element'  => $translator->trans('autocomplete.select_element'),
-                'autocomplete.select_multiple' => $translator->trans('autocomplete.select_multiple')
+                'autocomplete.select_multiple' => $translator->trans('autocomplete.select_multiple'),
+                'formule.undetermined'         => $translator->trans('formule.messages.undetermined')
             ]
         ]);
 
@@ -352,7 +353,8 @@ class AttestationController extends AbstractController
             'locale'       => $request->getLocale(),
             'translations' => [
                 'autocomplete.select_element'  => $translator->trans('autocomplete.select_element'),
-                'autocomplete.select_multiple' => $translator->trans('autocomplete.select_multiple')
+                'autocomplete.select_multiple' => $translator->trans('autocomplete.select_multiple'),
+                'formule.undetermined'         => $translator->trans('formule.messages.undetermined')
             ]
         ]);
 

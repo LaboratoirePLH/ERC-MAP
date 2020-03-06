@@ -383,6 +383,8 @@ formule:
             <li>au sein de la zone de formule pour les réordonner</li>
             <li>depuis la zone de formule vers l'une des zones d'origine pour les supprimer</li>
         </ul>
+    messages:
+        undetermined: "Laisser la valeur vide pour un nombre indéterminé"
     errors:
         valid: "La Formule est valide"
         unknown_element: "Élément inconnu"

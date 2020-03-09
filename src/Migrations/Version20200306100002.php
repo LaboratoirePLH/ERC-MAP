@@ -12,6 +12,8 @@ use Doctrine\Migrations\AbstractMigration;
  */
 final class Version20200306100002 extends AbstractMigration
 {
+    use \App\Migrations\Traits\ResetsViews;
+
     public function getDescription() : string
     {
         return '';

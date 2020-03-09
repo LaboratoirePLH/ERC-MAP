@@ -15,7 +15,7 @@
             {% if label == 'datation' %}
             <div class="border border-color-map-yellow rounded p-2 mr-1 my-1">
                 {{ 'search.criteria_labels.datation'|trans }}
-                {% if values.exact == 'datation_exact' %}
+                {% if values.exact is defined and values.exact == 'datation_exact' %}
                 ({{'generic.fields.strict'|trans}})
                 {% endif %}
                 <span class="badge badge-primary">

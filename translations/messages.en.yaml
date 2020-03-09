@@ -389,9 +389,15 @@ formule:
         valid: "Formula is valid"
         unknown_element: "Unknown element"
         no_element: "No element in the formula"
+        not_all_elements: "All elements must appear in the formula"
+        element_twice: "Elements cannot be directly followed by another element"
         brackets: "Brackets order error"
         parenthesis: "Parenthesis order error"
-        operator: "Operator error"
+        brackets_parenthesis_imbrication: "Brackets and parenthesis imbrication error"
+        operator_start: "Formula cannot start with an operator"
+        operator_end: "Formula cannot end with an operator"
+        operator_twice: "Operator cannot be directly followed by another operator"
+        operator_imbrication: "Brackets and parentheses cannot start or end with an operator"
 
 modals:
     confirm_deletion:

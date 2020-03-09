@@ -389,9 +389,15 @@ formule:
         valid: "La Formule est valide"
         unknown_element: "Élément inconnu"
         no_element: "Aucun élément dans la formule"
+        not_all_elements: "Tous les éléments doivent apparaître dans la formule"
+        element_twice: "Un élément ne peut pas être suivi directement par un autre element"
         brackets: "Erreur d'ordre de crochets"
         parenthesis: "Erreur d'ordre de parenthèses"
-        operator: "Erreur d'opérateur"
+        brackets_parenthesis_imbrication: "Erreur d'imbrication de parenthèses et de crochets"
+        operator_start: "La Formule ne peut pas commencer par un opérateur"
+        operator_end: "La Formule ne peut pas finir par un opérateur"
+        operator_twice: "Un opérateur ne peut pas être suivi directement par un autre opérateur"
+        operator_imbrication: "Les parenthèses et crochets ne peuvent pas commencer ou finir par un opérateur"
 
 modals:
     confirm_deletion:

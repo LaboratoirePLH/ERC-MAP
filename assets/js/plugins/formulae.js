@@ -66,6 +66,16 @@ var get_browser = function () {
         '=': 'RoyalBlue'
     }
 
+    const validationRegexes = [
+        [/^(\+|\#|\/|\=).*/, 'operator_start'],
+        [/^.*(\+|\#|\/|\=)$/, 'operator_end'],
+        [/(\[|\()(\+|\#|\/|\=)/, 'operator_imbrication'],
+        [/(\+|\#|\/|\=)(\]|\))/, 'operator_imbrication'],
+        [/(\]\(|\)\[|\[\)|\(\]|\[\]|\(\)|\]\[|\)\()/, 'brackets_parenthesis_imbrication'],
+        [/(\+|\#|\/|\=)(\+|\#|\/|\=)/, 'operator_twice'],
+        [/\}\{/, 'element_twice']
+    ]
+
     $.fn.parseFormula = function (formula, settings) {
         var formulaElements = [];
         var elementCpt = {};
@@ -115,17 +125,10 @@ var get_browser = function () {
                         }
                         break;
                     default:
-                        // Prevent an operator at the start or the end of the formula
-                        const isValid = (formulaElements.length > 0
-                            && formulaElements[formulaElements.length - 1].type !== "operator");
-                        if (!isValid) {
-                            errors.push(settings.errors.operator);
-                        }
                         formulaElements.push({
                             type: 'operator',
                             display: chr,
-                            raw: chr,
-                            isValid: isValid
+                            raw: chr
                         });
                 }
             } else {
@@ -155,15 +158,28 @@ var get_browser = function () {
                 }
             }
         }
+
+        // Formula must contain all the elements linked to the testimony
         if (!hasElements) {
             errors.push(settings.errors.no_element);
         }
+        else if (Object.keys(elementCpt).length < Object.keys(settings.elements).length) {
+            errors.push(settings.errors.not_all_elements);
+        }
+
         if (parenthesisIndex > 0) {
             errors.push(settings.errors.parenthesis)
         }
         if (bracketsIndex > 0) {
             errors.push(settings.errors.brackets)
         }
+
+        validationRegexes.forEach(([regex, errorCode]) => {
+            if (formula.match(regex)) {
+                errors.push(settings.errors[errorCode]);
+            }
+        })
+
         return { formulaElements, errors };
     }
     $.fn.formulaElementRenderer = function (formulaEl, settings) {
@@ -207,11 +223,6 @@ var get_browser = function () {
         return { formulaButtons, errors };
     }
 
-    $.fn.formulaValidator = function (formulaElements, settings) {
-
-        return true;
-    }
-
     $.fn.formulaEditor = function (settings) {
         var settings = $.extend({
             labels: {
@@ -223,9 +234,15 @@ var get_browser = function () {
                 valid: "Formula is valid",
                 unknown_element: "Unknown element",
                 no_element: "No element in the formula",
+                not_all_elements: "All elements must appear in the formula",
+                element_twice: "Elements cannot be directly followed by another element",
                 brackets: "Brackets order error",
                 parenthesis: "Parenthesis order error",
-                operator: "Operator error"
+                brackets_parenthesis_imbrication: "Brackets and parenthesis imbrication error",
+                operator_start: "Formula cannot start with an operator",
+                operator_end: "Formula cannot end with an operator",
+                operator_twice: "Operator cannot be directly followed by another operator",
+                operator_imbrication: "Brackets and parentheses cannot start or end with an operator"
             },
             help: 'Help',
             elementCls: 'btn-info',
@@ -245,7 +262,7 @@ var get_browser = function () {
                 var statusWrapper = $('<div/>', {
                     class: 'col-1 text-center formula-status',
                     html: '<i class="fas fa-check-circle text-success' + (errors.length > 0 ? ' d-none' : '') + '" data-toggle="tooltip" data-html="true" data-placement="left" title="' + settings.errors.valid + '" ></i>'
-                        + '<i class="fas fa-exclamation-triangle text-danger' + (errors.length == 0 ? ' d-none' : '') + '" data-toggle="tooltip" data-html="true" data-placement="left" title="' + errors.join('<br/>') + '" ></i>'
+                        + '<i class="fas fa-exclamation-triangle text-danger' + (errors.length == 0 ? ' d-none' : '') + '" data-toggle="tooltip" data-html="true" data-placement="left" title="' + errors.join('<hr/>') + '" ></i>'
                 })
             } else {
                 errors = "";

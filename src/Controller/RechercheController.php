@@ -272,7 +272,6 @@ class RechercheController extends AbstractController
     }
 
     private function _prepareCriteriaDisplay($mode, $criteria, $locale, TranslatorInterface $translator, Criteria $searchCriteria) {
-        $em = $this->getDoctrine()->getEntityManager();
         $nameField = "nom" . ucfirst(strtolower($locale));
 
         if($mode == "simple"){

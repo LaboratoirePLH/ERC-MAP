@@ -24,6 +24,7 @@
                     <th scope="col">#</th>
                     <th scope="col">{{'element.fields.etat_absolu'|trans}}</th>
                     <th scope="col">{{'element.fields.beta_code'|trans}}</th>
+                    <th scope="col">{{'generic.fields.reason'|trans}}</th>
                 </tr>
             </thead>
             <tbody>
@@ -41,6 +42,9 @@
                     </td>
                     <td>
                         {{ element.betaCode|raw }}
+                    </td>
+                    <td>
+                        {{ element.reason|trans }}
                     </td>
                 </tr>
                 {% endfor %}

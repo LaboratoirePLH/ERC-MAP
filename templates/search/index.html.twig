@@ -225,40 +225,56 @@
             }
         };
 
-        populateCriteriaData = function (mode, data) {
+        populateCriteriaData = function (mode, data, callback) {
             if (mode === "simple") {
                 $('#simple').find('input[name="search_value"]').val(data[0]);
             }
             else if (mode === "guided") {
-                $('#guided').find('button[type=reset]').click();
-                $.each(data, function (criteria, value) {
-                    switch (criteria) {
-                        case 'names':
-                        case 'languages':
-                        case 'locations':
-                        case 'sourceTypes':
-                        case 'agents':
-                            $('#guided').find('select[name="' + criteria + '[]"]')
-                                .val(value)
-                                .trigger('chosen:updated');
-                            break;
-                        case 'datation':
-                            $('#guided').find('input[name="datation[post_quem]"]').val(value.post_quem);
-                            $('#guided').find('input[name="datation[ante_quem]"]').val(value.ante_quem);
-                            $('#guided').find('input[name="datation[exact]"]').attr('checked', value.exact === "datation_exact");
-                            break;
-                        case 'names_mode':
-                        case 'languages_mode':
-                            if (value === "all") {
-                                $('#guided').find('input[name="' + criteria + '"]').attr('checked', true);
-                            }
-                            break;
+                // Guided form will be populated when all its data has been loaded
+                $('#guided > form').one('async-form-ready', function () {
+                    $('#guided').find('button[type=reset]').click();
+                    $.each(data, function (criteria, value) {
+                        switch (criteria) {
+                            case 'names':
+                            case 'languages':
+                            case 'locations':
+                            case 'sourceTypes':
+                            case 'agents':
+                                $('#guided').find('select[name="' + criteria + '[]"]')
+                                    .val(value)
+                                    .trigger('chosen:updated');
+                                break;
+                            case 'datation':
+                                $('#guided').find('input[name="datation[post_quem]"]').val(value.post_quem);
+                                $('#guided').find('input[name="datation[ante_quem]"]').val(value.ante_quem);
+                                $('#guided').find('input[name="datation[exact]"]').attr('checked', value.exact === "datation_exact");
+                                break;
+                            case 'names_mode':
+                            case 'languages_mode':
+                                if (value === "all") {
+                                    $('#guided').find('input[name="' + criteria + '"]').attr('checked', true);
+                                }
+                                break;
+                        }
+                    });
+                    if (callback !== undefined) {
+                        callback.apply(null);
                     }
                 });
+                // In case criteria are already loaded (ie loading a saved query),
+                // we manually trigger the event
+                if (criteriaLoading == 0) {
+                    $('#guided > form').trigger('async-form-ready');
+                }
             }
         }
 
+        // Keep track of the number of criteria that need to be loaded
+        var criteriaLoading = 0;
+
         loadCriteria = function (criteriaName, target, optgroups) {
+            // Add a unit to the number of criteria being loaded
+            criteriaLoading++;
 
             var createOptions = function (data, select) {
                 Object.entries(data)
@@ -271,11 +287,14 @@
             }
 
             var url = "{{ url('search_criteria', {'criteriaName': '_crit_'})|raw }}".replace('_crit_', criteriaName);
+
+            // Display spinner on field being loaded
             target.parent().append($('<div class="spinner-border chosen-spinner" role="status"></div>'));
+
             $.get(url)
                 .done(function (response) {
-                    //console.log(criteriaName, response.data);
                     if (optgroups !== undefined) {
+                        // Display 2-level data using optgroups
                         Object.entries(optgroups).forEach(([datakey, grouplabel]) => {
                             if (response.data.hasOwnProperty(datakey)) {
                                 var optgroup = $('<optgroup/>').attr('label', grouplabel);
@@ -284,6 +303,7 @@
                             }
                         })
                     } else {
+                        // Display single level data
                         createOptions(response.data, target);
                     }
                     // When chosen will be ready, set up the virtual keyboard
@@ -305,6 +325,9 @@
                 })
                 .always(function () {
                     target.siblings('.chosen-spinner').remove();
+                    if (--criteriaLoading == 0) {
+                        target.parents('form').trigger('async-form-ready');
+                    }
                 });
         }
 
@@ -349,7 +372,7 @@
             changeMode(e.target.hash.replace('#', ''));
         });
 
-        // Watch reset buttons
+        // Watch reset button
         $('#guided').on('reset', function (e) {
             var form = $(this);
             setTimeout(() => {
@@ -357,17 +380,30 @@
                 form.find('input[name$="_mode"]').attr('checked', false);
                 form.find('input[name="datation[exact]"]').attr('checked', true);
             }, 10);
-        })
+        });
 
         // Watch query load buttons
         $('button.query-load-button').on('click', function (e) {
-            var data = $(this).data();
+            // Disable all query load buttons
+            $('button.query-load-button').attr('disabled', true);
+
+            // Show spinner on current button
+            var btn = $(this);
+            btn.children().hide();
+            btn.append($('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>'));
+
+            var data = btn.data();
             changeMode(data.queryMode);
             populateCriteriaData(
                 data.queryMode,
                 $.parseJSON(
                     decodeURIComponent(data.queryCriteria)
-                )
+                ),
+                function () {
+                    btn.find('span.spinner-border').remove();
+                    btn.children().show();
+                    $('button.query-load-button').attr('disabled', false);
+                }
             );
         });
     });

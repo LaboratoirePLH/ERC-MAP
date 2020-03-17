@@ -101,6 +101,7 @@ generic:
         champ: "Field"
         strict: "Strict"
         require_all: "Require all"
+        reason: "Reason"
     choices :
         new: "New"
         existing: "Existing"
@@ -534,3 +535,6 @@ requetes:
 maintenance:
     title: "Database Maintenance"
     beta_codes: "List of out of format Beta Codes"
+    messages:
+        invalid_char: "Invalid character(s)"
+        invalid_length: "Length difference"

@@ -100,6 +100,7 @@ generic:
         champ: "Champ"
         strict: "Strict"
         require_all: "Tous requis"
+        reason: "Raison"
     choices :
         new: "Nouveau"
         existing: "Existant"
@@ -534,3 +535,6 @@ requetes:
 maintenance:
     title: "Maintenance de la Base de Données"
     beta_codes: "Liste des Beta Codes hors format"
+    messages:
+        invalid_char: "Caractère(s) invalide(s)"
+        invalid_length: "Différence de longueur"

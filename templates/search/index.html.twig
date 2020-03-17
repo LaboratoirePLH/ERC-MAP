@@ -204,7 +204,12 @@
 <script type="text/javascript">
     $(document).ready(function () {
         changeMode = function (mode) {
+            // Show given tab
             $('#searchTabLinks a[href="#' + mode + '"]').tab('show');
+            // Update current URL hash
+            window.location.hash = '#' + mode;
+            // Adjust height of saved queries block
+            adjustSavedQueriesHeight(mode);
         };
 
         adjustSavedQueriesHeight = function (currentMode) {
@@ -339,11 +344,10 @@
             changeMode(url.split('#')[1]);
         }
 
-        // Change hash for page-reload
-        $('#searchTabLinks a').on('shown.bs.tab', function (e) {
-            window.location.hash = e.target.hash;
-            adjustSavedQueriesHeight(e.target.hash.replace('#', ''));
-        })
+        // React to click on tabs
+        $('#searchTabLinks a').on('click', function (e) {
+            changeMode(e.target.hash.replace('#', ''));
+        });
 
         // Watch reset buttons
         $('#guided').on('reset', function (e) {

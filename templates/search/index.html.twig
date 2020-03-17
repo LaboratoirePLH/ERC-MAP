@@ -280,7 +280,19 @@
                     } else {
                         createOptions(response.data, target);
                     }
-                    target.trigger('chosen:updated');
+                    // When chosen will be ready, set up the virtual keyboard
+                    target.on('chosen:ready', function () {
+                        $(this).siblings('.chosen-container')
+                            .find('input.chosen-search-input')
+                            .semiticKeyboard(
+                                $(this).siblings('.chosen-container'),
+                                'right top',
+                                'right top',
+                                true
+                            );
+                    });
+                    // Set up Chosen autocomplete on field we just filled
+                    target.chosen(CHOSEN_SETTINGS);
                 })
                 .fail(function (response) {
                     console.error(criteriaName, response);
@@ -290,6 +302,15 @@
                 });
         }
 
+        // Show virtual keyboard on simple search field
+        $('#simple input').semiticKeyboard(
+            null,
+            'right top',
+            'right top',
+            true
+        );
+
+        // Load criteria for guided mode
         loadCriteria('names', $('#guided select[name="names[]"]'));
         loadCriteria('languages', $('#guided select[name="languages[]"]'));
         loadCriteria('locations', $('#guided select[name="locations[]"]'));
@@ -299,9 +320,7 @@
             agentivites: "{{('agent.fields.agentivite')|trans}}",
         });
 
-
-        $('select.autocomplete').chosen(CHOSEN_SETTINGS);
-
+        // Change tab and populate data
         var url = document.location.toString(),
             populate_mode = "{{ populate.mode }}";
 

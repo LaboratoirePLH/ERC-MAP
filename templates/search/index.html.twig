@@ -51,7 +51,7 @@
                         <label for="inputName"
                             class="col-sm-2 col-form-label">{{ ('generic.fields.nom')|trans }}</label>
                         <div class="col-sm-8">
-                            <select class="form-control autocomplete" name="names[]" id="inputName" multiple
+                            <select class="form-control autocomplete" name="names[]" id="inputName" size="1" multiple
                                 data-placeholder="{{('autocomplete.select_multiple')|trans}}">
                                 <option value></option>
                             </select>
@@ -69,8 +69,8 @@
                         <label for="inputLanguage"
                             class="col-sm-2 col-form-label">{{ ('generic.fields.langue')|trans }}</label>
                         <div class="col-sm-8">
-                            <select class="form-control autocomplete" name="languages[]" id="inputLanguage" multiple
-                                data-placeholder="{{('autocomplete.select_multiple')|trans}}">
+                            <select class="form-control autocomplete" name="languages[]" id="inputLanguage" size="1"
+                                multiple data-placeholder="{{('autocomplete.select_multiple')|trans}}">
                                 <option value></option>
                             </select>
                         </div>
@@ -107,8 +107,8 @@
                         <label for="inputLocation"
                             class="col-sm-2 col-form-label">{{ ('generic.fields.lieu')|trans }}</label>
                         <div class="col-sm-10">
-                            <select class="form-control autocomplete" name="locations[]" id="inputLocation" multiple
-                                data-placeholder="{{('autocomplete.select_multiple')|trans}}">
+                            <select class="form-control autocomplete" name="locations[]" id="inputLocation" size="1"
+                                multiple data-placeholder="{{('autocomplete.select_multiple')|trans}}">
                                 <option value></option>
                             </select>
                         </div>
@@ -116,8 +116,8 @@
                     <div class="form-group row">
                         <label for="inputSourceType" class="col-sm-2 col-form-label">{{ ('source.name')|trans }}</label>
                         <div class="col-sm-10">
-                            <select class="form-control autocomplete" name="sourceTypes[]" id="inputSourceType" multiple
-                                data-placeholder="{{('autocomplete.select_multiple')|trans}}">
+                            <select class="form-control autocomplete" name="sourceTypes[]" id="inputSourceType" size="1"
+                                multiple data-placeholder="{{('autocomplete.select_multiple')|trans}}">
                                 <option value></option>
                             </select>
                         </div>
@@ -125,7 +125,7 @@
                     <div class="form-group row">
                         <label for="inputAgents" class="col-sm-2 col-form-label">{{ ('agent.name')|trans }}</label>
                         <div class="col-sm-10">
-                            <select class="form-control autocomplete" name="agents[]" id="inputAgents" multiple
+                            <select class="form-control autocomplete" name="agents[]" id="inputAgents" size="1" multiple
                                 data-placeholder="{{('autocomplete.select_multiple')|trans}}">
                                 <option value></option>
                             </select>
@@ -199,6 +199,7 @@
 
 {% endblock %}
 {% block javascripts %}
+{{ parent() }}
 {{ encore_entry_script_tags('search_page') }}
 <script type="text/javascript">
     $(document).ready(function () {

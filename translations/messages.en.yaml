@@ -85,6 +85,7 @@ generic:
         commentaire_en: "Commentary (EN)"
         langue: "Language"
         to_translate: "To translate in"
+        translation: "Translation"
         translations: "Translations"
         precision: "Precision"
         fiabilite: "Reliability"
@@ -150,8 +151,9 @@ source:
         titre_en:  "Title (EN)"
         titre_principal: "Main Title"
         auteurs: "Authors"
-        types_source: "Types"
-        categorie_source: "Category"
+        types_source: "Source Types"
+        type_source: "Source Type"
+        categorie_source: "Source Category"
         materiau: "Material"
         categorie_materiau: "Material Category"
         support: "Medium"
@@ -220,6 +222,7 @@ attestation:
         passage: "Passage"
         prose: "Prose"
         poesie: "Poetry"
+        prose_poesie: "Prose / Poetry"
         extrait_sans_restitution: "Without restitution"
         extrait_avec_restitution: "With restitution"
         translitteration: "Transliteration"
@@ -279,6 +282,7 @@ element:
         beta_code: "Beta Code"
         nature: "Nature"
         categories_invariantes: "Out of Context Categories"
+        domaine: "Domain"
         suffixe: "Suffix ?"
         genre: "Gender"
         nombre: "Number"
@@ -334,6 +338,14 @@ datation:
     fields:
         post_quem: "Post Quem"
         ante_quem: "Ante Quem"
+        precision: "Datation precision"
+        commentaires: "Datation comments"
+    precision:
+        niveau_1: "5 years or less"
+        niveau_2: "50 years or less"
+        niveau_3: "100 years or less"
+        niveau_4: "200 years or less"
+        niveau_5: "More than 200 years"
 
 localisation:
     search_pleiades: "Search on Pleiades"
@@ -342,6 +354,7 @@ localisation:
     fields:
         grande_region: "Region"
         sous_region: "Sub-region"
+        region: "Region / Sub-region"
         entite_politique: "Political Entity"
         pleiades_ville: "Pleiades Number (Place)"
         ville: "Place"
@@ -353,6 +366,12 @@ localisation:
         nom_site : "Name (Site)"
         topographie : "Topography"
         fonction: "Function"
+        precision: "Location precision"
+    precision:
+        niveau_1: "Site"
+        niveau_2: "Place"
+        niveau_3: "Sub-region"
+        niveau_4: "Region"
 
 chercheur:
     profile: "Update profile"
@@ -470,6 +489,10 @@ search:
     new_query: "New Query"
     edit_query: "Edit Query"
     saved_queries: "Saved Queries"
+    add_criteria: "Add a criteria"
+    remove_criteria: "Remove criteria"
+    choose_criteria: "Choose the criteria"
+    results_type: "Results type"
     criteria_labels:
         names: "Name"
         names_all: "Name (All)"
@@ -479,6 +502,7 @@ search:
         locations: "Location"
         sourceTypes: "Source"
         agents: "Agent"
+        contexte_attestation: "Testimony context"
     messages:
         reindex_done: "The Search Index has been rebuilt (%records% records, %time% seconds)"
         cache_cleared: "The Search cache has been cleared"
@@ -488,6 +512,7 @@ search:
         invalid_empty_criteria: "Query criteria cannot be empty"
         query_saved: "Query was successfully saved. This window will close automatically"
         query_deleted: "Query was successfully deleted"
+        no_criteria: "No criteria added. Add some using the button below"
 
 requetes:
     title: "Query interface"

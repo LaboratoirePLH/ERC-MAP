@@ -8,7 +8,7 @@ use Symfony\Contracts\Cache\ItemInterface;
 
 class Criteria
 {
-    const DEFAULT_CACHE_LIFETIME = 3600;
+    const DEFAULT_CACHE_LIFETIME = 10;
 
     /**
      * @var EntityManagerInterface
@@ -35,8 +35,9 @@ class Criteria
                 // Compute fully qualified classname from criteria name
                 $cls = '\\App\\Search\\Data\\' . ucfirst($criteriaName);
 
-                // If class is not found, return empty array with default lifetime
+                // If class is not found, return empty array with default lifetime and default tag
                 if(!class_exists($cls)){
+                    $item->tag(['Recherche']);
                     $item->expiresAfter(self::DEFAULT_CACHE_LIFETIME);
                     return [];
                 }

@@ -21,7 +21,7 @@
                     {{ ('search.guided')|trans }}
                 </a>
             </li>
-            <li class="nav-item d-none">
+            <li class="nav-item">
                 <a class="nav-link font-weight-bolder" id="advanced-tab" data-toggle="tab" href="#advanced" role="tab"
                     aria-controls="advanced" aria-selected="false">
                     {{ ('search.advanced')|trans }}
@@ -132,7 +132,7 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <div class="col-sm-10">
+                        <div class="col-sm-12">
                             <button class="btn btn-secondary btn-sm mx-2" type="reset" name="reset"
                                 class="reset-button">
                                 <i class="fas fa-eraser fa-fw"></i>
@@ -146,8 +146,60 @@
                     </div>
                 </form>
             </div>
-            <div class="tab-pane fade d-none" id="advanced" role="tabpanel" aria-labelledby="advanced-tab">
-                Recherche avancée
+            <div class="tab-pane fade p-3" id="advanced" role="tabpanel" aria-labelledby="advanced-tab">
+                <form action="{{ url('search_advanced') }}" method="post">
+                    <div class="form-group row first-row">
+                        <div class="col text-center">
+                            <label class="col-form-label">
+                                {{ 'search.results_type'|trans }} :
+                            </label>
+                            <div class="btn-group ml-2" data-toggle="buttons">
+                                <label class="btn btn-primary active">
+                                    <input type="radio" name="resultsType" value="source" autocomplete="off" checked>
+                                    <i class="fas fa-fw {{ icons.source }}"></i>
+                                    {{ 'source.name'|trans }}
+                                </label>
+                                <label class="btn btn-success">
+                                    <input type="radio" name="resultsType" value="attestation" autocomplete="off">
+                                    <i class="fas fa-fw {{ icons.attestation }}"></i>
+                                    {{ 'attestation.name'|trans }}
+                                </label>
+                                <label class="btn btn-warning">
+                                    <input type="radio" name="resultsType" value="element" autocomplete="off">
+                                    <i class="fas fa-fw {{ icons.element }}"></i>
+                                    {{ 'element.name'|trans }}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="form-group row no-criteria">
+                        <div class="col text-center">
+                            <h5>{{ 'search.messages.no_criteria'|trans }}</h5>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="form-group row last-row">
+                        <div class="col-sm-12">
+                            <button class="btn btn-secondary btn-sm mx-2" type="reset" name="reset"
+                                class="reset-button">
+                                <i class="fas fa-eraser fa-fw"></i>
+                                {{ 'generic.clear'|trans }}
+                            </button>
+                            <button class="btn btn-success mx-2" type="button" id="add-criteria">
+                                <i class="fas fa-plus fa-fw"></i>
+                                {{ 'search.add_criteria'|trans }}
+                            </button>
+                            <button class="btn btn-primary mx-2" type="submit" name="search">
+                                <i class="fas fa-search fa-fw"></i>
+                                {{ 'generic.search'|trans }}
+                            </button>
+                            <button class="btn btn-secondary btn-sm mx-2" type="button" name="test" id="test-add-all">
+                                Test
+                            </button>
+                        </div>
+                    </div>
+                </form>
             </div>
             <div class="tab-pane fade d-none" id="elements" role="tabpanel" aria-labelledby="elements-tab">
                 Recherche éléments
@@ -173,6 +225,7 @@
         </div>
     </div>
 </div>
+{% include "search/_templates.html.twig" with {'criteria_list': criteria_list} only %}
 {% if is_granted('ROLE_ADMIN') %}
 <hr />
 <div class="row">
@@ -203,13 +256,22 @@
 {{ encore_entry_script_tags('search_page') }}
 <script type="text/javascript">
     $(document).ready(function () {
+        SEARCH_CRITERIA = $.parseJSON("{{ criteria_list|json_encode|e('js')|raw }}");
+        CURRENT_MODE = "";
         changeMode = function (mode) {
+            // Save in variable
+            CURRENT_MODE = mode;
             // Show given tab
             $('#searchTabLinks a[href="#' + mode + '"]').tab('show');
             // Update current URL hash
             window.location.hash = '#' + mode;
             // Adjust height of saved queries block
             adjustSavedQueriesHeight(mode);
+
+            // Show directly the add criteria select list if we're showing the advanced tab
+            if (mode == "advanced") {
+                chooseNewCriteria();
+            }
         };
 
         adjustSavedQueriesHeight = function (currentMode) {
@@ -267,15 +329,20 @@
                     $('#guided > form').trigger('async-form-ready');
                 }
             }
+            else if (mode == "advanced") {
+                // Add the criteria, and populate data when all are ready
+            }
         }
 
         // Keep track of the number of criteria that need to be loaded
         var criteriaLoading = 0;
 
-        loadCriteria = function (criteriaName, target, optgroups) {
-            // Add a unit to the number of criteria being loaded
-            criteriaLoading++;
+        // Store criteria that have already been loaded
+        var loadedCriteria = {};
+        // Store criteria that are still loading with their promise
+        var loadingCriteria = {};
 
+        loadCriteriaData = function (criteriaName, target, optgroups, disableSemiticKeyboard) {
             var createOptions = function (data, select) {
                 Object.entries(data)
                     .sort((a, b) => removeAccents(a[1]).localeCompare(removeAccents(b[1])))
@@ -286,50 +353,195 @@
                     });
             }
 
-            var url = "{{ url('search_criteria', {'criteriaName': '_crit_'})|raw }}".replace('_crit_', criteriaName);
+            var injectData = function (data) {
+                if (optgroups !== undefined && optgroups !== null) {
+                    // Display 2-level data using optgroups
+                    Object.entries(optgroups).forEach(([datakey, grouplabel]) => {
+                        if (data.hasOwnProperty(datakey)) {
+                            var optgroup = $('<optgroup/>').attr('label', grouplabel);
+                            createOptions(data[datakey], optgroup);
+                            target.append(optgroup);
+                        }
+                    })
+                } else {
+                    // Display single level data
+                    createOptions(data, target);
+                }
 
-            // Display spinner on field being loaded
-            target.parent().append($('<div class="spinner-border chosen-spinner" role="status"></div>'));
-
-            $.get(url)
-                .done(function (response) {
-                    if (optgroups !== undefined) {
-                        // Display 2-level data using optgroups
-                        Object.entries(optgroups).forEach(([datakey, grouplabel]) => {
-                            if (response.data.hasOwnProperty(datakey)) {
-                                var optgroup = $('<optgroup/>').attr('label', grouplabel);
-                                createOptions(response.data[datakey], optgroup);
-                                target.append(optgroup);
-                            }
-                        })
-                    } else {
-                        // Display single level data
-                        createOptions(response.data, target);
-                    }
-                    // When chosen will be ready, set up the virtual keyboard
+                // When chosen will be ready, set up the virtual keyboard (unless disabled)
+                if (disableSemiticKeyboard !== true) {
                     target.on('chosen:ready', function () {
                         $(this).siblings('.chosen-container')
                             .find('input.chosen-search-input')
                             .semiticKeyboard(
                                 $(this).siblings('.chosen-container'),
-                                'right top',
+                                'left top',
                                 'right top',
                                 true
                             );
                     });
-                    // Set up Chosen autocomplete on field we just filled
-                    target.chosen(CHOSEN_SETTINGS);
-                })
-                .fail(function (response) {
-                    console.error(criteriaName, response);
-                })
-                .always(function () {
-                    target.siblings('.chosen-spinner').remove();
-                    if (--criteriaLoading == 0) {
-                        target.parents('form').trigger('async-form-ready');
-                    }
-                });
+                }
+                // Set up Chosen autocomplete on field we just filled
+                target.chosen(CHOSEN_SETTINGS);
+
+                // Fire event if no more criteria need to be loaded
+                if (criteriaLoading == 0) {
+                    target.parents('form').trigger('async-form-ready');
+                }
+            }
+
+            // If criteria has already been loaded, just inject data
+            if (loadedCriteria.hasOwnProperty(criteriaName)) {
+                injectData(loadedCriteria[criteriaName]);
+            }
+            else {
+                // Add a unit to the number of criteria being loaded
+                criteriaLoading++;
+
+                // Display spinner on field being loaded
+                target.parent().append($('<div class="spinner-border chosen-spinner" role="status"></div>'));
+
+                if (!loadingCriteria.hasOwnProperty(criteriaName)) {
+                    // Criteria is not currently being loaded, so we start the request and store the promise
+                    var url = "{{ url('search_criteria', {'criteriaName': '_crit_'})|raw }}".replace('_crit_', criteriaName);
+                    loadingCriteria[criteriaName] = $.get(url);
+                }
+                else {
+                }
+
+                loadingCriteria[criteriaName]
+                    .done(function (response) {
+                        loadedCriteria[criteriaName] = response.data;
+                        criteriaLoading--;
+                        injectData(response.data);
+                    })
+                    .fail(function (response) {
+                        criteriaLoading--;
+                    })
+                    .always(function () {
+                        target.siblings('.chosen-spinner').remove();
+                        delete loadingCriteria[criteriaName];
+                    });
+            }
         }
+
+        chooseNewCriteria = function () {
+            // Disable feature if current tab is not advanced search
+            if (CURRENT_MODE != "advanced") {
+                return;
+            }
+
+            // Do not do anything if new criteria selection is already displayed
+            if ($('#advanced .new-criteria').length > 0) {
+                return;
+            }
+
+            $('#advanced .no-criteria').hide();
+
+            $('#form-templates > #new-criteria-template').clone()
+                .removeProp('id')
+                .insertBefore($('#advanced hr').last());
+
+            $('#advanced .new-criteria select').chosen(CHOSEN_SETTINGS);
+
+            $('#advanced .new-criteria').find('button').one('click', function (e) {
+                e.preventDefault();
+                var criteria = $(this).parents('.new-criteria').find('select#inputNewCriteria').val();
+                $(this).parents('.new-criteria').remove();
+                if ($(this).attr('name') == 'confirm') {
+                    addNewCriteria(criteria);
+                } else if ($('#advanced .criteria-row').length == 0) {
+                    $('#advanced .no-criteria').show();
+                }
+            })
+        };
+
+        addNewCriteria = function (criteriaName) {
+            // Find properties in SEARCH_CRITERIA
+            var criteria = SEARCH_CRITERIA.reduce((found, item) => {
+                return found || (item.key === criteriaName ? item : item.children.reduce((carry, subitem) => {
+                    return subitem.key === criteriaName ? subitem : carry;
+                }, null));
+            }, null);
+
+            // Clone template
+            var template = $('#form-templates > #' + criteria.type + '-template').clone();
+
+            // Move id as className
+            template.addClass(template.prop('id')).addClass('criteria-row').removeProp('id');
+
+            // Set required properties depending on input type
+            switch (criteria.type) {
+                case 'select':
+                    // Compute an index based on the number of same name selects already added
+                    var index = $("#advanced").find('select[name^="' + criteria.key + '"]').length;
+                    var inputId = 'input' + criteria.key.charAt(0).toUpperCase() + criteria.key.slice(1);
+                    var inputName = criteria.key + '[' + index + '][values]';
+                    template.find('label').first().prop('for', inputId).text(criteria.label);
+                    template.find('select').prop('id', inputId).prop('name', inputName);
+                    template.find('.select-strict').find('label').prop('for', inputId + 'Mode_' + index);
+                    template.find('.select-strict').find('input')
+                        .prop('id', inputId + 'Mode_' + index)
+                        .prop('name', criteria.key + '[' + index + '][mode]');
+                    setTimeout(() => {
+                        loadCriteriaData(criteria.key, template.find('select'), null, criteria.semitic !== true);
+                    }, 100);
+                    break;
+                case 'text':
+                    var inputId = 'input' + criteria.key.charAt(0).toUpperCase() + criteria.key.slice(1);
+                    template.find('label').prop('for', inputId).text(criteria.label);
+                    template.find('input').prop('id', inputId).prop('name', criteria.key + '[]');
+                    break;
+                case 'range':
+                    var inputId = 'input' + criteria.key.charAt(0).toUpperCase() + criteria.key.slice(1);
+                    template.find('label').prop('for', inputId).text(criteria.label);
+                    template.find('input')
+                        .prop('id', inputId)
+                        .prop('name', criteria.key)
+                        .attr('list', 'datalist' + inputId.slice(5))
+                        .attr('min', criteria.min)
+                        .attr('max', criteria.max);
+                    template.find('output').prop('for', inputId);
+                    // Build datalist
+                    var datalist = Object.entries(criteria.datalist).map(
+                        ([value, label]) => $('<option />').attr('value', value).attr('label', label)
+                    );
+                    template.find('datalist').prop('id', 'datalist' + inputId.slice(5)).append(...datalist);
+                    // Setup event to show text value of range
+                    template.find('input').on('input', function (e) {
+                        const label = Array.from(e.target.list.options).find((o) => o.value == e.target.value).label;
+                        template.find('output').val(label);
+                    });
+                    // Set initial value
+                    template.find('input').val(criteria.min);
+                    template.find('output').val(criteria.datalist[criteria.min]);
+                    break;
+                case 'datation':
+                case 'prosepoetry':
+                    // Compute an index based on the number of same type templates already added
+                    var index = $("#advanced").find('.' + criteria.type + '-template').length;
+                    // Replace the "#X#" placeholder in the id and name properties of inputs
+                    template.find('input').each((i, el) => {
+                        $(el).prop('id', $(el).prop('id').replace('#X#', index));
+                        $(el).prop('name', $(el).prop('name').replace('#X#', index));
+                    });
+                    // Replace the "#X#" placeholder in the for property of labels
+                    template.find('label').each((i, el) => { $(el).prop('for', $(el).prop('for').replace('#X#', index)); });
+                    break;
+            }
+
+            // Add listener on remove button
+            template.find('button.remove-criteria-button').one('click', function (e) {
+                e.preventDefault();
+                $(this).parents('.criteria-row').remove();
+                if ($('#advanced .criteria-row').length == 0) {
+                    $('#advanced .no-criteria').show();
+                }
+            });
+
+            // Add to DOM
+            template.insertBefore($('#advanced hr').last());
+        };
 
         // Show virtual keyboard on simple search field
         $('#simple input').semiticKeyboard(
@@ -340,13 +552,19 @@
         );
 
         // Load criteria for guided mode
-        loadCriteria('names', $('#guided select[name="names[]"]'));
-        loadCriteria('languages', $('#guided select[name="languages[]"]'));
-        loadCriteria('locations', $('#guided select[name="locations[]"]'));
-        loadCriteria('sourceTypes', $('#guided select[name="sourceTypes[]"]'));
-        loadCriteria('agents', $('#guided select[name="agents[]"]'), {
+        loadCriteriaData('names', $('#guided select[name="names[]"]'));
+        loadCriteriaData('languages', $('#guided select[name="languages[]"]'), null, true);
+        loadCriteriaData('locations', $('#guided select[name="locations[]"]'), null, true);
+        loadCriteriaData('sourceTypes', $('#guided select[name="sourceTypes[]"]'), null, true);
+        loadCriteriaData('agents', $('#guided select[name="agents[]"]'), {
             activites: "{{('agent.fields.activite')|trans}}",
             agentivites: "{{('agent.fields.agentivite')|trans}}",
+        }, true);
+
+        // Setup events for advanced mode
+        $("#advanced button#add-criteria").on('click', function (e) {
+            e.preventDefault();
+            chooseNewCriteria();
         });
 
         // Change tab and populate data
@@ -372,7 +590,7 @@
             changeMode(e.target.hash.replace('#', ''));
         });
 
-        // Watch reset button
+        // Watch reset buttons
         $('#guided').on('reset', function (e) {
             var form = $(this);
             setTimeout(() => {
@@ -380,6 +598,45 @@
                 form.find('input[name$="_mode"]').attr('checked', false);
                 form.find('input[name="datation[exact]"]').attr('checked', true);
             }, 10);
+        });
+        $('#advanced').on('reset', function (e) {
+            var form = $(this);
+            setTimeout(() => {
+                form.find('.criteria-row, .new-criteria').remove();
+                form.find('.row.no-criteria').show();
+                form.find('input[name="resultsType"]').val('source');
+            }, 10);
+        });
+
+        // TODO : Remove debug
+        $('#advanced button#test-add-all').on('click', function (e) {
+            e.preventDefault();
+            $(this).siblings('.reset-button').click();
+            var allCriteria = SEARCH_CRITERIA.reduce((carry, item) => carry.concat([item.key], item.children.map(i => i.key)), []);
+            var interval = setInterval(() => {
+                addNewCriteria(allCriteria.shift());
+                if (!allCriteria.length) { clearInterval(interval); }
+            }, 100);
+        })
+        $('#advanced form').on('submit', function (e) {
+            e.preventDefault();
+            var formData = $(this).serializeObject();
+
+            // Prevent empty form submission
+            if (Object.keys(formData).filter(v => v !== "resultsType" && v !== "new_criteria").length == 0) {
+                console.warn("Trying to submit an empty form");
+                return false;
+            }
+
+            // Reset indexes of array values
+            for (var key in formData) {
+                if (formData.hasOwnProperty(key) && Array.isArray(formData[key])) {
+                    formData[key] = formData[key].filter(() => true);
+                }
+            }
+
+            console.log('submit', formData);
+            return false;
         });
 
         // Watch query load buttons

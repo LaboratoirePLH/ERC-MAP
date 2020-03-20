@@ -38,6 +38,7 @@ class RechercheController extends AbstractController
                 'criteria' => $populate_criteria,
             ],
             'saved_queries' => $queries,
+            'criteria_list' => \App\Search\CriteriaList::get($translator),
             'breadcrumbs'   => [
                 ['label' => 'nav.home', 'url' => $this->generateUrl('home')],
                 ['label' => 'search.title']
@@ -147,6 +148,14 @@ class RechercheController extends AbstractController
                 ['label' => 'search.results']
             ]
         ]);
+    }
+
+    /**
+     * @Route("/search/advanced", name="search_advanced")
+     */
+    public function advancedSearch(Request $request, TranslatorInterface $translator, Criteria $searchCriteria)
+    {
+        dump($request->request->all());
     }
 
     /**

@@ -84,6 +84,7 @@ generic:
         commentaire_en: "Commentaires (EN)"
         langue: "Langue"
         to_translate: "À traduire en"
+        translation: "Traduction"
         translations: "Traductions"
         precision: "Précision"
         fiabilite: "Fiabilité"
@@ -150,6 +151,7 @@ source:
         titre_principal: "Titre Principal"
         auteurs: "Auteurs"
         types_source: "Types de Source"
+        type_source: "Type de Source"
         categorie_source: "Catégorie de Source"
         materiau: "Matériau"
         categorie_materiau: "Catégorie de Matériau"
@@ -219,6 +221,7 @@ attestation:
         passage: "Passage"
         prose: "Prose"
         poesie: "Poésie"
+        prose_poesie: "Prose / Poésie"
         extrait_sans_restitution: "Extrait sans restitution"
         extrait_avec_restitution: "Extrait avec restitution"
         translitteration: "Translittération"
@@ -278,6 +281,7 @@ element:
         beta_code: "Beta Code"
         nature: "Nature"
         categories_invariantes: "Categories invariantes"
+        domaine: "Domaine"
         suffixe: "Suffixe ?"
         genre: "Genre"
         nombre: "Nombre"
@@ -334,6 +338,14 @@ datation:
     fields:
         post_quem: "Post Quem"
         ante_quem: "Ante Quem"
+        precision: "Précision de la Datation"
+        commentaires: "Commentaires de la datation"
+    precision:
+        niveau_1: "5 ans ou moins"
+        niveau_2: "50 ans ou moins"
+        niveau_3: "100 ans ou moins"
+        niveau_4: "200 ans ou moins"
+        niveau_5: "Plus de 200 ans"
 
 localisation:
     search_pleiades: "Chercher sur Pleiades"
@@ -342,6 +354,7 @@ localisation:
     fields:
         grande_region: "Région"
         sous_region: "Sous-région"
+        region: "Région / Sous-région"
         entite_politique: "Entité Politique"
         pleiades_ville: "Numéro Pléiades (Lieu)"
         ville: "Lieu"
@@ -353,6 +366,12 @@ localisation:
         nom_site : "Nom (Site)"
         topographie : "Topographie"
         fonction: "Fonction"
+        precision: "Précision de la Localisation"
+    precision:
+        niveau_1: "Site"
+        niveau_2: "Lieu"
+        niveau_3: "Sous-région"
+        niveau_4: "Région"
 
 chercheur:
     profile: "Modifier le profil"
@@ -470,6 +489,10 @@ search:
     new_query: "Nouvelle Requête"
     edit_query: "Modifier la Requête"
     saved_queries: "Requêtes Enregistrées"
+    add_criteria: "Ajouter un critère"
+    remove_criteria: "Retirer le critère"
+    choose_criteria: "Choisir le critère"
+    results_type: "Type de résultats"
     criteria_labels:
         names: "Nom"
         names_all: "Nom (Tous)"
@@ -479,6 +502,7 @@ search:
         locations: "Lieu"
         sourceTypes: "Source"
         agents: "Agent"
+        contexte_attestation: "Contexte de l'Attestation"
     messages:
         reindex_done: "L'Index de Recherche a bien été reconstruit (%records% enregistrements, %time% secondes)"
         cache_cleared: "Le cache de Recherche a bien été effacé"
@@ -488,6 +512,7 @@ search:
         invalid_empty_criteria: "Les critères de requête ne peuvent pas être vides"
         query_saved: "La requête a bien été enregistrée. Cette fenêtre va se fermer automatiquement"
         query_deleted: "La requête a bien été supprimée"
+        no_criteria: "Aucun critère choisi. Ajoutez en avec le bouton ci-dessous"
 
 requetes:
     title: "Interface de requête"

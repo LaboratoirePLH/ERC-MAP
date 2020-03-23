@@ -630,10 +630,20 @@
                 return false;
             }
 
-            // Reset indexes of array values
             for (var key in formData) {
                 if (formData.hasOwnProperty(key) && Array.isArray(formData[key])) {
+                    // Reset indexes of array values
                     formData[key] = formData[key].filter(() => true);
+
+                    // Clean empty array
+                    formData[key] = formData[key].filter((v) => v !== null && v !== "");
+                    if (formData[key].length == 0) {
+                        delete formData[key];
+                    }
+                }
+                // Clean empty datation
+                if (key == "datation" && formData[key].post_quem == "" && formData[key].ante_quem == "") {
+                    delete formData[key];
                 }
             }
 

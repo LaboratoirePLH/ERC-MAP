@@ -4,7 +4,8 @@ namespace App\Repository;
 
 use App\Entity\AbstractEntity;
 use App\Entity\IndexRecherche;
-use App\Search\Filter\Guided as GuidedSearchFilter;
+use App\Search\FilterSet\Guided as GuidedSearchFilter;
+use App\Search\FilterSet\Advanced as AdvancedSearchFilter;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -133,17 +134,34 @@ class IndexRechercheRepository extends ServiceEntityRepository
         return $response;
     }
 
-    public function guidedSearch(array $criteria, string $locale): array
+    public function search(string $mode, array $criteria, string $locale): array
     {
         // Get all data and sort it by entity type
         $allData = $this->findAll();
 
-        $filter = new GuidedSearchFilter($allData);
+        switch($mode){
+            case 'guided':
+                $filter = new GuidedSearchFilter($allData);
+            break;
+            case 'advanced':
+                $filter = new AdvancedSearchFilter($allData);
+                break;
+            default:
+                throw new \InvalidArgumentException("Cannot process search mode $mode. Only 'guided' and 'advanced' search modes are available");
+        }
         $filteredData = $filter->filter($criteria);
 
         $response = [];
         foreach($filteredData as $e){
-            $prepared = $this->_prepareResult($e, $locale);
+            if($mode == 'advanced')
+            {
+                $prepared = false;
+                // $prepared = $filter->prepare($e, $locale);
+            }
+            else
+            {
+                $prepared = $this->_prepareResult($e, $locale);
+            }
             if($prepared !== false){
                 $response[] = $prepared;
             }
@@ -168,7 +186,6 @@ class IndexRechercheRepository extends ServiceEntityRepository
             $r['linkType'] = "source";
             $r['linkId'] = $entity->getId();
             $r['type'] = "source.name";
-            // TODO : how do we determine the "field" column in non textual searches ?
             $r['field'] = $search === null ? [] : $fieldName;
             return $r;
         }
@@ -177,7 +194,6 @@ class IndexRechercheRepository extends ServiceEntityRepository
             $r['linkType'] = "attestation";
             $r['linkId'] = $entity->getId();
             $r['type'] = "attestation.name";
-            // TODO : how do we determine the "field" column in non textual searches ?
             $r['field'] = $search === null ? [] : $fieldName;
             return $r;
         }
@@ -271,6 +287,9 @@ class IndexRechercheRepository extends ServiceEntityRepository
         ];
     }
 
+    /**
+     * Recursive string search
+     */
     private function _array_search(array $data, string $search)
     {
         foreach($data as $key => $value){
@@ -363,9 +382,11 @@ class IndexRechercheRepository extends ServiceEntityRepository
         );
     }
 
+    /**
+     * Recursive array_filter and html_entity_decode
+     */
     private function _cleanData(array $entityData): ?array
     {
-        // array_filter et strip_tags recursif
         foreach($entityData as &$value){
             if(is_string($value)){
                 $value = trim(html_entity_decode($value));

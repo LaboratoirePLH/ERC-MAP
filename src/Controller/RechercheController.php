@@ -133,7 +133,7 @@ class RechercheController extends AbstractController
 
         $results = $this->getDoctrine()
                         ->getRepository(\App\Entity\IndexRecherche::class)
-                        ->guidedSearch($criteria, $request->getLocale());
+                        ->search('guided', $criteria, $request->getLocale());
 
         return $this->render('search/results.html.twig', [
             'controller_name' => 'RechercheController',

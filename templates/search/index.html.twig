@@ -497,7 +497,7 @@
                     template.find('label').prop('for', inputId).text(criteria.label);
                     template.find('input')
                         .prop('id', inputId)
-                        .prop('name', criteria.key)
+                        .prop('name', criteria.key + '[]')
                         .attr('list', 'datalist' + inputId.slice(5))
                         .attr('min', criteria.min)
                         .attr('max', criteria.max);

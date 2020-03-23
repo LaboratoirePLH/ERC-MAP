@@ -266,7 +266,7 @@
             // Update current URL hash
             window.location.hash = '#' + mode;
             // Adjust height of saved queries block
-            adjustSavedQueriesHeight(mode);
+            adjustSavedQueriesHeight();
 
             // Show directly the add criteria select list if we're showing the advanced tab
             if (mode == "advanced") {
@@ -274,13 +274,13 @@
             }
         };
 
-        adjustSavedQueriesHeight = function (currentMode) {
-            if (currentMode === "simple") {
+        adjustSavedQueriesHeight = function () {
+            if (CURRENT_MODE === "simple") {
                 $("#savedQueriesTab").animate({
                     maxHeight: '200px'
                 }, 500);
             } else {
-                var height = $('div.tab-pane#' + currentMode).outerHeight();
+                var height = $('div.tab-pane#' + CURRENT_MODE).outerHeight();
                 $("#savedQueriesTab").animate({
                     maxHeight: height + 'px'
                 }, 500);
@@ -541,6 +541,8 @@
 
             // Add to DOM
             template.insertBefore($('#advanced hr').last());
+
+            adjustSavedQueriesHeight();
         };
 
         // Show virtual keyboard on simple search field

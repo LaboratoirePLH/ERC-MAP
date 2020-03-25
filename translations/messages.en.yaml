@@ -493,6 +493,7 @@ search:
     remove_criteria: "Remove criteria"
     choose_criteria: "Choose the criteria"
     results_type: "Results type"
+    found_in: "Found in"
     criteria_labels:
         names: "Name(s)"
         names_all: "Name(s) (All)"

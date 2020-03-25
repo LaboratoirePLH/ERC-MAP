@@ -493,6 +493,7 @@ search:
     remove_criteria: "Retirer le critère"
     choose_criteria: "Choisir le critère"
     results_type: "Type de résultats"
+    found_in: "Trouvé dans"
     criteria_labels:
         names: "Nom(s)"
         names_all: "Nom(s) (Tous)"

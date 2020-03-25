@@ -494,6 +494,7 @@ search:
     choose_criteria: "Choisir le critère"
     results_type: "Type de résultats"
     found_in: "Trouvé dans"
+    choose_columns: "Choisir les colonnes"
     criteria_labels:
         names: "Nom(s)"
         names_all: "Nom(s) (Tous)"
@@ -504,6 +505,7 @@ search:
         sourceTypes: "Source(s)"
         agents: "Agent(s)"
         contexte_attestation: "Contexte de l'Attestation"
+        all: " (Tous)"
     messages:
         reindex_done: "L'Index de Recherche a bien été reconstruit (%records% enregistrements, %time% secondes)"
         cache_cleared: "Le cache de Recherche a bien été effacé"

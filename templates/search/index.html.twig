@@ -476,7 +476,7 @@
                     // Compute an index based on the number of same name selects already added
                     var index = $("#advanced").find('select[name^="' + criteria.key + '"]').length;
                     var inputId = 'input' + criteria.key.charAt(0).toUpperCase() + criteria.key.slice(1);
-                    var inputName = criteria.key + '[' + index + '][values]';
+                    var inputName = criteria.key + '[' + index + '][values][]';
                     template.find('label').first().prop('for', inputId).text(criteria.label);
                     template.find('select').prop('id', inputId).prop('name', inputName);
                     template.find('.select-strict').find('label').prop('for', inputId + 'Mode_' + index);
@@ -648,7 +648,7 @@
             }
 
             console.log('submit', formData);
-            return false;
+            this.submit();
         });
 
         // Watch query load buttons

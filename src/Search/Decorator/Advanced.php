@@ -32,7 +32,7 @@ class Advanced {
         $result = [];
 
         $mainEdition = array_reduce(
-            $source['sourceBiblios'],
+            $data['sourceBiblios'],
             function($carry, $item){ return ($item['editionPrincipale'] ?? false) ? $item : $carry; }
         );
         $result['reference'] = $mainEdition === null ? null
@@ -58,10 +58,11 @@ class Advanced {
         }
 
         $result['datation'] = self::_decorateDatation($data['datation'] ?? []);
-        $result['localisation'] = self::_decorateLocalisation($data['lieuOrigine'] ?? $data['lieuDecouverte'] ?? []);
+        $result['lieuOrigine'] = self::_decorateLocalisation($data['lieuOrigine'] ?? []);
+        $result['lieuDecouverte'] = self::_decorateLocalisation($data['lieuDecouverte'] ?? []);
 
         $result['extraits'] = array_filter(array_map(
-            function($att){ return $att['extraitAvecRestitution'] ?? $att['translitteration'] ?? ''; },
+            function($att){ return $att->getData()['extraitAvecRestitution'] ?? $att->getData()['translitteration'] ?? ''; },
             array_filter(
                 $allData,
                 function($e) use ($data) {

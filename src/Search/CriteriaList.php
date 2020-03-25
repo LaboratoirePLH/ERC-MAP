@@ -263,4 +263,28 @@ class CriteriaList
             ]
         ];
     }
+
+    public static function getCriteria(string $key, TranslatorInterface $translator): array
+    {
+        $all = self::get($translator);
+        foreach($all as $category)
+        {
+            if($category['key'] === $key)
+            {
+                unset($category['children']);
+                return $category;
+            }
+            else
+            {
+                foreach($category['children'] as $child)
+                {
+                    if($child['key'] === $key)
+                    {
+                        return $child;
+                    }
+                }
+            }
+        }
+        return [];
+    }
 }

@@ -1,0 +1,106 @@
+<div class="row my-3">
+    <div class="col-2 table-buttons d-flex flex-column justify-content-end align-items-stretch"
+        id="search-results-actions">
+        <a class="btn btn-primary mb-1" href="{{ url('search') }}#{{mode}}" role="button">
+            {{ 'search.new_query'|trans }}
+        </a>
+        <div class="d-block mb-1">
+            <form action="{{ url('search') }}#{{mode}}" method="post">
+                <input type="hidden" name="populate_mode" value="{{mode}}">
+                <input type="hidden" name="populate_criteria" value="{{criteria|json_encode|url_encode|raw}}">
+                <button class="btn btn-secondary btn-block" type="submit">
+                    {{ 'search.edit_query'|trans }}
+                </button>
+            </form>
+        </div>
+        <button type="button" class="btn btn-warning mb-1" id="query-save-button" data-toggle="modal"
+            data-target="#query-save-modal">
+            <i class="fas fa-save fa-fw"></i>
+            {{ 'generic.save'|trans }}
+        </button>
+        {% include "modals/query_save.html.twig" with {
+            'targetUrl'    : url('search_save'),
+            'queryMode'    : mode,
+            'queryCriteria': criteria
+        } %}
+        <div class="dropright d-block">
+            <button type="button" class="btn btn-secondary mb-1 btn-block" id="toggle-columns-button"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{ 'search.choose_columns'|trans }}
+                <i class="fas fa-caret-right fa-fw"></i>
+            </button>
+            <div class="dropdown-menu" aria-labelledby="toggle-columns-button">
+                <div class="px-4 py-3">
+                    <div class="row">
+                        <div class="col">
+                            {% for label, checked in columns %}
+                            <div class="form-group mb-0">
+                                <input type="checkbox" class="form-check-input toggle-column"
+                                    id="checkboxColumn{{ loop.index0 }}" data-column="{{ loop.index0 }}"
+                                    {% if checked %}checked{% endif %}>
+                                <label for="checkboxColumn{{ loop.index0 }}" class="form-check-label">
+                                    <small>
+                                        {{ label|trans }}
+                                    </small>
+                                </label>
+                            </div>
+                            {% if loop.index % 10 == 0 %}
+                        </div>
+                        <div class="col">
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% include "search/_criteria.html.twig" with {
+        'mode'       : mode,
+        'resultsType': resultsType,
+        'criteria'   : criteriaDisplay,
+        'width'      : 10
+    } %}
+</div>
+<table class="table table-striped table-hover table-bordered w-100 text-center list_table" id="search-results">
+    <thead>
+        <tr>
+            {% for label, checked in columns %}
+            <th scope="col">
+                {{ label|trans }}
+            </th>
+            {% endfor %}
+        </tr>
+        <tr id="filterRow">
+            {% for label, checked in columns %}
+            <th>{{ label|trans }}</th>
+            {% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for result in results %}
+        <tr>
+            {% for field in fields %}
+            {% set value = result[field] %}
+            {% set valueSearch = result[field] %}
+            {% if value is iterable %}
+            {% set valueSearch = valueSearch|join(' ') %}
+            {% set value = value|join('<hr/>') %}
+            {% endif %}
+
+            <td data-search="{{ valueSearch|striptags|remove_accents|raw }}">
+                {{ value|raw }}
+            </td>
+
+            {% endfor %}
+            <td class="py-0 px-1" data-search="#{{ result.linkId }}" data-sort="#{{ result.linkId }}">
+                {% include "partials/_entitylink.html.twig" with {
+                    'entity': result.linkType,
+                    'link': url(result.linkType ~ '_show', {'id': result.linkId}),
+                    'text': '#' ~ result.linkId
+                } %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

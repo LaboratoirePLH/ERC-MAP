@@ -151,22 +151,21 @@ class IndexRechercheRepository extends ServiceEntityRepository
         }
         $filteredData = $filter->filter($criteria);
 
-        $response = [];
-        foreach($filteredData as $e){
-            if($mode == 'advanced')
-            {
-                $prepared = false;
-                // $prepared = $filter->prepare($e, $locale);
-            }
-            else
-            {
-                $prepared = $this->_prepareResult($e, $locale);
-            }
-            if($prepared !== false){
-                $response[] = $prepared;
-            }
+        if($mode == 'advanced')
+        {
+            return \App\Search\Decorator\Advanced::decorate($filteredData, $allData, $locale);
         }
-        return $response;
+        else
+        {
+            $response = [];
+            foreach($filteredData as $e){
+                $prepared = $this->_prepareResult($e, $locale);
+                if($prepared !== false){
+                    $response[] = $prepared;
+                }
+            }
+            return $response;
+        }
     }
 
     private function _prepareResult(IndexRecherche $entity, string $locale, $search = null)

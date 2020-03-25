@@ -2,6 +2,9 @@
     <div class="card border-color-map-yellow">
         <div class="card-header border-color-map-yellow text-center">
             <strong>{{ ('search.mode')|trans }}</strong> : {{ ('search.'~mode)|trans }}
+            {% if resultsType is defined %}
+            ({{ (resultsType ~ '.name')|trans }})
+            {% endif %}
         </div>
         <div class="card-body p-1">
             {% if mode == 'simple' %}
@@ -15,7 +18,7 @@
                     {% if value is iterable %}
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item background-map-yellow font-weight-bolder text-uppercase">
-                            {{ key|trans }}</li>
+                            {{ key }}</li>
                         {% for subvalue in value %}
                         <li class="list-group-item">
                             {{ subvalue|raw }}
@@ -30,6 +33,56 @@
                         </p>
                     </div>
                     {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% elseif mode == 'advanced' %}
+            <div class="d-flex flex-sm-wrap justify-content-around">
+                {% for key, value in criteria %}
+                <div class="card">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item background-map-yellow font-weight-bolder text-uppercase">
+                            {{ key }}
+                        </li>
+                        {% for subvalue in value %}
+
+                        {% if subvalue is iterable %}
+
+                        {% set group_all = false %}
+                        {% for subsubvalue in subvalue %}
+
+                        {% if loop.first %}
+                        <li class="list-group-item">
+                            <strong>
+                                <em>
+                                    {{ loop.parent.loop.index }}
+                                    {% if subsubvalue == "all" %}
+                                    {{ 'search.criteria_labels.all'|trans }}
+                                    {% endif %}
+                                </em>
+                            </strong>
+                        </li>
+                        {% if subsubvalue != 'all' %}
+                        <li class="list-group-item">
+                            &rarr; {{ subsubvalue|raw }}
+                        </li>
+                        {% endif %}
+                        {% else %}
+                        <li class="list-group-item">
+                            &rarr; {{ subsubvalue|raw }}
+                        </li>
+                        {% endif %}
+
+                        {% endfor %}
+
+                        {% else %} {# If subvalue is not iterable #}
+                        <li class="list-group-item">
+                            {{ subvalue|raw }}
+                        </li>
+                        {% endif %}
+
+                        {% endfor %}
+                    </ul>
                 </div>
                 {% endfor %}
             </div>

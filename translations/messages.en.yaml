@@ -494,6 +494,7 @@ search:
     choose_criteria: "Choose the criteria"
     results_type: "Results type"
     found_in: "Found in"
+    choose_columns: "Choose columns"
     criteria_labels:
         names: "Name(s)"
         names_all: "Name(s) (All)"
@@ -504,6 +505,7 @@ search:
         sourceTypes: "Source(s)"
         agents: "Agent(s)"
         contexte_attestation: "Testimony context"
+        all: " (All)"
     messages:
         reindex_done: "The Search Index has been rebuilt (%records% records, %time% seconds)"
         cache_cleared: "The Search cache has been cleared"

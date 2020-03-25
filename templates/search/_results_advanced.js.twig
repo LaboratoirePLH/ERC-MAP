@@ -1,0 +1,185 @@
+<script type="text/javascript">
+    var mode = "{{ mode }}";
+    $(document).ready(function () {
+        $('#search-results thead tr#filterRow th').each(function () {
+            var title = $(this).text();
+            var value = $(this).data('value');
+            if (title != "") {
+                $(this).html(
+                    '<input type="text" class="w-100 form-control form-control-sm" placeholder="{{"generic.search"|trans}}' +
+                    ' ' + title + '" />'
+                );
+                if (value != null) {
+                    $(this).children('input').val(value);
+                }
+            }
+        });
+        var dt = $('#search-results').DataTable({
+            responsive: true,
+            autoWidth: true,
+            lengthChange: true,
+            scrollX: false,
+            searching: true,
+            ordering: true,
+            //            columns: [
+            //                { responsivePriority: 1 },
+            //                null,
+            //                { width: '110px' }, // Column "date" is fixed width
+            //                { width: '40%' },
+            //                { width: '110px' }, // Column "catégorie" is fixed width
+            //                { visible: mode == "simple" }, // Column "champ" is hidden except on simple search
+            //                {
+            //                    width: 110,
+            //                    responsivePriority: 1
+            //                }
+            //            ],
+            order: [
+                [0, 'asc']
+            ],
+            language: $.parseJSON('{{ "datatable.language"|trans|raw }}'),
+            pageLength: 10,
+            lengthMenu: [
+                [
+                    10, 25, 50, -1
+                ],
+                [
+                    10, 25, 50, "{{'datatable.all'|trans}}"
+                ]
+            ],
+            buttons: [{
+                extend: 'csv',
+                filename: "{{ 'app_name'|trans }}-{{ 'search.results'|trans }} {{ ('search.'~mode)|trans }}",
+                text: "{{'generic.export_csv'|trans}}",
+                customize: function (document) {
+                    var papadata = Papa.parse(document);
+                    var data = papadata.data;
+                    data[0] = $.parseJSON("{{ columns|keys|map(c => c|trans)|json_encode|e('js')|raw }}");
+                    data[0].unshift("ID");
+                    data[0].push("{{ 'generic.link'|trans|raw }}");
+
+                    data = data.map((row, index) => {
+                        if (index > 0) {
+                            // Prepare ID Column
+                            var id = $("<div/>").html(row[0]).text().trim();
+                            var link = $("<div />").html(row[0]).find("a").attr("href");
+                            row[0] = row[row.length - 1] + ' ' + id;
+                            row.push(link);
+
+                            // Keep newlines in "Texte de l'Attestation" column
+                            row[row.length - 2] = row[row.length - 2].replace(/<(br)[\s]*[\/]?>/gi, "\n")
+                                .replace(/<(hr)[\s]*[\/]?>/gi, "\n-----\n");
+                        }
+                        return row.map(col => $("<div/>").html(col).text());
+                    });
+                    return Papa.unparse(data, {
+                        quotes: true
+                    });
+                },
+                exportOptions: {
+                    columns: $.parseJSON("{{ [columns|length - 1]|merge(range(0, columns|length - 2))|json_encode }}"),
+                    stripHtml: false,
+                    stripNewlines: false,
+                }
+            }]
+        });
+
+        var updateCounter = function (data) {
+            var total = data.recordsTotal,
+                displayed = data.recordsDisplay,
+                labelAll = "{{ 'search.results_count'|trans }}",
+                labelFiltered = "{{ 'search.results_count_filtered'|trans }}",
+                counter = $('#search-results-count'),
+                str;
+
+            if (total === displayed) {
+                str = labelAll.replace(/%records%/g, total)
+                    .replace(/%plural%/g, (total === 1 ? '' : 's'));
+            }
+            else {
+                str = labelFiltered.replace(/%records%/g, displayed)
+                    .replace(/%plural%/g, (displayed === 1 ? '' : 's'))
+                    .replace(/%total%/g, total);
+            }
+            counter.text(str);
+        };
+
+        $('#search-results_wrapper select').removeClass('custom-select');
+        dt.columns().every(function () {
+            var me = this;
+            $('input', this.header()).on('keyup change', function () {
+                if (me.search() !== this.value) {
+                    me.search(
+                        // Remove accented characters from search string
+                        jQuery.fn.DataTable.ext.type.search.string(removeAccents(this.value))
+                    ).draw();
+                    updateCounter(dt.page.info());
+                }
+            })
+            $('input', this.header()).on('click', function (e) {
+                e.stopPropagation();
+            })
+        });
+
+        // Toggle column visibility
+        $('input.toggle-column').on('change', function () {
+            // Get the column API object
+            var column = dt.column($(this).attr('data-column'));
+            // Toggle the visibility
+            column.visible(this.checked);
+        });
+        // Prevent checkboxes label click to close the dropdown
+        $('input.toggle-column').siblings('label').on('click', function (e) {
+            e.preventDefault();
+            $(this).siblings('input').click();
+            return false;
+        });
+
+
+        $('input[type=search]').on('keyup change', function () {
+            dt.search(
+                // Remove accented characters from search string
+                jQuery.fn.DataTable.ext.type.search.string(removeAccents(this.value))
+            ).draw();
+            updateCounter(dt.page.info());
+        })
+        dt.buttons().container().appendTo('.table-buttons');
+        $('.clear-filter-button').on('click', function (e) {
+            e.preventDefault();
+            dt.columns().every(function () {
+                $('input', this.footer()).val("").trigger('change');
+            });
+        })
+        updateCounter(dt.page.info());
+
+
+        // Manage query save
+        $('#query-save-modal form').on('submit', function (e) {
+            e.preventDefault();
+            const formData = $(this).serializeObject();
+            var spinner = $(this).find('#submit-spinner');
+            var results = $(this).find('#save-query-result');
+
+            spinner.removeClass('d-none');
+
+            results.removeClass('alert-success alert-danger');
+            results.addClass('d-none');
+            results.text('');
+
+            $.post($(this).get(0).action, formData)
+                .done(function (response) {
+                    results.addClass('alert-success');
+                    results.text(response.message);
+
+                    setTimeout(() => { $('#query-save-modal').modal('hide') }, 2000);
+                })
+                .fail(function (response) {
+                    results.addClass('alert-danger');
+                    results.text(response.responseJSON.message);
+                })
+                .always(function () {
+                    results.removeClass('d-none');
+                    spinner.addClass('d-none');
+                });
+        })
+    });
+</script>

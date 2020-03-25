@@ -5,6 +5,7 @@ namespace App\Search;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Contracts\Cache\TagAwareCacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class Criteria
 {
@@ -20,10 +21,16 @@ class Criteria
      */
     private $cache;
 
-    public function __construct(EntityManagerInterface $em, TagAwareCacheInterface $mapCache)
+    /**
+     * @var TranslatorInterface
+     */
+    private $translator;
+
+    public function __construct(EntityManagerInterface $em, TagAwareCacheInterface $mapCache, TranslatorInterface $translator)
     {
-        $this->em    = $em;
-        $this->cache = $mapCache;
+        $this->em         = $em;
+        $this->cache      = $mapCache;
+        $this->translator = $translator;
     }
 
     public function getData(string $criteriaName, string $locale): array
@@ -66,6 +73,22 @@ class Criteria
 
     public function getDisplay(string $criteriaName, array $values, string $locale): array
     {
+        if($criteriaName == 'datation') {
+            return array_filter([
+                ((!is_null($values['post_quem']) && $values['post_quem'] !== "")
+                    ? ($this->translator->trans('datation.fields.post_quem') . ' : ' . $values['post_quem'])
+                    : null
+                ),
+                ((!is_null($values['ante_quem']) && $values['ante_quem'] !== "")
+                    ? ($this->translator->trans('datation.fields.ante_quem') . ' : ' . $values['ante_quem'])
+                    : null
+                ),
+                ((($values['exact'] ?? null) === 'datation_exact')
+                    ? $this->translator->trans('generic.fields.strict')
+                    : null
+                )
+            ]);
+        }
         $data = $this->getData($criteriaName, $locale);
 
         // Reduce array to a single dimension if needed

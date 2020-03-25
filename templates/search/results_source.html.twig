@@ -1,0 +1,46 @@
+{% extends 'list_page.html.twig' %}
+{% set columns = {
+    'source.fields.source_biblio': true,
+    'source.fields.categorie_source': true,
+    'source.fields.types_source': true,
+    'source.fields.categorie_support': true,
+    'source.fields.support': true,
+    'source.fields.categorie_materiau': true,
+    'source.fields.materiau': true,
+    'source.fields.titre_principal': true,
+    'source.fields.langues': true,
+    'source.fields.auteurs': true,
+    'generic.fields.datation': true,
+    'source.fields.lieu_origine': true,
+    'source.fields.lieu_decouverte': true,
+    'attestation.sections.texte_attestation': true,
+    'generic.view': true,
+} %}
+{% set fields = [
+    "reference",
+    "categorieSource",
+    "typeSource",
+    "categorieSupport",
+    "typeSupport",
+    "categorieMateriau",
+    "typeMateriau",
+    "titrePrincipal",
+    "langues",
+    "auteurs",
+    "datation",
+    "lieuOrigine",
+    "lieuDecouverte",
+    "extraits",
+] %}
+
+{% block title %}
+{{ ('search.results')|trans }}
+{% endblock %}
+{% block content %}
+{% include "search/_results_advanced.html.twig" %}
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+{% include "search/_results_advanced.js.twig" %}
+{% endblock %}

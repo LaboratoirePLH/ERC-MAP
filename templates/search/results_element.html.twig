@@ -1,0 +1,26 @@
+{% extends 'list_page.html.twig' %}
+{% set columns = {
+    'element': [
+        {'field': 'etatAbsolu','label': 'element.fields.etat_absolu', 'visible': true},
+        {'field': 'betaCode','label': 'element.fields.beta_code', 'visible': true},
+        {'field': 'natureElement','label': 'element.fields.nature', 'visible': true},
+        {'field': 'traductions','label': 'generic.fields.translations', 'visible': true},
+        {'field': 'categories','label': 'element.fields.categories_invariantes', 'visible': true},
+        {'field': 'localisation','label': 'generic.fields.localisation', 'visible': true},
+        {'field': 'datation','label': 'generic.fields.datation', 'visible': true},
+        {'field': 'link', 'label': 'generic.view', 'visible': true},
+    ]
+} %}
+
+
+{% block title %}
+{{ ('search.results')|trans }}
+{% endblock %}
+{% block content %}
+{% include "search/_results_advanced.html.twig" %}
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+{% include "search/_results_advanced.js.twig" %}
+{% endblock %}

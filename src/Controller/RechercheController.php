@@ -162,9 +162,6 @@ class RechercheController extends AbstractController
                         ->getRepository(\App\Entity\IndexRecherche::class)
                         ->search('advanced', $criteria, $request->getLocale());
 
-        // dump($results);
-        // return;
-
         return $this->render("search/results_{$resultsType}.html.twig", [
             'controller_name' => 'RechercheController',
             'locale'          => $request->getLocale(),

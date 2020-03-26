@@ -1,5 +1,24 @@
+{% set headers = [] %}
+{% set groups = {} %}
+{% set hiddenCols = [] %}
+{% set colIndex = 0 %}
+{% for group, cols in columns %}
+{% set groups = groups|merge({((group~'.name')|trans): (cols|length)}) %}
+{% for col in cols %}
+{% set headers = headers|merge([col.label|trans]) %}
+{% if not col.visible %}
+{% set hiddenCols = hiddenCols|merge([colIndex]) %}
+{% endif %}
+{% set colIndex = colIndex + 1 %}
+{% endfor %}
+{% endfor %}
+
 <script type="text/javascript">
     var mode = "{{ mode }}";
+    var headers = $.parseJSON("{{ headers|json_encode|e('js')|raw }}")
+    var groups = $.parseJSON("{{ groups|json_encode|e('js')|raw }}")
+    var hiddenCols = $.parseJSON("{{ hiddenCols|json_encode|e('js')|raw }}");
+
     $(document).ready(function () {
         $('#search-results thead tr#filterRow th').each(function () {
             var title = $(this).text();
@@ -15,26 +34,11 @@
             }
         });
         var dt = $('#search-results').DataTable({
-            responsive: true,
-            autoWidth: true,
-            lengthChange: true,
-            scrollX: false,
+            scrollX: true,
             searching: true,
             ordering: true,
-            //            columns: [
-            //                { responsivePriority: 1 },
-            //                null,
-            //                { width: '110px' }, // Column "date" is fixed width
-            //                { width: '40%' },
-            //                { width: '110px' }, // Column "catégorie" is fixed width
-            //                { visible: mode == "simple" }, // Column "champ" is hidden except on simple search
-            //                {
-            //                    width: 110,
-            //                    responsivePriority: 1
-            //                }
-            //            ],
             order: [
-                [0, 'asc']
+                [headers.length - 1, 'asc'] // Order by the last column of the table (ID column)
             ],
             language: $.parseJSON('{{ "datatable.language"|trans|raw }}'),
             pageLength: 10,
@@ -53,21 +57,38 @@
                 customize: function (document) {
                     var papadata = Papa.parse(document);
                     var data = papadata.data;
-                    data[0] = $.parseJSON("{{ columns|keys|map(c => c|trans)|json_encode|e('js')|raw }}");
-                    data[0].unshift("ID");
-                    data[0].push("{{ 'generic.link'|trans|raw }}");
+
+                    // Set headers (default first line contains the search input)
+                    data[0] = headers;
+
+                    // Set Link header
+                    const linkIndexes = headers.reduce((indexes, item, index) => {
+                        if (item == "{{ 'generic.view'|trans }}") {
+                            indexes.push(index);
+                        }
+                        return indexes;
+                    }, []);
+
+                    linkIndexes.forEach((idx) => { data[0][idx] = "{{ 'generic.link'|trans|raw }}"; });
+
+                    // If we have more than one groupe, insert a new first row containing group names
+                    var hasGroups = false;
+                    if (Object.keys(groups).length > 1) {
+                        const groupHeaders = Object.entries(groups).map(([label, size]) => Array(size).fill(label)).flat();
+                        data.unshift(groupHeaders);
+                        hasGroups = true;
+                    }
+
 
                     data = data.map((row, index) => {
-                        if (index > 0) {
-                            // Prepare ID Column
-                            var id = $("<div/>").html(row[0]).text().trim();
-                            var link = $("<div />").html(row[0]).find("a").attr("href");
-                            row[0] = row[row.length - 1] + ' ' + id;
-                            row.push(link);
+                        if (index > (hasGroups ? 1 : 0)) {
+                            // Prepare Links
+                            linkIndexes.forEach((linkIdx) => {
+                                row[linkIdx] = $("<div />").html(row[linkIdx]).find("a").attr("href");
+                            });
 
-                            // Keep newlines in "Texte de l'Attestation" column
-                            row[row.length - 2] = row[row.length - 2].replace(/<(br)[\s]*[\/]?>/gi, "\n")
-                                .replace(/<(hr)[\s]*[\/]?>/gi, "\n-----\n");
+                            // Replace <br> and <hr> with CSV accepted fallback
+                            row = row.map(v => v.replace(/<(br)[\s]*[\/]?>/gi, "\n").replace(/<(hr)[\s]*[\/]?>/gi, "\n-----\n"));
                         }
                         return row.map(col => $("<div/>").html(col).text());
                     });
@@ -76,7 +97,6 @@
                     });
                 },
                 exportOptions: {
-                    columns: $.parseJSON("{{ [columns|length - 1]|merge(range(0, columns|length - 2))|json_encode }}"),
                     stripHtml: false,
                     stripNewlines: false,
                 }
@@ -127,12 +147,20 @@
             // Toggle the visibility
             column.visible(this.checked);
         });
-        // Prevent checkboxes label click to close the dropdown
-        $('input.toggle-column').siblings('label').on('click', function (e) {
+        // Prevent click on checkbox to propagate to dropdown-item (causing double change)
+        $('input.toggle-column').on('click', function (e) {
+            e.stopImmediatePropagation();
+        });
+        // Prevent checkboxes parent click to close the dropdown
+        $('input.toggle-column').parent('.dropdown-item').on('click', function (e) {
             e.preventDefault();
-            $(this).siblings('input').click();
+            var cb = $(this).find('input').first();
+            cb.get(0).checked = !cb.get(0).checked;
+            cb.trigger('change');
             return false;
         });
+        // Hide columns that should not be visible on first render
+        hiddenCols.forEach(colIndex => { dt.column(colIndex).visible(false) })
 
 
         $('input[type=search]').on('keyup change', function () {

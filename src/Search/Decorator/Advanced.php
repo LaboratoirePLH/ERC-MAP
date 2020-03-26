@@ -13,12 +13,7 @@ class Advanced {
 
             $entityData = $entity->getData();
             $method = "decorate".$entity->getEntite();
-            $r = self::$method($entity, $allData, $locale);
-
-            // Add link data
-            $r['linkType'] = strtolower($entity->getEntite());
-            $r['linkId'] = $entity->getId();
-            $result[]= $r;
+            $result[] = self::$method($entity, $allData, $locale);
         }
         return $result;
     }
@@ -58,8 +53,8 @@ class Advanced {
         }
 
         $result['datation'] = self::_decorateDatation($data['datation'] ?? []);
-        $result['lieuOrigine'] = self::_decorateLocalisation($data['lieuOrigine'] ?? []);
-        $result['lieuDecouverte'] = self::_decorateLocalisation($data['lieuDecouverte'] ?? []);
+        $result['lieuOrigine'] = self::_decorateLocalisation($data['lieuOrigine'] ?? [], $locale);
+        $result['lieuDecouverte'] = self::_decorateLocalisation($data['lieuDecouverte'] ?? [], $locale);
 
         $result['extraits'] = array_filter(array_map(
             function($att){ return $att->getData()['extraitAvecRestitution'] ?? $att->getData()['translitteration'] ?? ''; },
@@ -71,7 +66,10 @@ class Advanced {
             )
         ));
 
-        return $result;
+        // Add link data
+        $result['link'] = ['type' => strtolower($entity->getEntite()), 'id' => $entity->getId()];
+
+        return ['source' => $result];
     }
 
     protected static function decorateAttestation(IndexRecherche $entity, array $allData, string $locale): array
@@ -80,16 +78,7 @@ class Advanced {
 
         $data = $entity->getData();
 
-        // Find source and get its data
-        $sourceId = $data['source'];
-        $source = array_reduce($allData, function($result, $e) use ($sourceId){
-            return $result ?? (($e->getEntite() == "Source" && $e->getId() == $sourceId) ? $e : null);
-        }, null);
-        $sourceData = self::decorateSource($source, $allData, $locale);
-        unset($sourceData['extraits']);
-
         $result = [
-            "source"                 => $sourceData,
             "passage"                => $data['passage'] ?? '',
             "extraitAvecRestitution" => $data['extraitAvecRestitution'] ?? '',
             "translitteration"       => $data['translitteration'] ?? '',
@@ -119,11 +108,20 @@ class Advanced {
                 . ')';
         }, $data['materiels'] ?? []);
 
-
         $result['datation'] = self::_decorateDatation($data['datation'] ?? []);
-        $result['localisation'] = self::_decorateLocalisation($data['lieuOrigine'] ?? $data['lieuDecouverte'] ?? []);
+        $result['localisation'] = self::_decorateLocalisation($data['localisation'] ?? [], $locale);
 
-        return $result;
+        // Add link data
+        $result['link'] = ['type' => strtolower($entity->getEntite()), 'id' => $entity->getId()];
+
+        // Find source and get its data
+        $sourceId = $data['source'];
+        $source = array_reduce($allData, function($result, $e) use ($sourceId){
+            return $result ?? (($e->getEntite() == "Source" && $e->getId() == $sourceId) ? $e : null);
+        }, null);
+        $sourceData = self::decorateSource($source, $allData, $locale);
+
+        return array_merge($sourceData, ['attestation' => $result]);
     }
 
     protected static function decorateElement(IndexRecherche $entity, array $allData, string $locale): array
@@ -149,7 +147,13 @@ class Advanced {
             }
         }
 
-        return $result;
+        $result['localisation'] = self::_decorateLocalisation($data['localisation'] ?? [], $locale);
+        $result['datation'] = self::_decorateDatation($data['datation'] ?? [], $locale);
+
+        // Add link data
+        $result['link'] = ['type' => strtolower($entity->getEntite()), 'id' => $entity->getId()];
+
+        return ['element' => $result];
     }
 
     protected static function _decorateDatation(array $datation): string
@@ -163,7 +167,7 @@ class Advanced {
         );
     }
 
-    protected static function _decorateLocalisation(array $localisation): string
+    protected static function _decorateLocalisation(array $localisation, string $locale): string
     {
         return $localisation['nomSite']
             ?? $localisation['nomVille']

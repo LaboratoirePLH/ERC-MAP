@@ -4,7 +4,7 @@ namespace App\Search\Filter;
 
 use App\Entity\IndexRecherche;
 
-class Locations extends AbstractFilter {
+class Regions extends AbstractFilter {
 
     public static function filter(IndexRecherche $entity, array $criteria, array $sortedData): bool
     {
@@ -37,15 +37,6 @@ class Locations extends AbstractFilter {
                             if((array_key_exists('grandeRegion', $d) && $c[0] == ($d['grandeRegion']['id'] ?? null))
                                 && (array_key_exists('sousRegion', $d) && $c[1] == ($d['sousRegion']['id'] ?? null)))
                             {
-                                $matched++;
-                                break 2; // Break the inner foreach since we found a location matching this criteria value
-                            }
-                            break;
-                        case 3: // Triple values is greater region + sub region (can be empty) + (pleiades ID or city name)
-                            if((array_key_exists('grandeRegion', $d) && $c[0] == ($d['grandeRegion']['id'] ?? null))
-                                && ($c[1] == 0 ? true : (array_key_exists('sousRegion', $d) && $c[1] == ($d['sousRegion']['id'] ?? null)))
-                                && (is_numeric($c[2]) ? ($c[2] == ($d['pleiadesVille'] ?? 0)) : ($c[2] == ($d['nomVille'] ?? '')))
-                            ){
                                 $matched++;
                                 break 2; // Break the inner foreach since we found a location matching this criteria value
                             }

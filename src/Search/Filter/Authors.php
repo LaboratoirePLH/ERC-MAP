@@ -4,17 +4,18 @@ namespace App\Search\Filter;
 
 use App\Entity\IndexRecherche;
 
-class Names extends AbstractFilter {
+class Languages extends AbstractFilter {
 
     public static function filter(IndexRecherche $entity, array $criteria, array $sortedData): bool
     {
         self::validateInput($entity, $criteria, $sortedData);
 
-        // We get all the IDs of the resolved elements
-        $elements = self::toArray(
-            self::resolveElements($entity, $sortedData)
+        // We get all the IDs of the authors of the resolved sources
+        $sources = self::toArray(
+            self::resolveSources($entity, $sortedData)
         );
-        $data = array_column($elements, 'id');
+        $authors = array_reduce($sources, function($result, $source){ return array_merge($result, $source['auteurs'] ?? []); }, []);
+        $data = array_column($authors, 'id');
 
         // For each criteria entry, we will get a boolean result of whether the entry is valid against the data
         // We need at least one truthy value to accept the data

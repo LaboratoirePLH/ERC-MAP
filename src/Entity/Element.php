@@ -457,7 +457,7 @@ class Element extends AbstractEntity
             'betaCode'       => $this->betaCode,
             'traductions'    => $this->traductions->map(function($entry){ return $entry->getTranslatedName(); })->getValues(),
             'natureElement'  => $this->natureElement === null ? null : $this->natureElement->getTranslatedName(),
-            'categories'     => $this->categories->map(function($entry){ return $entry->getTranslatedName(); })->getValues(),
+            'categories'     => $this->categories->map(function($entry){ return $entry->toArray(); })->getValues(),
             'localisation'   => $this->localisation === null ? null : $this->localisation->toArray(),
             'elementBiblios' => $this->elementBiblios->map(function($eb){
                 return array_merge($eb->getBiblio()->toArray(), [

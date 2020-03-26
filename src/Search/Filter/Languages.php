@@ -21,9 +21,11 @@ class Languages extends AbstractFilter {
         // We need at least one truthy value to accept the data
         return !!count(array_filter(array_map(function($crit) use ($data) {
             $requireAll = ($crit['mode'] ?? 'one') === 'all';
+            $crit = array_filter($crit['values']);
+
             // If requireAll is true, we require all the values in the criteria to be present (intersection count equals to criteria values count)
             // If requireAll is false, we require at least one of the value in the criteria to be present
-            return count(array_intersect($crit['values'], $data)) >= ($requireAll ? count($crit['values']) : 1);
+            return count(array_intersect($crit, $data)) >= ($requireAll ? count($crit) : 1);
         }, $criteria)));
     }
 }

@@ -594,29 +594,29 @@ class Attestation extends AbstractEntity
 
     public function toArray(): array
     {
-        $getTranslatedName = function($entry){ return $entry->getTranslatedName(); };
+        $toArray = function($entry){ return $entry->toArray(); };
 
         return [
             'source'                 => $this->source->getId(),
             'passage'                => $this->passage,
             'extraitAvecRestitution' => $this->extraitAvecRestitution,
             'translitteration'       => $this->translitteration,
-            'traductions'            => $this->traductions->map($getTranslatedName)->getValues(),
-            'pratiques'              => $this->pratiques->map($getTranslatedName)->getValues(),
+            'traductions'            => $this->traductions->map($toArray)->getValues(),
+            'pratiques'              => $this->pratiques->map($toArray)->getValues(),
             'materiels'              => $this->attestationMateriels->map(function($am){
                 return [
-                    'categorieMateriel' => $am->getCategorieMateriel() === null ? null : $am->getCategorieMateriel()->getTranslatedName(),
-                    'materiel'          => $am->getMateriel() === null ? null : $am->getMateriel()->getTranslatedName(),
+                    'categorieMateriel' => $am->getCategorieMateriel() === null ? null : $am->getCategorieMateriel()->toArray(),
+                    'materiel'          => $am->getMateriel() === null ? null : $am->getMateriel()->toArray(),
                     'quantite'          => $am->getQuantite()
                 ];
             })->getValues(),
             'occasions' => $this->attestationOccasions->map(function($ao){
                 return [
-                    'categorieOccasion' => $ao->getCategorieOccasion() === null ? null : $ao->getCategorieOccasion()->getTranslatedName(),
-                    'occasion'          => $ao->getOccasion() === null ? null : $ao->getOccasion()->getTranslatedName()
+                    'categorieOccasion' => $ao->getCategorieOccasion() === null ? null : $ao->getCategorieOccasion()->toArray(),
+                    'occasion'          => $ao->getOccasion() === null ? null : $ao->getOccasion()->toArray()
                 ];
             })->getValues(),
-            'agents'        => $this->agents->map(function($a){ return $a->toArray(); })->getValues(),
+            'agents'        => $this->agents->map($toArray)->getValues(),
             'datation'      => $this->datation === null ? null : $this->datation->toArray(),
             'localisation'  => $this->localisation === null ? null : $this->localisation->toArray(),
             'elements'      => $this->contientElements->map(function($e){ return $e->toArray(); })->getValues(),

@@ -4,14 +4,16 @@ namespace App\Search\Filter;
 
 use App\Entity\IndexRecherche;
 
-class Agents extends AbstractFilter {
+class SourceMaterials extends AbstractFilter {
 
     public static function filter(IndexRecherche $entity, array $criteria, array $sortedData): bool
     {
         self::validateInput($entity, $criteria, $sortedData);
 
-        // We get all the resolved agents
-        $data = self::resolveAgents($entity, $sortedData);
+        // We get all the resolved sources
+        $data = self::toArray(
+            self::resolveSources($entity, $sortedData)
+        );
 
         // For each criteria entry, we will get a boolean result of whether the entry is valid against the data
         // We need at least one truthy value to accept the data
@@ -24,14 +26,23 @@ class Agents extends AbstractFilter {
             $matched = 0;
             foreach($crit as $c){
                 foreach($data as $d){
-                    // $a[0] equals 'activite' or 'agentivite'
-                    // $a[1] is the ID of the activite/agentivite
-                    // So we get all the IDs of the activites/agentivites subarray,
-                    // We convert them to integers and check for a match
-                    $ids = array_map('intval', array_column($d[$c[0] . 's'] ?? [], 'id'));
-                    if(in_array($c[1], $ids)){
-                        $matched++;
-                    break; // Break the inner foreach since we found an agent matching this criteria value
+                    // Single ID is material category
+                    if(array_key_exists('categorieMateriau', $d) && $c[0] == ($d['categorieMateriau']['id'] ?? null))
+                    {
+                        if(count($c) === 2)
+                        {
+                            // Double ID is material category + material type
+                            if(array_key_exists('typeMateriau', $d) && $c[1] == $d['typeMateriau']['id'])
+                            {
+                                $matched++;
+                                break; // Break the inner foreach since we found a source matching this criteria value
+                            }
+                        }
+                        else
+                        {
+                            $matched++;
+                            break; // Break the inner foreach since we found a source matching this criteria value
+                        }
                     }
                 }
             }

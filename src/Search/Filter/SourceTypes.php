@@ -20,7 +20,7 @@ class SourceTypes extends AbstractFilter {
         return !!count(array_filter(array_map(function($crit) use ($data) {
             $requireAll = ($crit['mode'] ?? 'one') === 'all';
             // Each criteria entry value is a json encoded array
-            $crit = array_map('json_decode', $crit['values']);
+            $crit = array_map('json_decode', array_filter($crit['values']));
 
             // We count the matched criteria values
             $matched = 0;

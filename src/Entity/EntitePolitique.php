@@ -43,6 +43,7 @@ class EntitePolitique extends AbstractEntity
     }
 
     public function toArray(): array {
-        return array_merge($this->getTranslatedName(), ['numeroIacp' => $this->numeroIacp]);
+        return array_merge(['id' => $this->id], $this->getTranslatedName(), ['numeroIacp' => $this->numeroIacp]);
     }
+
 }

@@ -16,4 +16,9 @@ class CategorieElement extends AbstractEntity
 {
     use Traits\EntityId;
     use Traits\TranslatedName;
+
+    public function toArray(): array
+    {
+        return array_merge(['id' => $this->id], $this->getTranslatedName());
+    }
 }

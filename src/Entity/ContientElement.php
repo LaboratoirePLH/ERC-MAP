@@ -208,8 +208,8 @@ class ContientElement extends AbstractEntity
             'element'           => $this->element->toArray(),
             'enContexte'        => $this->enContexte,
             'etatMorphologique' => $this->etatMorphologique,
-            'genreElement'      => $this->genreElement === null ? null : $this->genreElement->getTranslatedName(),
-            'nombreElement'     => $this->nombreElement === null ? null : $this->nombreElement->getTranslatedName(),
+            'genreElement'      => $this->genreElement === null ? null : $this->genreElement->toArray(),
+            'nombreElement'     => $this->nombreElement === null ? null : $this->nombreElement->toArray(),
             'categorieElement'  => $this->categorieElement === null ? null : $this->categorieElement->getTranslatedName()
         ];
     }

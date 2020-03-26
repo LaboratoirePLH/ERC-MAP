@@ -4,17 +4,19 @@ namespace App\Search\Filter;
 
 use App\Entity\IndexRecherche;
 
-class Names extends AbstractFilter {
+class PoliticalEntities extends AbstractFilter {
 
     public static function filter(IndexRecherche $entity, array $criteria, array $sortedData): bool
     {
         self::validateInput($entity, $criteria, $sortedData);
 
-        // We get all the IDs of the resolved elements
-        $elements = self::toArray(
-            self::resolveElements($entity, $sortedData)
-        );
-        $data = array_column($elements, 'id');
+        // We get all the resolved locations
+        $localisations = self::resolveLocalisations($entity, $sortedData);
+
+        // We get the ID of the political entity (if any) of each location
+        $data = array_filter(array_map(function($l) {
+            return ($l['entitePolitique'] ?? [])['id'] ?? null;
+        }, $localisations));
 
         // For each criteria entry, we will get a boolean result of whether the entry is valid against the data
         // We need at least one truthy value to accept the data

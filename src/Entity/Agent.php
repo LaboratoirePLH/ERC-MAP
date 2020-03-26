@@ -298,15 +298,15 @@ class Agent extends AbstractEntity
 
     public function toArray(): array
     {
-        $getTranslatedName = function($entry){ return $entry->getTranslatedName(); };
+        $toArray = function($entry){ return $entry->toArray(); };
 
         return [
             'designation'    => $this->designation,
-            'agentivites'    => $this->agentivites->map(function($a) { return $a->toArray(); })->getValues(),
-            'natures'        => $this->natures->map($getTranslatedName)->getValues(),
-            'genres'         => $this->genres->map($getTranslatedName)->getValues(),
-            'statutAffiches' => $this->statutAffiches->map($getTranslatedName)->getValues(),
-            'activites'      => $this->activites->map(function($a) { return $a->toArray(); })->getValues(),
+            'agentivites'    => $this->agentivites->map($toArray)->getValues(),
+            'natures'        => $this->natures->map($toArray)->getValues(),
+            'genres'         => $this->genres->map($toArray)->getValues(),
+            'statutAffiches' => $this->statutAffiches->map($toArray)->getValues(),
+            'activites'      => $this->activites->map($toArray)->getValues(),
             'localisation'   => $this->localisation === null ? null : $this->localisation->toArray(),
             'commentaireFr'  => $this->commentaireFr,
             'commentaireEn'  => $this->commentaireEn

@@ -109,4 +109,9 @@ class TraductionAttestation extends AbstractEntity
             $this->id = null;
         }
     }
+
+    public function toArray(): array
+    {
+        return array_merge(['id' => $this->id], $this->getTranslatedName());
+    }
 }

@@ -374,8 +374,8 @@ class Localisation extends AbstractEntity
             'nomVille'        => $this->nomVille,
             'pleiadesSite'    => $this->pleiadesSite,
             'nomSite'         => $this->nomSite,
-            'topographies'    => $this->topographies->map(function($entry){ return $entry->getTranslatedName(); })->getValues(),
-            'fonctions'       => $this->fonctions->map(function($entry){ return $entry->getTranslatedName(); })->getValues(),
+            'topographies'    => $this->topographies->map(function($entry){ return $entry->toArray(); })->getValues(),
+            'fonctions'       => $this->fonctions->map(function($entry){ return $entry->toArray(); })->getValues(),
             'commentaireFr'   => $this->commentaireFr,
             'commentaireEn'   => $this->commentaireEn
         ];

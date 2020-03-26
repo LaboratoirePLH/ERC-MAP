@@ -4,7 +4,7 @@ namespace App\Search\Filter;
 
 use App\Entity\IndexRecherche;
 
-class Names extends AbstractFilter {
+class AbsoluteForms extends AbstractFilter {
 
     public static function filter(IndexRecherche $entity, array $criteria, array $sortedData): bool
     {

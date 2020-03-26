@@ -671,7 +671,7 @@ class Source extends AbstractEntity
             'categorieSource' => $this->categorieSource->toArray(),
             'typeSource'      => $this->typeSources->map(function($t) { return $t->toArray(); })->getValues(),
             'langues'         => $this->langues->map(function($l) { return $l->toArray(); })->getValues(),
-            'auteurs'         => $this->auteurs->map($getTranslatedName)->getValues(),
+            'auteurs'         => $this->auteurs->map(function($l) { return $l->toArray(); })->getValues(),
             'titrePrincipal'  => $this->titrePrincipal === null ? null : array_merge(
                 $this->titrePrincipal->getTranslatedName(),
                 ['auteurs' => $this->titrePrincipal->getAuteurs()->map($getTranslatedName)->getValues()]

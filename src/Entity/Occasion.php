@@ -36,4 +36,9 @@ class Occasion extends AbstractEntity
         $this->categorieOccasion = $categorieOccasion;
         return $this;
     }
+
+    public function toArray(): array
+    {
+        return array_merge(['id' => $this->id], $this->getTranslatedName());
+    }
 }

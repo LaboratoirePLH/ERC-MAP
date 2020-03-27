@@ -72,7 +72,7 @@ class CriteriaList
                 'semitic'  => false,
                 'children' => [
                     [
-                        'key'   => 'prosepoetry',
+                        'key'   => 'prosePoetry',
                         'label' => $translator->trans('attestation.fields.prose_poesie'),
                         'type'  => 'prosepoetry'
                     ],

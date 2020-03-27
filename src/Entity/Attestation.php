@@ -598,6 +598,8 @@ class Attestation extends AbstractEntity
 
         return [
             'source'                 => $this->source->getId(),
+            'prose'                  => $this->prose,
+            'poesie'                 => $this->poesie,
             'passage'                => $this->passage,
             'extraitAvecRestitution' => $this->extraitAvecRestitution,
             'translitteration'       => $this->translitteration,

@@ -348,7 +348,9 @@ class RechercheController extends AbstractController
                         break;
                     case 'prosepoetry':
                         $criteriaValues = array_map(function($v) use ($translator){
-                            return $translator->trans('attestation.fields.'.$v);
+                            return array_map(function($v_value) use ($translator){
+                                return $translator->trans('attestation.fields.'.$v_value);
+                            }, $v);
                         }, $value);
                         break;
                     case 'datation':

@@ -722,7 +722,9 @@
             btn.append($('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>'));
 
             var data = btn.data();
-            changeMode(data.queryMode);
+            if (CURRENT_MODE !== data.queryMode) {
+                changeMode(data.queryMode);
+            }
             populateCriteriaData(
                 data.queryMode,
                 $.parseJSON(

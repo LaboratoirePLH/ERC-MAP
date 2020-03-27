@@ -681,6 +681,7 @@ class Source extends AbstractEntity
             'categorieSupport'  => $this->categorieSupport === null ? null : $this->categorieSupport->getTranslatedName(),
             'typeSupport'       => $this->typeSupport === null ? null : $this->typeSupport->getTranslatedName(),
             'datation'          => $this->datation === null ? null : $this->datation->toArray(),
+            'fiabiliteDatation' => $this->datation === null ? null : $this->fiabiliteDatation,
             'lieuDecouverte'    => $this->lieuDecouverte === null ? null : $this->lieuDecouverte->toArray(),
             'lieuOrigine'       => $this->inSitu
                 ? ($this->lieuDecouverte === null ? null : $this->lieuDecouverte->toArray())

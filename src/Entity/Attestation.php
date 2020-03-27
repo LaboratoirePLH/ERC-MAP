@@ -603,6 +603,7 @@ class Attestation extends AbstractEntity
             'passage'                => $this->passage,
             'extraitAvecRestitution' => $this->extraitAvecRestitution,
             'translitteration'       => $this->translitteration,
+            'fiabilite'              => $this->fiabiliteAttestation,
             'traductions'            => $this->traductions->map($toArray)->getValues(),
             'pratiques'              => $this->pratiques->map($toArray)->getValues(),
             'materiels'              => $this->attestationMateriels->map(function($am){

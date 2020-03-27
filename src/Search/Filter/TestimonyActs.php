@@ -25,8 +25,6 @@ class TestimonyActs extends AbstractFilter {
             $requireAll = ($crit['mode'] ?? 'one') === 'all';
             $crit = array_filter($crit['values']);
 
-            // We count the matched criteria values
-            $matched = 0;
             foreach($data as $d){
                 // $d contains all the acts of an attestation
                 // If we require all values to be matched we must find at least as many as the criteria values

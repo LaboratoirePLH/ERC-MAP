@@ -4,18 +4,19 @@ namespace App\Search\Filter;
 
 use App\Entity\IndexRecherche;
 
-class Authors extends AbstractFilter {
+class Cities extends AbstractFilter {
 
     public static function filter(IndexRecherche $entity, array $criteria, array $sortedData): bool
     {
         self::validateInput($entity, $criteria, $sortedData);
 
-        // We get all the IDs of the authors of the resolved sources
-        $sources = self::toArray(
-            self::resolveSources($entity, $sortedData)
-        );
-        $authors = array_reduce($sources, function($result, $source){ return array_merge($result, $source['auteurs'] ?? []); }, []);
-        $data = array_column($authors, 'id');
+        // We get all the resolved locations
+        $localisations = self::resolveLocalisations($entity, $sortedData);
+
+        // We get the ID (or name if no ID set) of the pleiades City of each location
+        $data = array_filter(array_map(function($l) {
+            return $l['pleiadesVille'] ?? $l['nomVille'] ?? null;
+        }, $localisations));
 
         // For each criteria entry, we will get a boolean result of whether the entry is valid against the data
         // We need at least one truthy value to accept the data

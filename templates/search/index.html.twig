@@ -218,7 +218,7 @@
             <div class="tab-pane show active" role="tabpanel">
                 <ul class="list-group list-group-flush">
                     {% for query in saved_queries %}
-                    {% include "search/_saved_query.html.twig" with {'query': query} only %}
+                    {% include "search/_saved_query.html.twig" with {'query': query, 'criteria_list': criteria_list} only %}
                     {% endfor %}
                 </ul>
             </div>

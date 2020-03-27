@@ -287,13 +287,22 @@
             }
         };
 
+        searchCriteria = function (criteriaName) {
+            // Find properties in SEARCH_CRITERIA
+            return SEARCH_CRITERIA.reduce((found, item) => {
+                return found || (item.key === criteriaName ? item : item.children.reduce((carry, subitem) => {
+                    return subitem.key === criteriaName ? subitem : carry;
+                }, null));
+            }, null);
+        }
+
         populateCriteriaData = function (mode, data, callback) {
             if (mode === "simple") {
                 $('#simple').find('input[name="search_value"]').val(data[0]);
             }
             else if (mode === "guided") {
                 // Guided form will be populated when all its data has been loaded
-                $('#guided > form').one('async-form-ready', function () {
+                $('#search-panel').on('async-form-ready', function () {
                     $('#guided').find('button[type=reset]').click();
                     $.each(data, function (criteria, value) {
                         switch (criteria) {
@@ -326,7 +335,7 @@
                 // In case criteria are already loaded (ie loading a saved query),
                 // we manually trigger the event
                 if (criteriaLoading == 0) {
-                    $('#guided > form').trigger('async-form-ready');
+                    $('#search-panel').trigger('async-form-ready');
                 }
             }
             else if (mode == "advanced") {
@@ -336,42 +345,37 @@
                 $('#advanced input[name=resultsType]').filter('[value=' + data.resultsType + ']').prop('checked', true);
                 delete data.resultsType;
 
-                console.log('populate', mode, data);
-
                 // Advanced form will be populated when all its data has been loaded
-                $('#advanced > form').one('async-form-ready', function () {
-                    console.log('advanced form ready');
-                    $.each(data, function (criteriaName, value) {
+                $('#search-panel').on('async-form-ready', function () {
+                    Object.entries(data).forEach(([criteriaName, values]) => {
+                        var criteria = searchCriteria(criteriaName);
 
-                        // Find properties in SEARCH_CRITERIA
-                        var criteria = SEARCH_CRITERIA.reduce((found, item) => {
-                            return found || (item.key === criteriaName ? item : item.children.reduce((carry, subitem) => {
-                                return subitem.key === criteriaName ? subitem : carry;
-                            }, null));
-                        }, null);
-                        console.log(criteriaName, criteria);
-                        /*switch (criteria) {
-                            case 'names':
-                            case 'languages':
-                            case 'locations':
-                            case 'sourceTypes':
-                            case 'agents':
-                                $('#advanced').find('select[name="' + criteria + '[]"]')
-                                    .val(value)
-                                    .trigger('chosen:updated');
-                                break;
-                            case 'datation':
-                                $('#advanced').find('input[name="datation[post_quem]"]').val(value.post_quem);
-                                $('#advanced').find('input[name="datation[ante_quem]"]').val(value.ante_quem);
-                                $('#advanced').find('input[name="datation[exact]"]').attr('checked', value.exact === "datation_exact");
-                                break;
-                            case 'names_mode':
-                            case 'languages_mode':
-                                if (value === "all") {
-                                    $('#advanced').find('input[name="' + criteria + '"]').attr('checked', true);
-                                }
-                                break;
-                        }*/
+                        values.forEach((value, index) => {
+                            switch (criteria.type) {
+                                case 'select':
+                                    $('#advanced').find('select[name="' + criteriaName + '[' + index + '][values][]"]')
+                                        .val(value.values)
+                                        .trigger('chosen:updated');
+                                    if (value.hasOwnProperty('mode') && value.mode === "all") {
+                                        $('#advanced').find('input[name="' + criteriaName + '[' + index + '][mode]"]')
+                                            .attr('checked', true);
+                                    }
+                                    break;
+                                case 'text':
+                                case 'range':
+                                    $('#advanced').find('input[name="' + criteriaName + '[]"]').eq(index).val(value).trigger('input');
+                                    break;
+                                case 'datation':
+                                    $('#advanced').find('input[name="datation[' + index + '][post_quem]"]').val(value.post_quem);
+                                    $('#advanced').find('input[name="datation[' + index + '][ante_quem]"]').val(value.ante_quem);
+                                    $('#advanced').find('input[name="datation[' + index + '][exact]"]').attr('checked', value.exact === "datation_exact");
+                                    break;
+                                case 'prosepoetry':
+                                    $('#advanced').find('input[name="prosePoetry[' + index + '][]"][value=prose]').attr('checked', value.includes('prose'));
+                                    $('#advanced').find('input[name="prosePoetry[' + index + '][]"][value=poesie]').attr('checked', value.includes('poesie'));
+                                    break;
+                            }
+                        })
                     });
                     if (callback !== undefined) {
                         callback.apply(null);
@@ -379,16 +383,18 @@
                 });
 
                 setTimeout(() => {
-                    Object.keys(data).forEach(criteria => { addNewCriteria(criteria) });
+                    Object.entries(data).forEach(([criteriaName, values]) => {
+                        for (i = 1; i <= values.length; i++) {
+                            addNewCriteria(criteriaName);
+                        }
+                    });
 
                     // In case criteria are already loaded,
                     // we manually trigger the event
                     if (criteriaLoading == 0) {
                         $('#advanced > form').trigger('async-form-ready');
                     }
-                }, 200);
-
-
+                }, 100);
             }
         }
 
@@ -444,7 +450,7 @@
 
                 // Fire event if no more criteria need to be loaded
                 if (criteriaLoading == 0) {
-                    target.parents('form').trigger('async-form-ready');
+                    target.parents('#search-panel').trigger('async-form-ready');
                 }
             }
 

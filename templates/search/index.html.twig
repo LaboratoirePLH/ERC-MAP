@@ -330,7 +330,65 @@
                 }
             }
             else if (mode == "advanced") {
-                // Add the criteria, and populate data when all are ready
+                $('#advanced').find('button[type=reset]').click();
+
+                // Set the results type
+                $('#advanced input[name=resultsType]').filter('[value=' + data.resultsType + ']').prop('checked', true);
+                delete data.resultsType;
+
+                console.log('populate', mode, data);
+
+                // Advanced form will be populated when all its data has been loaded
+                $('#advanced > form').one('async-form-ready', function () {
+                    console.log('advanced form ready');
+                    $.each(data, function (criteriaName, value) {
+
+                        // Find properties in SEARCH_CRITERIA
+                        var criteria = SEARCH_CRITERIA.reduce((found, item) => {
+                            return found || (item.key === criteriaName ? item : item.children.reduce((carry, subitem) => {
+                                return subitem.key === criteriaName ? subitem : carry;
+                            }, null));
+                        }, null);
+                        console.log(criteriaName, criteria);
+                        /*switch (criteria) {
+                            case 'names':
+                            case 'languages':
+                            case 'locations':
+                            case 'sourceTypes':
+                            case 'agents':
+                                $('#advanced').find('select[name="' + criteria + '[]"]')
+                                    .val(value)
+                                    .trigger('chosen:updated');
+                                break;
+                            case 'datation':
+                                $('#advanced').find('input[name="datation[post_quem]"]').val(value.post_quem);
+                                $('#advanced').find('input[name="datation[ante_quem]"]').val(value.ante_quem);
+                                $('#advanced').find('input[name="datation[exact]"]').attr('checked', value.exact === "datation_exact");
+                                break;
+                            case 'names_mode':
+                            case 'languages_mode':
+                                if (value === "all") {
+                                    $('#advanced').find('input[name="' + criteria + '"]').attr('checked', true);
+                                }
+                                break;
+                        }*/
+                    });
+                    if (callback !== undefined) {
+                        callback.apply(null);
+                    }
+                });
+
+                setTimeout(() => {
+                    Object.keys(data).forEach(criteria => { addNewCriteria(criteria) });
+
+                    // In case criteria are already loaded,
+                    // we manually trigger the event
+                    if (criteriaLoading == 0) {
+                        $('#advanced > form').trigger('async-form-ready');
+                    }
+                }, 200);
+
+
             }
         }
 
@@ -457,6 +515,8 @@
         };
 
         addNewCriteria = function (criteriaName) {
+            $('#advanced .no-criteria').hide();
+
             // Find properties in SEARCH_CRITERIA
             var criteria = SEARCH_CRITERIA.reduce((found, item) => {
                 return found || (item.key === criteriaName ? item : item.children.reduce((carry, subitem) => {
@@ -483,9 +543,7 @@
                     template.find('.select-strict').find('input')
                         .prop('id', inputId + 'Mode_' + index)
                         .prop('name', criteria.key + '[' + index + '][mode]');
-                    setTimeout(() => {
-                        loadCriteriaData(criteria.key, template.find('select'), null, criteria.semitic !== true);
-                    }, 100);
+                    loadCriteriaData(criteria.key, template.find('select'), null, criteria.semitic !== true);
                     break;
                 case 'text':
                     var inputId = 'input' + criteria.key.charAt(0).toUpperCase() + criteria.key.slice(1);
@@ -569,6 +627,24 @@
             chooseNewCriteria();
         });
 
+        // Watch reset buttons
+        $('#guided').on('reset', function (e) {
+            var form = $(this);
+            setTimeout(() => {
+                form.find('select').trigger('chosen:updated');
+                form.find('input[name$="_mode"]').attr('checked', false);
+                form.find('input[name="datation[exact]"]').attr('checked', true);
+            }, 10);
+        });
+        $('#advanced').on('reset', function (e) {
+            var form = $(this);
+            setTimeout(() => {
+                form.find('.criteria-row, .new-criteria').remove();
+                form.find('.row.no-criteria').show();
+                form.find('input[name="resultsType"]').val('source');
+            }, 10);
+        });
+
         // Change tab and populate data
         var url = document.location.toString(),
             populate_mode = "{{ populate.mode }}";
@@ -590,24 +666,6 @@
         // React to click on tabs
         $('#searchTabLinks a').on('click', function (e) {
             changeMode(e.target.hash.replace('#', ''));
-        });
-
-        // Watch reset buttons
-        $('#guided').on('reset', function (e) {
-            var form = $(this);
-            setTimeout(() => {
-                form.find('select').trigger('chosen:updated');
-                form.find('input[name$="_mode"]').attr('checked', false);
-                form.find('input[name="datation[exact]"]').attr('checked', true);
-            }, 10);
-        });
-        $('#advanced').on('reset', function (e) {
-            var form = $(this);
-            setTimeout(() => {
-                form.find('.criteria-row, .new-criteria').remove();
-                form.find('.row.no-criteria').show();
-                form.find('input[name="resultsType"]').val('source');
-            }, 10);
         });
 
         // TODO : Remove debug

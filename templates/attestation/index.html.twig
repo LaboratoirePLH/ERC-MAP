@@ -35,6 +35,9 @@
                 {{ 'attestation.fields.translitteration'|trans }}
             </th>
             <th scope="col">
+                {{ 'attestation.fields.etat_fiche'|trans }}
+            </th>
+            <th scope="col">
                 {{ 'generic.fields.date_creation'|trans }}
             </th>
             <th scope="col">
@@ -75,6 +78,9 @@
             <td>
                 {% set cellValue = attestation.translitteration|length > 0 ? attestation.translitteration : attestation.extraitAvecRestitution %}
                 {{ cellValue|ellipsis(200)|raw }}
+            </td>
+            <td data-order="{{ attestation.etatFiche is not empty ? attestation.etatFiche.id : 0 }}">
+                {{ attestation.etatFiche is not empty ? attestation.etatFiche.getNom(locale) : '' }}
             </td>
             <td data-order="{{ attestation.dateCreation|date('U') }}">
                 {{ attestation.dateCreation|date(('locale_datetime'|trans), "Europe/Paris") }}
@@ -168,6 +174,7 @@
             <th>{{ 'source_biblio.fields.reference_source'|trans }}</th>
             <th>{{ 'attestation.fields.passage'|trans }}</th>
             <th>{{ 'attestation.fields.translitteration'|trans }}</th>
+            <th>{{ 'attestation.fields.etat_fiche'|trans }}</th>
             <th data-value="{{ app.user.prenomNom }}">{{ 'generic.fields.date_creation'|trans }}</th>
             <th>{{ 'generic.fields.date_modification'|trans }}</th>
             <th>{{ 'generic.fields.to_translate'|trans }}</th>
@@ -209,7 +216,7 @@
             scrollX: false,
             searching: true,
             ordering: true,
-            columns: [{ responsivePriority: 1 }, null, null, null, null, null, null, null, {
+            columns: [{ responsivePriority: 1 }, null, null, null, null, null, null, null, null, {
                 searchable: false,
                 orderable: false,
                 width: 90,
@@ -236,7 +243,7 @@
                     return document.replace(/(\s)\s+/g, "$1");
                 },
                 exportOptions: {
-                    columns: [0, 1, 2, 3, 4, 5, 6, 7]
+                    columns: [0, 1, 2, 3, 4, 5, 6, 7, 8]
                 }
             }]
         });

@@ -219,4 +219,12 @@ class VerrouEntite extends AbstractEntity
 
         return $this;
     }
+
+    public function toArray()
+    {
+        return [
+            'createur' => $this->createur->getPrenomNom(),
+            'date_fin' => $this->date_fin
+        ];
+    }
 }

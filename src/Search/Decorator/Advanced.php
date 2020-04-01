@@ -52,9 +52,8 @@ class Advanced {
             }
         }
 
-        $result['datation'] = self::_decorateDatation($data['datation'] ?? []);
-        $result['lieuOrigine'] = self::_decorateLocalisation($data['lieuOrigine'] ?? [], $locale);
-        $result['lieuDecouverte'] = self::_decorateLocalisation($data['lieuDecouverte'] ?? [], $locale);
+        $result = array_merge($result, self::_decorateDatation($data['datation'] ?? []));
+        $result = array_merge($result, self::_decorateLocalisation($data['lieuOrigine'] ?? $data['lieuDecouverte'] ?? [], $locale));
 
         $result['extraits'] = array_filter(array_map(
             function($att){ return $att->getData()['extraitAvecRestitution'] ?? $att->getData()['translitteration'] ?? ''; },
@@ -108,8 +107,8 @@ class Advanced {
                 . ')';
         }, $data['materiels'] ?? []);
 
-        $result['datation'] = self::_decorateDatation($data['datation'] ?? []);
-        $result['localisation'] = self::_decorateLocalisation($data['localisation'] ?? [], $locale);
+        $result = array_merge($result, self::_decorateDatation($data['datation'] ?? []));
+        $result = array_merge($result, self::_decorateLocalisation($data['localisation'] ?? []));
 
         // Add link data
         $result['link'] = ['type' => strtolower($entity->getEntite()), 'id' => $entity->getId()];
@@ -147,8 +146,7 @@ class Advanced {
             }
         }
 
-        $result['localisation'] = self::_decorateLocalisation($data['localisation'] ?? [], $locale);
-        $result['datation'] = self::_decorateDatation($data['datation'] ?? [], $locale);
+        $result = array_merge($result, self::_decorateLocalisation($data['localisation'] ?? []));
 
         // Add link data
         $result['link'] = ['type' => strtolower($entity->getEntite()), 'id' => $entity->getId()];
@@ -156,24 +154,22 @@ class Advanced {
         return ['element' => $result];
     }
 
-    protected static function _decorateDatation(array $datation): string
+    protected static function _decorateDatation(array $datation): array
     {
-        return implode(
-            ' / ',
-            array_filter([
-                $datation['postQuem'] ?? null,
-                $datation['anteQuem'] ?? null
-            ])
-        );
+        return [
+            'postQuem' => $datation['postQuem'] ?? null,
+            'anteQuem' => $datation['anteQuem'] ?? null,
+        ];
     }
 
-    protected static function _decorateLocalisation(array $localisation, string $locale): string
+    protected static function _decorateLocalisation(array $localisation, string $locale): array
     {
-        return $localisation['nomSite']
-            ?? $localisation['nomVille']
-            ?? $localisation['grandeRegion']['nom'.ucFirst($locale)]
-            ?? $localisation['sousRegion']['nom'.ucFirst($locale)]
-            ?? '';
+        return [
+            'grandeRegion' => ($localisation['grandeRegion'] ?? [])['nom'.ucFirst($locale)] ?? '',
+            'sousRegion'   => ($localisation['sousRegion'] ?? [])['nom'.ucFirst($locale)] ?? '',
+            'ville'        => ($localisation['nomVille'] . (($localisation['pleiadesVille'] ?? null) ? ' ('.$localisation['pleiadesVille'].')' : '')) ?? '',
+            'site'         => ($localisation['nomSite'] . (($localisation['pleiadesSite'] ?? null) ? ' ('.$localisation['pleiadesSite'].')' : '')) ?? '',
+        ];
     }
 
 }

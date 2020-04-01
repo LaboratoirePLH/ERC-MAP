@@ -157,6 +157,11 @@ class RechercheController extends AbstractController
     {
         $criteria    = $request->request->all();
         $resultsType = $criteria['resultsType'];
+        
+        if(array_key_exists('new_criteria', $criteria))
+        {
+            unset($criteria['new_criteria']);
+        }
 
         $results = $this->getDoctrine()
                         ->getRepository(\App\Entity\IndexRecherche::class)

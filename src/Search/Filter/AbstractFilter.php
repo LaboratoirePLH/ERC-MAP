@@ -36,7 +36,20 @@ abstract class AbstractFilter
 
     public static function toArray(array $entities): array
     {
-        return array_map(function($e){ return $e->getData(); }, $entities);
+        return array_filter(array_map(function($e){
+            if(is_array($e))
+            {
+                return $e;
+            } 
+            else if($e instanceof IndexRecherche)
+            {
+                return $e->getData();
+            }
+            else 
+            {
+                return null;
+            }
+        }, $entities));
     }
 
     public static function resolveSources(IndexRecherche $e, array $sortedData): array

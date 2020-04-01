@@ -11,9 +11,7 @@ class AgentGenders extends AbstractFilter {
         self::validateInput($entity, $criteria, $sortedData);
 
         // We resolve the agents
-        $agents = self::toArray(
-            self::resolveAgents($entity, $sortedData)
-        );
+        $agents = self::resolveAgents($entity, $sortedData);
         // For each agent, we get its genders IDs
         $data = array_map(function($el){
             return array_column($el['genres'] ?? [], 'id');

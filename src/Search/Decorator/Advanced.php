@@ -167,8 +167,8 @@ class Advanced {
         return [
             'grandeRegion' => ($localisation['grandeRegion'] ?? [])['nom'.ucFirst($locale)] ?? '',
             'sousRegion'   => ($localisation['sousRegion'] ?? [])['nom'.ucFirst($locale)] ?? '',
-            'ville'        => ($localisation['nomVille'] . (($localisation['pleiadesVille'] ?? null) ? ' ('.$localisation['pleiadesVille'].')' : '')) ?? '',
-            'site'         => ($localisation['nomSite'] . (($localisation['pleiadesSite'] ?? null) ? ' ('.$localisation['pleiadesSite'].')' : '')) ?? '',
+            'ville'        => (($localisation['nomVille'] ?? '') . (($localisation['pleiadesVille'] ?? null) ? ' ('.$localisation['pleiadesVille'].')' : '')) ?? '',
+            'site'         => (($localisation['nomSite'] ?? '') . (($localisation['pleiadesSite'] ?? null) ? ' ('.$localisation['pleiadesSite'].')' : '')) ?? '',
         ];
     }
 

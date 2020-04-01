@@ -56,7 +56,7 @@
                 extend: 'csv',
                 filename: "{{ 'app_name'|trans }}-{{ 'search.results'|trans }} {{ ('search.'~mode)|trans }}",
                 text: "{{'generic.export_csv'|trans}}",
-                customize: function (document) {
+                customize: function (document, button, table) {
                     var papadata = Papa.parse(document);
                     var data = papadata.data;
 
@@ -80,8 +80,6 @@
                         data.unshift(groupHeaders);
                         hasGroups = true;
                     }
-
-
                     data = data.map((row, index) => {
                         if (index > (hasGroups ? 1 : 0)) {
                             // Prepare Links
@@ -94,12 +92,16 @@
                         }
                         return row.map(col => $("<div/>").html(col).text());
                     });
+
+                    // Now remove all hidden columns
+                    data = data.map(row => row.filter((v, i) => table.column(i).visible()));
+
                     return Papa.unparse(data, {
                         quotes: true
                     });
                 },
                 exportOptions: {
-                    stripHtml: false,
+                    stripHtml    : false,
                     stripNewlines: false,
                 }
             }]

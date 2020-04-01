@@ -49,7 +49,7 @@ services:
             - 5432:5432
 
     yarn:
-        image: node:current-alpine
+        image: node:13.2
         depends_on:
             - php
         working_dir: /var/www/html/

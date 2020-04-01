@@ -1,0 +1,14 @@
+{% extends 'page.html.twig' %}
+{% block title %}
+{{ ('pages.error.404.title')|trans }}
+{% endblock %}
+{% block content %}
+<hr>
+<div class="col-12 text-center" style="min-height:300px;">
+    <h5>
+        {{ 'pages.error.404.body'|trans }}
+    </h5>
+    <br/>
+    <a href="{{ url('home') }}">{{ 'pages.error.404.link'|trans }}</a>
+</div>
+{% endblock %}

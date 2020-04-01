@@ -461,6 +461,15 @@ pages:
         display: "Display"
         network_analysis: "Network Analysis"
         webmapping: "Webmapping"
+    error:
+        404:
+            title: "Page not found"
+            body: "The page you requested does not exist"
+            link: "Back to home"
+        other:
+            title: "Erreur inconnue"
+            body: "An unknown error happened. Please try again, and contact the administrator if the problem persists"
+            link: "Back to home"
 
 mails:
     password_reset:

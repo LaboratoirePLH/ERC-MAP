@@ -461,7 +461,15 @@ pages:
         display: "Afficher"
         network_analysis: "Analyse de Réseaux"
         webmapping: "Webmapping"
-
+    error:
+        404:
+            title: "Page introuvable"
+            body: "La page que vous avez demandé n'existe pas"
+            link: "Retour à l'accueil"
+        other:
+            title: "Erreur inconnue"
+            body: "Une erreur inconnue s'est produite. Veuillez réessayer, et contactez l'administrateur si elle persiste"
+            link: "Retour à l'accueil"
 mails:
     password_reset:
         title: "ERC-MAP - Réinitialisation du mot de passe"

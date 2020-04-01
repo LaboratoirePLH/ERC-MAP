@@ -24,6 +24,7 @@
         "symfony/swiftmailer-bundle": "^3.2",
         "symfony/translation": "5.0.*",
         "symfony/twig-bundle": "5.0.*",
+        "symfony/twig-pack": "^1.0",
         "symfony/validator": "5.0.*",
         "symfony/webpack-encore-bundle": "^1.0",
         "symfony/yaml": "5.0.*"

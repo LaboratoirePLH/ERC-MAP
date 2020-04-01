@@ -48,9 +48,14 @@ class IndexRecherche
      */
     private $data;
 
+    private $decodedData = null;
+
     public function getData(): array
     {
-        return json_decode($this->data, true);
+        if(!$this->decodedData){
+            $this->decodedData = json_decode($this->data, true);
+        }
+        return $this->decodedData;
     }
 
     public function setData(array $data): self

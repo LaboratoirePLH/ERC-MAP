@@ -7,6 +7,8 @@ window.Papa = global.Papa = require('papaparse');
 require('bootstrap');
 require('form-serializer');
 
+window.Cookie = require('js-cookie');
+
 decodeEntities = function (encodedString) {
     var textArea = document.createElement('textarea');
     textArea.innerHTML = encodedString;

@@ -15,11 +15,13 @@
 
 <script type="text/javascript">
     var mode = "{{ mode }}";
+    var columns = $.parseJSON("{{ columns|json_encode|e('js')|raw }}")
     var headers = $.parseJSON("{{ headers|json_encode|e('js')|raw }}")
     var groups = $.parseJSON("{{ groups|json_encode|e('js')|raw }}")
     var hiddenCols = $.parseJSON("{{ hiddenCols|json_encode|e('js')|raw }}");
-
+    
     $(document).ready(function () {
+    
         $('#search-results thead tr#filterRow th').each(function () {
             var title = $(this).text();
             var value = $(this).data('value');
@@ -123,6 +125,39 @@
             counter.text(str);
         };
 
+        var storeVisibleColumns = function()
+        {
+            var cols = Array.from(dt.columns().visible());
+            Cookie.set('search_'+mode+'_columns', JSON.stringify(cols), {expires: 365});
+        };
+
+        var loadVisibleColumns = function()
+        {
+            // Get cookie (if missing will return undefined)
+            var cols = Cookie.get('search_'+mode+'_columns');
+            if(cols !== undefined)
+            {
+                // Try to parse JSON form Cookie (throws Exception if failed)
+                try {
+                    cols = JSON.parse(cols);
+                }
+                catch (e) {
+                    cols = null;
+                }
+            }
+            // If we found valid data, display columns from user setting
+            if(cols !== null && cols !== undefined){
+                cols.forEach((visible, colIndex) => {
+                    dt.column(colIndex).visible(visible);
+                    $('input.toggle-column#checkboxColumn'+colIndex).prop('checked', visible);
+                })
+            }
+            // Else display default settings
+            else {
+                hiddenCols.forEach(colIndex => { dt.column(colIndex).visible(false) })
+            }
+        };
+
         $('#search-results_wrapper select').removeClass('custom-select');
         dt.columns().every(function () {
             var me = this;
@@ -146,6 +181,8 @@
             var column = dt.column($(this).attr('data-column'));
             // Toggle the visibility
             column.visible(this.checked);
+            // Update setting in cookie
+            storeVisibleColumns();
         });
         // Prevent click on checkbox to propagate to dropdown-item (causing double change)
         $('input.toggle-column').on('click', function (e) {
@@ -159,8 +196,7 @@
             cb.trigger('change');
             return false;
         });
-        // Hide columns that should not be visible on first render
-        hiddenCols.forEach(colIndex => { dt.column(colIndex).visible(false) })
+        loadVisibleColumns();
 
 
         $('input[type=search]').on('keyup change', function () {

@@ -40,8 +40,7 @@
                             {% for col in cols %}
                             <div class="dropdown-item">
                                 <input type="checkbox" class="form-check-input toggle-column"
-                                    id="checkboxColumn{{ colIndex }}" data-column="{{ colIndex }}"
-                                    {% if col.visible %}checked{% endif %}>
+                                    id="checkboxColumn{{ colIndex }}" data-column="{{ colIndex }}" checked>
                                 <label for="checkboxColumn{{ colIndex }}" class="form-check-label">
                                     <small>
                                         {{ col.label|trans }}

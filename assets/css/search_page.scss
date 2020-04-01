@@ -43,3 +43,8 @@ select:invalid[multiple] {
     top: 4px;
     left: 20px;
 }
+
+.chosen-container ul.chosen-results li.group-result {
+    font-weight: bold;
+    color: $map-grey;
+}

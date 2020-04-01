@@ -314,7 +314,9 @@ class RechercheController extends AbstractController
         if($mode == "guided"){
             $response = [];
             foreach($criteria as $key => $value){
-                $response['search.criteria_labels.'.$key] = $searchCriteria->getDisplay($key, $value, $locale);
+                if($key !== 'names_mode' && $key !== 'languages_mode'){
+                    $response['search.criteria_labels.'.$key] = $searchCriteria->getDisplay($key, $value, $locale);
+                }
             }
             if(($criteria['names_mode'] ?? 'one') === 'all'
                 && array_key_exists('names', $criteria)){

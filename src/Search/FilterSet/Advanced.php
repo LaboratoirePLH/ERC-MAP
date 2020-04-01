@@ -24,7 +24,7 @@ class Advanced extends AbstractFilterSet
 
                 // If class is not found, return empty array with default lifetime and default tag
                 if(!class_exists($cls)){
-                    throw new InvalidArgumentException("Could not find class '$cls' to process criteria $criteriaName");
+                    throw new \InvalidArgumentException("Could not find class '$cls' to process criteria $criteriaName");
                 }
 
                 $criteriaAccepted = $cls::filter($e, $criteriaValues, $this->sortedData);

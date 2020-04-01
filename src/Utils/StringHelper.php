@@ -34,6 +34,7 @@ class StringHelper
      */
     public static function ellipsis($text, $length = 200, $ending = '&hellip;', $exact = true, $considerHtml = true) {
         $text = self::normalizeDiacritics(html_entity_decode($text));
+        $text = str_replace(['<<', '>>'], ['&lt;&lt;', '&gt;&gt;'], $text);
         if ($considerHtml) {
             // if the plain text is shorter than the maximum length, return the whole text
             if (strlen(preg_replace('/<.*?>/', '', $text)) <= $length) {

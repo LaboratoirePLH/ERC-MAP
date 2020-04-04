@@ -1,748 +1,667 @@
 {% extends 'page.html.twig' %}
 {% block title %}
-{{ ('search.title')|trans }}
+    {{ ('search.title')|trans }}
 {% endblock %}
 {% block stylesheets %}
-{{ encore_entry_link_tags('search_page') }}
+    {{ encore_entry_link_tags('search_page') }}
 {% endblock %}
 {% block content %}
-<div class="row my-3">
-    <div class="col-sm-12 col-md-8 text-center" id="search-panel">
-        <ul class="nav nav-pills nav-fill" id="searchTabLinks" role="tablist">
-            <li class="nav-item">
-                <a class="nav-link font-weight-bolder active" id="simple-tab" data-toggle="tab" href="#simple"
-                    role="tab" aria-controls="simple" aria-selected="true">
-                    {{ ('search.simple')|trans }}
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link font-weight-bolder" id="guided-tab" data-toggle="tab" href="#guided" role="tab"
-                    aria-controls="guided" aria-selected="false">
-                    {{ ('search.guided')|trans }}
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link font-weight-bolder" id="advanced-tab" data-toggle="tab" href="#advanced" role="tab"
-                    aria-controls="advanced" aria-selected="false">
-                    {{ ('search.advanced')|trans }}
-                </a>
-            </li>
-            <li class="nav-item d-none">
-                <a class="nav-link font-weight-bolder" id="elements-tab" data-toggle="tab" href="#elements" role="tab"
-                    aria-controls="elements" aria-selected="false">
-                    {{ ('search.elements')|trans }}
-                </a>
-            </li>
-        </ul>
-        <div class="tab-content" id="searchTabs">
-            <div class="tab-pane fade p-3 show active" id="simple" role="tabpanel" aria-labelledby="simple-tab">
-                <form action="{{ url('search_simple') }}" class="form-inline" method="post">
-                    <input class="form-control form-control-lg mx-2 flex-grow-1" type="text" name="search_value"
-                        placeholder="" />
-                    <button class="btn btn-primary mx-2" type="submit" name="search">
-                        <i class="fas fa-search fa-fw"></i>
-                        {{ 'generic.search'|trans }}
-                    </button>
-                </form>
+    <div class="row my-3">
+        <div class="col-sm-12 col-md-8 text-center" id="search-panel">
+            <ul class="nav nav-pills nav-fill" id="searchTabLinks" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link font-weight-bolder active" id="simple-tab" data-toggle="tab" href="#simple" role="tab" aria-controls="simple" aria-selected="true">
+                        {{ ('search.simple')|trans }}
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link font-weight-bolder" id="guided-tab" data-toggle="tab" href="#guided" role="tab" aria-controls="guided" aria-selected="false">
+                        {{ ('search.guided')|trans }}
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link font-weight-bolder" id="advanced-tab" data-toggle="tab" href="#advanced" role="tab" aria-controls="advanced" aria-selected="false">
+                        {{ ('search.advanced')|trans }}
+                    </a>
+                </li>
+                <li class="nav-item d-none">
+                    <a class="nav-link font-weight-bolder" id="elements-tab" data-toggle="tab" href="#elements" role="tab" aria-controls="elements" aria-selected="false">
+                        {{ ('search.elements')|trans }}
+                    </a>
+                </li>
+            </ul>
+            <div class="tab-content" id="searchTabs">
+                <div class="tab-pane fade p-3 show active" id="simple" role="tabpanel" aria-labelledby="simple-tab">
+                    <form action="{{ url('search_simple') }}" class="form-inline" method="post">
+                        <input class="form-control form-control-lg mx-2 flex-grow-1" type="text" name="search_value" placeholder=""/>
+                        <button class="btn btn-primary mx-2" type="submit" name="search">
+                            <i class="fas fa-search fa-fw"></i>
+                            {{ 'generic.search'|trans }}
+                        </button>
+                    </form>
+                </div>
+                <div class="tab-pane fade p-3" id="guided" role="tabpanel" aria-labelledby="guided-tab">
+                    <form action="{{ url('search_guided') }}" method="post">
+                        <div class="form-group row">
+                            <label for="inputName" class="col-sm-2 col-form-label">{{ ('generic.fields.nom')|trans }}</label>
+                            <div class="col-sm-8">
+                                <select class="form-control autocomplete" name="names[]" id="inputName" size="1" multiple data-placeholder="{{('autocomplete.select_multiple')|trans}}">
+                                    <option value></option>
+                                </select>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="custom-control custom-switch pt-2">
+                                    <input type="checkbox" class="custom-control-input" id="names_mode" name="names_mode" value="all">
+                                    <label class="custom-control-label" for="names_mode">{{ 'generic.fields.require_all'|trans }}</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="inputLanguage" class="col-sm-2 col-form-label">{{ ('generic.fields.langue')|trans }}</label>
+                            <div class="col-sm-8">
+                                <select class="form-control autocomplete" name="languages[]" id="inputLanguage" size="1" multiple data-placeholder="{{('autocomplete.select_multiple')|trans}}">
+                                    <option value></option>
+                                </select>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="custom-control custom-switch pt-2">
+                                    <input type="checkbox" class="custom-control-input" id="languages_mode" name="languages_mode" value="all">
+                                    <label class="custom-control-label" for="languages_mode">{{ 'generic.fields.require_all'|trans }}</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">{{ ('generic.fields.datation')|trans }}</label>
+                            <div class="col">
+                                <input type="number" step="1" class="form-control" name="datation[post_quem]" id="inputPostQuem" placeholder="{{('datation.fields.post_quem')|trans}}">
+                            </div>
+                            <div class="col">
+                                <input type="number" step="1" class="form-control" name="datation[ante_quem]" id="inputAnteQuem" placeholder="{{('datation.fields.ante_quem')|trans}}">
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="custom-control custom-switch pt-2">
+                                    <input type="checkbox" class="custom-control-input" id="inputDatationExact" name="datation[exact]" value="datation_exact" checked>
+                                    <label class="custom-control-label" for="inputDatationExact">
+                                        {{ ('generic.fields.strict')|trans }}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="inputLocation" class="col-sm-2 col-form-label">{{ ('generic.fields.lieu')|trans }}</label>
+                            <div class="col-sm-10">
+                                <select class="form-control autocomplete" name="locations[]" id="inputLocation" size="1" multiple data-placeholder="{{('autocomplete.select_multiple')|trans}}">
+                                    <option value></option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="inputSourceType" class="col-sm-2 col-form-label">{{ ('source.name')|trans }}</label>
+                            <div class="col-sm-10">
+                                <select class="form-control autocomplete" name="sourceTypes[]" id="inputSourceType" size="1" multiple data-placeholder="{{('autocomplete.select_multiple')|trans}}">
+                                    <option value></option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="inputAgents" class="col-sm-2 col-form-label">{{ ('agent.name')|trans }}</label>
+                            <div class="col-sm-10">
+                                <select class="form-control autocomplete" name="agents[]" id="inputAgents" size="1" multiple data-placeholder="{{('autocomplete.select_multiple')|trans}}">
+                                    <option value></option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-sm-12">
+                                <button class="btn btn-secondary btn-sm mx-2" type="reset" name="reset" class="reset-button">
+                                    <i class="fas fa-eraser fa-fw"></i>
+                                    {{ 'generic.clear'|trans }}
+                                </button>
+                                <button class="btn btn-primary mx-2" type="submit" name="search">
+                                    <i class="fas fa-search fa-fw"></i>
+                                    {{ 'generic.search'|trans }}
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="tab-pane fade p-3" id="advanced" role="tabpanel" aria-labelledby="advanced-tab">
+                    <form action="{{ url('search_advanced') }}" method="post">
+                        <div class="form-group row first-row">
+                            <div class="col text-center">
+                                <label class="col-form-label">
+                                    {{ 'search.results_type'|trans }}
+                                    :
+                                </label>
+                                <div class="btn-group ml-2" data-toggle="buttons">
+                                    <label class="btn btn-primary active">
+                                        <input type="radio" name="resultsType" value="source" autocomplete="off" checked>
+                                        <i class="fas fa-fw {{ icons.source }}"></i>
+                                        {{ 'source.name'|trans }}
+                                    </label>
+                                    <label class="btn btn-success">
+                                        <input type="radio" name="resultsType" value="attestation" autocomplete="off">
+                                        <i class="fas fa-fw {{ icons.attestation }}"></i>
+                                        {{ 'attestation.name'|trans }}
+                                    </label>
+                                    <label class="btn btn-warning">
+                                        <input type="radio" name="resultsType" value="element" autocomplete="off">
+                                        <i class="fas fa-fw {{ icons.element }}"></i>
+                                        {{ 'element.name'|trans }}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <hr/>
+                        <div class="form-group row no-criteria">
+                            <div class="col text-center">
+                                <h5>{{ 'search.messages.no_criteria'|trans }}</h5>
+                            </div>
+                        </div>
+                        <hr/>
+                        <div class="form-group row last-row">
+                            <div class="col-sm-12">
+                                <button class="btn btn-secondary btn-sm mx-2" type="reset" name="reset" class="reset-button">
+                                    <i class="fas fa-eraser fa-fw"></i>
+                                    {{ 'generic.clear'|trans }}
+                                </button>
+                                <button class="btn btn-success mx-2" type="button" id="add-criteria">
+                                    <i class="fas fa-plus fa-fw"></i>
+                                    {{ 'search.add_criteria'|trans }}
+                                </button>
+                                <button class="btn btn-primary mx-2" type="submit" name="search">
+                                    <i class="fas fa-search fa-fw"></i>
+                                    {{ 'generic.search'|trans }}
+                                </button>
+                                <button class="btn btn-secondary btn-sm mx-2" type="button" name="test" id="test-add-all">
+                                    Test
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="tab-pane fade d-none" id="elements" role="tabpanel" aria-labelledby="elements-tab">
+                    Recherche éléments
+                </div>
             </div>
-            <div class="tab-pane fade p-3" id="guided" role="tabpanel" aria-labelledby="guided-tab">
-                <form action="{{ url('search_guided') }}" method="post">
-                    <div class="form-group row">
-                        <label for="inputName"
-                            class="col-sm-2 col-form-label">{{ ('generic.fields.nom')|trans }}</label>
-                        <div class="col-sm-8">
-                            <select class="form-control autocomplete" name="names[]" id="inputName" size="1" multiple
-                                data-placeholder="{{('autocomplete.select_multiple')|trans}}">
-                                <option value></option>
-                            </select>
-                        </div>
-                        <div class="col-sm-2">
-                            <div class="custom-control custom-switch pt-2">
-                                <input type="checkbox" class="custom-control-input" id="names_mode" name="names_mode"
-                                    value="all">
-                                <label class="custom-control-label"
-                                    for="names_mode">{{ 'generic.fields.require_all'|trans }}</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="inputLanguage"
-                            class="col-sm-2 col-form-label">{{ ('generic.fields.langue')|trans }}</label>
-                        <div class="col-sm-8">
-                            <select class="form-control autocomplete" name="languages[]" id="inputLanguage" size="1"
-                                multiple data-placeholder="{{('autocomplete.select_multiple')|trans}}">
-                                <option value></option>
-                            </select>
-                        </div>
-                        <div class="col-sm-2">
-                            <div class="custom-control custom-switch pt-2">
-                                <input type="checkbox" class="custom-control-input" id="languages_mode"
-                                    name="languages_mode" value="all">
-                                <label class="custom-control-label"
-                                    for="languages_mode">{{ 'generic.fields.require_all'|trans }}</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-sm-2 col-form-label">{{ ('generic.fields.datation')|trans }}</label>
-                        <div class="col">
-                            <input type="number" step="1" class="form-control" name="datation[post_quem]"
-                                id="inputPostQuem" placeholder="{{('datation.fields.post_quem')|trans}}">
-                        </div>
-                        <div class="col">
-                            <input type="number" step="1" class="form-control" name="datation[ante_quem]"
-                                id="inputAnteQuem" placeholder="{{('datation.fields.ante_quem')|trans}}">
-                        </div>
-                        <div class="col-sm-2">
-                            <div class="custom-control custom-switch pt-2">
-                                <input type="checkbox" class="custom-control-input" id="inputDatationExact"
-                                    name="datation[exact]" value="datation_exact" checked>
-                                <label class="custom-control-label" for="inputDatationExact">
-                                    {{ ('generic.fields.strict')|trans }}
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="inputLocation"
-                            class="col-sm-2 col-form-label">{{ ('generic.fields.lieu')|trans }}</label>
-                        <div class="col-sm-10">
-                            <select class="form-control autocomplete" name="locations[]" id="inputLocation" size="1"
-                                multiple data-placeholder="{{('autocomplete.select_multiple')|trans}}">
-                                <option value></option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="inputSourceType" class="col-sm-2 col-form-label">{{ ('source.name')|trans }}</label>
-                        <div class="col-sm-10">
-                            <select class="form-control autocomplete" name="sourceTypes[]" id="inputSourceType" size="1"
-                                multiple data-placeholder="{{('autocomplete.select_multiple')|trans}}">
-                                <option value></option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="inputAgents" class="col-sm-2 col-form-label">{{ ('agent.name')|trans }}</label>
-                        <div class="col-sm-10">
-                            <select class="form-control autocomplete" name="agents[]" id="inputAgents" size="1" multiple
-                                data-placeholder="{{('autocomplete.select_multiple')|trans}}">
-                                <option value></option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <div class="col-sm-12">
-                            <button class="btn btn-secondary btn-sm mx-2" type="reset" name="reset"
-                                class="reset-button">
-                                <i class="fas fa-eraser fa-fw"></i>
-                                {{ 'generic.clear'|trans }}
-                            </button>
-                            <button class="btn btn-primary mx-2" type="submit" name="search">
-                                <i class="fas fa-search fa-fw"></i>
-                                {{ 'generic.search'|trans }}
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="tab-pane fade p-3" id="advanced" role="tabpanel" aria-labelledby="advanced-tab">
-                <form action="{{ url('search_advanced') }}" method="post">
-                    <div class="form-group row first-row">
-                        <div class="col text-center">
-                            <label class="col-form-label">
-                                {{ 'search.results_type'|trans }} :
-                            </label>
-                            <div class="btn-group ml-2" data-toggle="buttons">
-                                <label class="btn btn-primary active">
-                                    <input type="radio" name="resultsType" value="source" autocomplete="off" checked>
-                                    <i class="fas fa-fw {{ icons.source }}"></i>
-                                    {{ 'source.name'|trans }}
-                                </label>
-                                <label class="btn btn-success">
-                                    <input type="radio" name="resultsType" value="attestation" autocomplete="off">
-                                    <i class="fas fa-fw {{ icons.attestation }}"></i>
-                                    {{ 'attestation.name'|trans }}
-                                </label>
-                                <label class="btn btn-warning">
-                                    <input type="radio" name="resultsType" value="element" autocomplete="off">
-                                    <i class="fas fa-fw {{ icons.element }}"></i>
-                                    {{ 'element.name'|trans }}
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    <hr />
-                    <div class="form-group row no-criteria">
-                        <div class="col text-center">
-                            <h5>{{ 'search.messages.no_criteria'|trans }}</h5>
-                        </div>
-                    </div>
-                    <hr />
-                    <div class="form-group row last-row">
-                        <div class="col-sm-12">
-                            <button class="btn btn-secondary btn-sm mx-2" type="reset" name="reset"
-                                class="reset-button">
-                                <i class="fas fa-eraser fa-fw"></i>
-                                {{ 'generic.clear'|trans }}
-                            </button>
-                            <button class="btn btn-success mx-2" type="button" id="add-criteria">
-                                <i class="fas fa-plus fa-fw"></i>
-                                {{ 'search.add_criteria'|trans }}
-                            </button>
-                            <button class="btn btn-primary mx-2" type="submit" name="search">
-                                <i class="fas fa-search fa-fw"></i>
-                                {{ 'generic.search'|trans }}
-                            </button>
-                            <button class="btn btn-secondary btn-sm mx-2" type="button" name="test" id="test-add-all">
-                                Test
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="tab-pane fade d-none" id="elements" role="tabpanel" aria-labelledby="elements-tab">
-                Recherche éléments
+        </div>
+        <div class="col-sm-12 col-md-4">
+            <ul class="nav nav-pills nav-fill" id="myTab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link text-white background-map-grey" role="tab">
+                        {{ ('search.saved_queries')|trans }}
+                    </a>
+                </li>
+            </ul>
+            <div class="tab-content overflow-auto" id="savedQueriesTab" style="max-height: 200px; ">
+                <div class="tab-pane show active" role="tabpanel">
+                    <ul class="list-group list-group-flush">
+                        {% for query in saved_queries %}
+                            {% include "search/_saved_query.html.twig" with {'query': query, 'criteria_list': criteria_list} only %}
+                        {% endfor %}
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
-    <div class="col-sm-12 col-md-4">
-        <ul class="nav nav-pills nav-fill" id="myTab" role="tablist">
-            <li class="nav-item">
-                <a class="nav-link text-white background-map-grey" role="tab">
-                    {{ ('search.saved_queries')|trans }}
-                </a>
-            </li>
-        </ul>
-        <div class="tab-content overflow-auto" id="savedQueriesTab" style="max-height: 200px; ">
-            <div class="tab-pane show active" role="tabpanel">
-                <ul class="list-group list-group-flush">
-                    {% for query in saved_queries %}
-                    {% include "search/_saved_query.html.twig" with {'query': query, 'criteria_list': criteria_list} only %}
-                    {% endfor %}
-                </ul>
-            </div>
-        </div>
-    </div>
-</div>
-{% include "search/_templates.html.twig" with {'criteria_list': criteria_list} only %}
-{% if is_granted('ROLE_ADMIN') %}
-<hr />
-<div class="row">
-    <div class="col-12 text-center">
-        <button type="button" class="btn my-1 btn-danger" id="search-reindex" data-toggle="modal"
-            data-target="#search-reindex-modal">
-            <i class="fas fa-fw fa-sync"></i>
-            {{ 'search.reindex'|trans }}
-        </button>
-        {% include "modals/confirmation.html.twig" with {
+    {% include "search/_templates.html.twig" with {'criteria_list': criteria_list} only %}
+    {% if is_granted('ROLE_ADMIN') %}
+        <hr/>
+        <div class="row">
+            <div class="col-12 text-center">
+                <button type="button" class="btn my-1 btn-danger" id="search-reindex" data-toggle="modal" data-target="#search-reindex-modal">
+                    <i class="fas fa-fw fa-sync"></i>
+                    {{ 'search.reindex'|trans }}
+                </button>
+                {% include "modals/confirmation.html.twig" with {
             'modalName': 'confirm_search_reindex',
             'uuid': 'search-reindex-modal',
             'targetUrl': url('search_reindex'),
             'confirmationLabel': 'generic.confirm',
             'useForm': false
         } %}
-        <a href="{{ url('search_clear_cache') }}" class="btn btn-danger">
-            <i class="fas fa-fw fa-trash"></i>
-            {{ 'search.clear_cache'|trans }}
-        </a>
-    </div>
-</div>
-{% endif %}
+                <a href="{{ url('search_clear_cache') }}" class="btn btn-danger">
+                    <i class="fas fa-fw fa-trash"></i>
+                    {{ 'search.clear_cache'|trans }}
+                </a>
+            </div>
+        </div>
+    {% endif %}
 
 {% endblock %}
 {% block javascripts %}
-{{ parent() }}
-{{ encore_entry_script_tags('search_page') }}
-<script type="text/javascript">
-    $(document).ready(function () {
-        SEARCH_CRITERIA = $.parseJSON("{{ criteria_list|json_encode|e('js')|raw }}");
-        CURRENT_MODE = "";
-        changeMode = function (mode) {
-            // Save in variable
-            CURRENT_MODE = mode;
-            // Show given tab
-            $('#searchTabLinks a[href="#' + mode + '"]').tab('show');
-            // Update current URL hash
-            window.location.hash = '#' + mode;
-            // Adjust height of saved queries block
-            adjustSavedQueriesHeight();
+    {{ parent() }}
+    {{ encore_entry_script_tags('search_page') }}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            SEARCH_CRITERIA = $.parseJSON("{{ criteria_list|json_encode|e('js')|raw }}");
+            CURRENT_MODE = "";
+            changeMode = function (mode) { // Save in variable
+                CURRENT_MODE = mode;
+                // Show given tab
+                $('#searchTabLinks a[href="#' + mode + '"]').tab('show');
+                // Update current URL hash
+                window.location.hash = '#' + mode;
+                // Adjust height of saved queries block
+                adjustSavedQueriesHeight();
 
-            // Show directly the add criteria select list if we're showing the advanced tab
-            if (mode == "advanced") {
-                chooseNewCriteria();
-            }
-        };
-
-        adjustSavedQueriesHeight = function () {
-            if (CURRENT_MODE === "simple") {
-                $("#savedQueriesTab").animate({
-                    maxHeight: '200px'
-                }, 500);
-            } else {
-                var height = $('div.tab-pane#' + CURRENT_MODE).outerHeight();
-                $("#savedQueriesTab").animate({
-                    maxHeight: height + 'px'
-                }, 500);
-            }
-        };
-
-        searchCriteria = function (criteriaName) {
-            // Find properties in SEARCH_CRITERIA
-            return SEARCH_CRITERIA.reduce((found, item) => {
-                return found || (item.key === criteriaName ? item : item.children.reduce((carry, subitem) => {
-                    return subitem.key === criteriaName ? subitem : carry;
-                }, null));
-            }, null);
-        }
-
-        populateCriteriaData = function (mode, data, callback) {
-            if (mode === "simple") {
-                $('#simple').find('input[name="search_value"]').val(data[0]);
-            }
-            else if (mode === "guided") {
-                // Guided form will be populated when all its data has been loaded
-                $('#search-panel').on('async-form-ready', function () {
-                    $('#guided').find('button[type=reset]').click();
-                    $.each(data, function (criteria, value) {
-                        switch (criteria) {
-                            case 'names':
-                            case 'languages':
-                            case 'locations':
-                            case 'sourceTypes':
-                            case 'agents':
-                                $('#guided').find('select[name="' + criteria + '[]"]')
-                                    .val(value)
-                                    .trigger('chosen:updated');
-                                break;
-                            case 'datation':
-                                $('#guided').find('input[name="datation[post_quem]"]').val(value.post_quem);
-                                $('#guided').find('input[name="datation[ante_quem]"]').val(value.ante_quem);
-                                $('#guided').find('input[name="datation[exact]"]').attr('checked', value.exact === "datation_exact");
-                                break;
-                            case 'names_mode':
-                            case 'languages_mode':
-                                if (value === "all") {
-                                    $('#guided').find('input[name="' + criteria + '"]').attr('checked', true);
-                                }
-                                break;
-                        }
-                    });
-                    if (callback !== undefined) {
-                        callback.apply(null);
-                    }
-                });
-                // In case criteria are already loaded (ie loading a saved query),
-                // we manually trigger the event
-                if (criteriaLoading == 0) {
-                    $('#search-panel').trigger('async-form-ready');
+                // Show directly the add criteria select list if we're showing the advanced tab
+                if (mode == "advanced") {
+                    chooseNewCriteria();
                 }
+            };
+
+            adjustSavedQueriesHeight = function () {
+                if (CURRENT_MODE === "simple") {
+                    $("#savedQueriesTab").animate({
+                        maxHeight: '200px'
+                    }, 500);
+                } else {
+                    var height = $('div.tab-pane#' + CURRENT_MODE).outerHeight();
+                    $("#savedQueriesTab").animate({
+                        maxHeight: height + 'px'
+                    }, 500);
+                }
+            };
+
+            searchCriteria = function (criteriaName) { // Find properties in SEARCH_CRITERIA
+                return SEARCH_CRITERIA.reduce((found, item) => {
+                    return found || (item.key === criteriaName ? item : item.children.reduce((carry, subitem) => {
+                        return subitem.key === criteriaName ? subitem : carry;
+                    }, null));
+                }, null);
             }
-            else if (mode == "advanced") {
-                $('#advanced').find('button[type=reset]').click();
 
-                // Set the results type
-                $('#advanced input[name=resultsType]').filter('[value=' + data.resultsType + ']').prop('checked', true);
-                delete data.resultsType;
-
-                // Advanced form will be populated when all its data has been loaded
-                $('#search-panel').on('async-form-ready', function () {
-                    Object.entries(data).forEach(([criteriaName, values]) => {
-                        var criteria = searchCriteria(criteriaName);
-
-                        values.forEach((value, index) => {
-                            switch (criteria.type) {
-                                case 'select':
-                                    $('#advanced').find('select[name="' + criteriaName + '[' + index + '][values][]"]')
-                                        .val(value.values)
-                                        .trigger('chosen:updated');
-                                    if (value.hasOwnProperty('mode') && value.mode === "all") {
-                                        $('#advanced').find('input[name="' + criteriaName + '[' + index + '][mode]"]')
-                                            .attr('checked', true);
-                                    }
-                                    break;
-                                case 'text':
-                                case 'range':
-                                    $('#advanced').find('input[name="' + criteriaName + '[]"]').eq(index).val(value).trigger('input');
+            populateCriteriaData = function (mode, data, callback) {
+                if (mode === "simple") {
+                    $('#simple').find('input[name="search_value"]').val(data[0]);
+                } else if (mode === "guided") { // Guided form will be populated when all its data has been loaded
+                    $('#search-panel').on('async-form-ready', function () {
+                        $('#guided').find('button[type=reset]').click();
+                        $.each(data, function (criteria, value) {
+                            switch (criteria) {
+                                case 'names':
+                                case 'languages':
+                                case 'locations':
+                                case 'sourceTypes':
+                                case 'agents':
+                                    $('#guided').find('select[name="' + criteria + '[]"]').val(value).trigger('chosen:updated');
                                     break;
                                 case 'datation':
-                                    $('#advanced').find('input[name="datation[' + index + '][post_quem]"]').val(value.post_quem);
-                                    $('#advanced').find('input[name="datation[' + index + '][ante_quem]"]').val(value.ante_quem);
-                                    $('#advanced').find('input[name="datation[' + index + '][exact]"]').attr('checked', value.exact === "datation_exact");
+                                    $('#guided').find('input[name="datation[post_quem]"]').val(value.post_quem);
+                                    $('#guided').find('input[name="datation[ante_quem]"]').val(value.ante_quem);
+                                    $('#guided').find('input[name="datation[exact]"]').attr('checked', value.exact === "datation_exact");
                                     break;
-                                case 'prosepoetry':
-                                    $('#advanced').find('input[name="prosePoetry[' + index + '][]"][value=prose]').attr('checked', value.includes('prose'));
-                                    $('#advanced').find('input[name="prosePoetry[' + index + '][]"][value=poesie]').attr('checked', value.includes('poesie'));
+                                case 'names_mode':
+                                case 'languages_mode':
+                                    if (value === "all") {
+                                        $('#guided').find('input[name="' + criteria + '"]').attr('checked', true);
+                                    }
                                     break;
                             }
-                        })
-                    });
-                    if (callback !== undefined) {
-                        callback.apply(null);
-                    }
-                });
-
-                setTimeout(() => {
-                    Object.entries(data).forEach(([criteriaName, values]) => {
-                        for (i = 1; i <= values.length; i++) {
-                            addNewCriteria(criteriaName);
+                        });
+                        if (callback !== undefined) {
+                            callback.apply(null);
                         }
                     });
-
-                    // In case criteria are already loaded,
+                    // In case criteria are already loaded (ie loading a saved query),
                     // we manually trigger the event
                     if (criteriaLoading == 0) {
-                        $('#advanced > form').trigger('async-form-ready');
+                        $('#search-panel').trigger('async-form-ready');
                     }
-                }, 100);
-            }
-        }
+                } else if (mode == "advanced") {
+                    $('#advanced').find('button[type=reset]').click();
 
-        // Keep track of the number of criteria that need to be loaded
-        var criteriaLoading = 0;
+                    // Set the results type
+                    $('#advanced input[name=resultsType]').filter('[value=' + data.resultsType + ']').prop('checked', true);
+                    delete data.resultsType;
 
-        // Store criteria that have already been loaded
-        var loadedCriteria = {};
-        // Store criteria that are still loading with their promise
-        var loadingCriteria = {};
+                    // Advanced form will be populated when all its data has been loaded
+                    $('#search-panel').on('async-form-ready', function () {
+                        Object.entries(data).forEach(([criteriaName, values]) => {
+                            var criteria = searchCriteria(criteriaName);
 
-        loadCriteriaData = function (criteriaName, target, optgroups, disableSemiticKeyboard) {
-            var createOptions = function (data, select) {
-                Object.entries(data)
-                    .sort((a, b) => removeAccents(a[1]).localeCompare(removeAccents(b[1])))
-                    .forEach(([value, label]) => {
-                        select.append(
-                            $('<option />').attr('value', value).html(label)
-                        );
-                    });
-            }
-
-            var injectData = function (data) {
-                if (optgroups !== undefined && optgroups !== null) {
-                    // Display 2-level data using optgroups
-                    Object.entries(optgroups).forEach(([datakey, grouplabel]) => {
-                        if (data.hasOwnProperty(datakey)) {
-                            var optgroup = $('<optgroup/>').attr('label', grouplabel);
-                            createOptions(data[datakey], optgroup);
-                            target.append(optgroup);
+                            values.forEach((value, index) => {
+                                switch (criteria.type) {
+                                    case 'select':
+                                        $('#advanced').find('select[name="' + criteriaName + '[' + index + '][values][]"]').val(value.values).trigger('chosen:updated');
+                                        if (value.hasOwnProperty('mode') && value.mode === "all") {
+                                            $('#advanced').find('input[name="' + criteriaName + '[' + index + '][mode]"]').attr('checked', true);
+                                        }
+                                        break;
+                                    case 'text':
+                                    case 'range':
+                                        $('#advanced').find('input[name="' + criteriaName + '[]"]').eq(index).val(value).trigger('input');
+                                        break;
+                                    case 'datation':
+                                        $('#advanced').find('input[name="datation[' + index + '][post_quem]"]').val(value.post_quem);
+                                        $('#advanced').find('input[name="datation[' + index + '][ante_quem]"]').val(value.ante_quem);
+                                        $('#advanced').find('input[name="datation[' + index + '][exact]"]').attr('checked', value.exact === "datation_exact");
+                                        break;
+                                    case 'prosepoetry':
+                                        $('#advanced').find('input[name="prosePoetry[' + index + '][]"][value=prose]').attr('checked', value.includes('prose'));
+                                        $('#advanced').find('input[name="prosePoetry[' + index + '][]"][value=poesie]').attr('checked', value.includes('poesie'));
+                                        break;
+                                }
+                            })
+                        });
+                        if (callback !== undefined) {
+                            callback.apply(null);
                         }
-                    })
-                } else {
-                    // Display single level data
-                    createOptions(data, target);
-                }
+                    });
 
-                // When chosen will be ready, set up the virtual keyboard (unless disabled)
-                if (disableSemiticKeyboard !== true) {
-                    target.on('chosen:ready', function () {
-                        $(this).siblings('.chosen-container')
-                            .find('input.chosen-search-input')
-                            .semiticKeyboard(
-                                $(this).siblings('.chosen-container'),
-                                'left top',
-                                'right top',
-                                true
-                            );
+                    setTimeout(() => {
+                        Object.entries(data).forEach(([criteriaName, values]) => {
+                            for (i = 1; i <= values.length; i ++) {
+                                addNewCriteria(criteriaName);
+                            }
+                        });
+
+                        // In case criteria are already loaded,
+                        // we manually trigger the event
+                        if (criteriaLoading == 0) {
+                            $('#advanced > form').trigger('async-form-ready');
+                        }
+                    }, 100);
+                }
+            }
+
+            // Keep track of the number of criteria that need to be loaded
+            var criteriaLoading = 0;
+
+            // Store criteria that have already been loaded
+            var loadedCriteria = {};
+            // Store criteria that are still loading with their promise
+            var loadingCriteria = {};
+
+            loadCriteriaData = function (criteriaName, target, optgroups, disableSemiticKeyboard) {
+                var createOptions = function (data, select) {
+                    Object.entries(data).sort((a, b) => removeAccents(a[1]).localeCompare(removeAccents(b[1]))).forEach(([value, label]) => {
+                        select.append($('<option />').attr('value', value).html(label));
                     });
                 }
-                // Set up Chosen autocomplete on field we just filled
-                target.chosen(CHOSEN_SETTINGS);
 
-                // Fire event if no more criteria need to be loaded
-                if (criteriaLoading == 0) {
-                    target.parents('#search-panel').trigger('async-form-ready');
+                var injectData = function (data) {
+                    if (optgroups !== undefined && optgroups !== null) { // Display 2-level data using optgroups
+                        Object.entries(optgroups).forEach(([datakey, grouplabel]) => {
+                            if (data.hasOwnProperty(datakey)) {
+                                var optgroup = $('<optgroup/>').attr('label', grouplabel);
+                                createOptions(data[datakey], optgroup);
+                                target.append(optgroup);
+                            }
+                        })
+                    } else { // Display single level data
+                        createOptions(data, target);
+                    }
+
+                    // When chosen will be ready, set up the virtual keyboard (unless disabled)
+                    if (disableSemiticKeyboard !== true) {
+                        target.on('chosen:ready', function () {
+                            $(this).siblings('.chosen-container').find('input.chosen-search-input').semiticKeyboard($(this).siblings('.chosen-container'), 'left top', 'right top', true);
+                        });
+                    }
+                    // Set up Chosen autocomplete on field we just filled
+                    target.chosen(CHOSEN_SETTINGS);
+
+                    // Fire event if no more criteria need to be loaded
+                    if (criteriaLoading == 0) {
+                        target.parents('#search-panel').trigger('async-form-ready');
+                    }
                 }
-            }
 
-            // If criteria has already been loaded, just inject data
-            if (loadedCriteria.hasOwnProperty(criteriaName)) {
-                injectData(loadedCriteria[criteriaName]);
-            }
-            else {
-                // Add a unit to the number of criteria being loaded
-                criteriaLoading++;
+                // If criteria has already been loaded, just inject data
+                if (loadedCriteria.hasOwnProperty(criteriaName)) {
+                    injectData(loadedCriteria[criteriaName]);
+                } else { // Add a unit to the number of criteria being loaded
+                    criteriaLoading++;
 
-                // Display spinner on field being loaded
-                target.parent().append($('<div class="spinner-border chosen-spinner" role="status"></div>'));
+                    // Display spinner on field being loaded
+                    target.parent().append($('<div class="spinner-border chosen-spinner" role="status"></div>'));
 
-                if (!loadingCriteria.hasOwnProperty(criteriaName)) {
-                    // Criteria is not currently being loaded, so we start the request and store the promise
-                    var url = "{{ url('search_criteria', {'criteriaName': '_crit_'})|raw }}".replace('_crit_', criteriaName);
-                    loadingCriteria[criteriaName] = $.get(url);
-                }
-                else {
-                }
-
-                loadingCriteria[criteriaName]
-                    .done(function (response) {
+                    if (! loadingCriteria.hasOwnProperty(criteriaName)) { // Criteria is not currently being loaded, so we start the request and store the promise
+                        var url = "{{ url('search_criteria', {'criteriaName': '_crit_'})|raw }}".replace('_crit_', criteriaName);
+                        loadingCriteria[criteriaName] = $.get(url);
+                    } else {} loadingCriteria[criteriaName].done(function (response) {
                         loadedCriteria[criteriaName] = response.data;
                         criteriaLoading--;
                         injectData(response.data);
-                    })
-                    .fail(function (response) {
+                    }).fail(function (response) {
                         criteriaLoading--;
-                    })
-                    .always(function () {
+                    }).always(function () {
                         target.siblings('.chosen-spinner').remove();
                         delete loadingCriteria[criteriaName];
                     });
-            }
-        }
-
-        chooseNewCriteria = function () {
-            // Disable feature if current tab is not advanced search
-            if (CURRENT_MODE != "advanced") {
-                return;
-            }
-
-            // Do not do anything if new criteria selection is already displayed
-            if ($('#advanced .new-criteria').length > 0) {
-                return;
-            }
-
-            $('#advanced .no-criteria').hide();
-
-            $('#form-templates > #new-criteria-template').clone()
-                .removeProp('id')
-                .insertBefore($('#advanced hr').last());
-
-            $('#advanced .new-criteria select').chosen(CHOSEN_SETTINGS);
-
-            $('#advanced .new-criteria').find('button').one('click', function (e) {
-                e.preventDefault();
-                var criteria = $(this).parents('.new-criteria').find('select#inputNewCriteria').val();
-                $(this).parents('.new-criteria').remove();
-                if ($(this).attr('name') == 'confirm') {
-                    addNewCriteria(criteria);
-                } else if ($('#advanced .criteria-row').length == 0) {
-                    $('#advanced .no-criteria').show();
                 }
-            })
-        };
-
-        addNewCriteria = function (criteriaName) {
-            $('#advanced .no-criteria').hide();
-
-            // Find properties in SEARCH_CRITERIA
-            var criteria = SEARCH_CRITERIA.reduce((found, item) => {
-                return found || (item.key === criteriaName ? item : item.children.reduce((carry, subitem) => {
-                    return subitem.key === criteriaName ? subitem : carry;
-                }, null));
-            }, null);
-
-            // Clone template
-            var template = $('#form-templates > #' + criteria.type + '-template').clone();
-
-            // Move id as className
-            template.addClass(template.prop('id')).addClass('criteria-row').removeProp('id');
-
-            // Set required properties depending on input type
-            switch (criteria.type) {
-                case 'select':
-                    // Compute an index based on the number of same name selects already added
-                    var index = $("#advanced").find('select[name^="' + criteria.key + '"]').length;
-                    var inputId = 'input' + criteria.key.charAt(0).toUpperCase() + criteria.key.slice(1);
-                    var inputName = criteria.key + '[' + index + '][values][]';
-                    template.find('label').first().prop('for', inputId).text(criteria.label);
-                    template.find('select').prop('id', inputId).prop('name', inputName);
-                    template.find('.select-strict').find('label').prop('for', inputId + 'Mode_' + index);
-                    template.find('.select-strict').find('input')
-                        .prop('id', inputId + 'Mode_' + index)
-                        .prop('name', criteria.key + '[' + index + '][mode]');
-                    loadCriteriaData(criteria.key, template.find('select'), null, criteria.semitic !== true);
-                    break;
-                case 'text':
-                    var index = $("#advanced").find('input[name^="' + criteria.key + '"]').length;
-                    var inputId = 'input' + criteria.key.charAt(0).toUpperCase() + criteria.key.slice(1);
-                    template.find('label').prop('for', inputId + index).text(criteria.label);
-                    template.find('input').prop('id', inputId + index).prop('name', criteria.key + '[]');
-                    break;
-                case 'range':
-                    var index = $("#advanced").find('input[name^="' + criteria.key + '"]').length;
-                    var inputId = 'input' + criteria.key.charAt(0).toUpperCase() + criteria.key.slice(1);
-                    template.find('label').prop('for', inputId + index).text(criteria.label);
-                    template.find('input')
-                        .prop('id', inputId + index)
-                        .prop('name', criteria.key + '[]')
-                        .attr('list', 'datalist' + inputId.slice(5))
-                        .attr('min', criteria.min)
-                        .attr('max', criteria.max);
-                    template.find('output').prop('for', inputId);
-                    // Build datalist
-                    var datalist = Object.entries(criteria.datalist).map(
-                        ([value, label]) => $('<option />').attr('value', value).attr('label', label)
-                    );
-                    template.find('datalist').prop('id', 'datalist' + inputId.slice(5)).append(...datalist);
-                    // Setup event to show text value of range
-                    template.find('input').on('input', function (e) {
-                        const label = Array.from(e.target.list.options).find((o) => o.value == e.target.value).label;
-                        template.find('output').val(label);
-                    });
-                    // Set initial value
-                    template.find('input').val(criteria.min);
-                    template.find('output').val(criteria.datalist[criteria.min]);
-                    break;
-                case 'datation':
-                case 'prosepoetry':
-                    // Compute an index based on the number of same type templates already added
-                    var index = $("#advanced").find('.' + criteria.type + '-template').length;
-                    // Replace the "#X#" placeholder in the id and name properties of inputs
-                    template.find('input').each((i, el) => {
-                        $(el).prop('id', $(el).prop('id').replace('#X#', index));
-                        $(el).prop('name', $(el).prop('name').replace('#X#', index));
-                    });
-                    // Replace the "#X#" placeholder in the for property of labels
-                    template.find('label').each((i, el) => { $(el).prop('for', $(el).prop('for').replace('#X#', index)); });
-                    break;
             }
 
-            // Add listener on remove button
-            template.find('button.remove-criteria-button').one('click', function (e) {
-                e.preventDefault();
-                $(this).parents('.criteria-row').remove();
-                if ($('#advanced .criteria-row').length == 0) {
-                    $('#advanced .no-criteria').show();
+            chooseNewCriteria = function () { // Disable feature if current tab is not advanced search
+                if (CURRENT_MODE != "advanced") {
+                    return;
                 }
+
+                // Do not do anything if new criteria selection is already displayed
+                if ($('#advanced .new-criteria').length > 0) {
+                    return;
+                }
+
+                $('#advanced .no-criteria').hide();
+
+                $('#form-templates > #new-criteria-template').clone().removeProp('id').insertBefore($('#advanced hr').last());
+
+                $('#advanced .new-criteria select').chosen(CHOSEN_SETTINGS);
+
+                $('#advanced .new-criteria').find('button').one('click', function (e) {
+                    e.preventDefault();
+                    var criteria = $(this).parents('.new-criteria').find('select#inputNewCriteria').val();
+                    $(this).parents('.new-criteria').remove();
+                    if ($(this).attr('name') == 'confirm') {
+                        addNewCriteria(criteria);
+                    } else if ($('#advanced .criteria-row').length == 0) {
+                        $('#advanced .no-criteria').show();
+                    }
+                })
+            };
+
+            addNewCriteria = function (criteriaName) {
+                $('#advanced .no-criteria').hide();
+
+                // Find properties in SEARCH_CRITERIA
+                var criteria = SEARCH_CRITERIA.reduce((found, item) => {
+                    return found || (item.key === criteriaName ? item : item.children.reduce((carry, subitem) => {
+                        return subitem.key === criteriaName ? subitem : carry;
+                    }, null));
+                }, null);
+
+                // Clone template
+                var template = $('#form-templates > #' + criteria.type + '-template').clone();
+
+                // Move id as className
+                template.addClass(template.prop('id')).addClass('criteria-row').removeProp('id');
+
+                // Set required properties depending on input type
+                switch (criteria.type) {
+                    case 'select':
+                        // Compute an index based on the number of same name selects already added
+                        var index = $("#advanced").find('select[name^="' + criteria.key + '"]').length;
+                        var inputId = 'input' + criteria.key.charAt(0).toUpperCase() + criteria.key.slice(1);
+                        var inputName = criteria.key + '[' + index + '][values][]';
+                        template.find('label').first().prop('for', inputId).text(criteria.label);
+                        template.find('select').prop('id', inputId).prop('name', inputName);
+                        template.find('.select-strict').find('label').prop('for', inputId + 'Mode_' + index);
+                        template.find('.select-strict').find('input').prop('id', inputId + 'Mode_' + index).prop('name', criteria.key + '[' + index + '][mode]');
+                        loadCriteriaData(criteria.key, template.find('select'), null, criteria.semitic !== true);
+                        break;
+                    case 'text':
+                        var index = $("#advanced").find('input[name^="' + criteria.key + '"]').length;
+                        var inputId = 'input' + criteria.key.charAt(0).toUpperCase() + criteria.key.slice(1);
+                        template.find('label').prop('for', inputId + index).text(criteria.label);
+                        template.find('input').prop('id', inputId + index).prop('name', criteria.key + '[]');
+                        break;
+                    case 'range':
+                        var index = $("#advanced").find('input[name^="' + criteria.key + '"]').length;
+                        var inputId = 'input' + criteria.key.charAt(0).toUpperCase() + criteria.key.slice(1);
+                        template.find('label').prop('for', inputId + index).text(criteria.label);
+                        template.find('input').prop('id', inputId + index).prop('name', criteria.key + '[]').attr('list', 'datalist' + inputId.slice(5)).attr('min', criteria.min).attr('max', criteria.max);
+                        template.find('output').prop('for', inputId);
+                        // Build datalist
+                        var datalist = Object.entries(criteria.datalist).map(([value, label]) => $('<option />').attr('value', value).attr('label', label));
+                        template.find('datalist').prop('id', 'datalist' + inputId.slice(5)).append(... datalist);
+                        // Setup event to show text value of range
+                        template.find('input').on('input', function (e) {
+                            const label = Array.from(e.target.list.options).find((o) => o.value == e.target.value).label;
+                            template.find('output').val(label);
+                        });
+                        // Set initial value
+                        template.find('input').val(criteria.min);
+                        template.find('output').val(criteria.datalist[criteria.min]);
+                        break;
+                    case 'datation':
+                    case 'prosepoetry':
+                        // Compute an index based on the number of same type templates already added
+                        var index = $("#advanced").find('.' + criteria.type + '-template').length;
+                        // Replace the "#X#" placeholder in the id and name properties of inputs
+                        template.find('input').each((i, el) => {
+                            $(el).prop('id', $(el).prop('id').replace('#X#', index));
+                            $(el).prop('name', $(el).prop('name').replace('#X#', index));
+                        });
+                        // Replace the "#X#" placeholder in the for property of labels
+                        template.find('label').each((i, el) => {
+                            $(el).prop('for', $(el).prop('for').replace('#X#', index));
+                        });
+                        break;
+                }
+
+                // Add listener on remove button
+                template.find('button.remove-criteria-button').one('click', function (e) {
+                    e.preventDefault();
+                    $(this).parents('.criteria-row').remove();
+                    if ($('#advanced .criteria-row').length == 0) {
+                        $('#advanced .no-criteria').show();
+                    }
+                });
+
+                // Add to DOM
+                template.insertBefore($('#advanced hr').last());
+
+                adjustSavedQueriesHeight();
+            };
+
+            // Show virtual keyboard on simple search field
+            $('#simple input').semiticKeyboard(null, 'right top', 'right top', true);
+
+            // Load criteria for guided mode
+            loadCriteriaData('names', $('#guided select[name="names[]"]'));
+            loadCriteriaData('languages', $('#guided select[name="languages[]"]'), null, true);
+            loadCriteriaData('locations', $('#guided select[name="locations[]"]'), null, true);
+            loadCriteriaData('sourceTypes', $('#guided select[name="sourceTypes[]"]'), null, true);
+            loadCriteriaData('agentivities', $('#guided select[name="agents[]"]'), null, true);
+
+            // Setup events for advanced mode
+            $("#advanced button#add-criteria").on('click', function (e) {
+                e.preventDefault();
+                chooseNewCriteria();
             });
 
-            // Add to DOM
-            template.insertBefore($('#advanced hr').last());
+            // Watch reset buttons
+            $('#guided').on('reset', function (e) {
+                var form = $(this);
+                setTimeout(() => {
+                    form.find('select').trigger('chosen:updated');
+                    form.find('input[name$="_mode"]').attr('checked', false);
+                    form.find('input[name="datation[exact]"]').attr('checked', true);
+                }, 10);
+            });
+            $('#advanced').on('reset', function (e) {
+                var form = $(this);
+                setTimeout(() => {
+                    form.find('.criteria-row, .new-criteria').remove();
+                    form.find('.row.no-criteria').show();
+                    form.find('input[name="resultsType"]').val('source');
+                }, 10);
+            });
 
-            adjustSavedQueriesHeight();
-        };
+            // Change tab and populate data
+            var url = document.location.toString(),
+                populate_mode = "{{ populate.mode }}";
 
-        // Show virtual keyboard on simple search field
-        $('#simple input').semiticKeyboard(
-            null,
-            'right top',
-            'right top',
-            true
-        );
+            if (populate_mode != "") { // Populate mode from POST parameters if any
+                changeMode(populate_mode);
 
-        // Load criteria for guided mode
-        loadCriteriaData('names', $('#guided select[name="names[]"]'));
-        loadCriteriaData('languages', $('#guided select[name="languages[]"]'), null, true);
-        loadCriteriaData('locations', $('#guided select[name="locations[]"]'), null, true);
-        loadCriteriaData('sourceTypes', $('#guided select[name="sourceTypes[]"]'), null, true);
-        loadCriteriaData('agents', $('#guided select[name="agents[]"]'), {
-            activites: "{{('agent.fields.activite')|trans}}",
-            agentivites: "{{('agent.fields.agentivite')|trans}}",
-        }, true);
-
-        // Setup events for advanced mode
-        $("#advanced button#add-criteria").on('click', function (e) {
-            e.preventDefault();
-            chooseNewCriteria();
-        });
-
-        // Watch reset buttons
-        $('#guided').on('reset', function (e) {
-            var form = $(this);
-            setTimeout(() => {
-                form.find('select').trigger('chosen:updated');
-                form.find('input[name$="_mode"]').attr('checked', false);
-                form.find('input[name="datation[exact]"]').attr('checked', true);
-            }, 10);
-        });
-        $('#advanced').on('reset', function (e) {
-            var form = $(this);
-            setTimeout(() => {
-                form.find('.criteria-row, .new-criteria').remove();
-                form.find('.row.no-criteria').show();
-                form.find('input[name="resultsType"]').val('source');
-            }, 10);
-        });
-
-        // Change tab and populate data
-        var url = document.location.toString(),
-            populate_mode = "{{ populate.mode }}";
-
-        if (populate_mode != "") {
-            // Populate mode from POST parameters if any
-            changeMode(populate_mode);
-
-            // Populate criteria
-            var populate_criteria = "{{populate.criteria|e('js')}}";
-            if (populate_criteria != "") {
-                populateCriteriaData(populate_mode, $.parseJSON(populate_criteria));
-            }
-        }
-        else if (url.match('#')) {
-            changeMode(url.split('#')[1]);
-        }
-
-        // React to click on tabs
-        $('#searchTabLinks a').on('click', function (e) {
-            changeMode(e.target.hash.replace('#', ''));
-        });
-
-        // TODO : Remove debug
-        $('#advanced button#test-add-all').on('click', function (e) {
-            e.preventDefault();
-            $(this).siblings('.reset-button').click();
-            var allCriteria = SEARCH_CRITERIA.reduce((carry, item) => carry.concat([item.key], item.children.map(i => i.key)), []);
-            var interval = setInterval(() => {
-                addNewCriteria(allCriteria.shift());
-                if (!allCriteria.length) { clearInterval(interval); }
-            }, 100);
-        })
-        $('#advanced form').on('submit', function (e) {
-            e.preventDefault();
-            var formData = $(this).serializeObject();
-
-            // Prevent empty form submission
-            if (Object.keys(formData).filter(v => v !== "resultsType" && v !== "new_criteria").length == 0) {
-                console.warn("Trying to submit an empty form");
-                return false;
+                // Populate criteria
+                var populate_criteria = "{{ populate.criteria|e('js') }}";
+                if (populate_criteria != "") {
+                    populateCriteriaData(populate_mode, $.parseJSON(populate_criteria));
+                }
+            } else if (url.match('#')) {
+                changeMode(url.split('#')[1]);
             }
 
-            for (var key in formData) {
-                if (formData.hasOwnProperty(key) && Array.isArray(formData[key])) {
-                    // Reset indexes of array values
-                    formData[key] = formData[key].filter(() => true);
+            // React to click on tabs
+            $('#searchTabLinks a').on('click', function (e) {
+                changeMode(e.target.hash.replace('#', ''));
+            });
 
-                    // Clean empty array
-                    formData[key] = formData[key].filter((v) => v !== null && v !== "");
-                    if (formData[key].length == 0) {
+            // TODO : Remove debug
+            $('#advanced button#test-add-all').on('click', function (e) {
+                e.preventDefault();
+                $(this).siblings('.reset-button').click();
+                var allCriteria = SEARCH_CRITERIA.reduce((carry, item) => carry.concat([item.key], item.children.map(i => i.key)), []);
+                var interval = setInterval(() => {
+                    addNewCriteria(allCriteria.shift());
+                    if (! allCriteria.length) {
+                        clearInterval(interval);
+                    }
+                }, 100);
+            })
+            $('#advanced form').on('submit', function (e) {
+                e.preventDefault();
+                var formData = $(this).serializeObject();
+
+                // Prevent empty form submission
+                if (Object.keys(formData).filter(v => v !== "resultsType" && v !== "new_criteria").length == 0) {
+                    console.warn("Trying to submit an empty form");
+                    return false;
+                }
+
+                for (var key in formData) {
+                    if (formData.hasOwnProperty(key) && Array.isArray(formData[key])) { // Reset indexes of array values
+                        formData[key] = formData[key].filter(() => true);
+
+                        // Clean empty array
+                        formData[key] = formData[key].filter((v) => v !== null && v !== "");
+                        if (formData[key].length == 0) {
+                            delete formData[key];
+                        }
+                    }
+                    // Clean empty datation
+                    if (key == "datation" && formData[key].post_quem == "" && formData[key].ante_quem == "") {
                         delete formData[key];
                     }
                 }
-                // Clean empty datation
-                if (key == "datation" && formData[key].post_quem == "" && formData[key].ante_quem == "") {
-                    delete formData[key];
+
+                console.log('submit', formData);
+                this.submit();
+            });
+
+            // Watch query load buttons
+            $('button.query-load-button').on('click', function (e) { // Disable all query load buttons
+                $('button.query-load-button').attr('disabled', true);
+
+                // Show spinner on current button
+                var btn = $(this);
+                btn.children().hide();
+                btn.append($('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>'));
+
+                var data = btn.data();
+                if (CURRENT_MODE !== data.queryMode) {
+                    changeMode(data.queryMode);
                 }
-            }
-
-            console.log('submit', formData);
-            this.submit();
-        });
-
-        // Watch query load buttons
-        $('button.query-load-button').on('click', function (e) {
-            // Disable all query load buttons
-            $('button.query-load-button').attr('disabled', true);
-
-            // Show spinner on current button
-            var btn = $(this);
-            btn.children().hide();
-            btn.append($('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>'));
-
-            var data = btn.data();
-            if (CURRENT_MODE !== data.queryMode) {
-                changeMode(data.queryMode);
-            }
-            populateCriteriaData(
-                data.queryMode,
-                $.parseJSON(
-                    decodeURIComponent(data.queryCriteria)
-                ),
-                function () {
+                populateCriteriaData(data.queryMode, $.parseJSON(decodeURIComponent(data.queryCriteria)), function () {
                     btn.find('span.spinner-border').remove();
                     btn.children().show();
                     $('button.query-load-button').attr('disabled', false);
-                }
-            );
+                });
+            });
         });
-    });
-</script>
+    </script>
 {% endblock %}

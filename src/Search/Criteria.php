@@ -38,12 +38,12 @@ class Criteria
         $em = $this->em;
         return $this->cache->get(
             $this->getCacheKey($criteriaName, $locale),
-            function (ItemInterface $item) use ($em, $criteriaName, $locale){
+            function (ItemInterface $item) use ($em, $criteriaName, $locale) {
                 // Compute fully qualified classname from criteria name
                 $cls = '\\App\\Search\\Data\\' . ucfirst($criteriaName);
 
                 // If class is not found, return empty array with default lifetime and default tag
-                if(!class_exists($cls)){
+                if (!class_exists($cls)) {
                     $item->tag(['Recherche']);
                     $item->expiresAfter(self::DEFAULT_CACHE_LIFETIME);
                     return [];
@@ -65,7 +65,7 @@ class Criteria
     public function getMultipleData(array $criteriaNames, string $locale): array
     {
         $data = [];
-        foreach($criteriaNames as $criteriaName){
+        foreach ($criteriaNames as $criteriaName) {
             $data[$criteriaName] = $this->getData($criteriaName, $locale);
         }
         return $data;
@@ -73,34 +73,34 @@ class Criteria
 
     public function getDisplay(string $criteriaName, array $values, string $locale): array
     {
-        if($criteriaName == 'datation') {
+        if ($criteriaName == 'datation') {
             return array_filter([
                 ((!is_null($values['post_quem']) && $values['post_quem'] !== "")
                     ? ($this->translator->trans('datation.fields.post_quem') . ' : ' . $values['post_quem'])
-                    : null
-                ),
+                    : null),
                 ((!is_null($values['ante_quem']) && $values['ante_quem'] !== "")
                     ? ($this->translator->trans('datation.fields.ante_quem') . ' : ' . $values['ante_quem'])
-                    : null
-                ),
+                    : null),
                 ((($values['exact'] ?? null) === 'datation_exact')
                     ? $this->translator->trans('generic.fields.strict')
-                    : null
-                )
+                    : null)
             ]);
+        }
+        if ($criteriaName == "agents") {
+            $criteriaName = "agentivities";
         }
         $data = $this->getData($criteriaName, $locale);
 
         // Reduce array to a single dimension if needed
         // (some criteria will return 2-dimension array to arrange data in optgroups)
         // N.B. : Data will always be either [key => value] or [groupkey => [key => value]]
-        if(is_array(array_values($data)[0])){
+        if (is_array(array_values($data)[0])) {
             $data = array_merge(...array_values($data));
         }
 
         return array_values(array_filter(
             $data,
-            function($id) use ($values) {
+            function ($id) use ($values) {
                 return in_array($id, $values);
             },
             ARRAY_FILTER_USE_KEY

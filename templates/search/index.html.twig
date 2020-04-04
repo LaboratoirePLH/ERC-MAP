@@ -496,6 +496,9 @@
                         var inputId = 'input' + criteria.key.charAt(0).toUpperCase() + criteria.key.slice(1);
                         template.find('label').prop('for', inputId + index).text(criteria.label);
                         template.find('input').prop('id', inputId + index).prop('name', criteria.key + '[]');
+                        if (criteria.semitic === true) {
+                            template.find('input').semiticKeyboard(null, 'right top', 'right top', true);
+                        }
                         break;
                     case 'range':
                         var index = $("#advanced").find('input[name^="' + criteria.key + '"]').length;

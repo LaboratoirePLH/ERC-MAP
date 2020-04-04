@@ -28,6 +28,12 @@ class CriteriaList
                         'semitic' => true,
                     ],
                     [
+                        'key'     => 'morphologicalForms',
+                        'label'   => $translator->trans('element.fields.etat_morphologique'),
+                        'type'    => 'select',
+                        'semitic' => false,
+                    ],
+                    [
                         'key'     => 'elementGenders',
                         'label'   => $translator->trans('element.fields.genre'),
                         'type'    => 'select',
@@ -36,6 +42,12 @@ class CriteriaList
                     [
                         'key'     => 'elementNumbers',
                         'label'   => $translator->trans('element.fields.nombre'),
+                        'type'    => 'select',
+                        'semitic' => false,
+                    ],
+                    [
+                        'key'     => 'elementNatures',
+                        'label'   => $translator->trans('element.fields.nature'),
                         'type'    => 'select',
                         'semitic' => false,
                     ],
@@ -267,19 +279,13 @@ class CriteriaList
     public static function getCriteria(string $key, TranslatorInterface $translator): array
     {
         $all = self::get($translator);
-        foreach($all as $category)
-        {
-            if($category['key'] === $key)
-            {
+        foreach ($all as $category) {
+            if ($category['key'] === $key) {
                 unset($category['children']);
                 return $category;
-            }
-            else
-            {
-                foreach($category['children'] as $child)
-                {
-                    if($child['key'] === $key)
-                    {
+            } else {
+                foreach ($category['children'] as $child) {
+                    if ($child['key'] === $key) {
                         return $child;
                     }
                 }

@@ -27,8 +27,8 @@ class RechercheController extends AbstractController
         $user = $this->get('security.token_storage')->getToken()->getUser();
 
         $queries = $this->getDoctrine()
-                        ->getRepository(RechercheEnregistree::class)
-                        ->findAllByChercheur($user);
+            ->getRepository(RechercheEnregistree::class)
+            ->findAllByChercheur($user);
 
         return $this->render('search/index.html.twig', [
             'controller_name' => 'RechercheController',
@@ -67,7 +67,7 @@ class RechercheController extends AbstractController
     public function simpleSearch(Request $request, TranslatorInterface $translator, Criteria $searchCriteria)
     {
         $search = $request->request->get('search_value', '');
-        if(!strlen($search)){
+        if (!strlen($search)) {
             $request->getSession()->getFlashBag()->add(
                 'error',
                 'search.messages.no_empty_search'
@@ -77,8 +77,8 @@ class RechercheController extends AbstractController
             );
         }
         $results = $this->getDoctrine()
-                        ->getRepository(\App\Entity\IndexRecherche::class)
-                        ->simpleSearch($search, $request->getLocale());
+            ->getRepository(\App\Entity\IndexRecherche::class)
+            ->simpleSearch($search, $request->getLocale());
 
         return $this->render('search/results_mixed.html.twig', [
             'controller_name' => 'RechercheController',
@@ -102,7 +102,7 @@ class RechercheController extends AbstractController
     {
         $criteria = array_filter(
             $request->request->all(),
-            function($value, $key){
+            function ($value, $key) {
                 return in_array(
                     $key,
                     [
@@ -115,13 +115,14 @@ class RechercheController extends AbstractController
             },
             ARRAY_FILTER_USE_BOTH
         );
-        if(array_key_exists('datation', $criteria)
+        if (
+            array_key_exists('datation', $criteria)
             && $criteria['datation']['post_quem'] == ''
-            && $criteria['datation']['ante_quem'] == '')
-        {
+            && $criteria['datation']['ante_quem'] == ''
+        ) {
             unset($criteria['datation']);
         }
-        if(!count(array_keys($criteria))){
+        if (!count(array_keys($criteria))) {
             $request->getSession()->getFlashBag()->add(
                 'error',
                 'search.messages.no_empty_search'
@@ -132,8 +133,8 @@ class RechercheController extends AbstractController
         }
 
         $results = $this->getDoctrine()
-                        ->getRepository(\App\Entity\IndexRecherche::class)
-                        ->search('guided', $criteria, $request->getLocale());
+            ->getRepository(\App\Entity\IndexRecherche::class)
+            ->search('guided', $criteria, $request->getLocale());
 
         return $this->render('search/results_mixed.html.twig', [
             'controller_name' => 'RechercheController',
@@ -157,15 +158,17 @@ class RechercheController extends AbstractController
     {
         $criteria    = $request->request->all();
         $resultsType = $criteria['resultsType'];
-        
-        if(array_key_exists('new_criteria', $criteria))
-        {
+
+        if (array_key_exists('new_criteria', $criteria)) {
             unset($criteria['new_criteria']);
+        }
+        if (array_key_exists('search', $criteria)) {
+            unset($criteria['search']);
         }
 
         $results = $this->getDoctrine()
-                        ->getRepository(\App\Entity\IndexRecherche::class)
-                        ->search('advanced', $criteria, $request->getLocale());
+            ->getRepository(\App\Entity\IndexRecherche::class)
+            ->search('advanced', $criteria, $request->getLocale());
 
         return $this->render("search/results_{$resultsType}.html.twig", [
             'controller_name' => 'RechercheController',
@@ -199,13 +202,13 @@ class RechercheController extends AbstractController
                 'message' => $translator->trans('generic.messages.failed_csrf')
             ], 400);
         }
-        if(!strlen($query_name)){
+        if (!strlen($query_name)) {
             return new JsonResponse([
                 'success' => false,
                 'message' => $translator->trans('search.messages.invalid_empty_name')
             ], 400);
         }
-        if(!in_array($query_mode, ['simple', 'guided', 'advanced', 'elements'])){
+        if (!in_array($query_mode, ['simple', 'guided', 'advanced', 'elements'])) {
             return new JsonResponse([
                 'success' => false,
                 'message' => $translator->trans('search.messages.invalid_query_mode', [
@@ -213,7 +216,7 @@ class RechercheController extends AbstractController
                 ])
             ], 400);
         }
-        if(empty(json_decode($query_criteria, true))){
+        if (empty(json_decode($query_criteria, true))) {
             return new JsonResponse([
                 'success' => false,
                 'message' => $translator->trans('search.messages.invalid_empty_criteria')
@@ -241,15 +244,16 @@ class RechercheController extends AbstractController
     /**
      * @Route("/search/{id}/delete", name="search_delete")
      */
-    public function searchDelete($id, Request $request){
+    public function searchDelete($id, Request $request)
+    {
         $submittedToken = $request->request->get('token');
         $user = $this->get('security.token_storage')->getToken()->getUser();
 
-        if ($this->isCsrfTokenValid('delete_query_'.$id, $submittedToken)) {
+        if ($this->isCsrfTokenValid('delete_query_' . $id, $submittedToken)) {
             $repository = $this->getDoctrine()->getRepository(RechercheEnregistree::class);
             $query = $repository->find($id);
-            if($query instanceof RechercheEnregistree){
-                if($query->getCreateur()->getId() === $user->getId()){
+            if ($query instanceof RechercheEnregistree) {
+                if ($query->getCreateur()->getId() === $user->getId()) {
                     $em = $this->getDoctrine()->getManager();
                     $em->remove($query);
                     $em->flush();
@@ -289,11 +293,11 @@ class RechercheController extends AbstractController
         $start = microtime(true);
 
         $records = $this->getDoctrine()
-                        ->getRepository(\App\Entity\IndexRecherche::class)
-                        ->fullRebuild();
+            ->getRepository(\App\Entity\IndexRecherche::class)
+            ->fullRebuild();
 
         $end = microtime(true);
-        $totalTime = round($end-$start);
+        $totalTime = round($end - $start);
         // Message de confirmation
         $request->getSession()->getFlashBag()->add(
             'success',
@@ -305,70 +309,75 @@ class RechercheController extends AbstractController
         return $this->redirectToRoute('search');
     }
 
-    private function _prepareCriteriaDisplay($mode, $criteria, $locale, TranslatorInterface $translator, Criteria $searchCriteria) {
+    private function _prepareCriteriaDisplay($mode, $criteria, $locale, TranslatorInterface $translator, Criteria $searchCriteria)
+    {
         $nameField = "nom" . ucfirst(strtolower($locale));
 
-        if($mode == "simple"){
+        if ($mode == "simple") {
             return $criteria;
         }
-        if($mode == "guided"){
+        if ($mode == "guided") {
             $response = [];
-            foreach($criteria as $key => $value){
-                if($key !== 'names_mode' && $key !== 'languages_mode'){
-                    $response['search.criteria_labels.'.$key] = $searchCriteria->getDisplay($key, $value, $locale);
+            foreach ($criteria as $key => $value) {
+                if ($key !== 'names_mode' && $key !== 'languages_mode') {
+                    $response['search.criteria_labels.' . $key] = $searchCriteria->getDisplay($key, $value, $locale);
                 }
             }
-            if(($criteria['names_mode'] ?? 'one') === 'all'
-                && array_key_exists('names', $criteria)){
+            if (($criteria['names_mode'] ?? 'one') === 'all'
+                && array_key_exists('names', $criteria)
+            ) {
                 $response['search.criteria_labels.names_all'] = $response['search.criteria_labels.names'];
                 unset($response['search.criteria_labels.names']);
             }
-            if(($criteria['languages_mode'] ?? 'one') === 'all'
-                && array_key_exists('languages', $criteria)){
+            if (($criteria['languages_mode'] ?? 'one') === 'all'
+                && array_key_exists('languages', $criteria)
+            ) {
                 $response['search.criteria_labels.languages_all'] = $response['search.criteria_labels.languages'];
                 unset($response['search.criteria_labels.languages']);
             }
-            foreach($response as $key => $value){
+            foreach ($response as $key => $value) {
                 $response[$translator->trans($key)] = $value;
                 unset($response[$key]);
             }
             return $response;
         }
-        if($mode == "advanced"){
+        if ($mode == "advanced") {
             $response = [];
-            foreach($criteria as $key => $value){
-                if($key == "resultsType"){ continue; }
+            foreach ($criteria as $key => $value) {
+                if ($key == "resultsType") {
+                    continue;
+                }
 
                 // Find translated key
                 $criteriaSettings = \App\Search\CriteriaList::getCriteria($key, $translator);
 
                 $criteriaLabel = $criteriaSettings['label'];
 
-                switch($criteriaSettings['type']){
+                switch ($criteriaSettings['type']) {
                     case 'text':
                         $criteriaValues = $value;
                         break;
                     case 'range':
-                        $criteriaValues = array_map(function($v) use ($criteriaSettings){
+                        $criteriaValues = array_map(function ($v) use ($criteriaSettings) {
                             return $criteriaSettings['datalist'][$v];
                         }, $value);
                         break;
                     case 'prosepoetry':
-                        $criteriaValues = array_map(function($v) use ($translator){
-                            return array_map(function($v_value) use ($translator){
-                                return $translator->trans('attestation.fields.'.$v_value);
+                        $criteriaValues = array_map(function ($v) use ($translator) {
+                            return array_map(function ($v_value) use ($translator) {
+                                return $translator->trans('attestation.fields.' . $v_value);
                             }, $v);
                         }, $value);
                         break;
                     case 'datation':
-                        $criteriaValues = array_map(function($v) use ($key, $searchCriteria, $locale){
+                        $criteriaValues = array_map(function ($v) use ($key, $searchCriteria, $locale) {
                             return $searchCriteria->getDisplay($key, $v, $locale);
                         }, $value);
                         break;
                     case 'select':
-                        $criteriaValues = array_map(function($v) use ($key, $searchCriteria, $locale){
+                        $criteriaValues = array_map(function ($v) use ($key, $searchCriteria, $locale) {
                             $values = $searchCriteria->getDisplay($key, $v['values'], $locale);
-                            if("all" === ($v['mode'] ?? null)){
+                            if ("all" === ($v['mode'] ?? null)) {
                                 array_unshift($values, 'all');
                             }
                             return $values;
@@ -376,7 +385,8 @@ class RechercheController extends AbstractController
                         break;
                     default:
                         // TODO : throw exception instead (should never happen)
-                        var_dump($key, $value, $criteriaSettings); die;
+                        var_dump($key, $value, $criteriaSettings);
+                        die;
                 }
 
                 $response[$criteriaLabel] = $criteriaValues;

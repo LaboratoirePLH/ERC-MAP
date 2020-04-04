@@ -20,33 +20,25 @@ abstract class AbstractFilter
 
     public static function validateInput(IndexRecherche $e, array $criteria, array $sortedData)
     {
-        if($e->getEntite() != "Source" && $e->getEntite() != "Attestation" && $e->getEntite() != "Element")
-        {
+        if ($e->getEntite() != "Source" && $e->getEntite() != "Attestation" && $e->getEntite() != "Element") {
             throw new \InvalidArgumentException("Can only filter entities of class Source, Attestation or Element");
         }
-        if(!is_array($criteria))
-        {
+        if (!is_array($criteria)) {
             throw new \InvalidArgumentException("Criteria values must be an array");
         }
-        if(!is_array($sortedData) || !!count(array_diff(['sources', 'attestations', 'elements'], array_keys($sortedData))))
-        {
+        if (!is_array($sortedData) || !!count(array_diff(['sources', 'attestations', 'elements'], array_keys($sortedData)))) {
             throw new \InvalidArgumentException("Sorted data must be an array with keys 'sources', 'attestations' and 'elements'");
         }
     }
 
     public static function toArray(array $entities): array
     {
-        return array_filter(array_map(function($e){
-            if(is_array($e))
-            {
+        return array_filter(array_map(function ($e) {
+            if (is_array($e)) {
                 return $e;
-            } 
-            else if($e instanceof IndexRecherche)
-            {
+            } else if ($e instanceof IndexRecherche) {
                 return $e->getData();
-            }
-            else 
-            {
+            } else {
                 return null;
             }
         }, $entities));
@@ -55,23 +47,18 @@ abstract class AbstractFilter
     public static function resolveSources(IndexRecherche $e, array $sortedData): array
     {
         $eData = $e->getData();
-        if($e->getEntite() === 'Element')
-        {
+        if ($e->getEntite() === 'Element') {
             // Resolve all attestations, then call resolveSources on each of them
             return array_filter(array_reduce(
                 self::resolveAttestations($e, $sortedData),
-                function($result, $attestation) use ($sortedData) {
+                function ($result, $attestation) use ($sortedData) {
                     return array_merge($result, self::resolveSources($attestation, $sortedData));
                 },
                 []
             ));
-        }
-        else if($e->getEntite() === 'Attestation')
-        {
+        } else if ($e->getEntite() === 'Attestation') {
             return array_filter([$sortedData['sources'][$eData['source']] ?? null]);
-        }
-        else if($e->getEntite() === 'Source')
-        {
+        } else if ($e->getEntite() === 'Source') {
             // Return itself
             return [$e];
         }
@@ -81,23 +68,18 @@ abstract class AbstractFilter
     public static function resolveAttestations(IndexRecherche $e, array $sortedData): array
     {
         $eData = $e->getData();
-        if($e->getEntite() === 'Element')
-        {
+        if ($e->getEntite() === 'Element') {
             // Get all attestations that contain the element ID in their 'elementIds' property
             $elementId = $e->getId();
-            return array_filter($sortedData['attestations'], function($attestation) use ($elementId){
+            return array_filter($sortedData['attestations'], function ($attestation) use ($elementId) {
                 return in_array($elementId, $attestation->getData()['elementIds'] ?? []);
             });
-        }
-        else if($e->getEntite() === 'Attestation')
-        {
+        } else if ($e->getEntite() === 'Attestation') {
             // Return itself
             return [$e];
-        }
-        else if($e->getEntite() === 'Source')
-        {
+        } else if ($e->getEntite() === 'Source') {
             // Get all attestations whose ID is in the 'attestations' property
-            return array_filter(array_map(function($attestationId) use ($sortedData) {
+            return array_filter(array_map(function ($attestationId) use ($sortedData) {
                 return $sortedData['attestations'][$attestationId] ?? null;
             }, $eData['attestations'] ?? []));
         }
@@ -107,24 +89,19 @@ abstract class AbstractFilter
     public static function resolveElements(IndexRecherche $e, array $sortedData): array
     {
         $eData = $e->getData();
-        if($e->getEntite() === 'Element')
-        {
+        if ($e->getEntite() === 'Element') {
             // Return itself
             return [$e];
-        }
-        else if($e->getEntite() === 'Attestation')
-        {
+        } else if ($e->getEntite() === 'Attestation') {
             // Get all elements whose ID is in the 'elementIds' property
-            return array_filter(array_map(function($elementId) use ($sortedData) {
+            return array_filter(array_map(function ($elementId) use ($sortedData) {
                 return $sortedData['elements'][$elementId] ?? null;
             }, $eData['elementIds'] ?? []));
-        }
-        else if($e->getEntite() === 'Source')
-        {
+        } else if ($e->getEntite() === 'Source') {
             // Resolve all attestations, then call resolveElements on each of them
             return array_reduce(
                 self::resolveAttestations($e, $sortedData),
-                function($result, $attestation) use ($sortedData) {
+                function ($result, $attestation) use ($sortedData) {
                     return array_merge($result, self::resolveElements($attestation, $sortedData));
                 },
                 []
@@ -136,29 +113,26 @@ abstract class AbstractFilter
     public static function resolveDatations(IndexRecherche $e, array $sortedData): array
     {
         $eData = $e->getData();
-        if($e->getEntite() === 'Element')
-        {
+        if ($e->getEntite() === 'Element') {
             // TODO : Add datation filtering on elements
             return [];
-        }
-        else if($e->getEntite() === 'Attestation'){
+        } else if ($e->getEntite() === 'Attestation') {
             $datation = $eData['datation'] ?? null;
 
             // Consider that a datation missing both postQuem and anteQuem is non-existent
-            if(is_null($datation['postQuem'] ?? null) && is_null($datation['anteQuem'] ?? null)){
+            if (is_null($datation['postQuem'] ?? null) && is_null($datation['anteQuem'] ?? null)) {
                 $datation = null;
             }
 
             // If attestation has no datation, we get it from the source
             return $datation ? [$datation] : array_filter(array_reduce(
                 self::resolveSources($e, $sortedData),
-                function($result, $source) use ($sortedData) {
+                function ($result, $source) use ($sortedData) {
                     return array_merge($result, self::resolveDatations($source, $sortedData));
                 },
                 []
             ));
-        }
-        else if($e->getEntite() === 'Source'){
+        } else if ($e->getEntite() === 'Source') {
             return array_filter([$eData['datation'] ?? null]);
         }
         return [];
@@ -167,22 +141,18 @@ abstract class AbstractFilter
     public static function resolveLocalisations(IndexRecherche $e, array $sortedData): array
     {
         $eData = $e->getData();
-        if($e->getEntite() === 'Element')
-        {
+        if ($e->getEntite() === 'Element') {
             return array_filter([$eData['localisation'] ?? null]);
-        }
-        else if($e->getEntite() === 'Attestation')
-        {
+        } else if ($e->getEntite() === 'Attestation') {
             // Get own localisation and the ones from the sources
             return array_filter(array_reduce(
                 self::resolveSources($e, $sortedData),
-                function($result, $source) use ($sortedData) {
-                    return array_merge($result, self::resolveDatations($source, $sortedData));
+                function ($result, $source) use ($sortedData) {
+                    return array_merge($result, self::resolveLocalisations($source, $sortedData));
                 },
                 [$eData['localisation'] ?? null]
             ));
-        }
-        else if($e->getEntite() === 'Source'){
+        } else if ($e->getEntite() === 'Source') {
             return array_filter([
                 $eData['lieuDecouverte'] ?? null,
                 $eData['lieuOrigine'] ?? null
@@ -195,7 +165,7 @@ abstract class AbstractFilter
         // Resolve attestations and get agent data from them
         return array_filter(array_reduce(
             self::resolveAttestations($e, $sortedData),
-            function($result, $attestation) use ($sortedData) {
+            function ($result, $attestation) use ($sortedData) {
                 return array_merge($result, $attestation->getData()['agents'] ?? []);
             },
             []

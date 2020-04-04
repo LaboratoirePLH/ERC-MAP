@@ -1,94 +1,101 @@
 <div class="col-{{width}}" id="search-criteria">
     <div class="card border-color-map-yellow">
         <div class="card-header border-color-map-yellow text-center">
-            <strong>{{ ('search.mode')|trans }}</strong> : {{ ('search.'~mode)|trans }}
+            <strong>{{ ('search.mode')|trans }}</strong>
+            :
+            {{ ('search.'~mode)|trans }}
             {% if resultsType is defined %}
-            ({{ (resultsType ~ '.name')|trans }})
+                ({{ (resultsType ~ '.name')|trans }})
             {% endif %}
         </div>
         <div class="card-body p-1">
             {% if mode == 'simple' %}
-            <div class="text-center">
-                {{ criteria|join(' ') }}
-            </div>
+                <blockquote class="blockquote text-center font-weight-bolder mb-0" style="letter-spacing: 0.1em;">
+                    {{ criteria|join('')|replace({' ': '_'}) }}
+                </blockquote>
             {% elseif mode == 'guided' %}
-            <div class="d-flex flex-sm-wrap justify-content-around">
-                {% for key, value in criteria %}
-                <div class="card">
-                    {% if value is iterable %}
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item background-map-yellow font-weight-bolder text-uppercase">
-                            {{ key }}</li>
-                        {% for subvalue in value %}
-                        <li class="list-group-item">
-                            {{ subvalue|raw }}
-                        </li>
-                        {% endfor %}
-                    </ul>
-                    {% else %}
-                    <div class="card-body p-1">
-                        <h5 class="card-title">{{ key|trans }}</h5>
-                        <p class="card-text">
-                            {{ value|raw }}
-                        </p>
-                    </div>
-                    {% endif %}
+                <div class="d-flex flex-sm-wrap justify-content-around">
+                    {% for key, value in criteria %}
+                        <div class="card">
+                            {% if value is iterable %}
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item background-map-yellow font-weight-bolder text-uppercase">
+                                        {{ key }}</li>
+                                    {% for subvalue in value %}
+                                        <li class="list-group-item">
+                                            {{ subvalue|raw }}
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            {% else %}
+                                <div class="card-body p-1">
+                                    <h5 class="card-title">{{ key|trans }}</h5>
+                                    <p class="card-text">
+                                        {{ value|raw }}
+                                    </p>
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
                 </div>
-                {% endfor %}
-            </div>
             {% elseif mode == 'advanced' %}
-            <div class="d-flex flex-sm-wrap justify-content-around">
-                {% for key, value in criteria %}
-                <div class="card">
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item background-map-yellow font-weight-bolder text-uppercase">
-                            {{ key }}
-                        </li>
-                        {% for subvalue in value %}
+                <div class="d-flex flex-sm-wrap justify-content-around">
+                    {% for key, value in criteria %}
+                        <div class="card">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item background-map-yellow font-weight-bolder text-uppercase">
+                                    {{ key }}
+                                </li>
+                                {% for subvalue in value %}
 
-                        {% if subvalue is iterable %}
+                                    {% if subvalue is iterable %}
 
-                        {% for subsubvalue in subvalue %}
+                                        {% for subsubvalue in subvalue %}
 
-                        {% if loop.first %}
-                        <li class="list-group-item">
-                            <strong>
-                                <em>
-                                    {{ loop.parent.loop.index }}
-                                    {% if subsubvalue == "all" %}
-                                    {{ 'search.criteria_labels.all'|trans }}
+                                            {% if loop.first %}
+                                                <li class="list-group-item">
+                                                    <strong>
+                                                        <em>
+                                                            {{ loop.parent.loop.index }}
+                                                            {% if subsubvalue == "all" %}
+                                                                {{ 'search.criteria_labels.all'|trans }}
+                                                            {% endif %}
+                                                        </em>
+                                                    </strong>
+                                                </li>
+                                                {% if subsubvalue != 'all' %}
+                                                    <li class="list-group-item">
+                                                        &rarr;
+                                                        {{ subsubvalue|raw }}
+                                                    </li>
+                                                {% endif %}
+                                            {% else %}
+                                                <li class="list-group-item">
+                                                    &rarr;
+                                                    {{ subsubvalue|raw }}
+                                                </li>
+                                            {% endif %}
+
+                                        {% endfor %}
+
+                                    {% else %}
+                                        {# If subvalue is not iterable #}
+                                        <li class="list-group-item">
+                                            {{ subvalue|raw }}
+                                        </li>
                                     {% endif %}
-                                </em>
-                            </strong>
-                        </li>
-                        {% if subsubvalue != 'all' %}
-                        <li class="list-group-item">
-                            &rarr; {{ subsubvalue|raw }}
-                        </li>
-                        {% endif %}
-                        {% else %}
-                        <li class="list-group-item">
-                            &rarr; {{ subsubvalue|raw }}
-                        </li>
-                        {% endif %}
 
-                        {% endfor %}
-
-                        {% else %} {# If subvalue is not iterable #}
-                        <li class="list-group-item">
-                            {{ subvalue|raw }}
-                        </li>
-                        {% endif %}
-
-                        {% endfor %}
-                    </ul>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endfor %}
                 </div>
-                {% endfor %}
-            </div>
             {% endif %}
         </div>
         <div class="card-footer border-color-map-yellow text-center">
-            <strong>{{ ('search.results')|trans }}</strong> : <span id="search-results-count"></span>
+            <strong>{{ ('search.results')|trans }}</strong>
+            :
+            <span id="search-results-count"></span>
         </div>
     </div>
 </div>

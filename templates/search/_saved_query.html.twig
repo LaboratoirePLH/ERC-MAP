@@ -4,7 +4,7 @@
         <small>
             {{ ('search.'~query.mode)|trans }}
             {% if query.mode == 'advanced' %}
-            ({{ ((query.criteria|json_decode(true))['resultsType'] ~ '.name')|trans }})
+                ({{ ((query.criteria|json_decode(true))['resultsType'] ~ '.name')|trans }})
             {% endif %}
         </small>
     </div>
@@ -12,91 +12,89 @@
         <div class="mb-1 flex-grow-1 d-flex flex-justify-content-start flex-wrap align-content-center">
             {% set criteria = query.criteria|json_decode(true) %}
             {% if query.mode == "simple" %}
-            <div class="border border-color-map-yellow rounded p-2 mr-1 my-1">
-                {{ criteria|join(' ') }}
-            </div>
+                <div class="border border-color-map-yellow rounded p-2 mr-1 my-1" style="letter-spacing: 0.1em;">
+                    {{ criteria|join(' ')|replace({' ': '_'}) }}
+                </div>
             {% elseif query.mode == "guided" %}
-            {% for label, values in criteria %}
-            {% if label == 'datation' %}
-            <div class="border border-color-map-yellow rounded p-2 mr-1 my-1">
-                {{ 'search.criteria_labels.datation'|trans }}
-                {% if values.exact is defined and values.exact == 'datation_exact' %}
-                ({{'generic.fields.strict'|trans}})
-                {% endif %}
-                <span class="badge badge-primary">
-                    {{ values|slice(0,2)|join(' / ') }}
-                </span>
-            </div>
-            {% elseif label == 'names' or label == 'languages' %}
-            <div class="border border-color-map-yellow rounded p-2 mr-1 my-1">
-                {% set all = '' %}
-                {% if criteria[label ~ '_mode']|default('one') == 'all' %}
-                {% set all = '_all' %}
-                {% endif %}
-                {{ ('search.criteria_labels.'~label~all)|trans }}
-                <span class="badge badge-primary">
-                    {{ values|length }}
-                </span>
-            </div>
-            {% elseif label == 'locations' or label == 'sourceTypes' or label == 'agents' %}
-            <div class="border border-color-map-yellow rounded p-2 mr-1 my-1">
-                {{ ('search.criteria_labels.'~label)|trans }}
-                <span class="badge badge-primary">
-                    {{ values|length }}
-                </span>
-            </div>
-            {% endif %}
-            {% endfor %}
-
-            {# Advanced mode #}
-            {% else %}
-            {# Prepare criteria labels #}
-            {% set criteriaLabels = {} %}
-            {% for crit in criteria_list %}
-            {% if crit.type != null %}
-            {% set criteriaLabels = criteriaLabels|merge({(crit.key): crit.label}) %}
-            {% endif %}
-            {% for subcrit in crit.children %}
-            {% set criteriaLabels = criteriaLabels|merge({(subcrit.key): subcrit.label}) %}
-            {% endfor %}
-            {% endfor %}
-
-            {# Loop on criteria #}
-            {% for key,value in criteria|filter((v,k) => k != 'resultsType') %}
-
-            {# By default the counter is the length of the value array (will stay that way for everything except selects) #}
-            {% set counter = value|length %}
-
-            {# Select field #}
-            {% if value[0] is iterable and 'values' in value[0]|keys %}
-            {% set counter = [] %}
-            {% for v in value %}
-            {% set counter = counter|merge([v.values|length]) %}
-            {% endfor %}
-            {% endif %}
-
-            <div class="border border-color-map-yellow rounded p-2 mr-1 my-1">
-                {{ criteriaLabels[key] }}
-                <span class="badge badge-primary">
-                    {% if counter is iterable %}
-                    {{ counter|join(' || ') }}
-                    {% else %}
-                    {{ counter }}
+                {% for label, values in criteria %}
+                    {% if label == 'datation' %}
+                        <div class="border border-color-map-yellow rounded p-2 mr-1 my-1">
+                            {{ 'search.criteria_labels.datation'|trans }}
+                            {% if values.exact is defined and values.exact == 'datation_exact' %}
+                                ({{'generic.fields.strict'|trans}})
+                            {% endif %}
+                            <span class="badge badge-primary">
+                                {{ values|slice(0,2)|join(' / ') }}
+                            </span>
+                        </div>
+                    {% elseif label == 'names' or label == 'languages' %}
+                        <div class="border border-color-map-yellow rounded p-2 mr-1 my-1">
+                            {% set all = '' %}
+                            {% if criteria[label ~ '_mode']|default('one') == 'all' %}
+                                {% set all = '_all' %}
+                            {% endif %}
+                            {{ ('search.criteria_labels.'~label~all)|trans }}
+                            <span class="badge badge-primary">
+                                {{ values|length }}
+                            </span>
+                        </div>
+                    {% elseif label == 'locations' or label == 'sourceTypes' or label == 'agents' %}
+                        <div class="border border-color-map-yellow rounded p-2 mr-1 my-1">
+                            {{ ('search.criteria_labels.'~label)|trans }}
+                            <span class="badge badge-primary">
+                                {{ values|length }}
+                            </span>
+                        </div>
                     {% endif %}
-                </span>
-            </div>
-            {% endfor %}
+                {% endfor %}
+
+                {# Advanced mode #}
+            {% else %}
+                {# Prepare criteria labels #}
+                {% set criteriaLabels = {} %}
+                {% for crit in criteria_list %}
+                    {% if crit.type != null %}
+                        {% set criteriaLabels = criteriaLabels|merge({(crit.key): crit.label}) %}
+                    {% endif %}
+                    {% for subcrit in crit.children %}
+                        {% set criteriaLabels = criteriaLabels|merge({(subcrit.key): subcrit.label}) %}
+                    {% endfor %}
+                {% endfor %}
+
+                {# Loop on criteria #}
+                {% for key,value in criteria|filter((v,k) => k != 'resultsType') %}
+
+                    {# By default the counter is the length of the value array (will stay that way for everything except selects) #}
+                    {% set counter = value|length %}
+
+                    {# Select field #}
+                    {% if value[0] is iterable and 'values' in value[0]|keys %}
+                        {% set counter = [] %}
+                        {% for v in value %}
+                            {% set counter = counter|merge([v.values|length]) %}
+                        {% endfor %}
+                    {% endif %}
+
+                    <div class="border border-color-map-yellow rounded p-2 mr-1 my-1">
+                        {{ criteriaLabels[key] }}
+                        <span class="badge badge-primary">
+                            {% if counter is iterable %}
+                                {{ counter|join(' || ') }}
+                            {% else %}
+                                {{ counter }}
+                            {% endif %}
+                        </span>
+                    </div>
+                {% endfor %}
 
             {% endif %}
         </div>
         <div class="d-flex flex-column h-100 justify-content-center" class="query-actions">
-            <button type="button" class="btn btn-primary mb-1 query-load-button" title="{{ 'generic.load'|trans }}"
-                data-query-mode="{{query.mode}}" data-query-criteria="{{query.criteria|url_encode}}">
+            <button type="button" class="btn btn-primary mb-1 query-load-button" title="{{ 'generic.load'|trans }}" data-query-mode="{{query.mode}}" data-query-criteria="{{query.criteria|url_encode}}">
                 <i class="fas fa-tasks fa-fw"></i>
             </button>
             {% set uuid = 'confirm_deletion_' ~ query.id ~ '_' ~ random() %}
-            <button type="button" class="btn btn-danger" id="delete-link-{{query.id}}" data-toggle="modal"
-                data-target="#{{ uuid }}" title="{{ 'generic.delete'|trans }}">
+            <button type="button" class="btn btn-danger" id="delete-link-{{query.id}}" data-toggle="modal" data-target="#{{ uuid }}" title="{{ 'generic.delete'|trans }}">
                 <i class="fas fa-fw fa-trash"></i>
             </button>
             {% include "modals/confirmation.html.twig" with {

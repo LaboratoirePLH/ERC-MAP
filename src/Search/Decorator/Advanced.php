@@ -4,15 +4,16 @@ namespace App\Search\Decorator;
 
 use App\Entity\IndexRecherche;
 
-class Advanced {
+class Advanced
+{
 
     public static function decorate(array $data, array $allData, string $locale): array
     {
         $result = [];
-        foreach($data as $entity) {
+        foreach ($data as $entity) {
 
             $entityData = $entity->getData();
-            $method = "decorate".$entity->getEntite();
+            $method = "decorate" . $entity->getEntite();
             $result[] = self::$method($entity, $allData, $locale);
         }
         return $result;
@@ -28,7 +29,9 @@ class Advanced {
 
         $mainEdition = array_reduce(
             $data['sourceBiblios'],
-            function($carry, $item){ return ($item['editionPrincipale'] ?? false) ? $item : $carry; }
+            function ($carry, $item) {
+                return ($item['editionPrincipale'] ?? false) ? $item : $carry;
+            }
         );
         $result['reference'] = $mainEdition === null ? null
             : implode(' ', array_filter([
@@ -37,17 +40,16 @@ class Advanced {
             ]));
 
 
-        foreach(['categorieSource', 'categorieMateriau', 'typeMateriau', 'categorieSupport', 'typeSupport', 'titrePrincipal'] as $manyToOneField){
+        foreach (['categorieSource', 'categorieMateriau', 'typeMateriau', 'categorieSupport', 'typeSupport', 'titrePrincipal'] as $manyToOneField) {
             $result[$manyToOneField] = array_key_exists($manyToOneField, $data) ? $data[$manyToOneField][$nameField] : '';
         }
 
-        foreach(['typeSource', 'langues', 'auteurs'] as $manyToManyField){
-            if(array_key_exists($manyToManyField, $data)){
-                $result[$manyToManyField] = array_map(function($item) use ($nameField){
+        foreach (['typeSource', 'langues', 'auteurs'] as $manyToManyField) {
+            if (array_key_exists($manyToManyField, $data)) {
+                $result[$manyToManyField] = array_map(function ($item) use ($nameField) {
                     return $item[$nameField];
                 }, $data[$manyToManyField]);
-            }
-            else {
+            } else {
                 $result[$manyToManyField] = [];
             }
         }
@@ -56,10 +58,12 @@ class Advanced {
         $result = array_merge($result, self::_decorateLocalisation($data['lieuOrigine'] ?? $data['lieuDecouverte'] ?? [], $locale));
 
         $result['extraits'] = array_filter(array_map(
-            function($att){ return $att->getData()['extraitAvecRestitution'] ?? $att->getData()['translitteration'] ?? ''; },
+            function ($att) {
+                return $att->getData()['extraitAvecRestitution'] ?? $att->getData()['translitteration'] ?? '';
+            },
             array_filter(
                 $allData,
-                function($e) use ($data) {
+                function ($e) use ($data) {
                     return $e->getEntite() == "Attestation" && in_array($e->getId(), $data['attestations'] ?? []);
                 }
             )
@@ -83,22 +87,21 @@ class Advanced {
             "translitteration"       => $data['translitteration'] ?? '',
         ];
 
-        foreach(['traductions', 'pratiques'] as $manyToManyField){
-            if(array_key_exists($manyToManyField, $data)){
-                $result[$manyToManyField] = array_map(function($item) use ($nameField){
+        foreach (['traductions', 'pratiques'] as $manyToManyField) {
+            if (array_key_exists($manyToManyField, $data)) {
+                $result[$manyToManyField] = array_map(function ($item) use ($nameField) {
                     return $item[$nameField];
                 }, $data[$manyToManyField]);
-            }
-            else {
+            } else {
                 $result[$manyToManyField] = [];
             }
         }
 
-        $result['occasions'] = array_map(function($o) use ($nameField) {
+        $result['occasions'] = array_map(function ($o) use ($nameField) {
             return ($o['categorieOccasion'][$nameField] ?? '') . ' > ' . ($o['occasion'][$nameField] ?? '');
         }, $data['occasions'] ?? []);
 
-        $result['materiels'] = array_map(function($o) use ($nameField) {
+        $result['materiels'] = array_map(function ($o) use ($nameField) {
             return ($o['categorieMateriel'][$nameField] ?? '')
                 . ' > '
                 . ($o['materiel'][$nameField] ?? '')
@@ -108,14 +111,14 @@ class Advanced {
         }, $data['materiels'] ?? []);
 
         $result = array_merge($result, self::_decorateDatation($data['datation'] ?? []));
-        $result = array_merge($result, self::_decorateLocalisation($data['localisation'] ?? []));
+        $result = array_merge($result, self::_decorateLocalisation($data['localisation'] ?? [], $locale));
 
         // Add link data
         $result['link'] = ['type' => strtolower($entity->getEntite()), 'id' => $entity->getId()];
 
         // Find source and get its data
         $sourceId = $data['source'];
-        $source = array_reduce($allData, function($result, $e) use ($sourceId){
+        $source = array_reduce($allData, function ($result, $e) use ($sourceId) {
             return $result ?? (($e->getEntite() == "Source" && $e->getId() == $sourceId) ? $e : null);
         }, null);
         $sourceData = self::decorateSource($source, $allData, $locale);
@@ -135,18 +138,17 @@ class Advanced {
             "natureElement" => ($data['natureElement'] ?? [])[$nameField] ?? ''
         ];
 
-        foreach(['traductions', 'categories'] as $manyToManyField){
-            if(array_key_exists($manyToManyField, $data)){
-                $result[$manyToManyField] = array_map(function($item) use ($nameField){
+        foreach (['traductions', 'categories'] as $manyToManyField) {
+            if (array_key_exists($manyToManyField, $data)) {
+                $result[$manyToManyField] = array_map(function ($item) use ($nameField) {
                     return $item[$nameField];
                 }, $data[$manyToManyField]);
-            }
-            else {
+            } else {
                 $result[$manyToManyField] = [];
             }
         }
 
-        $result = array_merge($result, self::_decorateLocalisation($data['localisation'] ?? []));
+        $result = array_merge($result, self::_decorateLocalisation($data['localisation'] ?? [], $locale));
 
         // Add link data
         $result['link'] = ['type' => strtolower($entity->getEntite()), 'id' => $entity->getId()];
@@ -165,11 +167,10 @@ class Advanced {
     protected static function _decorateLocalisation(array $localisation, string $locale): array
     {
         return [
-            'grandeRegion' => ($localisation['grandeRegion'] ?? [])['nom'.ucFirst($locale)] ?? '',
-            'sousRegion'   => ($localisation['sousRegion'] ?? [])['nom'.ucFirst($locale)] ?? '',
-            'ville'        => (($localisation['nomVille'] ?? '') . (($localisation['pleiadesVille'] ?? null) ? ' ('.$localisation['pleiadesVille'].')' : '')) ?? '',
-            'site'         => (($localisation['nomSite'] ?? '') . (($localisation['pleiadesSite'] ?? null) ? ' ('.$localisation['pleiadesSite'].')' : '')) ?? '',
+            'grandeRegion' => ($localisation['grandeRegion'] ?? [])['nom' . ucFirst($locale)] ?? '',
+            'sousRegion'   => ($localisation['sousRegion'] ?? [])['nom' . ucFirst($locale)] ?? '',
+            'ville'        => (($localisation['nomVille'] ?? '') . (($localisation['pleiadesVille'] ?? null) ? ' (' . $localisation['pleiadesVille'] . ')' : '')) ?? '',
+            'site'         => (($localisation['nomSite'] ?? '') . (($localisation['pleiadesSite'] ?? null) ? ' (' . $localisation['pleiadesSite'] . ')' : '')) ?? '',
         ];
     }
-
 }

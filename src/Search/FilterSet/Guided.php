@@ -65,6 +65,16 @@ class Guided extends AbstractFilterSet
 
             $filtered[] = $e;
         }
+        usort($filtered, function ($a, $b) {
+            if ($a->getEntite() == "Source" && $b->getEntite() == "Attestation") {
+                return -1;
+            }
+            if ($a->getEntite() == "Attestation" && $b->getEntite() == "Source") {
+                return 1;
+            }
+            return $a->getId() <=> $b->getId();
+        });
+
         return $filtered;
     }
 }

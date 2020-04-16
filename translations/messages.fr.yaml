@@ -496,7 +496,7 @@ search:
     clear_cache: "Effacer le cache"
     new_query: "Nouvelle Recherche"
     edit_query: "Modifier la Recherche"
-    saved_queries: "Recherches Enregistrées"
+    saved_queries: "Recherches enregistrées"
     add_criteria: "Ajouter un critère"
     remove_criteria: "Retirer le critère"
     choose_criteria: "Choisir le critère"

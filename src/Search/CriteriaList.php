@@ -53,7 +53,7 @@ class CriteriaList
                     ],
                     [
                         'key'     => 'elementInvariantCategories',
-                        'label'   => $translator->trans('element.fields.domaine'),
+                        'label'   => $translator->trans('generic.fields.categorie'),
                         'type'    => 'select',
                         'semitic' => false,
                     ],

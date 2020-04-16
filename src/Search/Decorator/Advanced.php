@@ -171,6 +171,7 @@ class Advanced
             'sousRegion'   => ($localisation['sousRegion'] ?? [])['nom' . ucFirst($locale)] ?? '',
             'ville'        => (($localisation['nomVille'] ?? '') . (($localisation['pleiadesVille'] ?? null) ? ' (' . $localisation['pleiadesVille'] . ')' : '')) ?? '',
             'site'         => (($localisation['nomSite'] ?? '') . (($localisation['pleiadesSite'] ?? null) ? ' (' . $localisation['pleiadesSite'] . ')' : '')) ?? '',
+            'coordonnees'  => !is_null($localisation['longitude'] ?? null) && !is_null($localisation['latitude'] ?? null) ? ($localisation['latitude'] . ', ' . $localisation['longitude']) : ''
         ];
     }
 }

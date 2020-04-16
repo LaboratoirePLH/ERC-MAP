@@ -17,6 +17,7 @@
         {'field': 'sousRegion','label': 'localisation.fields.sous_region', 'visible': true},
         {'field': 'ville','label': 'localisation.fields.ville', 'visible': true},
         {'field': 'site','label': 'localisation.fields.site', 'visible': true},
+        {'field': 'coordonnees','label': 'generic.fields.position', 'visible': true},
         {'field': 'link', 'label': 'generic.view', 'visible': true},
     ],
     'attestation': [
@@ -33,18 +34,19 @@
         {'field': 'sousRegion','label': 'localisation.fields.sous_region', 'visible': true},
         {'field': 'ville','label': 'localisation.fields.ville', 'visible': true},
         {'field': 'site','label': 'localisation.fields.site', 'visible': true},
+        {'field': 'coordonnees','label': 'generic.fields.position', 'visible': true},
         {'field': 'link', 'label': 'generic.view', 'visible': true},
     ]
 } %}
 
 {% block title %}
-{{ ('search.results')|trans }}
+    {{ ('search.results')|trans }}
 {% endblock %}
 {% block content %}
-{% include "search/_results_advanced.html.twig" %}
+    {% include "search/_results_advanced.html.twig" %}
 {% endblock %}
 
 {% block javascripts %}
-{{ parent() }}
-{% include "search/_results_advanced.js.twig" %}
+    {{ parent() }}
+    {% include "search/_results_advanced.js.twig" %}
 {% endblock %}

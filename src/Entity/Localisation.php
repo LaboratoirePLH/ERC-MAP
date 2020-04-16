@@ -147,7 +147,7 @@ class Localisation extends AbstractEntity
      */
     public function __clone()
     {
-        if($this->id !== null){
+        if ($this->id !== null) {
             $this->id = null;
         }
     }
@@ -359,7 +359,7 @@ class Localisation extends AbstractEntity
      */
     public function _updateGeometry()
     {
-        if(($lon = $this->getLongitude()) !== null && ($lat = $this->getLatitude()) !== null){
+        if (($lon = $this->getLongitude()) !== null && ($lat = $this->getLatitude()) !== null) {
             $this->setGeom("SRID=4326;POINT({$lon} {$lat})");
         }
     }
@@ -374,10 +374,16 @@ class Localisation extends AbstractEntity
             'nomVille'        => $this->nomVille,
             'pleiadesSite'    => $this->pleiadesSite,
             'nomSite'         => $this->nomSite,
-            'topographies'    => $this->topographies->map(function($entry){ return $entry->toArray(); })->getValues(),
-            'fonctions'       => $this->fonctions->map(function($entry){ return $entry->toArray(); })->getValues(),
-            'commentaireFr'   => $this->commentaireFr,
-            'commentaireEn'   => $this->commentaireEn
+            'topographies'    => $this->topographies->map(function ($entry) {
+                return $entry->toArray();
+            })->getValues(),
+            'fonctions'       => $this->fonctions->map(function ($entry) {
+                return $entry->toArray();
+            })->getValues(),
+            'longitude'     => $this->longitude,
+            'latitude'      => $this->latitude,
+            'commentaireFr' => $this->commentaireFr,
+            'commentaireEn' => $this->commentaireEn
         ];
     }
 }

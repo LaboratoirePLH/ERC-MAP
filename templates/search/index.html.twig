@@ -134,18 +134,18 @@
                                     :
                                 </label>
                                 <div class="btn-group ml-2" data-toggle="buttons">
-                                    <label class="btn btn-primary active">
-                                        <input type="radio" name="resultsType" value="source" autocomplete="off" checked>
+                                    <label class="btn btn-primary active" for="resultsType_source">
+                                        <input type="radio" id="resultsType_source" name="resultsType" value="source" autocomplete="off" checked>
                                         <i class="fas fa-fw {{ icons.source }}"></i>
                                         {{ 'source.name'|trans }}
                                     </label>
-                                    <label class="btn btn-success">
-                                        <input type="radio" name="resultsType" value="attestation" autocomplete="off">
+                                    <label class="btn btn-success" for="resultsType_attestation">
+                                        <input type="radio" id="resultsType_attestation" name="resultsType" value="attestation" autocomplete="off">
                                         <i class="fas fa-fw {{ icons.attestation }}"></i>
                                         {{ 'attestation.name'|trans }}
                                     </label>
-                                    <label class="btn btn-warning">
-                                        <input type="radio" name="resultsType" value="element" autocomplete="off">
+                                    <label class="btn btn-warning" for="resultsType_element">
+                                        <input type="radio" id="resultsType_element" name="resultsType" value="element" autocomplete="off">
                                         <i class="fas fa-fw {{ icons.element }}"></i>
                                         {{ 'element.name'|trans }}
                                     </label>
@@ -236,7 +236,7 @@
         $(document).ready(function () {
             SEARCH_CRITERIA = $.parseJSON("{{ criteria_list|json_encode|e('js')|raw }}");
             CURRENT_MODE = "";
-            changeMode = function (mode) { // Save in variable
+            function changeMode(mode) { // Save in variable
                 CURRENT_MODE = mode;
                 // Show given tab
                 $('#searchTabLinks a[href="#' + mode + '"]').tab('show');
@@ -251,7 +251,7 @@
                 }
             };
 
-            adjustSavedQueriesHeight = function () {
+            function adjustSavedQueriesHeight() {
                 if (CURRENT_MODE === "simple") {
                     $("#savedQueriesTab").animate({
                         maxHeight: '200px'
@@ -264,15 +264,15 @@
                 }
             };
 
-            searchCriteria = function (criteriaName) { // Find properties in SEARCH_CRITERIA
+            function searchCriteria(criteriaName) { // Find properties in SEARCH_CRITERIA
                 return SEARCH_CRITERIA.reduce((found, item) => {
                     return found || (item.key === criteriaName ? item : item.children.reduce((carry, subitem) => {
                         return subitem.key === criteriaName ? subitem : carry;
                     }, null));
                 }, null);
-            }
+            };
 
-            populateCriteriaData = function (mode, data, callback) {
+            function populateCriteriaData(mode, data, callback) {
                 if (mode === "simple") {
                     $('#simple').find('input[name="search_value"]').val(data[0]);
                 } else if (mode === "guided") { // Guided form will be populated when all its data has been loaded
@@ -374,7 +374,7 @@
             // Store criteria that are still loading with their promise
             var loadingCriteria = {};
 
-            loadCriteriaData = function (criteriaName, target, optgroups, disableSemiticKeyboard) {
+            function loadCriteriaData(criteriaName, target, optgroups, disableSemiticKeyboard) {
                 var createOptions = function (data, select) {
                     Object.entries(data).sort((a, b) => removeAccents(a[1]).localeCompare(removeAccents(b[1]))).forEach(([value, label]) => {
                         select.append($('<option />').attr('value', value).html(label));
@@ -434,7 +434,7 @@
                 }
             }
 
-            chooseNewCriteria = function () { // Disable feature if current tab is not advanced search
+            function chooseNewCriteria() { // Disable feature if current tab is not advanced search
                 if (CURRENT_MODE != "advanced") {
                     return;
                 }
@@ -462,7 +462,7 @@
                 })
             };
 
-            addNewCriteria = function (criteriaName) {
+            function addNewCriteria(criteriaName) {
                 $('#advanced .no-criteria').hide();
 
                 // Find properties in SEARCH_CRITERIA

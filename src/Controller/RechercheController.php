@@ -156,15 +156,35 @@ class RechercheController extends AbstractController
      */
     public function advancedSearch(Request $request, TranslatorInterface $translator, Criteria $searchCriteria)
     {
-        $criteria    = $request->request->all();
-        $resultsType = $criteria['resultsType'];
+        $criteriaRaw = $request->request->all();
+        $criteria    = [];
 
-        if (array_key_exists('new_criteria', $criteria)) {
-            unset($criteria['new_criteria']);
+        foreach ($criteriaRaw as $key => $value) {
+            if ($key === 'new_criteria' || $key === 'search') {
+                continue;
+            }
+            if (is_array($value) && is_array($value[0])) {
+                $value = array_filter($value, function ($cv) {
+                    return array_key_exists('values', $cv);
+                });
+            }
+            if (is_array($value) && !count(array_filter($value))) {
+                continue;
+            }
+            $criteria[$key] = $value;
         }
-        if (array_key_exists('search', $criteria)) {
-            unset($criteria['search']);
+
+        if (count(array_keys($criteria)) <= 1) {
+            $request->getSession()->getFlashBag()->add(
+                'error',
+                'search.messages.no_empty_search'
+            );
+            return $this->redirect(
+                $this->get('router')->generate('search', ['_fragment' => 'advanced'])
+            );
         }
+
+        $resultsType = $criteria['resultsType'];
 
         $results = $this->getDoctrine()
             ->getRepository(\App\Entity\IndexRecherche::class)

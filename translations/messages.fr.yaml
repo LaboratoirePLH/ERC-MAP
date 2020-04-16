@@ -237,6 +237,7 @@ attestation:
         element_n : "Élément #"
         element_invariant: "Élément (Invariant)"
         attestations_liees: "Attestations Liées"
+        compte_element: "Nombre d'éléments"
     fiabilite:
         niveau_0: "Indéterminé"
         niveau_1: "(1) Lecture Assurée"

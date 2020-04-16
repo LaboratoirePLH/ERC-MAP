@@ -85,6 +85,7 @@ class Advanced
             "passage"                => $data['passage'] ?? '',
             "extraitAvecRestitution" => $data['extraitAvecRestitution'] ?? '',
             "translitteration"       => $data['translitteration'] ?? '',
+            "compteElement"          => count($data['elementIds'] ?? [])
         ];
 
         foreach (['traductions', 'pratiques'] as $manyToManyField) {

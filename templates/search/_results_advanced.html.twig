@@ -102,11 +102,11 @@
                             {% set valueSearch = value.id %}
                             {% set valueSort = value.id %}
                             {% set value %}
-                            {% include "partials/_entitylink.html.twig" with {
-                    'entity': value.type,
-                    'link': url(value.type ~ '_show', {'id': value.id}),
-                    'text': '#' ~ value.id
-                } %}
+                                {% include "partials/_entitylink.html.twig" with {
+                                    'entity': value.type,
+                                    'link': url(value.type ~ '_show', {'id': value.id}),
+                                    'text': '#' ~ value.id
+                                } %}
                             {% endset %}
 
                         {% elseif value is iterable %}

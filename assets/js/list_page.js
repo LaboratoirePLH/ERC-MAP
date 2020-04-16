@@ -36,3 +36,20 @@ jQuery.fn.DataTable.ext.type.search['string'] = function (data) {
 jQuery.fn.DataTable.ext.type.search['html'] = function (data) {
     return accents_supr(data);
 };
+
+jQuery.fn.dataTable.ext.type.order['id-pre'] = function (d) {
+    const [type, id] = d.split('#');
+    var typeNumber;
+    switch (type) {
+        case 'source':
+            typeNumber = 1;
+            break;
+        case 'attestation':
+            typeNumber = 2;
+            break;
+        default:
+            typeNumber = 3;
+            break;
+    }
+    return (typeNumber * 1e10) + parseInt(id, 10);
+};

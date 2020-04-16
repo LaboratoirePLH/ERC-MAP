@@ -32,11 +32,16 @@
                         {% set colIndex = 0 %}
                         {% for group, cols in columns %}
                             <div class="col">
-                                <h6 class="dropdown-header text-capitalize">{{ (group~'.name')|trans }}</h6>
+                                <div class="dropdown-header text-capitalize">
+                                    <input type="checkbox" class="form-check-input toggle-group-column" id="checkboxGroup{{ group }}" data-group="{{group}}" checked>
+                                    <label for="checkboxGroup{{ group }}" class="form-check-label">
+                                        {{ (group~'.name')|trans }}
+                                    </label>
+                                </div>
                                 <div class="dropdown-divider"></div>
                                 {% for col in cols %}
                                     <div class="dropdown-item">
-                                        <input type="checkbox" class="form-check-input toggle-column" id="checkboxColumn{{ colIndex }}" data-column="{{ colIndex }}" checked>
+                                        <input type="checkbox" class="form-check-input toggle-column checkbox-{{group}}-item" id="checkboxColumn{{ colIndex }}" data-column="{{ colIndex }}" checked>
                                         <label for="checkboxColumn{{ colIndex }}" class="form-check-label">
                                             <small>
                                                 {{ col.label|trans }}
@@ -102,7 +107,7 @@
                             {% set valueSearch = value.id %}
                             {% set valueSort = value.id %}
                             {% set value %}
-                                {% include "partials/_entitylink.html.twig" with {
+                            {% include "partials/_entitylink.html.twig" with {
                                     'entity': value.type,
                                     'link': url(value.type ~ '_show', {'id': value.id}),
                                     'text': '#' ~ value.id

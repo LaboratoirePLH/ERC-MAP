@@ -246,32 +246,39 @@ var get_browser = function () {
             },
             help: 'Help',
             elementCls: 'btn-info',
-            operatorCls: 'btn-warning'
+            operatorCls: 'btn-warning',
+            searchMode: false
             // These are the defaults.
         }, settings);
 
         var blockRenderer = function (label, blockClass, buttons, errors) {
             var buttonWrapper = $('<div/>', {
-                class: 'col-9 d-flex flex-wrap justify-content-center ' + blockClass
+                class: 'col d-flex flex-wrap justify-content-center ' + blockClass
             });
-
-            if (errors !== false) {
-                errors = errors.filter(function (item, pos, self) {
-                    return self.indexOf(item) == pos;
-                });
-                var statusWrapper = $('<div/>', {
-                    class: 'col-1 text-center formula-status',
-                    html: '<i class="fas fa-check-circle text-success' + (errors.length > 0 ? ' d-none' : '') + '" data-toggle="tooltip" data-html="true" data-placement="left" title="' + settings.errors.valid + '" ></i>'
-                        + '<i class="fas fa-exclamation-triangle text-danger' + (errors.length == 0 ? ' d-none' : '') + '" data-toggle="tooltip" data-html="true" data-placement="left" title="' + errors.join('<hr/>') + '" ></i>'
-                })
-            } else {
-                errors = "";
-            }
             $.each(buttons, function (i, b) { buttonWrapper.append(b) });
-            return $('<div/>', { class: 'row' })
-                .append($('<div/>', { class: 'col-2 text-right label', html: label }))
-                .append(buttonWrapper)
-                .append(statusWrapper);
+
+            if (settings.searchMode) {
+                return $('<div/>', { class: 'row' })
+                    .append($('<div/>', { class: 'col-2 text-right label', html: label }))
+                    .append(buttonWrapper);
+            } else {
+                if (errors !== false) {
+                    errors = errors.filter(function (item, pos, self) {
+                        return self.indexOf(item) == pos;
+                    });
+                    var statusWrapper = $('<div/>', {
+                        class: 'col-1 text-center formula-status',
+                        html: '<i class="fas fa-check-circle text-success' + (errors.length > 0 ? ' d-none' : '') + '" data-toggle="tooltip" data-html="true" data-placement="left" title="' + settings.errors.valid + '" ></i>'
+                            + '<i class="fas fa-exclamation-triangle text-danger' + (errors.length == 0 ? ' d-none' : '') + '" data-toggle="tooltip" data-html="true" data-placement="left" title="' + errors.join('<hr/>') + '" ></i>'
+                    })
+                } else {
+                    errors = "";
+                }
+                return $('<div/>', { class: 'row' })
+                    .append($('<div/>', { class: 'col-2 text-right label', html: label }))
+                    .append(buttonWrapper)
+                    .append(statusWrapper);
+            }
         }
 
         return this.each(function () {
@@ -299,18 +306,22 @@ var get_browser = function () {
                 blockRenderer(settings.labels.formule + help, 'formula-visualizer w-100', formulaButtons, errors || [])
             );
 
-            if ($(me).find("input[name$='[id]']").val() == "") {
+            if (settings.searchMode === true || $(me).find("input[name$='[id]']").val() == "") {
                 // Operators / Parenthesis
                 var operatorButtons = [
-                    $.fn.formulaElementRenderer({ type: 'parenthesis', display: '(', raw: '(' }, settings),
-                    $.fn.formulaElementRenderer({ type: 'parenthesis', display: ')', raw: ')' }, settings),
-                    $.fn.formulaElementRenderer({ type: 'brackets', display: '[', raw: '[' }, settings),
-                    $.fn.formulaElementRenderer({ type: 'brackets', display: ']', raw: ']' }, settings),
                     $.fn.formulaElementRenderer({ type: 'operator', display: '+', raw: '+' }, settings),
                     $.fn.formulaElementRenderer({ type: 'operator', display: '/', raw: '/' }, settings),
                     $.fn.formulaElementRenderer({ type: 'operator', display: '#', raw: '#' }, settings),
                     $.fn.formulaElementRenderer({ type: 'operator', display: '=', raw: '=' }, settings),
                 ];
+                if (!settings.searchMode) {
+                    operatorButtons.unshift(
+                        $.fn.formulaElementRenderer({ type: 'parenthesis', display: '(', raw: '(' }, settings),
+                        $.fn.formulaElementRenderer({ type: 'parenthesis', display: ')', raw: ')' }, settings),
+                        $.fn.formulaElementRenderer({ type: 'brackets', display: '[', raw: '[' }, settings),
+                        $.fn.formulaElementRenderer({ type: 'brackets', display: ']', raw: ']' }, settings),
+                    );
+                }
                 editor.append(
                     blockRenderer(settings.labels.operateurs, 'formula-operators', operatorButtons, false)
                 );
@@ -332,9 +343,12 @@ var get_browser = function () {
                 );
             }
 
+            // Remove existing editor
+            $(me).find('.formula-editor').remove();
+
             editor.insertAfter($(me).find('input[type=hidden]').last());
 
-            if ($(me).find("input[name$='[id]']").val() == "") {
+            if (settings.searchMode === true || $(me).find("input[name$='[id]']").val() == "") {
                 // Setup drag & drop
                 const isOldFirefox = get_browser()['name'] == 'Firefox' && get_browser()['version'] < "64";
                 new Sortable($(me).find('.formula-operators').get(0), {

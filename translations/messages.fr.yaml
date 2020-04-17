@@ -443,6 +443,7 @@ datatable:
     language: '{"emptyTable":"Aucun enregistrement disponible","info":"Page _PAGE_ sur _PAGES_","infoEmpty":"Aucun enregistrement disponible","infoFiltered":"(filtré à partir de _MAX_ résultats totaux)","lengthMenu":"Afficher _MENU_ éléments par page","search":"Recherche :","zeroRecords":"Aucun résultat","paginate":{"first":"Première","last":"Dernière","next":"Suivante","previous":"Précédente"},"aria":{"sortAscending":"Activer pour classer la colonne de façon croissante","sortDescending":"Activer pour classer la colonne de façon décroissante"}}'
 
 autocomplete:
+    select_single: "Sélectionner une valeur"
     select_element: "Sélectionner une valeur (tapez du texte pour filtrer)"
     select_multiple: "Sélectionner des valeurs (tapez du texte pour filtrer)"
     no_matches: "Aucune correspondance trouvée pour : "
@@ -515,6 +516,11 @@ search:
         agents: "Agent(s)"
         contexte_attestation: "Contexte de l'Attestation"
         all: " (Tous)"
+    element_labels:
+        added: "Éléments ajoutés"
+        add_new: "Ajouter un nouvel élément"
+        remove_element: "Retirer l'élément"
+        formula: "Recherche de formule"
     messages:
         reindex_done: "L'Index de Recherche a bien été reconstruit (%records% enregistrements, %time% secondes)"
         cache_cleared: "Le cache de Recherche a bien été effacé"

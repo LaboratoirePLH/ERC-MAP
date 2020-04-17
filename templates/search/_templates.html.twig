@@ -13,22 +13,21 @@
     <div class="form-group row new-criteria" id="new-criteria-template">
         <label for="inputNewCriteria" class="col-sm-3 col-form-label">{{ 'search.choose_criteria'|trans }}</label>
         <div class="col">
-            <select class="form-control autocomplete" name="new_criteria" id="inputNewCriteria"
-                data-placeholder="{{('autocomplete.select_element')|trans}}">
+            <select class="form-control autocomplete" name="new_criteria" id="inputNewCriteria" data-placeholder="{{('autocomplete.select_element')|trans}}">
                 <option value></option>
                 {% for criteria in criteria_list %}
-                {% if criteria.children is defined %}
-                <optgroup label="{{criteria.label}}">
-                    {% if criteria.type != null %}
-                    <option value="{{criteria.key}}">{{criteria.label}}</option>
+                    {% if criteria.children is defined %}
+                        <optgroup label="{{criteria.label}}">
+                            {% if criteria.type != null %}
+                                <option value="{{criteria.key}}">{{criteria.label}}</option>
+                            {% endif %}
+                            {% for subcriteria in criteria.children %}
+                                <option value="{{subcriteria.key}}">{{subcriteria.label}}</option>
+                            {% endfor %}
+                        </optgroup>
+                    {% else %}
+                        <option value="{{criteria.key}}">{{criteria.label}}</option>
                     {% endif %}
-                    {% for subcriteria in criteria.children %}
-                    <option value="{{subcriteria.key}}">{{subcriteria.label}}</option>
-                    {% endfor %}
-                </optgroup>
-                {% else %}
-                <option value="{{criteria.key}}">{{criteria.label}}</option>
-                {% endif %}
                 {% endfor %}
             </select>
         </div>
@@ -46,8 +45,7 @@
     <div class="form-group row" id="select-template">
         <label class="col-sm-3 col-form-label" for="inputNameSelect"></label>
         <div class="col">
-            <select class="form-control autocomplete" name="name" id="inputNameSelect" size="1" multiple
-                data-placeholder="{{('autocomplete.select_multiple')|trans}}">
+            <select class="form-control autocomplete" name="name" id="inputNameSelect" size="1" multiple data-placeholder="{{('autocomplete.select_multiple')|trans}}">
                 <option value></option>
             </select>
         </div>
@@ -62,15 +60,14 @@
     <div class="form-group row" id="text-template">
         <label class="col-sm-3 col-form-label" for="inputNameText"></label>
         <div class="col">
-            <input class="form-control flex-grow-1" type="text" name="name" id="inputNameText" />
+            <input class="form-control flex-grow-1" type="text" name="name" id="inputNameText"/>
         </div>
         {{ removeCriteriaButton }}
     </div>
     <div class="form-group row" id="range-template">
         <label class="col-sm-3 col-form-label" for="inputNameRange"></label>
         <div class="col pt-2">
-            <input class="form-control flex-grow-1 custom-range" id="inputNameRange" type="range" name="name" min=""
-                max="" list="datalistName" step="1" />
+            <input class="form-control flex-grow-1 custom-range" id="inputNameRange" type="range" name="name" min="" max="" list="datalistName" step="1"/>
         </div>
         <div class="col-sm-2 pt-1">
             <output for="inputNameRange"></output>
@@ -81,17 +78,14 @@
     <div class="form-group row" id="datation-template">
         <label class="col-sm-3 col-form-label" for="inputPostQuem#X#">{{ ('generic.fields.datation')|trans }}</label>
         <div class="col">
-            <input type="number" step="1" class="form-control" name="datation[#X#][post_quem]" id="inputPostQuem#X#"
-                placeholder="{{('datation.fields.post_quem')|trans}}">
+            <input type="number" step="1" class="form-control" name="datation[#X#][post_quem]" id="inputPostQuem#X#" placeholder="{{('datation.fields.post_quem')|trans}}">
         </div>
         <div class="col">
-            <input type="number" step="1" class="form-control" name="datation[#X#][ante_quem]" id="inputAnteQuem#X#"
-                placeholder="{{('datation.fields.ante_quem')|trans}}">
+            <input type="number" step="1" class="form-control" name="datation[#X#][ante_quem]" id="inputAnteQuem#X#" placeholder="{{('datation.fields.ante_quem')|trans}}">
         </div>
         <div class="col-sm-2">
             <div class="custom-control custom-switch pt-2">
-                <input type="checkbox" class="custom-control-input" id="inputDatationExact#X#"
-                    name="datation[#X#][exact]" value="datation_exact" checked>
+                <input type="checkbox" class="custom-control-input" id="inputDatationExact#X#" name="datation[#X#][exact]" value="datation_exact" checked>
                 <label class="custom-control-label" for="inputDatationExact#X#">
                     {{ ('generic.fields.strict')|trans }}
                 </label>
@@ -103,8 +97,7 @@
         <label class="col-sm-3 col-form-label">{{ 'attestation.fields.prose_poesie'|trans }}</label>
         <div class="col-sm-2">
             <div class="custom-control custom-switch pt-2 mr-2">
-                <input type="checkbox" class="custom-control-input" id="inputProse#X#" name="prosePoetry[#X#][]"
-                    value="prose">
+                <input type="checkbox" class="custom-control-input" id="inputProse#X#" name="prosePoetry[#X#][]" value="prose">
                 <label class="custom-control-label" for="inputProse#X#">
                     {{ ('attestation.fields.prose')|trans }}
                 </label>
@@ -112,8 +105,7 @@
         </div>
         <div class="col-sm-2">
             <div class="custom-control custom-switch pt-2 mr-2">
-                <input type="checkbox" class="custom-control-input" id="inputPoetry#X#" name="prosePoetry[#X#][]"
-                    value="poesie">
+                <input type="checkbox" class="custom-control-input" id="inputPoetry#X#" name="prosePoetry[#X#][]" value="poesie">
                 <label class="custom-control-label" for="inputPoetry#X#">
                     {{ ('attestation.fields.poesie')|trans }}
                 </label>

@@ -24,7 +24,7 @@
                         {{ ('search.advanced')|trans }}
                     </a>
                 </li>
-                <li class="nav-item d-none">
+                <li class="nav-item">
                     <a class="nav-link font-weight-bolder" id="elements-tab" data-toggle="tab" href="#elements" role="tab" aria-controls="elements" aria-selected="false">
                         {{ ('search.elements')|trans }}
                     </a>
@@ -180,8 +180,111 @@
                         </div>
                     </form>
                 </div>
-                <div class="tab-pane fade d-none" id="elements" role="tabpanel" aria-labelledby="elements-tab">
-                    Recherche éléments
+                <div class="tab-pane fade p-3" id="elements" role="tabpanel" aria-labelledby="elements-tab">
+                    <form action="{{ url('search_elements') }}" method="post">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">
+                                {{ 'attestation.fields.compte_element'|trans }}
+                            </label>
+                            <div class="col">
+                                <select class="form-control autocomplete-single" name="element_count[operator]" id="inputElementCountOperator" size="1" data-placeholder="{{('autocomplete.select_single')|trans}}">
+                                    <option value=""></option>
+                                    <option value="eq">=</option>
+                                    <option value="neq">&ne;</option>
+                                    <option value="lt">&lt;</option>
+                                    <option value="lte">&le;</option>
+                                    <option value="gt">&gt;</option>
+                                    <option value="gte">&ge;</option>
+                                </select>
+                            </div>
+                            <div class="col">
+                                <input type="number" min="0" step="1" class="form-control" name="element_count[value]" id="inputElementCountValue">
+                            </div>
+                        </div>
+                        <hr/>
+                        <div class="form-group row d-none" id="added-elements-row">
+                            <label class="col-sm-3 col-form-label">{{ ('search.element_labels.added')|trans }}</label>
+                            <div class="col">
+                                <div class="row justify-content-start" id="added-elements"></div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="inputName" class="col-sm-3 col-form-label">{{ ('search.element_labels.add_new')|trans }}</label>
+                            <div class="col">
+                                <select class="form-control autocomplete" name="absoluteForms[]" id="inputElementName" size="1" data-placeholder="{{('autocomplete.select_element')|trans}}">
+                                    <option value></option>
+                                </select>
+                            </div>
+                            <div class="col-sm-1">
+                                <button class="btn btn-warning btn-sm mx-2 mt-1 add-element-button" type="button">
+                                    <i class="fas fa-plus fa-fw" aria-hidden="true"></i>
+                                    <span class="sr-only">
+                                        {{ 'generic.add'|trans }}
+                                    </span>
+                                </button>
+                            </div>
+                        </div>
+                        <hr/>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">{{ ('search.element_labels.formula')|trans }}</label>
+                            <div class="col" id="formula-search">
+                                <input type="hidden" name="formule[formule]">
+                            </div>
+                        </div>
+                        <hr/>
+                        <div class="form-group row">
+                            <label for="inputLanguage" class="col-sm-3 col-form-label">{{ ('generic.fields.langue')|trans }}</label>
+                            <div class="col">
+                                <select class="form-control autocomplete" name="languages[]" id="inputLanguage" size="1" multiple data-placeholder="{{('autocomplete.select_multiple')|trans}}">
+                                    <option value></option>
+                                </select>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="custom-control custom-switch pt-2">
+                                    <input type="checkbox" class="custom-control-input" id="languages_mode" name="languages_mode" value="all">
+                                    <label class="custom-control-label" for="languages_mode">{{ 'generic.fields.require_all'|trans }}</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">{{ ('generic.fields.datation')|trans }}</label>
+                            <div class="col">
+                                <input type="number" step="1" class="form-control" name="datation[post_quem]" id="inputPostQuem" placeholder="{{('datation.fields.post_quem')|trans}}">
+                            </div>
+                            <div class="col">
+                                <input type="number" step="1" class="form-control" name="datation[ante_quem]" id="inputAnteQuem" placeholder="{{('datation.fields.ante_quem')|trans}}">
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="custom-control custom-switch pt-2">
+                                    <input type="checkbox" class="custom-control-input" id="inputDatationExact" name="datation[exact]" value="datation_exact" checked>
+                                    <label class="custom-control-label" for="inputDatationExact">
+                                        {{ ('generic.fields.strict')|trans }}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="inputLocation" class="col-sm-3 col-form-label">{{ ('generic.fields.lieu')|trans }}</label>
+                            <div class="col">
+                                <select class="form-control autocomplete" name="locations[]" id="inputLocation" size="1" multiple data-placeholder="{{('autocomplete.select_multiple')|trans}}">
+                                    <option value></option>
+                                </select>
+                            </div>
+                        </div>
+                        <hr/>
+                        <div class="form-group row last-row">
+                            <div class="col-sm-12">
+                                <button class="btn btn-secondary btn-sm mx-2" type="reset" name="reset" class="reset-button">
+                                    <i class="fas fa-eraser fa-fw"></i>
+                                    {{ 'generic.clear'|trans }}
+                                </button>
+                                <button class="btn btn-primary mx-2" type="submit" name="search">
+                                    <i class="fas fa-search fa-fw"></i>
+                                    {{ 'generic.search'|trans }}
+                                </button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -227,9 +330,16 @@
             </div>
         </div>
     {% endif %}
-
 {% endblock %}
 {% block javascripts %}
+    {% set elementButtonTemplate %}
+    {% include "partials/_entitylink.html.twig" with {
+        'entity': 'element',
+        'link': url('element_show', {'id': '#ID#'}),
+        'text': '##ID# #LABEL#',
+        'removable': true
+    } %}
+    {% endset %}
     {{ parent() }}
     {{ encore_entry_script_tags('search_page') }}
     <script type="text/javascript">
@@ -415,10 +525,13 @@
                     if (! loadingCriteria.hasOwnProperty(criteriaName)) { // Criteria is not currently being loaded, so we start the request and store the promise
                         var url = "{{ url('search_criteria', {'criteriaName': '_crit_'})|raw }}".replace('_crit_', criteriaName);
                         loadingCriteria[criteriaName] = $.get(url);
-                    } else {} loadingCriteria[criteriaName].done(function (response) {
-                        loadedCriteria[criteriaName] = response.data;
+                    }
+                    loadingCriteria[criteriaName].done(function (response) {
+                        if (! loadedCriteria.hasOwnProperty(criteriaName)) {
+                            loadedCriteria[criteriaName] = response.data;
+                        }
                         criteriaLoading--;
-                        injectData(response.data);
+                        injectData(loadedCriteria[criteriaName]);
                     }).fail(function (response) {
                         criteriaLoading--;
                     }).always(function () {
@@ -553,11 +666,99 @@
             loadCriteriaData('sourceTypes', $('#guided select[name="sourceTypes[]"]'), null, true);
             loadCriteriaData('agentivities', $('#guided select[name="agents[]"]'), null, true);
 
+            // Load criteria for elements mode
+            loadCriteriaData('absoluteForms', $('#elements select[name="absoluteForms[]"]'));
+            loadCriteriaData('languages', $('#elements select[name="languages[]"]'), null, true);
+            loadCriteriaData('locations', $('#elements select[name="locations[]"]'), null, true);
+
+
             // Setup events for advanced mode
             $("#advanced button#add-criteria").on('click', function (e) {
                 e.preventDefault();
                 chooseNewCriteria();
             });
+
+            // Setup events for elements mode
+            SEARCH_ELEMENTS = {};
+            // TODO : Remove debug
+            $('#elements button.add-element-button').on('click', function (e) {
+                e.preventDefault();
+                // Get data from the selected option
+                var select = $('#elements #inputElementName');
+                const [elementId, elementLabel] = [select.val(), select.find('option:selected').text()];
+                const absoluteState = elementLabel.replace(/ *\[[^\]]*\] */g, "")
+
+                // Store element data in object
+                SEARCH_ELEMENTS[elementId] = absoluteState;
+
+                // Show the "Added Elements" row
+                $('#added-elements-row').removeClass('d-none');
+
+                // Add the element button
+                var button = $('{{ elementButtonTemplate|e("js") }}'.replace(/(#|%23)ID(#|%23)/gi, elementId).replace(/#LABEL#/gi, absoluteState));
+                button.find('.remove-button').attr('data-target', elementId);
+                $('#added-elements').append($('<div>').addClass('col-sm-auto pr-0 mr-1 mb-1 added-element-item').append(button));
+
+                // Disable the option we just chose
+                select.find('option:selected').attr('disabled', true);
+                select.val('').trigger('chosen:updated');
+
+                // Setup/Update the formula editor
+                setupFormulaEditor();
+            });
+            $('#elements #added-elements').on('click', '.remove-button', function (e) {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                // Get the ID from the element block
+                const elementId = $(this).attr('data-target');
+
+                // Remove element data from object
+                delete SEARCH_ELEMENTS[elementId];
+
+                // Reenable the corresponding option in the select
+                $('#elements #inputElementName').find('option[value="' + elementId + '"]').attr('disabled', false);
+                $('#elements #inputElementName').trigger('chosen:updated');
+
+                // Remove the element block
+                $(this).parents('div.added-element-item').remove();
+
+                // If there is no element left, hide the "Added Elements" row and remove the formula editor
+                if ($('#elements #added-elements-row').find('.added-element-item').length == 0) {
+                    $('#elements #added-elements-row').addClass('d-none');
+                    $('#elements .formula-editor').remove();
+                    $('#elements').find("input[name$='[formule]']").val("");
+                } else { // Else update the formula editor
+                    setupFormulaEditor();
+                }
+            });
+
+            // Setup formula interface for elements search
+            function setupFormulaEditor() {
+                $('#elements #formula-search').formulaEditor({
+                    elements: SEARCH_ELEMENTS,
+                    labels: {
+                        formule: "{{ 'formule.fields.formule'|trans }}",
+                        elements: "{{ 'attestation.sections.elements'|trans }}",
+                        operateurs: "{{ 'formule.fields.operateurs'|trans }}"
+                    },
+                    errors: {
+                        valid: "{{ 'formule.errors.valid'|trans }}",
+                        unknown_element: "{{ 'formule.errors.unknown_element'|trans }}",
+                        no_element: "{{ 'formule.errors.no_element'|trans }}",
+                        not_all_elements: "{{ 'formule.errors.not_all_elements'|trans }}",
+                        element_twice: "{{ 'formule.errors.element_twice'|trans }}",
+                        brackets: "{{ 'formule.errors.brackets'|trans }}",
+                        parenthesis: "{{ 'formule.errors.parenthesis'|trans }}",
+                        brackets_parenthesis_imbrication: "{{ 'formule.errors.brackets_parenthesis_imbrication'|trans }}",
+                        operator_start: "{{ 'formule.errors.operator_start'|trans }}",
+                        operator_end: "{{ 'formule.errors.operator_end'|trans }}",
+                        operator_twice: "{{ 'formule.errors.operator_twice'|trans }}",
+                        operator_imbrication: "{{ 'formule.errors.operator_imbrication'|trans }}"
+                    },
+                    help: "{{ 'formule.help'|trans|replace({'\n': '', '\r\n': '', '\t': '', '\n\r': ''}) }}",
+                    searchMode: true
+                });
+            }
 
             // Watch reset buttons
             $('#guided').on('reset', function (e) {
@@ -609,7 +810,7 @@
                         clearInterval(interval);
                     }
                 }, 100);
-            })
+            });
             $('#advanced form').on('submit', function (e) {
                 e.preventDefault();
                 var formData = $(this).serializeObject();
@@ -659,6 +860,13 @@
                     $('button.query-load-button').attr('disabled', false);
                 });
             });
+
+            // Setup chosen for element count operator
+            LOCAL_CHOSEN_SETTINGS = $.extend(CHOSEN_SETTINGS, {
+                disable_search_threshold: 10,
+                allow_single_deselect: true
+            });
+            $('.autocomplete-single').chosen(LOCAL_CHOSEN_SETTINGS);
         });
     </script>
 {% endblock %}

@@ -207,6 +207,46 @@ class RechercheController extends AbstractController
     }
 
     /**
+     * @Route("/search/elements", name="search_elements")
+     */
+    public function elementsSearch(Request $request, TranslatorInterface $translator, Criteria $searchCriteria)
+    {
+        $criteriaRaw = $request->request->all();
+        $criteria    = [];
+
+        foreach ($criteriaRaw as $key => $value) {
+            if ($key === 'new_criteria' || $key === 'search') {
+                continue;
+            }
+            if ($key === "element_count" && (($value['operator'] ?? "") === "" || ($value['value'] ?? "") === "")) {
+                continue;
+            }
+            // if (is_array($value) && is_array($value[0])) {
+            //     $value = array_filter($value, function ($cv) {
+            //         return array_key_exists('values', $cv);
+            //     });
+            // }
+            // if (is_array($value) && !count(array_filter($value))) {
+            //     continue;
+            // }
+            $criteria[$key] = $value;
+        }
+
+        dump($criteria);
+        die;
+
+        if (!count(array_keys($criteria))) {
+            $request->getSession()->getFlashBag()->add(
+                'error',
+                'search.messages.no_empty_search'
+            );
+            return $this->redirect(
+                $this->get('router')->generate('search', ['_fragment' => 'advanced'])
+            );
+        }
+    }
+
+    /**
      * @Route("/search/save", name="search_save")
      */
     public function searchSave(Request $request, TranslatorInterface $translator)

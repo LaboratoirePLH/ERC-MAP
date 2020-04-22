@@ -6,6 +6,7 @@ use App\Entity\AbstractEntity;
 use App\Entity\IndexRecherche;
 use App\Search\FilterSet\Guided as GuidedSearchFilter;
 use App\Search\FilterSet\Advanced as AdvancedSearchFilter;
+use App\Search\FilterSet\Elements as ElementsSearchFilter;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -25,8 +26,8 @@ class IndexRechercheRepository extends ServiceEntityRepository
     public function fullRebuild()
     {
         return $this->rebuildByEntityType('Source')
-             + $this->rebuildByEntityType('Attestation')
-             + $this->rebuildByEntityType('Element');
+            + $this->rebuildByEntityType('Attestation')
+            + $this->rebuildByEntityType('Element');
     }
 
     public function rebuildByEntityType(string $entityType)
@@ -36,11 +37,11 @@ class IndexRechercheRepository extends ServiceEntityRepository
 
         // Remove all of entity type
         $this->createQueryBuilder('clear_index')
-             ->delete("App\Entity\IndexRecherche", "i")
-             ->where('i.entite = :entityType')
-             ->setParameter('entityType', $entityType)
-             ->getQuery()
-             ->execute();
+            ->delete("App\Entity\IndexRecherche", "i")
+            ->where('i.entite = :entityType')
+            ->setParameter('entityType', $entityType)
+            ->getQuery()
+            ->execute();
 
         // Select all entities of type
         $em = $this->getEntityManager();
@@ -51,7 +52,7 @@ class IndexRechercheRepository extends ServiceEntityRepository
         // var_dump($entityType, count($all), $query->getDQL());die;
 
         // For each entity
-        foreach($all as $entity){
+        foreach ($all as $entity) {
             // call toArray function
             $entityData = $entity->toArray();
             // Clean data to optimize it for indexation
@@ -82,19 +83,19 @@ class IndexRechercheRepository extends ServiceEntityRepository
         $entity = $query->getOneOrNullResult();
 
         // If entity is found
-        if($entity !== null){
+        if ($entity !== null) {
             // call toArray function
-           $entityData = $entity->toArray();
-           // Clean data to optimize it for indexation
-           $entityData = $this->_cleanData($entityData);
+            $entityData = $entity->toArray();
+            // Clean data to optimize it for indexation
+            $entityData = $this->_cleanData($entityData);
 
-           // store given data
-           $newEntry = new IndexRecherche;
-           $newEntry->setEntite($entityType);
-           $newEntry->setId($entity->getId());
-           $newEntry->setData($entityData);
-           $this->getEntityManager()->persist($newEntry);
-           $this->getEntityManager()->flush();
+            // store given data
+            $newEntry = new IndexRecherche;
+            $newEntry->setEntite($entityType);
+            $newEntry->setId($entity->getId());
+            $newEntry->setData($entityData);
+            $this->getEntityManager()->persist($newEntry);
+            $this->getEntityManager()->flush();
         }
     }
 
@@ -105,29 +106,29 @@ class IndexRechercheRepository extends ServiceEntityRepository
 
         // Remove all of entity type
         $this->createQueryBuilder('clear_index')
-             ->delete("App\Entity\IndexRecherche", "i")
-             ->where('i.entite = :entityType')
-             ->andWhere('i.id = :entityId')
-             ->setParameter('entityType', $entityType)
-             ->setParameter('entityId', $entityId)
-             ->getQuery()
-             ->execute();
+            ->delete("App\Entity\IndexRecherche", "i")
+            ->where('i.entite = :entityType')
+            ->andWhere('i.id = :entityId')
+            ->setParameter('entityType', $entityType)
+            ->setParameter('entityId', $entityId)
+            ->getQuery()
+            ->execute();
     }
 
     public function simpleSearch(string $search, string $locale): array
     {
         $normalized_search = strtolower(\App\Utils\StringHelper::removeAccents($search));
         $results = $this->createQueryBuilder('i')
-                        ->select('i')
-                        ->where('unaccent(lower(i.data)) LIKE :search')
-                        ->setParameter('search', '%'.addcslashes($normalized_search, '%_').'%')
-                        ->getQuery()
-                        ->getResult();
+            ->select('i')
+            ->where('unaccent(lower(i.data)) LIKE :search')
+            ->setParameter('search', '%' . addcslashes($normalized_search, '%_') . '%')
+            ->getQuery()
+            ->getResult();
 
         $response = [];
-        foreach($results as $entity){
+        foreach ($results as $entity) {
             $prepared = $this->_prepareResult($entity, $locale, $search);
-            if($prepared !== false){
+            if ($prepared !== false) {
                 $response[] = $prepared;
             }
         }
@@ -139,28 +140,28 @@ class IndexRechercheRepository extends ServiceEntityRepository
         // Get all data and sort it by entity type
         $allData = $this->findAll();
 
-        switch($mode){
+        switch ($mode) {
             case 'guided':
                 $filter = new GuidedSearchFilter($allData);
-            break;
+                break;
             case 'advanced':
                 $filter = new AdvancedSearchFilter($allData);
+                break;
+            case 'elements':
+                $filter = new ElementsSearchFilter($allData);
                 break;
             default:
                 throw new \InvalidArgumentException("Cannot process search mode $mode. Only 'guided' and 'advanced' search modes are available");
         }
         $filteredData = $filter->filter($criteria);
 
-        if($mode == 'advanced')
-        {
+        if ($mode == 'advanced' || $mode == 'elements') {
             return \App\Search\Decorator\Advanced::decorate($filteredData, $allData, $locale);
-        }
-        else
-        {
+        } else {
             $response = [];
-            foreach($filteredData as $e){
+            foreach ($filteredData as $e) {
                 $prepared = $this->_prepareResult($e, $locale);
-                if($prepared !== false){
+                if ($prepared !== false) {
                     $response[] = $prepared;
                 }
             }
@@ -172,31 +173,29 @@ class IndexRechercheRepository extends ServiceEntityRepository
     {
         $entityData = $entity->getData();
 
-        if($search !== null){
+        if ($search !== null) {
             $fieldName = $this->_cleanFieldName($this->_array_search($entityData, $search));
             // If field name is empty, it means it is not a real match (for exemple a partial match on a numeric value)
-            if(empty($fieldName)){
+            if (empty($fieldName)) {
                 return false;
             }
         }
 
-        if($entity->getEntite() == "Source"){
+        if ($entity->getEntite() == "Source") {
             $r = $this->_prepareSourceResult($entityData, $locale);
             $r['linkType'] = "source";
             $r['linkId'] = $entity->getId();
             $r['type'] = "source.name";
             $r['field'] = $search === null ? [] : $fieldName;
             return $r;
-        }
-        else if($entity->getEntite() == "Attestation"){
+        } else if ($entity->getEntite() == "Attestation") {
             $r = $this->_prepareAttestationResult($entityData, $locale);
             $r['linkType'] = "attestation";
             $r['linkId'] = $entity->getId();
             $r['type'] = "attestation.name";
             $r['field'] = $search === null ? [] : $fieldName;
             return $r;
-        }
-        else if($entity->getEntite() == "Element"){
+        } else if ($entity->getEntite() == "Element") {
             return false;
         }
         return false;
@@ -206,7 +205,9 @@ class IndexRechercheRepository extends ServiceEntityRepository
     {
         $mainEdition = array_reduce(
             $source['sourceBiblios'],
-            function($carry, $item){ return ($item['editionPrincipale'] ?? false) ? $item : $carry; }
+            function ($carry, $item) {
+                return ($item['editionPrincipale'] ?? false) ? $item : $carry;
+            }
         );
         $reference = $mainEdition === null ? null
             : implode(' ', array_filter([
@@ -215,27 +216,25 @@ class IndexRechercheRepository extends ServiceEntityRepository
             ]));
 
         $localisation = $source['lieuOrigine'] ?? $source['lieuDecouverte'] ?? null;
-        if($localisation !== null){
-            $localisation = $localisation['nomSite'] ?? $localisation['nomVille'] ?? $localisation['grandeRegion']['nom'.ucFirst($locale)] ?? $localisation['sousRegion']['nom'.ucFirst($locale)] ?? null;
+        if ($localisation !== null) {
+            $localisation = $localisation['nomSite'] ?? $localisation['nomVille'] ?? $localisation['grandeRegion']['nom' . ucFirst($locale)] ?? $localisation['sousRegion']['nom' . ucFirst($locale)] ?? null;
         }
 
-        $datation = array_key_exists('datation', $source) ? (
-            implode(
-                ' / ',
-                array_filter([
-                    $source['datation']['postQuem'] ?? null,
-                    $source['datation']['anteQuem'] ?? null
-                ])
-            )
-        ) : null;
+        $datation = array_key_exists('datation', $source) ? (implode(
+            ' / ',
+            array_filter([
+                $source['datation']['postQuem'] ?? null,
+                $source['datation']['anteQuem'] ?? null
+            ])
+        )) : null;
 
         $attestationIds = implode(',', $source['attestations'] ?? []);
         $extraits = [];
-        if(!empty($attestationIds)){
+        if (!empty($attestationIds)) {
             $query = $this->getEntityManager()
-                          ->createQuery("SELECT a.extraitAvecRestitution FROM \App\Entity\Attestation a WHERE a.id IN ($attestationIds)");
+                ->createQuery("SELECT a.extraitAvecRestitution FROM \App\Entity\Attestation a WHERE a.id IN ($attestationIds)");
             $result = $query->getResult();
-            foreach($result as $row){
+            foreach ($result as $row) {
                 $text = $row['extraitAvecRestitution'] ?? $row['translitteration'] ?? "";
                 $extraits[] = \App\Utils\StringHelper::ellipsis($text);
             }
@@ -253,28 +252,30 @@ class IndexRechercheRepository extends ServiceEntityRepository
     {
         $sourceId = $attestation['source'];
         $query = $this->getEntityManager()
-                      ->createQuery("SELECT partial s.{id}, sb, b FROM \App\Entity\Source s LEFT JOIN s.sourceBiblios sb LEFT JOIN sb.biblio b WHERE s.id = $sourceId");
+            ->createQuery("SELECT partial s.{id}, sb, b FROM \App\Entity\Source s LEFT JOIN s.sourceBiblios sb LEFT JOIN sb.biblio b WHERE s.id = $sourceId");
         $query->setHint(\Doctrine\ORM\Query::HINT_FORCE_PARTIAL_LOAD, 1);
         $source = $query->getOneOrNullResult();
         $mainEdition = $source->getSourceBiblios()
-                              ->filter(function($sb){ return $sb->getEditionPrincipale(); })
-                              ->first();
+            ->filter(function ($sb) {
+                return $sb->getEditionPrincipale();
+            })
+            ->first();
         $reference = $mainEdition === null ? null
             : $mainEdition->getBiblio()->getTitreAbrege() . ' ' . $mainEdition->getReferenceSource();
 
         $localisation = $attestation['localisation'] ?? null;
-        if($localisation !== null){
-            $localisation = $localisation['nomSite'] ?? $localisation['nomVille'] ?? $localisation['grandeRegion']['nom'.ucFirst($locale)] ?? $localisation['sousRegion']['nom'.ucFirst($locale)] ?? null;
+        if ($localisation !== null) {
+            $localisation = $localisation['nomSite'] ?? $localisation['nomVille'] ?? $localisation['grandeRegion']['nom' . ucFirst($locale)] ?? $localisation['sousRegion']['nom' . ucFirst($locale)] ?? null;
         }
-        $datation = array_key_exists('datation', $attestation) ? (
-            implode(
-                ' / ',
-                array_filter([
-                    $attestation['datation']['postQuem'] ?? null,
-                    $attestation['datation']['anteQuem'] ?? null
-                ], function($v){ return !is_null($v); })
-            )
-        ) : null;
+        $datation = array_key_exists('datation', $attestation) ? (implode(
+            ' / ',
+            array_filter([
+                $attestation['datation']['postQuem'] ?? null,
+                $attestation['datation']['anteQuem'] ?? null
+            ], function ($v) {
+                return !is_null($v);
+            })
+        )) : null;
 
         $text = $attestation['extraitAvecRestitution'] ?? $attestation['translitteration'] ?? "";
 
@@ -291,14 +292,14 @@ class IndexRechercheRepository extends ServiceEntityRepository
      */
     private function _array_search(array $data, string $search)
     {
-        foreach($data as $key => $value){
-            if((is_string($value) && \stripos($value, strval($search)) !== false)
-             || (is_numeric($value) && $value == $search)){
+        foreach ($data as $key => $value) {
+            if ((is_string($value) && \stripos($value, strval($search)) !== false)
+                || (is_numeric($value) && $value == $search)
+            ) {
                 return [$key];
-            }
-            else if(is_array($value)){
+            } else if (is_array($value)) {
                 $result = $this->_array_search($value, $search);
-                if($result !== false){
+                if ($result !== false) {
                     return array_merge([$key], $result);
                 }
             }
@@ -308,7 +309,9 @@ class IndexRechercheRepository extends ServiceEntityRepository
 
     private function _cleanFieldName($field): array
     {
-        if(!is_array($field)){ return []; }
+        if (!is_array($field)) {
+            return [];
+        }
 
         $mapping = [
             'commentaireFr'          => 'generic.fields.commentaire_fr',
@@ -366,10 +369,10 @@ class IndexRechercheRepository extends ServiceEntityRepository
             'genreElement'           => 'element.fields.genre',
         ];
 
-        foreach($field as &$f){
-            if(array_key_exists($f, $mapping)){
+        foreach ($field as &$f) {
+            if (array_key_exists($f, $mapping)) {
                 $f = $mapping[$f];
-            } else if (is_numeric($f)){
+            } else if (is_numeric($f)) {
                 $f = null;
             }
         }
@@ -386,15 +389,14 @@ class IndexRechercheRepository extends ServiceEntityRepository
      */
     private function _cleanData(array $entityData): ?array
     {
-        foreach($entityData as &$value){
-            if(is_string($value)){
+        foreach ($entityData as &$value) {
+            if (is_string($value)) {
                 $value = trim(html_entity_decode($value));
-            }
-            else if(is_array($value)) {
+            } else if (is_array($value)) {
                 $value = $this->_cleanData($value);
             }
         }
-        return array_filter($entityData, function($value) {
+        return array_filter($entityData, function ($value) {
             return is_array($value) ? count($value) : !is_null($value);
         });
     }

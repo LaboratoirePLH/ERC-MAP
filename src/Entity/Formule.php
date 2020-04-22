@@ -83,7 +83,7 @@ class Formule extends AbstractEntity
 
     public function setPuissancesDivines($puissancesDivines): self
     {
-        if(!is_numeric($puissancesDivines)){
+        if (!is_numeric($puissancesDivines)) {
             $puissancesDivines = null;
         }
         $this->puissancesDivines = $puissancesDivines;
@@ -113,10 +113,18 @@ class Formule extends AbstractEntity
      */
     public function __clone()
     {
-        if($this->id !== null){
+        if ($this->id !== null) {
             $this->id = null;
             $this->createur = null;
             $this->createurId = null;
         }
+    }
+
+    public function toArray()
+    {
+        return [
+            'formule'            => $this->formule,
+            'puissances_divines' => $this->puissancesDivines
+        ];
     }
 }

@@ -224,16 +224,16 @@ class RechercheController extends AbstractController
             if ($key === "datation" && $value['post_quem'] == '' && $value['ante_quem'] == '') {
                 continue;
             }
+            if ($key === "languages_mode" && !array_key_exists("languages", $criteriaRaw)) {
+                continue;
+            }
             if (is_array($value) && !count(array_filter($value))) {
                 continue;
             }
             $criteria[$key] = $value;
         }
 
-        dump($criteria);
-        die;
-
-        if (!count(array_keys($criteria))) {
+        if (count(array_intersect(array_keys($criteria), ['element_count', 'divine_powers_count', 'formule'])) == 0) {
             $request->getSession()->getFlashBag()->add(
                 'error',
                 'search.messages.no_empty_search'
@@ -242,6 +242,27 @@ class RechercheController extends AbstractController
                 $this->get('router')->generate('search', ['_fragment' => 'advanced'])
             );
         }
+
+        $resultsType = "attestation";
+
+        $results = $this->getDoctrine()
+            ->getRepository(\App\Entity\IndexRecherche::class)
+            ->search('elements', $criteria, $request->getLocale());
+
+        return $this->render("search/results_{$resultsType}.html.twig", [
+            'controller_name' => 'RechercheController',
+            'locale'          => $request->getLocale(),
+            'results'         => $results,
+            'mode'            => 'elements',
+            'resultsType'     => $resultsType,
+            'criteria'        => $criteria,
+            'criteriaDisplay' => $this->_prepareCriteriaDisplay('elements', $criteria, $request->getLocale(), $translator, $searchCriteria),
+            'breadcrumbs'     => [
+                ['label' => 'nav.home', 'url' => $this->generateUrl('home')],
+                ['label' => 'search.title', 'url' => $this->generateUrl('search')],
+                ['label' => 'search.results']
+            ]
+        ]);
     }
 
     /**

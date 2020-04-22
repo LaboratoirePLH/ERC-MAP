@@ -171,4 +171,25 @@ abstract class AbstractFilter
             []
         ));
     }
+
+    public static function evaluateOperation($value, $operator, $criteria): bool
+    {
+        $value = intval($value);
+        $criteria = intval($criteria);
+        switch ($operator) {
+            case "eq":
+                return $value == $criteria;
+            case "neq":
+                return $value != $criteria;
+            case "lt":
+                return $value < $criteria;
+            case "lte":
+                return $value <= $criteria;
+            case "gt":
+                return $value > $criteria;
+            case "gte":
+                return $value >= $criteria;
+        }
+        return false;
+    }
 }

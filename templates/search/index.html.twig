@@ -266,48 +266,48 @@
                         </div>
                         <hr/>
                         <div class="form-group row">
-                            <label for="inputLanguage" class="col-sm-3 col-form-label">{{ ('generic.fields.langue')|trans }}</label>
+                            <label for="inputElementLanguage" class="col-sm-3 col-form-label">{{ ('generic.fields.langue')|trans }}</label>
                             <div class="col">
-                                <select class="form-control autocomplete" name="languages[]" id="inputLanguage" size="1" multiple data-placeholder="{{('autocomplete.select_multiple')|trans}}">
+                                <select class="form-control autocomplete" name="languages[]" id="inputElementLanguage" size="1" multiple data-placeholder="{{('autocomplete.select_multiple')|trans}}">
                                     <option value></option>
                                 </select>
                             </div>
                             <div class="col-sm-2">
                                 <div class="custom-control custom-switch pt-2">
-                                    <input type="checkbox" class="custom-control-input" id="languages_mode" name="languages_mode" value="all">
-                                    <label class="custom-control-label" for="languages_mode">{{ 'generic.fields.require_all'|trans }}</label>
+                                    <input type="checkbox" class="custom-control-input" id="inputElementLanguageMode" name="languages_mode" value="all">
+                                    <label class="custom-control-label" for="inputElementLanguageMode">{{ 'generic.fields.require_all'|trans }}</label>
                                 </div>
                             </div>
                         </div>
                         <div class="form-group row">
                             <label class="col-sm-3 col-form-label">{{ ('generic.fields.datation')|trans }}</label>
                             <div class="col">
-                                <input type="number" step="1" class="form-control" name="datation[post_quem]" id="inputPostQuem" placeholder="{{('datation.fields.post_quem')|trans}}">
+                                <input type="number" step="1" class="form-control" name="datation[post_quem]" id="inputElementPostQuem" placeholder="{{('datation.fields.post_quem')|trans}}">
                             </div>
                             <div class="col">
-                                <input type="number" step="1" class="form-control" name="datation[ante_quem]" id="inputAnteQuem" placeholder="{{('datation.fields.ante_quem')|trans}}">
+                                <input type="number" step="1" class="form-control" name="datation[ante_quem]" id="inputElementAnteQuem" placeholder="{{('datation.fields.ante_quem')|trans}}">
                             </div>
                             <div class="col-sm-2">
                                 <div class="custom-control custom-switch pt-2">
-                                    <input type="checkbox" class="custom-control-input" id="inputDatationExact" name="datation[exact]" value="datation_exact" checked>
-                                    <label class="custom-control-label" for="inputDatationExact">
+                                    <input type="checkbox" class="custom-control-input" id="inputElementDatationExact" name="datation[exact]" value="datation_exact" checked>
+                                    <label class="custom-control-label" for="inputElementDatationExact">
                                         {{ ('generic.fields.strict')|trans }}
                                     </label>
                                 </div>
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="inputLocation" class="col-sm-3 col-form-label">{{ ('generic.fields.lieu')|trans }}</label>
+                            <label for="inputElementLocation" class="col-sm-3 col-form-label">{{ ('generic.fields.lieu')|trans }}</label>
                             <div class="col">
-                                <select class="form-control autocomplete" name="locations[]" id="inputLocation" size="1" multiple data-placeholder="{{('autocomplete.select_multiple')|trans}}">
+                                <select class="form-control autocomplete" name="locations[]" id="inputElementLocation" size="1" multiple data-placeholder="{{('autocomplete.select_multiple')|trans}}">
                                     <option value></option>
                                 </select>
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="inputSourceType" class="col-sm-3 col-form-label">{{ ('source.name')|trans }}</label>
+                            <label for="inputElementSourceType" class="col-sm-3 col-form-label">{{ ('source.name')|trans }}</label>
                             <div class="col">
-                                <select class="form-control autocomplete" name="sourceTypes[]" id="inputSourceType" size="1" multiple data-placeholder="{{('autocomplete.select_multiple')|trans}}">
+                                <select class="form-control autocomplete" name="sourceTypes[]" id="inputElementSourceType" size="1" multiple data-placeholder="{{('autocomplete.select_multiple')|trans}}">
                                     <option value></option>
                                 </select>
                             </div>

@@ -290,6 +290,14 @@
                                 </select>
                             </div>
                         </div>
+                        <div class="form-group row">
+                            <label for="inputSourceType" class="col-sm-3 col-form-label">{{ ('source.name')|trans }}</label>
+                            <div class="col">
+                                <select class="form-control autocomplete" name="sourceTypes[]" id="inputSourceType" size="1" multiple data-placeholder="{{('autocomplete.select_multiple')|trans}}">
+                                    <option value></option>
+                                </select>
+                            </div>
+                        </div>
                         <hr/>
                         <div class="form-group row last-row">
                             <div class="col-sm-12">
@@ -689,6 +697,7 @@
             loadCriteriaData('absoluteForms', $('#elements select[name="absoluteForms[]"]'));
             loadCriteriaData('languages', $('#elements select[name="languages[]"]'), null, true);
             loadCriteriaData('locations', $('#elements select[name="locations[]"]'), null, true);
+            loadCriteriaData('sourceTypes', $('#elements select[name="sourceTypes[]"]'), null, true);
 
 
             // Setup events for advanced mode

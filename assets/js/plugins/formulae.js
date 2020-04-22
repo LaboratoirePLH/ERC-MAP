@@ -309,19 +309,15 @@ var get_browser = function () {
             if (settings.searchMode === true || $(me).find("input[name$='[id]']").val() == "") {
                 // Operators / Parenthesis
                 var operatorButtons = [
+                    $.fn.formulaElementRenderer({ type: 'parenthesis', display: '(', raw: '(' }, settings),
+                    $.fn.formulaElementRenderer({ type: 'parenthesis', display: ')', raw: ')' }, settings),
+                    $.fn.formulaElementRenderer({ type: 'brackets', display: '[', raw: '[' }, settings),
+                    $.fn.formulaElementRenderer({ type: 'brackets', display: ']', raw: ']' }, settings),
                     $.fn.formulaElementRenderer({ type: 'operator', display: '+', raw: '+' }, settings),
                     $.fn.formulaElementRenderer({ type: 'operator', display: '/', raw: '/' }, settings),
                     $.fn.formulaElementRenderer({ type: 'operator', display: '#', raw: '#' }, settings),
                     $.fn.formulaElementRenderer({ type: 'operator', display: '=', raw: '=' }, settings),
                 ];
-                if (!settings.searchMode) {
-                    operatorButtons.unshift(
-                        $.fn.formulaElementRenderer({ type: 'parenthesis', display: '(', raw: '(' }, settings),
-                        $.fn.formulaElementRenderer({ type: 'parenthesis', display: ')', raw: ')' }, settings),
-                        $.fn.formulaElementRenderer({ type: 'brackets', display: '[', raw: '[' }, settings),
-                        $.fn.formulaElementRenderer({ type: 'brackets', display: ']', raw: ']' }, settings),
-                    );
-                }
                 editor.append(
                     blockRenderer(settings.labels.operateurs, 'formula-operators', operatorButtons, false)
                 );

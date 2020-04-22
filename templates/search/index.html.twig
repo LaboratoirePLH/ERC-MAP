@@ -201,6 +201,25 @@
                                 <input type="number" min="0" step="1" class="form-control" name="element_count[value]" id="inputElementCountValue">
                             </div>
                         </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">
+                                {{ 'formule.fields.compte_puissances_divines'|trans }}
+                            </label>
+                            <div class="col">
+                                <select class="form-control autocomplete-single" name="divine_powers_count[operator]" id="inputDivinePowersCountOperator" size="1" data-placeholder="{{('autocomplete.select_single')|trans}}">
+                                    <option value=""></option>
+                                    <option value="eq">=</option>
+                                    <option value="neq">&ne;</option>
+                                    <option value="lt">&lt;</option>
+                                    <option value="lte">&le;</option>
+                                    <option value="gt">&gt;</option>
+                                    <option value="gte">&ge;</option>
+                                </select>
+                            </div>
+                            <div class="col">
+                                <input type="number" min="0" step="1" class="form-control" name="divine_powers_count[value]" id="inputDivinePowersCountValue">
+                            </div>
+                        </div>
                         <hr/>
                         <div class="form-group row d-none" id="added-elements-row">
                             <label class="col-sm-3 col-form-label">{{ ('search.element_labels.added')|trans }}</label>

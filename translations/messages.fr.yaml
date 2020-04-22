@@ -397,6 +397,7 @@ formule:
         formule: "Formule"
         operateurs: "Opérateurs"
         puissances_divines: "Puissances Divines"
+        compte_puissances_divines: "Nombre de puissances divines"
     help: >
         Glissez-déplacez les éléments et opérateurs
         <ul>

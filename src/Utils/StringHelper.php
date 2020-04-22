@@ -32,7 +32,8 @@ class StringHelper
      *
      * @return string Trimmed string.
      */
-    public static function ellipsis($text, $length = 200, $ending = '&hellip;', $exact = true, $considerHtml = true) {
+    public static function ellipsis($text, $length = 200, $ending = '&hellip;', $exact = true, $considerHtml = true)
+    {
         $text = self::normalizeDiacritics(html_entity_decode($text));
         $text = str_replace(['<<', '>>'], ['&lt;&lt;', '&gt;&gt;'], $text);
         if ($considerHtml) {
@@ -51,14 +52,14 @@ class StringHelper
                     // if it's an "empty element" with or without xhtml-conform closing slash
                     if (preg_match('/^<(\s*.+?\/\s*|\s*(img|br|input|hr|area|base|basefont|col|frame|isindex|link|meta|param)(\s.+?)?)>$/is', $line_matchings[1])) {
                         // do nothing
-                    // if tag is a closing tag
+                        // if tag is a closing tag
                     } else if (preg_match('/^<\s*\/([^\s]+?)\s*>$/s', $line_matchings[1], $tag_matchings)) {
                         // delete tag from $open_tags list
                         $pos = array_search($tag_matchings[1], $open_tags);
                         if ($pos !== false) {
-                        unset($open_tags[$pos]);
+                            unset($open_tags[$pos]);
                         }
-                    // if tag is an opening tag
+                        // if tag is an opening tag
                     } else if (preg_match('/^<\s*([^\s>!]+).*?>$/s', $line_matchings[1], $tag_matchings)) {
                         // add tag to the beginning of $open_tags list
                         array_unshift($open_tags, strtolower($tag_matchings[1]));
@@ -68,7 +69,7 @@ class StringHelper
                 }
                 // calculate the length of the plain text part of the line; handle entities as one character
                 $content_length = strlen(preg_replace('/&amp;[0-9a-z]{2,8};|&amp;#[0-9]{1,7};|[0-9a-f]{1,6};/i', ' ', $line_matchings[2]));
-                if ($total_length+$content_length> $length) {
+                if ($total_length + $content_length > $length) {
                     // the number of characters which are left
                     $left = $length - $total_length;
                     $entities_length = 0;
@@ -76,7 +77,7 @@ class StringHelper
                     if (preg_match_all('/&amp;[0-9a-z]{2,8};|&amp;#[0-9]{1,7};|[0-9a-f]{1,6};/i', $line_matchings[2], $entities, PREG_OFFSET_CAPTURE)) {
                         // calculate the real length of all entities in the legal range
                         foreach ($entities[0] as $entity) {
-                            if ($entity[1]+1-$entities_length <= $left) {
+                            if ($entity[1] + 1 - $entities_length <= $left) {
                                 $left--;
                                 $entities_length += strlen($entity[0]);
                             } else {
@@ -85,7 +86,7 @@ class StringHelper
                             }
                         }
                     }
-                    $truncate .= substr($line_matchings[2], 0, $left+$entities_length);
+                    $truncate .= substr($line_matchings[2], 0, $left + $entities_length);
                     // maximum lenght is reached, so get off the loop
                     break;
                 } else {
@@ -93,7 +94,7 @@ class StringHelper
                     $total_length += $content_length;
                 }
                 // if the maximum length is reached, get off the loop
-                if($total_length>= $length) {
+                if ($total_length >= $length) {
                     break;
                 }
             }
@@ -115,12 +116,31 @@ class StringHelper
         }
         // add the defined ending to the text
         $truncate .= $ending;
-        if($considerHtml) {
+        if ($considerHtml) {
             // close all unclosed html-tags
             foreach ($open_tags as $tag) {
                 $truncate .= '</' . $tag . '>';
             }
         }
         return $truncate;
+    }
+
+    public function operatorToString(string $operator): string
+    {
+        switch ($operator) {
+            case "eq":
+                return "=";
+            case "neq":
+                return "&ne;";
+            case "lt":
+                return "&lt;";
+            case "lte":
+                return "&le;";
+            case "gt":
+                return "&gt;";
+            case "gte":
+                return "&ge;";
+        }
+        return "";
     }
 }

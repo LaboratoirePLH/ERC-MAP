@@ -476,13 +476,13 @@ class RechercheController extends AbstractController
             foreach ($criteria as $key => $value) {
                 switch ($key) {
                     case 'element_count':
-                        $response['attestation.sections.elements'] = $this->_displayOperator($value['operator']) . " " . $value['value'];
+                        $response['attestation.sections.elements'] = \App\Utils\StringHelper::operatorToString($value['operator']) . " " . $value['value'];
                         break;
                     case 'divine_powers_count':
-                        $response['formule.fields.puissances_divines'] = $this->_displayOperator($value['operator']) . " " . $value['value'];
+                        $response['formule.fields.puissances_divines'] = \App\Utils\StringHelper::operatorToString($value['operator']) . " " . $value['value'];
                         break;
                     case 'formule':
-                        $response['formule.fields.formule'] = $value;
+                        $response['search.criteria_labels.formule'] = $value;
                         break;
                     case 'languages_mode':
                         break;
@@ -502,24 +502,5 @@ class RechercheController extends AbstractController
             }
             return $response;
         }
-    }
-
-    private function _displayOperator(string $operator)
-    {
-        switch ($operator) {
-            case "eq":
-                return "=";
-            case "neq":
-                return "&ne;";
-            case "lt":
-                return "&lt;";
-            case "lte":
-                return "&le;";
-            case "gt":
-                return "&gt;";
-            case "gte":
-                return "&ge;";
-        }
-        return "";
     }
 }

@@ -517,6 +517,7 @@ search:
         agents: "Agent(s)"
         contexte_attestation: "Contexte de l'Attestation"
         all: " (Tous)"
+        formule: "Formule(s)"
     element_labels:
         added: "Éléments ajoutés"
         add_new: "Ajouter un nouvel élément"

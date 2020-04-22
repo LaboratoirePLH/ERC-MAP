@@ -49,7 +49,7 @@
                 {% endfor %}
 
                 {# Advanced mode #}
-            {% else %}
+            {% elseif query.mode == 'advanced' %}
                 {# Prepare criteria labels #}
                 {% set criteriaLabels = {} %}
                 {% for crit in criteria_list %}
@@ -85,6 +85,47 @@
                             {% endif %}
                         </span>
                     </div>
+                {% endfor %}
+
+            {% elseif query.mode == "elements" %}
+                {% for label, values in criteria %}
+                    {% if label == 'datation' %}
+                        <div class="border border-color-map-yellow rounded p-2 mr-1 my-1">
+                            {{ 'search.criteria_labels.datation'|trans }}
+                            {% if values.exact is defined and values.exact == 'datation_exact' %}
+                                ({{'generic.fields.strict'|trans}})
+                            {% endif %}
+                            <span class="badge badge-primary">
+                                {{ values|slice(0,2)|join(' / ') }}
+                            </span>
+                        </div>
+                    {% elseif label == 'languages' %}
+                        <div class="border border-color-map-yellow rounded p-2 mr-1 my-1">
+                            {% set all = '' %}
+                            {% if criteria[label ~ '_mode']|default('one') == 'all' %}
+                                {% set all = '_all' %}
+                            {% endif %}
+                            {{ ('search.criteria_labels.'~label~all)|trans }}
+                            <span class="badge badge-primary">
+                                {{ values|length }}
+                            </span>
+                        </div>
+                    {% elseif label == 'locations' or label == 'sourceTypes' or label == 'formule' %}
+                        <div class="border border-color-map-yellow rounded p-2 mr-1 my-1">
+                            {{ ('search.criteria_labels.'~label)|trans }}
+                            <span class="badge badge-primary">
+                                {{ values|length }}
+                            </span>
+                        </div>
+                    {% elseif label == 'element_count' or label == 'divine_powers_count' %}
+                        <div class="border border-color-map-yellow rounded p-2 mr-1 my-1">
+                            {{ (label == 'element_count' ? 'attestation.sections.elements' : 'formule.fields.puissances_divines')|trans }}
+                            <span class="badge badge-primary">
+                                {{ values.operator|operatorToString|raw }}
+                                {{ values.value }}
+                            </span>
+                        </div>
+                    {% endif %}
                 {% endfor %}
 
             {% endif %}

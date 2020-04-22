@@ -215,20 +215,18 @@ class RechercheController extends AbstractController
         $criteria    = [];
 
         foreach ($criteriaRaw as $key => $value) {
-            if ($key === 'new_criteria' || $key === 'search') {
+            if ($key === 'new_criteria' || $key === 'search' || $key === 'absoluteForms') {
                 continue;
             }
-            if ($key === "element_count" && (($value['operator'] ?? "") === "" || ($value['value'] ?? "") === "")) {
+            if (($key === "element_count" || $key === "divine_powers_count") && (($value['operator'] ?? "") === "" || ($value['value'] ?? "") === "")) {
                 continue;
             }
-            // if (is_array($value) && is_array($value[0])) {
-            //     $value = array_filter($value, function ($cv) {
-            //         return array_key_exists('values', $cv);
-            //     });
-            // }
-            // if (is_array($value) && !count(array_filter($value))) {
-            //     continue;
-            // }
+            if ($key === "datation" && $value['post_quem'] == '' && $value['ante_quem'] == '') {
+                continue;
+            }
+            if (is_array($value) && !count(array_filter($value))) {
+                continue;
+            }
             $criteria[$key] = $value;
         }
 

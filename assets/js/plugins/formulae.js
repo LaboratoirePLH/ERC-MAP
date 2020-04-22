@@ -247,7 +247,8 @@ var get_browser = function () {
             help: 'Help',
             elementCls: 'btn-info',
             operatorCls: 'btn-warning',
-            searchMode: false
+            searchMode: false,
+            formulaInputSelector: "input[name$='[formule]']"
             // These are the defaults.
         }, settings);
 
@@ -293,12 +294,13 @@ var get_browser = function () {
             var formulaButtons = [];
             var help = "";
             var me = this;
-            const formule = $(me).find("input[name$='[formule]']").val();
+            const formule = $(me).find(settings.formulaInputSelector).val();
             if (formule != "") {
                 var { formulaButtons, errors } = $.fn.formulaRenderer(
                     formule, settings
                 );
-            } else {
+            }
+            if (formule == "" || settings.searchMode == true) {
                 help = '&nbsp; <i class="fas fa-question-circle" data-toggle="tooltip" data-placement="top" data-html="true" title="' + settings.help + '"></i>';
             }
 
@@ -398,13 +400,13 @@ var get_browser = function () {
                         target.find('.btn').each(function (i, b) {
                             formule.push($(b).data('raw'));
                         });
-                        $(me).find("input[name$='[formule]']").val(formule.join('')).trigger('change');
+                        $(me).find(settings.formulaInputSelector).val(formule.join('')).trigger('change');
 
                     }
                 })
 
                 // Setup validation
-                $(me).find("input[name$='[formule]']").on('change', function (e) {
+                $(me).find(settings.formulaInputSelector).on('change', function (e) {
                     const formula = $(this).val();
                     const { formulaButtons, errors } = $.fn.formulaRenderer(formula, settings);
                     $(me).find('.formula-visualizer').empty().append(formulaButtons);

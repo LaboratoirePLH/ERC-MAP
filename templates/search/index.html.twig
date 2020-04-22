@@ -246,9 +246,22 @@
                         <hr/>
                         <div class="form-group row">
                             <label class="col-sm-3 col-form-label">{{ ('search.element_labels.formula')|trans }}</label>
-                            <div class="col" id="formula-search">
-                                <input type="hidden" name="formule[formule]">
-                                <div class="no-elements pt-2">{{ 'search.messages.no_elements'|trans }}</div>
+                            <div class="col">
+                                <div class="row">
+                                    <div class="col formula-search">
+                                        <input type="hidden" name="formule[]">
+                                    </div>
+                                </div>
+
+                                <button class="btn btn-warning btn-sm mx-2 mt-1 add-formula-button" type="button" style="display:none;">
+                                    <i class="fas fa-plus fa-fw" aria-hidden="true"></i>
+                                    {{ 'attestation.add_formule'|trans }}
+                                </button>
+                                <div class="row no-elements pt-2">
+                                    <div class="col">
+                                        {{ 'search.messages.no_elements'|trans }}
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <hr/>
@@ -734,6 +747,7 @@
 
                 // Setup/Update the formula editor
                 setupFormulaEditor();
+                $('#elements').find(".add-formula-button").show();
                 $('#elements').find(".no-elements").hide();
             });
             $('#elements #added-elements').on('click', '.remove-button', function (e) {
@@ -758,14 +772,19 @@
                     $('#elements .formula-editor').remove();
                     $('#elements').find("input[name$='[formule]']").val("");
                     $('#elements').find(".no-elements").show();
+                    $('#elements').find(".add-formula-button").hide();
                 } else { // Else update the formula editor
                     setupFormulaEditor();
                 }
             });
+            $('#elements .add-formula-button').on('click', function (e) {
+                $(this).before('<div class="row"><div class="col formula-search"><input type="hidden" name="formule[]"></div></div>');
+                setupFormulaEditor();
+            });
 
             // Setup formula interface for elements search
             function setupFormulaEditor() {
-                $('#elements #formula-search').formulaEditor({
+                $('#elements .formula-search').formulaEditor({
                     elements: SEARCH_ELEMENTS,
                     labels: {
                         formule: "{{ 'formule.fields.formule'|trans }}",
@@ -787,7 +806,8 @@
                         operator_imbrication: "{{ 'formule.errors.operator_imbrication'|trans }}"
                     },
                     help: "{{ 'formule.help'|trans|replace({'\n': '', '\r\n': '', '\t': '', '\n\r': ''}) }}",
-                    searchMode: true
+                    searchMode: true,
+                    formulaInputSelector: "input[name='formule[]']"
                 });
             }
 

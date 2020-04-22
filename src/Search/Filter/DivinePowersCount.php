@@ -24,9 +24,6 @@ class DivinePowersCount extends AbstractFilter
 
             foreach ($data as $d) {
                 $value = array_key_exists('formule1', $d) ? ($d['formule1']['puissances_divines'] ?? 0) : 0;
-                if (array_key_exists('formule1', $d)) {
-                    dump($d['formule1']);
-                }
                 if (self::evaluateOperation($value, $crit['operator'], $crit['value'])) {
                     return true;
                 }

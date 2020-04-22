@@ -454,15 +454,13 @@
                     if (criteriaLoading == 0) {
                         $('#search-panel').trigger('async-form-ready');
                     }
-                } else if (mode == "advanced") {
-                    $('#advanced').find('button[type=reset]').click();
-
-                    // Set the results type
+                } else if (mode == "advanced") { // Set the results type
                     $('#advanced input[name=resultsType]').filter('[value=' + data.resultsType + ']').prop('checked', true);
                     delete data.resultsType;
 
                     // Advanced form will be populated when all its data has been loaded
                     $('#search-panel').on('async-form-ready', function () {
+                        $('#advanced').find('button[type=reset]').click();
                         Object.entries(data).forEach(([criteriaName, values]) => {
                             var criteria = searchCriteria(criteriaName);
 
@@ -506,6 +504,68 @@
                         // we manually trigger the event
                         if (criteriaLoading == 0) {
                             $('#advanced > form').trigger('async-form-ready');
+                        }
+                    }, 100);
+                } else if (mode == 'elements') { // Elements form will be populated when all its data has been loaded
+                    $('#elements').find('button[type=reset]').click();
+                    $('#search-panel').on('async-form-ready', function () {
+                        $.each(data, function (criteria, value) {
+                            switch (criteria) {
+                                case 'element_count':
+                                case 'divine_powers_count':
+                                    $('#elements').find('select[name="' + criteria + '[operator]"]').val(value.operator).trigger('chosen:updated');
+                                    $('#elements').find('input[name="' + criteria + '[value]"]').val(value.value);
+                                case 'languages':
+                                case 'locations':
+                                case 'sourceTypes':
+                                case 'agents':
+                                    $('#elements').find('select[name="' + criteria + '[]"]').val(value).trigger('chosen:updated');
+                                    break;
+                                case 'datation':
+                                    $('#elements').find('input[name="datation[post_quem]"]').val(value.post_quem);
+                                    $('#elements').find('input[name="datation[ante_quem]"]').val(value.ante_quem);
+                                    $('#elements').find('input[name="datation[exact]"]').attr('checked', value.exact === "datation_exact");
+                                    break;
+                                case 'languages_mode':
+                                    if (value === "all") {
+                                        $('#elements').find('input[name="' + criteria + '"]').attr('checked', true);
+                                    }
+                                    break;
+                                case 'formule':
+                                    // Extract elements
+                                    value.forEach((f, i) => {
+                                        if (i > 0) {
+                                            addFormula(false);
+                                        }
+                                        $('#elements').find('input[name="formule[]"]').last().val(f);
+                                    });
+
+                                    var elementIds = value.reduce((total, f) => {
+                                        var regex = /\{(\d+)\}/;
+                                        var matches = f.match(/\{(\d+)\}/gi);
+                                        matches.forEach(m => {
+                                            m = m.replace('{', '').replace('}', '');
+                                            if (!total.includes(m)) {
+                                                total.push(m);
+                                            }
+                                        });
+                                        return total;
+                                    }, []);
+                                    elementIds.forEach(id => addElement(id, false));
+                                    setupFormulaEditors();
+                                    break;
+                            }
+                        });
+                        if (callback !== undefined) {
+                            callback.apply(null);
+                        }
+                    });
+
+                    setTimeout(() => {
+                        // In case criteria are already loaded (ie loading a saved query),
+                        // we manually trigger the event
+                        if (criteriaLoading == 0) {
+                            $('#search-panel').trigger('async-form-ready');
                         }
                     }, 100);
                 }
@@ -727,7 +787,27 @@
                 e.preventDefault();
                 // Get data from the selected option
                 var select = $('#elements #inputElementName');
-                const [elementId, elementLabel] = [select.val(), select.find('option:selected').text()];
+                addElement(select.val(), true)
+            });
+            $('#elements #added-elements').on('click', '.remove-button', function (e) {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                // Get the ID from the element block
+                const elementId = $(this).attr('data-target');
+
+                removeElement(elementId, true);
+            });
+            $('#elements .add-formula-button').on('click', () => addFormula(true));
+
+            function addFormula(refreshEditors) {
+                $('button.add-formula-button').before('<div class="row"><div class="col formula-search"><input type="hidden" name="formule[]"></div></div>');
+                if (refreshEditors === true) {
+                    setupFormulaEditors();
+                }
+            }
+            function addElement(elementId, refreshEditors) { // Get data from the selected option
+                var select = $('#elements #inputElementName');
+                const elementLabel = select.find('option[value="' + elementId + '"]').text();
                 const absoluteState = elementLabel.replace(/ *\[[^\]]*\] */g, "")
 
                 // Store element data in object
@@ -742,21 +822,16 @@
                 $('#added-elements').append($('<div>').addClass('col-sm-auto pr-0 mr-1 mb-1 added-element-item').append(button));
 
                 // Disable the option we just chose
-                select.find('option:selected').attr('disabled', true);
+                select.find('option[value="' + elementId + '"]').attr('disabled', true);
                 select.val('').trigger('chosen:updated');
 
                 // Setup/Update the formula editor
-                setupFormulaEditor();
-                $('#elements').find(".add-formula-button").show();
-                $('#elements').find(".no-elements").hide();
-            });
-            $('#elements #added-elements').on('click', '.remove-button', function (e) {
-                e.preventDefault();
-                e.stopImmediatePropagation();
-                // Get the ID from the element block
-                const elementId = $(this).attr('data-target');
+                if (refreshEditors === true) {
+                    setupFormulaEditors();
+                }
 
-                // Remove element data from object
+            }
+            function removeElement(elementId, refreshEditors) { // Remove element data from object
                 delete SEARCH_ELEMENTS[elementId];
 
                 // Reenable the corresponding option in the select
@@ -764,51 +839,51 @@
                 $('#elements #inputElementName').trigger('chosen:updated');
 
                 // Remove the element block
-                $(this).parents('div.added-element-item').remove();
+                $('#added-elements').find('button[data-target="' + elementId + '"]').parents('div.added-element-item').remove();
 
-                // If there is no element left, hide the "Added Elements" row and remove the formula editor
-                if ($('#elements #added-elements-row').find('.added-element-item').length == 0) {
+                // Setup/Update the formula editor
+                if (refreshEditors === true) {
+                    setupFormulaEditors();
+                }
+            }
+
+            // Setup formula interface for elements search
+            function setupFormulaEditors() {
+                if (Object.keys(SEARCH_ELEMENTS).length > 0) {
+                    $('#elements').find(".add-formula-button").show();
+                    $('#elements').find(".no-elements").hide();
+                    $('#elements .formula-search').formulaEditor({
+                        elements: SEARCH_ELEMENTS,
+                        labels: {
+                            formule: "{{ 'formule.fields.formule'|trans }}",
+                            elements: "{{ 'attestation.sections.elements'|trans }}",
+                            operateurs: "{{ 'formule.fields.operateurs'|trans }}"
+                        },
+                        errors: {
+                            valid: "{{ 'formule.errors.valid'|trans }}",
+                            unknown_element: "{{ 'formule.errors.unknown_element'|trans }}",
+                            no_element: "{{ 'formule.errors.no_element'|trans }}",
+                            not_all_elements: "{{ 'formule.errors.not_all_elements'|trans }}",
+                            element_twice: "{{ 'formule.errors.element_twice'|trans }}",
+                            brackets: "{{ 'formule.errors.brackets'|trans }}",
+                            parenthesis: "{{ 'formule.errors.parenthesis'|trans }}",
+                            brackets_parenthesis_imbrication: "{{ 'formule.errors.brackets_parenthesis_imbrication'|trans }}",
+                            operator_start: "{{ 'formule.errors.operator_start'|trans }}",
+                            operator_end: "{{ 'formule.errors.operator_end'|trans }}",
+                            operator_twice: "{{ 'formule.errors.operator_twice'|trans }}",
+                            operator_imbrication: "{{ 'formule.errors.operator_imbrication'|trans }}"
+                        },
+                        help: "{{ 'formule.help'|trans|replace({'\n': '', '\r\n': '', '\t': '', '\n\r': ''}) }}",
+                        searchMode: true,
+                        formulaInputSelector: "input[name='formule[]']"
+                    });
+                } else {
                     $('#elements #added-elements-row').addClass('d-none');
                     $('#elements .formula-editor').remove();
                     $('#elements').find("input[name$='[formule]']").val("");
                     $('#elements').find(".no-elements").show();
                     $('#elements').find(".add-formula-button").hide();
-                } else { // Else update the formula editor
-                    setupFormulaEditor();
                 }
-            });
-            $('#elements .add-formula-button').on('click', function (e) {
-                $(this).before('<div class="row"><div class="col formula-search"><input type="hidden" name="formule[]"></div></div>');
-                setupFormulaEditor();
-            });
-
-            // Setup formula interface for elements search
-            function setupFormulaEditor() {
-                $('#elements .formula-search').formulaEditor({
-                    elements: SEARCH_ELEMENTS,
-                    labels: {
-                        formule: "{{ 'formule.fields.formule'|trans }}",
-                        elements: "{{ 'attestation.sections.elements'|trans }}",
-                        operateurs: "{{ 'formule.fields.operateurs'|trans }}"
-                    },
-                    errors: {
-                        valid: "{{ 'formule.errors.valid'|trans }}",
-                        unknown_element: "{{ 'formule.errors.unknown_element'|trans }}",
-                        no_element: "{{ 'formule.errors.no_element'|trans }}",
-                        not_all_elements: "{{ 'formule.errors.not_all_elements'|trans }}",
-                        element_twice: "{{ 'formule.errors.element_twice'|trans }}",
-                        brackets: "{{ 'formule.errors.brackets'|trans }}",
-                        parenthesis: "{{ 'formule.errors.parenthesis'|trans }}",
-                        brackets_parenthesis_imbrication: "{{ 'formule.errors.brackets_parenthesis_imbrication'|trans }}",
-                        operator_start: "{{ 'formule.errors.operator_start'|trans }}",
-                        operator_end: "{{ 'formule.errors.operator_end'|trans }}",
-                        operator_twice: "{{ 'formule.errors.operator_twice'|trans }}",
-                        operator_imbrication: "{{ 'formule.errors.operator_imbrication'|trans }}"
-                    },
-                    help: "{{ 'formule.help'|trans|replace({'\n': '', '\r\n': '', '\t': '', '\n\r': ''}) }}",
-                    searchMode: true,
-                    formulaInputSelector: "input[name='formule[]']"
-                });
             }
 
             // Watch reset buttons
@@ -827,6 +902,17 @@
                     form.find('.row.no-criteria').show();
                     form.find('input[name="resultsType"]').val('source');
                 }, 10);
+            });
+            $('#elements').on('reset', function (e) {
+                var form = $(this);
+                Object.keys(SEARCH_ELEMENTS).forEach(id => removeElement(id, false));
+                setTimeout(() => {
+                    form.find('select').trigger('chosen:updated');
+                    form.find('input[name$="_mode"]').attr('checked', false);
+                    form.find('input[name="datation[exact]"]').attr('checked', true);
+                    form.find('.no-elements').show();
+                    setupFormulaEditors();
+                }, 100);
             });
 
             // Change tab and populate data

@@ -533,6 +533,7 @@ search:
         query_saved: "Query was successfully saved. This window will close automatically"
         query_deleted: "Query was successfully deleted"
         no_criteria: "No criteria added. Add some using the button below"
+        no_elements: "No elements selected. Add some using the list above"
 
 requetes:
     title: "Query interface"

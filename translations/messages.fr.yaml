@@ -532,6 +532,7 @@ search:
         query_saved: "La requête a bien été enregistrée. Cette fenêtre va se fermer automatiquement"
         query_deleted: "La requête a bien été supprimée"
         no_criteria: "Aucun critère choisi. Ajoutez en avec le bouton ci-dessous"
+        no_elements: "Aucun élément choisi. Ajoutez en avec la liste ci-dessus"
 
 requetes:
     title: "Interface de requête"

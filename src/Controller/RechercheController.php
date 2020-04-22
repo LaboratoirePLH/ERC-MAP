@@ -254,7 +254,6 @@ class RechercheController extends AbstractController
             'locale'          => $request->getLocale(),
             'results'         => $results,
             'mode'            => 'elements',
-            'resultsType'     => $resultsType,
             'criteria'        => $criteria,
             'criteriaDisplay' => $this->_prepareCriteriaDisplay('elements', $criteria, $request->getLocale(), $translator, $searchCriteria),
             'breadcrumbs'     => [
@@ -472,5 +471,55 @@ class RechercheController extends AbstractController
             }
             return $response;
         }
+        if ($mode == "elements") {
+            $response = [];
+            foreach ($criteria as $key => $value) {
+                switch ($key) {
+                    case 'element_count':
+                        $response['attestation.sections.elements'] = $this->_displayOperator($value['operator']) . " " . $value['value'];
+                        break;
+                    case 'divine_powers_count':
+                        $response['formule.fields.puissances_divines'] = $this->_displayOperator($value['operator']) . " " . $value['value'];
+                        break;
+                    case 'formule':
+                        $response['formule.fields.formule'] = $value;
+                        break;
+                    case 'languages_mode':
+                        break;
+                    default:
+                        $response['search.criteria_labels.' . $key] = $searchCriteria->getDisplay($key, $value, $locale);
+                }
+            }
+            if (($criteria['languages_mode'] ?? 'one') === 'all'
+                && array_key_exists('languages', $criteria)
+            ) {
+                $response['search.criteria_labels.languages_all'] = $response['search.criteria_labels.languages'];
+                unset($response['search.criteria_labels.languages']);
+            }
+            foreach ($response as $key => $value) {
+                $response[$translator->trans($key)] = $value;
+                unset($response[$key]);
+            }
+            return $response;
+        }
+    }
+
+    private function _displayOperator(string $operator)
+    {
+        switch ($operator) {
+            case "eq":
+                return "=";
+            case "neq":
+                return "&ne;";
+            case "lt":
+                return "&lt;";
+            case "lte":
+                return "&le;";
+            case "gt":
+                return "&gt;";
+            case "gte":
+                return "&ge;";
+        }
+        return "";
     }
 }

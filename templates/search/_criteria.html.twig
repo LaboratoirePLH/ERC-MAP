@@ -4,7 +4,7 @@
             <strong>{{ ('search.mode')|trans }}</strong>
             :
             {{ ('search.'~mode)|trans }}
-            {% if resultsType is defined %}
+            {% if resultsType is defined and resultsType is not null %}
                 ({{ (resultsType ~ '.name')|trans }})
             {% endif %}
         </div>
@@ -13,28 +13,22 @@
                 <blockquote class="blockquote text-center font-weight-bolder mb-0" style="letter-spacing: 0.1em;">
                     {{ criteria|join('')|replace({' ': '_'}) }}
                 </blockquote>
-            {% elseif mode == 'guided' %}
+            {% elseif mode == 'guided' or mode == 'elements' %}
                 <div class="d-flex flex-sm-wrap justify-content-around">
                     {% for key, value in criteria %}
                         <div class="card">
-                            {% if value is iterable %}
-                                <ul class="list-group list-group-flush">
-                                    <li class="list-group-item background-map-yellow font-weight-bolder text-uppercase">
-                                        {{ key }}</li>
-                                    {% for subvalue in value %}
-                                        <li class="list-group-item">
-                                            {{ subvalue|raw }}
-                                        </li>
-                                    {% endfor %}
-                                </ul>
-                            {% else %}
-                                <div class="card-body p-1">
-                                    <h5 class="card-title">{{ key|trans }}</h5>
-                                    <p class="card-text">
-                                        {{ value|raw }}
-                                    </p>
-                                </div>
+                            {% if value is not iterable %}
+                                {% set value = [value] %}
                             {% endif %}
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item background-map-yellow font-weight-bolder text-uppercase">
+                                    {{ key }}</li>
+                                {% for subvalue in value %}
+                                    <li class="list-group-item">
+                                        {{ subvalue|raw }}
+                                    </li>
+                                {% endfor %}
+                            </ul>
                         </div>
                     {% endfor %}
                 </div>

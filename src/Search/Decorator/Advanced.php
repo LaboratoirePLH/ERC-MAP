@@ -93,14 +93,19 @@ class Advanced
             "fiabilite"              => self::$translator->trans('attestation.fiabilite.niveau_' . $data['fiabilite'])
         ];
 
-        foreach (['traductions', 'pratiques'] as $manyToManyField) {
-            if (array_key_exists($manyToManyField, $data)) {
-                $result[$manyToManyField] = array_map(function ($item) use ($nameField) {
-                    return $item[$nameField];
-                }, $data[$manyToManyField]);
-            } else {
-                $result[$manyToManyField] = [];
-            }
+        if (array_key_exists('traductions', $data)) {
+            $result['traductions'] = array_slice(array_map(function ($item) use ($nameField) {
+                return $item[$nameField];
+            }, $data['traductions']), 0, 1);
+        } else {
+            $result['traductions'] = [];
+        }
+        if (array_key_exists('pratiques', $data)) {
+            $result['pratiques'] = array_map(function ($item) use ($nameField) {
+                return $item[$nameField];
+            }, $data['pratiques']);
+        } else {
+            $result['pratiques'] = [];
         }
 
         $result['occasions'] = array_map(function ($o) use ($nameField) {
@@ -150,14 +155,19 @@ class Advanced
             "natureElement" => ($data['natureElement'] ?? [])[$nameField] ?? ''
         ];
 
-        foreach (['traductions', 'categories'] as $manyToManyField) {
-            if (array_key_exists($manyToManyField, $data)) {
-                $result[$manyToManyField] = array_map(function ($item) use ($nameField) {
-                    return $item[$nameField];
-                }, $data[$manyToManyField]);
-            } else {
-                $result[$manyToManyField] = [];
-            }
+        if (array_key_exists('traductions', $data)) {
+            $result['traductions'] = array_slice(array_map(function ($item) use ($nameField) {
+                return $item[$nameField];
+            }, $data['traductions']), 0, 1);
+        } else {
+            $result['traductions'] = [];
+        }
+        if (array_key_exists('categories', $data)) {
+            $result['categories'] = array_map(function ($item) use ($nameField) {
+                return $item[$nameField];
+            }, $data['categories']);
+        } else {
+            $result['categories'] = [];
         }
 
         $result = array_merge($result, self::_decorateLocalisation($data['localisation'] ?? [], $locale));

@@ -66,16 +66,12 @@ class RechercheController extends AbstractController
      */
     public function simpleSearch(Request $request, TranslatorInterface $translator, Criteria $searchCriteria)
     {
+        $searchMode = 'simple';
         $search = $request->request->get('search_value', '');
         if (!strlen($search)) {
-            $request->getSession()->getFlashBag()->add(
-                'error',
-                'search.messages.no_empty_search'
-            );
-            return $this->redirect(
-                $this->get('router')->generate('search', ['_fragment' => 'simple'])
-            );
+            return $this->_emptySearchResponse($request, $searchMode);
         }
+
         $results = $this->getDoctrine()
             ->getRepository(\App\Entity\IndexRecherche::class)
             ->simpleSearch($search, $request->getLocale());
@@ -84,9 +80,9 @@ class RechercheController extends AbstractController
             'controller_name' => 'RechercheController',
             'locale'          => $request->getLocale(),
             'results'         => $results,
-            'mode'            => 'simple',
+            'mode'            => $searchMode,
             'criteria'        => [$search],
-            'criteriaDisplay' => $this->_prepareCriteriaDisplay('simple', [$search], $request->getLocale(), $translator, $searchCriteria),
+            'criteriaDisplay' => $this->_prepareCriteriaDisplay($searchMode, [$search], $request->getLocale(), $translator, $searchCriteria),
             'breadcrumbs'     => [
                 ['label' => 'nav.home', 'url' => $this->generateUrl('home')],
                 ['label' => 'search.title', 'url' => $this->generateUrl('search')],
@@ -100,30 +96,25 @@ class RechercheController extends AbstractController
      */
     public function guidedSearch(Request $request, TranslatorInterface $translator, Criteria $searchCriteria)
     {
+        $searchMode  = 'guided';
         $criteriaRaw = $request->request->all();
         $criteria    = $searchCriteria->validateGuidedCriteria($criteriaRaw);
 
         if ($criteria === false) {
-            $request->getSession()->getFlashBag()->add(
-                'error',
-                'search.messages.no_empty_search'
-            );
-            return $this->redirect(
-                $this->get('router')->generate('search', ['_fragment' => 'guided'])
-            );
+            return $this->_emptySearchResponse($request, $searchMode)
         }
 
         $results = $this->getDoctrine()
             ->getRepository(\App\Entity\IndexRecherche::class)
-            ->search('guided', $criteria, $request->getLocale());
+            ->search($searchMode, $criteria, $request->getLocale());
 
         return $this->render('search/results_mixed.html.twig', [
             'controller_name' => 'RechercheController',
             'locale'          => $request->getLocale(),
             'results'         => $results,
-            'mode'            => 'guided',
+            'mode'            => $searchMode,
             'criteria'        => $criteria,
-            'criteriaDisplay' => $this->_prepareCriteriaDisplay('guided', $criteria, $request->getLocale(), $translator, $searchCriteria),
+            'criteriaDisplay' => $this->_prepareCriteriaDisplay($searchMode, $criteria, $request->getLocale(), $translator, $searchCriteria),
             'breadcrumbs'     => [
                 ['label' => 'nav.home', 'url' => $this->generateUrl('home')],
                 ['label' => 'search.title', 'url' => $this->generateUrl('search')],
@@ -137,33 +128,28 @@ class RechercheController extends AbstractController
      */
     public function advancedSearch(Request $request, TranslatorInterface $translator, Criteria $searchCriteria)
     {
+        $searchMode  = 'advanced';
         $criteriaRaw = $request->request->all();
         $criteria    = $searchCriteria->validateAdvancedCriteria($criteriaRaw);
 
         if ($criteria === false) {
-            $request->getSession()->getFlashBag()->add(
-                'error',
-                'search.messages.no_empty_search'
-            );
-            return $this->redirect(
-                $this->get('router')->generate('search', ['_fragment' => 'advanced'])
-            );
+            return $this->_emptySearchResponse($request, $searchMode)
         }
 
         $resultsType = $criteria['resultsType'];
 
         $results = $this->getDoctrine()
             ->getRepository(\App\Entity\IndexRecherche::class)
-            ->search('advanced', $criteria, $request->getLocale());
+            ->search($searchMode, $criteria, $request->getLocale());
 
         return $this->render("search/results_{$resultsType}.html.twig", [
             'controller_name' => 'RechercheController',
             'locale'          => $request->getLocale(),
             'results'         => $results,
-            'mode'            => 'advanced',
+            'mode'            => $searchMode,
             'resultsType'     => $resultsType,
             'criteria'        => $criteria,
-            'criteriaDisplay' => $this->_prepareCriteriaDisplay('advanced', $criteria, $request->getLocale(), $translator, $searchCriteria),
+            'criteriaDisplay' => $this->_prepareCriteriaDisplay($searchMode, $criteria, $request->getLocale(), $translator, $searchCriteria),
             'breadcrumbs'     => [
                 ['label' => 'nav.home', 'url' => $this->generateUrl('home')],
                 ['label' => 'search.title', 'url' => $this->generateUrl('search')],
@@ -177,32 +163,27 @@ class RechercheController extends AbstractController
      */
     public function elementsSearch(Request $request, TranslatorInterface $translator, Criteria $searchCriteria)
     {
+        $searchMode  = 'elements';
         $criteriaRaw = $request->request->all();
         $criteria    = $searchCriteria->validateElementsCriteria($criteriaRaw);
 
         if ($criteria === false) {
-            $request->getSession()->getFlashBag()->add(
-                'error',
-                'search.messages.no_empty_search'
-            );
-            return $this->redirect(
-                $this->get('router')->generate('search', ['_fragment' => 'advanced'])
-            );
+            return $this->_emptySearchResponse($request, $searchMode);
         }
 
         $resultsType = "attestation";
 
         $results = $this->getDoctrine()
             ->getRepository(\App\Entity\IndexRecherche::class)
-            ->search('elements', $criteria, $request->getLocale());
+            ->search($searchMode, $criteria, $request->getLocale());
 
         return $this->render("search/results_{$resultsType}.html.twig", [
             'controller_name' => 'RechercheController',
             'locale'          => $request->getLocale(),
             'results'         => $results,
-            'mode'            => 'elements',
+            'mode'            => $searchMode,
             'criteria'        => $criteria,
-            'criteriaDisplay' => $this->_prepareCriteriaDisplay('elements', $criteria, $request->getLocale(), $translator, $searchCriteria),
+            'criteriaDisplay' => $this->_prepareCriteriaDisplay($searchMode, $criteria, $request->getLocale(), $translator, $searchCriteria),
             'breadcrumbs'     => [
                 ['label' => 'nav.home', 'url' => $this->generateUrl('home')],
                 ['label' => 'search.title', 'url' => $this->generateUrl('search')],
@@ -332,6 +313,17 @@ class RechercheController extends AbstractController
             ])
         );
         return $this->redirectToRoute('search');
+    }
+
+    private function _emptySearchResponse(Request $request, string $mode)
+    {
+        $request->getSession()->getFlashBag()->add(
+            'error',
+            'search.messages.no_empty_search'
+        );
+        return $this->redirect(
+            $this->get('router')->generate('search', ['_fragment' => $mode])
+        );
     }
 
     private function _prepareCriteriaDisplay($mode, $criteria, $locale, TranslatorInterface $translator, Criteria $searchCriteria)

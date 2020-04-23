@@ -17,7 +17,7 @@ class CriteriaList
                 'children' => [
                     [
                         'key'     => 'inContext',
-                        'label'   => $translator->trans('element.fields.en_contexte'),
+                        'label'   => $translator->trans('search.criteria_labels.element_en_contexte'),
                         'type'    => 'text',
                         'semitic' => true,
                     ],
@@ -59,7 +59,7 @@ class CriteriaList
                     ],
                     [
                         'key'      => 'attestationFiability',
-                        'label'    => $translator->trans('generic.fields.fiabilite'),
+                        'label'    => $translator->trans('search.criteria_labels.fiabilite_lecture'),
                         'type'     => 'range',
                         'min'      => 1,
                         'max'      => 3,

@@ -519,6 +519,8 @@ search:
         contexte_attestation: "Testimony context"
         all: " (All)"
         formule: "Formula(e)"
+        element_en_contexte: "Name(s) in context"
+        fiabilite_lecture: "Name quality of reading"
     element_labels:
         added: "Added elements"
         add_new: "Add a new element"

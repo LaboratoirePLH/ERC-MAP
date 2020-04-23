@@ -100,29 +100,10 @@ class RechercheController extends AbstractController
      */
     public function guidedSearch(Request $request, TranslatorInterface $translator, Criteria $searchCriteria)
     {
-        $criteria = array_filter(
-            $request->request->all(),
-            function ($value, $key) {
-                return in_array(
-                    $key,
-                    [
-                        'names', 'names_mode',
-                        'languages', 'languages_mode',
-                        'datation', 'locations',
-                        'sourceTypes', 'agents'
-                    ]
-                ) && !empty($value);
-            },
-            ARRAY_FILTER_USE_BOTH
-        );
-        if (
-            array_key_exists('datation', $criteria)
-            && $criteria['datation']['post_quem'] == ''
-            && $criteria['datation']['ante_quem'] == ''
-        ) {
-            unset($criteria['datation']);
-        }
-        if (!count(array_keys($criteria))) {
+        $criteriaRaw = $request->request->all();
+        $criteria    = $searchCriteria->validateGuidedCriteria($criteriaRaw);
+
+        if ($criteria === false) {
             $request->getSession()->getFlashBag()->add(
                 'error',
                 'search.messages.no_empty_search'
@@ -157,24 +138,9 @@ class RechercheController extends AbstractController
     public function advancedSearch(Request $request, TranslatorInterface $translator, Criteria $searchCriteria)
     {
         $criteriaRaw = $request->request->all();
-        $criteria    = [];
+        $criteria    = $searchCriteria->validateAdvancedCriteria($criteriaRaw);
 
-        foreach ($criteriaRaw as $key => $value) {
-            if ($key === 'new_criteria' || $key === 'search') {
-                continue;
-            }
-            if (is_array($value) && is_array($value[0])) {
-                $value = array_filter($value, function ($cv) {
-                    return array_key_exists('values', $cv);
-                });
-            }
-            if (is_array($value) && !count(array_filter($value))) {
-                continue;
-            }
-            $criteria[$key] = $value;
-        }
-
-        if (count(array_keys($criteria)) <= 1) {
+        if ($criteria === false) {
             $request->getSession()->getFlashBag()->add(
                 'error',
                 'search.messages.no_empty_search'
@@ -212,28 +178,9 @@ class RechercheController extends AbstractController
     public function elementsSearch(Request $request, TranslatorInterface $translator, Criteria $searchCriteria)
     {
         $criteriaRaw = $request->request->all();
-        $criteria    = [];
+        $criteria    = $searchCriteria->validateElementsCriteria($criteriaRaw);
 
-        foreach ($criteriaRaw as $key => $value) {
-            if ($key === 'new_criteria' || $key === 'search' || $key === 'absoluteForms') {
-                continue;
-            }
-            if (($key === "element_count" || $key === "divine_powers_count") && (($value['operator'] ?? "") === "" || ($value['value'] ?? "") === "")) {
-                continue;
-            }
-            if ($key === "datation" && $value['post_quem'] == '' && $value['ante_quem'] == '') {
-                continue;
-            }
-            if ($key === "languages_mode" && !array_key_exists("languages", $criteriaRaw)) {
-                continue;
-            }
-            if (is_array($value) && !count(array_filter($value))) {
-                continue;
-            }
-            $criteria[$key] = $value;
-        }
-
-        if (count(array_intersect(array_keys($criteria), ['element_count', 'divine_powers_count', 'formule'])) == 0) {
+        if ($criteria === false) {
             $request->getSession()->getFlashBag()->add(
                 'error',
                 'search.messages.no_empty_search'

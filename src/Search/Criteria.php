@@ -111,4 +111,85 @@ class Criteria
     {
         return implode('_', array_map('strtolower', ['search', 'criteria', $criteriaName, $locale]));
     }
+
+    public function validateGuidedCriteria(array $criteria)
+    {
+        $cleanedCriteria = array_filter(
+            $criteria,
+            function ($value, $key) {
+                return in_array(
+                    $key,
+                    [
+                        'names', 'names_mode',
+                        'languages', 'languages_mode',
+                        'datation', 'locations',
+                        'sourceTypes', 'agents'
+                    ]
+                ) && !empty($value);
+            },
+            ARRAY_FILTER_USE_BOTH
+        );
+        if (
+            array_key_exists('datation', $cleanedCriteria)
+            && $cleanedCriteria['datation']['post_quem'] == ''
+            && $cleanedCriteria['datation']['ante_quem'] == ''
+        ) {
+            unset($cleanedCriteria['datation']);
+        }
+        if (!count(array_keys($cleanedCriteria))) {
+            return false;
+        }
+        return $cleanedCriteria;
+    }
+
+    public function validateAdvancedCriteria(array $criteria)
+    {
+        $cleanedCriteria = [];
+        foreach ($criteria as $key => $value) {
+            if ($key === 'new_criteria' || $key === 'search') {
+                continue;
+            }
+            if (is_array($value) && is_array($value[0])) {
+                $value = array_filter($value, function ($cv) {
+                    return array_key_exists('values', $cv)
+                        || (array_key_exists('operator', $cv) && array_key_exists('value', $cv) && !!strlen($cv['operator']) && !!strlen($cv['value']));
+                });
+            }
+            if (is_array($value) && !count(array_filter($value))) {
+                continue;
+            }
+            $cleanedCriteria[$key] = $value;
+        }
+        if (count(array_keys($criteria)) <= 1) {
+            return false;
+        }
+        return $cleanedCriteria;
+    }
+
+    public function validateElementsCriteria(array $criteria)
+    {
+        $cleanedCriteria = [];
+        foreach ($criteria as $key => $value) {
+            if ($key === 'new_criteria' || $key === 'search' || $key === 'absoluteForms') {
+                continue;
+            }
+            if (($key === "element_count" || $key === "divine_powers_count") && (($value['operator'] ?? "") === "" || ($value['value'] ?? "") === "")) {
+                continue;
+            }
+            if ($key === "datation" && $value['post_quem'] == '' && $value['ante_quem'] == '') {
+                continue;
+            }
+            if ($key === "languages_mode" && !array_key_exists("languages", $criteria)) {
+                continue;
+            }
+            if (is_array($value) && !count(array_filter($value))) {
+                continue;
+            }
+            $cleanedCriteria[$key] = $value;
+        }
+        if (count(array_intersect(array_keys($criteria), ['element_count', 'divine_powers_count', 'formule'])) == 0) {
+            return false;
+        }
+        return $cleanedCriteria;
+    }
 }

@@ -123,6 +123,10 @@
 
                         {% endif %}
 
+                        {% if col.extraEncode|default(false) %}
+                            {% set value = value|replace({'<<': '&lt;&lt;', '>>': '&gt;&gt;'}) %}
+                        {% endif %}
+
                         <td data-search="{{ valueSearch|striptags|remove_accents|raw }}" data-sort="{{ valueSort|striptags|remove_accents|raw }}">
                             {{ value|raw }}
                         </td>

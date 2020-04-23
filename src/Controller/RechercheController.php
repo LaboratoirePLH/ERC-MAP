@@ -189,6 +189,7 @@ class RechercheController extends AbstractController
             'locale'          => $request->getLocale(),
             'results'         => $results,
             'mode'            => $searchMode,
+            'resultsType'     => $resultsType,
             'criteria'        => $criteria,
             'criteriaDisplay' => $this->_prepareCriteriaDisplay($searchMode, $criteria, $request->getLocale(), $translator, $searchCriteria),
             'queryName'       => $queryName,

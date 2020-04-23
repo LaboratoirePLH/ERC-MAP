@@ -227,7 +227,7 @@
                         <div class="form-group row">
                             <label for="inputName" class="col-sm-3 col-form-label">{{ ('search.element_labels.add_new')|trans }}</label>
                             <div class="col">
-                                <select class="form-control autocomplete" name="absoluteForms[]" id="inputElementName" size="1" data-placeholder="{{('autocomplete.select_element')|trans}}">
+                                <select class="form-control autocomplete" name="names[]" id="inputElementName" size="1" data-placeholder="{{('autocomplete.select_element')|trans}}">
                                     <option value></option>
                                 </select>
                             </div>
@@ -793,7 +793,7 @@
             loadCriteriaData('agentivities', $('#guided select[name="agents[]"]'), null, true);
 
             // Load criteria for elements mode
-            loadCriteriaData('absoluteForms', $('#elements select[name="absoluteForms[]"]'));
+            loadCriteriaData('names', $('#elements select[name="names[]"]'));
             loadCriteriaData('languages', $('#elements select[name="languages[]"]'), null, true);
             loadCriteriaData('locations', $('#elements select[name="locations[]"]'), null, true);
             loadCriteriaData('sourceTypes', $('#elements select[name="sourceTypes[]"]'), null, true);
@@ -832,7 +832,13 @@
             function addElement(elementId, refreshEditors) { // Get data from the selected option
                 var select = $('#elements #inputElementName');
                 const elementLabel = select.find('option[value="' + elementId + '"]').text();
-                const absoluteState = elementLabel.replace(/ *\[[^\]]*\] */g, "")
+
+                var absoluteState = elementLabel.replace(/\[[^\]]*\]/g, "");
+                // Remove parentheses
+                do {
+                    absoluteState = absoluteState.replace(/\([^\)\()]*\)/, "");
+                } while (absoluteState.indexOf('(') !== -1);
+                absoluteState = absoluteState.trim();
 
                 // Store element data in object
                 SEARCH_ELEMENTS[elementId] = absoluteState;

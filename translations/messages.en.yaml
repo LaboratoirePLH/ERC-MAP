@@ -465,6 +465,7 @@ pages:
         display: "Display"
         network_analysis: "Network Analysis"
         webmapping: "Webmapping"
+        corpus_state: "Corpus counting state"
     error:
         404:
             title: "Page not found"

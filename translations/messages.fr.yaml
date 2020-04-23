@@ -465,6 +465,7 @@ pages:
         display: "Afficher"
         network_analysis: "Analyse de Réseaux"
         webmapping: "Webmapping"
+        corpus_state: "Etat de dépouillement du corpus"
     error:
         404:
             title: "Page introuvable"

@@ -1,152 +1,236 @@
 {% extends 'page.html.twig' %}
 {% block title %}
-{{ 'pages.home.title'|trans }}
+    {{ 'pages.home.title'|trans }}
 {% endblock %}
 {% block content %}
-<h4 class="text-center">
-    {{ 'pages.home.logged_as'|trans }} {{ user_name }}
-</h4>
-<section id="homepage">
-    <div class="row justify-content-center">
-        <div class="col-10 col-lg-4">
-            <div class="homeblock px-1 py-3 mx-2 my-3 row">
-                <div class="col-md-2">
-                    <i class="fas fa-fw fa-2x {{ icons.source }}"></i>
+    <h4 class="text-center">
+        {{ 'pages.home.logged_as'|trans }}
+        {{ user_name }}
+    </h4>
+    <section id="homepage">
+        <div class="row justify-content-center">
+            <div class="col-10 col-lg-4">
+                <div class="homeblock px-1 py-3 mx-2 my-3 row">
+                    <div class="col-md-2">
+                        <i class="fas fa-fw fa-2x {{ icons.source }}"></i>
+                    </div>
+                    <div class="col-md-10">
+                        <h3>
+                            <a href="{{ url('source_list') }}">
+                                <span class="counter">
+                                    {{ counters.source|number_format(0, '.', ',') }}
+                                </span>
+                                {{ 'nav.source_list'|trans }}
+                            </a>
+                        </h3>
+                    </div>
                 </div>
-                <div class="col-md-10">
-                    <h3>
-                        <a href="{{ url('source_list') }}">
-                            <span class="counter">
-                                {{ counters.source|number_format(0, '.', ',') }}
-                            </span>
-                            {{ 'nav.source_list'|trans }}
-                        </a>
-                    </h3>
+            </div>
+            <div class="col-10 col-lg-4">
+                <div class="homeblock px-1 py-3 mx-2 my-3 row">
+                    <div class="col-md-2">
+                        <i class="fas fa-fw fa-2x {{ icons.attestation }}"></i>
+                    </div>
+                    <div class="col-md-10">
+                        <h3>
+                            <a href="{{ url('attestation_list') }}">
+                                <span class="counter">
+                                    {{ counters.attestation|number_format(0, '.', ',') }}
+                                </span>
+                                {{ 'nav.attestation'|trans }}
+                            </a>
+                        </h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-10 col-lg-4">
+                <div class="homeblock px-1 py-3 mx-2 my-3 row">
+                    <div class="col-md-2">
+                        <i class="fas fa-fw fa-2x {{ icons.element }}"></i>
+                    </div>
+                    <div class="col-md-10">
+                        <h3>
+                            <a href="{{ url('element_list') }}">
+                                <span class="counter">
+                                    {{ counters.element|number_format(0, '.', ',') }}
+                                </span>
+                                {{ 'nav.element'|trans }}
+                            </a>
+                        </h3>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-10 col-lg-4">
-            <div class="homeblock px-1 py-3 mx-2 my-3 row">
-                <div class="col-md-2">
-                    <i class="fas fa-fw fa-2x {{ icons.attestation }}"></i>
-                </div>
-                <div class="col-md-10">
-                    <h3>
-                        <a href="{{ url('attestation_list') }}">
-                            <span class="counter">
-                                {{ counters.attestation|number_format(0, '.', ',') }}
-                            </span>
-                            {{ 'nav.attestation'|trans }}
-                        </a>
-                    </h3>
-                </div>
-            </div>
-        </div>
-        <div class="col-10 col-lg-4">
-            <div class="homeblock px-1 py-3 mx-2 my-3 row">
-                <div class="col-md-2">
-                    <i class="fas fa-fw fa-2x {{ icons.element }}"></i>
-                </div>
-                <div class="col-md-10">
-                    <h3>
-                        <a href="{{ url('element_list') }}">
-                            <span class="counter">
-                                {{ counters.element|number_format(0, '.', ',') }}
-                            </span>
-                            {{ 'nav.element'|trans }}
-                        </a>
-                    </h3>
+        <div class="row">
+            <div class="col-12 col-lg-6 offset-lg-3">
+                <div class="homeblock px-1 py-3 mx-2 my-3 row">
+                    <div class="col">
+                        <div class="row">
+                            <div class="col">
+                                <span class="collapsible-icon cursor-pointer text-muted mr-3" data-toggle="collapse" data-target="#corpus-state" aria-expanded="false" aria-controls="corpus-state">
+                                    <span class="d-inline">
+                                        <i class="fas fa-fw fa-2x fa-plus"></i>
+                                    </span>
+                                    <span class="d-none">
+                                        <i class="fas fa-fw fa-2x fa-minus"></i>
+                                    </span>
+                                </span>
+                                <h3 class="cursor-pointer d-inline-block" id="corpus-state-title" data-toggle="collapse" data-target="#corpus-state" aria-expanded="false" aria-controls="corpus-state">
+                                    {{ 'pages.home.corpus_state'|trans }}
+                                </h3>
+                            </div>
+                        </div>
+                        <div class="row collapse" id="corpus-state" aria-labelledby="corpus-state-title">
+                            <ul class="list-group w-100"></ul>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="row justify-content-center">
-        <div class="col-10 col-lg-6 col-xl-4">
-            <div class="homeblock p-3 mx-2 my-4 row">
-                <div class="col-md-2">
-                    <i class="fas fa-3x fa-fw fa-cogs"></i>
+        <div class="row justify-content-center">
+            <div class="col-10 col-lg-6 col-xl-4">
+                <div class="homeblock p-3 mx-2 my-4 row">
+                    <div class="col-md-2">
+                        <i class="fas fa-3x fa-fw fa-cogs"></i>
+                    </div>
+                    <div class="col-md-10">
+                        <h2>{{ 'pages.home.tools'|trans }}</h2>
+                        <p class="lead text-right">
+                            <a href="https://map-polytheisms.huma-num.fr/ressources/outils/analyse-de-reseaux/" target="_blank" rel="noopener" class="btn btn-sm">
+                                {{ 'pages.home.network_analysis'|trans }}
+                            </a>
+                            <a href="https://map-polytheisms.huma-num.fr/ressources/outils/webmapping/" target="_blank" rel="noopener" class="btn btn-sm">
+                                {{ 'pages.home.webmapping'|trans }}
+                            </a>
+                        </p>
+                    </div>
                 </div>
-                <div class="col-md-10">
-                    <h2>{{ 'pages.home.tools'|trans }}</h2>
-                    <p class="lead text-right">
-                        <a href="https://map-polytheisms.huma-num.fr/ressources/outils/analyse-de-reseaux/"
-                            target="_blank" rel="noopener" class="btn btn-sm">
-                            {{ 'pages.home.network_analysis'|trans }}
-                        </a>
-                        <a href="https://map-polytheisms.huma-num.fr/ressources/outils/webmapping/" target="_blank"
-                            rel="noopener" class="btn btn-sm">
-                            {{ 'pages.home.webmapping'|trans }}
-                        </a>
-                    </p>
+            </div>
+            <div class="col-10 col-lg-6 col-xl-4">
+                <div class="homeblock p-3 mx-2 my-4 row">
+                    <div class="col-md-2">
+                        <i class="fas fa-3x fa-fw fa-book-open"></i>
+                    </div>
+                    <div class="col-md-10">
+                        <h2>{{ 'pages.home.bibliography'|trans }}</h2>
+                        <p class="lead text-right">
+                            <a href="https://map-polytheisms.huma-num.fr/ressources/bibliographie" target="_blank" rel="noopener" class="btn btn-sm">
+                                {{ 'pages.home.display'|trans }}
+                            </a>
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-10 col-lg-6 col-xl-4">
-            <div class="homeblock p-3 mx-2 my-4 row">
-                <div class="col-md-2">
-                    <i class="fas fa-3x fa-fw fa-book-open"></i>
+        <div class="row justify-content-center">
+            <div class="col-10 col-lg-6 col-xl-4">
+                <div class="homeblock p-3 mx-2 my-4 row">
+                    <div class="col-md-2">
+                        <i class="fas fa-3x fa-fw fa-newspaper"></i>
+                    </div>
+                    <div class="col-md-10">
+                        <h2>{{ 'pages.home.publications'|trans }}</h2>
+                        <p class="lead text-right">
+                            <a href="https://map-polytheisms.huma-num.fr/ressources/publications/" target="_blank" rel="noopener" class="btn btn-sm">
+                                {{ 'pages.home.display'|trans }}
+                            </a>
+                        </p>
+                    </div>
                 </div>
-                <div class="col-md-10">
-                    <h2>{{ 'pages.home.bibliography'|trans }}</h2>
-                    <p class="lead text-right">
-                        <a href="https://map-polytheisms.huma-num.fr/ressources/bibliographie" target="_blank"
-                            rel="noopener" class="btn btn-sm">
-                            {{ 'pages.home.display'|trans }}
-                        </a>
-                    </p>
+            </div>
+            <div class="col-10 col-lg-6 col-xl-4">
+                <div class="homeblock p-3 mx-2 my-4 row">
+                    <div class="col-md-2">
+                        <i class="fas fa-3x fa-fw fa-globe"></i>
+                    </div>
+                    <div class="col-md-10">
+                        <h2>{{ 'pages.home.online_resources'|trans }}</h2>
+                        <p class="lead text-right">
+                            <a href="https://map-polytheisms.huma-num.fr/ressources/online-resources" target="_blank" rel="noopener" class="btn btn-sm">
+                                {{ 'pages.home.display'|trans }}
+                            </a>
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="row justify-content-center">
-        <div class="col-10 col-lg-6 col-xl-4">
-            <div class="homeblock p-3 mx-2 my-4 row">
-                <div class="col-md-2">
-                    <i class="fas fa-3x fa-fw fa-newspaper"></i>
-                </div>
-                <div class="col-md-10">
-                    <h2>{{ 'pages.home.publications'|trans }}</h2>
-                    <p class="lead text-right">
-                        <a href="https://map-polytheisms.huma-num.fr/ressources/publications/" target="_blank"
-                            rel="noopener" class="btn btn-sm">
-                            {{ 'pages.home.display'|trans }}
-                        </a>
-                    </p>
-                </div>
-            </div>
-        </div>
-        <div class="col-10 col-lg-6 col-xl-4">
-            <div class="homeblock p-3 mx-2 my-4 row">
-                <div class="col-md-2">
-                    <i class="fas fa-3x fa-fw fa-globe"></i>
-                </div>
-                <div class="col-md-10">
-                    <h2>{{ 'pages.home.online_resources'|trans }}</h2>
-                    <p class="lead text-right">
-                        <a href="https://map-polytheisms.huma-num.fr/ressources/online-resources" target="_blank"
-                            rel="noopener" class="btn btn-sm">
-                            {{ 'pages.home.display'|trans }}
-                        </a>
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+    </section>
 {% endblock %}
 {% block javascripts %}
-{{ encore_entry_script_tags('page') }}
-<script type="text/javascript">
-    $(document).ready(function () {
-        const el = document.querySelectorAll('.counter');
+    {{ encore_entry_script_tags('page') }}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            const el = document.querySelectorAll('.counter');
 
-        for (var i in el) {
-            if (!el.hasOwnProperty(i)) { continue; }
-            counterUp(el[i], {
-                duration: 1000,
-                delay: 16,
+            for (var i in el) {
+                if (! el.hasOwnProperty(i)) {
+                    continue;
+                }
+                counterUp(el[i], {
+                    duration: 1000,
+                    delay: 16
+                })
+            }
+
+            // Corpus state management
+
+            function listItem(icon, label, level, badge) {
+                var iconEl = $('<i>').addClass('fas fa-fw fa-' + icon + ' mr-2')
+                var li = $('<li>').addClass('list-group-item').text(label).prepend(iconEl);
+                li.css('margin-left', level * 50 + 'px');
+
+                if (badge !== undefined) {
+                    li.append($('<span>').addClass('badge badge-primary badge-pill float-right').text(badge))
+                }
+
+                return li;
+            }
+
+            // Show spinner on corpus state title
+            $('#corpus-state-title').prepend($('<div class="spinner-border" role="status"></div>'));
+            // Load data
+            $.get("{{ url('corpus_state') }}").done(function (data) {
+                console.log(data);
+                var root = $('#corpus-state > ul');
+                data.forEach(d => {
+                    root.append(listItem('globe-europe', d.label, 0));
+
+                    if (d.sousRegions.length) {
+                        d.sousRegions.forEach(sr => {
+                            root.append(listItem('map-marked', sr.label, 1));
+
+                            if (sr.biblios.length) {
+                                sr.biblios.forEach(b => {
+                                    root.append(listItem('book', b.label, 2, b.value))
+                                })
+                            }
+                        })
+                    }
+                    if (d.biblios.length) {
+                        d.biblios.forEach(b => {
+                            root.append(listItem('book', b.label, 1, b.value))
+                        })
+                    }
+                })
+
+            }).always(function () {
+                $('#corpus-state-title').find('.spinner-border').remove();
+            });
+
+
+            // Collapse icons
+            $('.collapse').on('show.bs.collapse', function () {
+                var id = $(this).prop('id');
+                var icons = $('span.collapsible-icon[data-target="#' + id + '"]').children('span');
+                $(icons.get(0)).removeClass('d-inline').addClass('d-none');
+                $(icons.get(1)).removeClass('d-none').addClass('d-inline');
             })
-        }
-    });
-</script>
+            $('.collapse').on('hide.bs.collapse', function () {
+                var id = $(this).prop('id');
+                var icons = $('span.collapsible-icon[data-target="#' + id + '"]').children('span');
+                $(icons.get(0)).removeClass('d-none').addClass('d-inline');
+                $(icons.get(1)).removeClass('d-inline').addClass('d-none');
+            })
+        });
+    </script>
 {% endblock %}

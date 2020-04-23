@@ -491,7 +491,7 @@ search:
     simple: "Simple"
     guided: "Guided"
     advanced: "Advanced"
-    elements: "Elements"
+    elements: "Formulae"
     mode: "Search Type"
     criteria: "Search Criteria"
     results: "Search Results"

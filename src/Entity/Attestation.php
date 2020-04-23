@@ -64,6 +64,7 @@ class Attestation extends AbstractEntity
      * @var \Doctrine\Common\Collections\Collection
      *
      * @ORM\OneToMany(targetEntity="TraductionAttestation", mappedBy="attestation", cascade={"persist", "remove"})
+     * @ORM\OrderBy({"id" = "ASC"})
      */
     private $traductions;
 

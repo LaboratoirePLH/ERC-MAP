@@ -70,6 +70,7 @@ class Element extends AbstractEntity
      * @var \Doctrine\Common\Collections\Collection
      *
      * @ORM\OneToMany(targetEntity="TraductionElement", mappedBy="element", cascade={"persist", "remove"})
+     * @ORM\OrderBy({"id" = "ASC"})
      */
     private $traductions;
 

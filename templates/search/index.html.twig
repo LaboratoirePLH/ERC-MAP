@@ -485,6 +485,8 @@
                                         }
                                         break;
                                     case 'text':
+                                        $('#advanced').find('input[name="' + criteriaName + '[]"]').eq(index).val(value).trigger('input');
+                                        break;
                                     case 'range':
                                         $('#advanced').find('select[name="' + criteriaName + '[' + index + '][operator]"]').val(value.operator).trigger('chosen:updated');
                                         $('#advanced').find('select[name="' + criteriaName + '[' + index + '][value]"]').val(value.value).trigger('chosen:updated');

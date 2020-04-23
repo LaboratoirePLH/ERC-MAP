@@ -242,6 +242,12 @@ class CriteriaList
                 'type'     => null,
                 'children' => [
                     [
+                        'key'     => 'translitteration',
+                        'label'   => $translator->trans('attestation.fields.translitteration'),
+                        'type'    => 'text',
+                        'semitic' => false,
+                    ],
+                    [
                         'key'     => 'testimonyOccasions',
                         'label'   => $translator->trans('attestation.fields.occasion'),
                         'type'    => 'select',

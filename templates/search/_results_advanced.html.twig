@@ -102,15 +102,16 @@
                         {% set valueSearch = value %}
                         {% set valueSort = value %}
 
-                        {% if col.field == "link" %}
+                        {% if col.link|default(false) %}
 
-                            {% set valueSearch = value.id %}
-                            {% set valueSort = value.id %}
+                            {% set valueSearch = value.text|default(value.id|default('')) %}
+                            {% set valueSort = value.text|default(value.id|default('')) %}
                             {% set value %}
                             {% include "partials/_entitylink.html.twig" with {
-                                    'entity': value.type,
-                                    'link': url(value.type ~ '_show', {'id': value.id}),
-                                    'text': '#' ~ value.id
+                                    'icon': value.icon|default(''),
+                                    'entity': value.type|default(''),
+                                    'link': value.link is defined ? value.link : url(value.type ~ '_show', {'id': value.id}),
+                                    'text': value.text|default('#' ~ value.id|default(''))
                                 } %}
                             {% endset %}
 

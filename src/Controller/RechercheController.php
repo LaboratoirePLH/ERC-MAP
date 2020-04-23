@@ -409,9 +409,7 @@ class RechercheController extends AbstractController
                         }, $value);
                         break;
                     default:
-                        // TODO : throw exception instead (should never happen)
-                        var_dump($key, $value, $criteriaSettings);
-                        die;
+                        throw new \InvalidArgumentException("Criteria $key (with value '" . json_encode($value) . "') is not of an accepted type ('{$criteriaSettings['type']}')");
                 }
 
                 $response[$criteriaLabel] = $criteriaValues;

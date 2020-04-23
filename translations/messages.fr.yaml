@@ -585,6 +585,9 @@ requetes:
 maintenance:
     title: "Maintenance de la Base de Données"
     beta_codes: "Liste des Beta Codes hors format"
+    formula_numbers: "Liste des formules mal numérotées"
     messages:
         invalid_char: "Caractère(s) invalide(s)"
         invalid_length: "Différence de longueur"
+        missing_position: "Position(s) manquante(s)"
+        duplicate_position: "Positions en double"

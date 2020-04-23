@@ -47,9 +47,9 @@
                             if (fields.hasOwnProperty('nom'))
                                 fields.nom.attr('readonly', true).val(data.title).trigger('change');
                             if (fields.hasOwnProperty('longitude'))
-                                fields.longitude.attr('readonly', true).val(data.reprPoint[0]).trigger('change');
+                                fields.longitude.val(data.reprPoint[0]).trigger('change');
                             if (fields.hasOwnProperty('latitude'))
-                                fields.latitude.attr('readonly', true).val(data.reprPoint[1]).trigger('change');
+                                fields.latitude.val(data.reprPoint[1]).trigger('change');
                             input.attr('readonly', true);
                         })
                         .fail(function (jqXHR, textStatus, errorThrown) {

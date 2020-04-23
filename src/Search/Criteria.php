@@ -146,7 +146,7 @@ class Criteria
     {
         $cleanedCriteria = [];
         foreach ($criteria as $key => $value) {
-            if ($key === 'new_criteria' || $key === 'search') {
+            if ($key === 'new_criteria' || $key === 'search' || $key === 'queryName') {
                 continue;
             }
             if (is_array($value) && is_array($value[0])) {
@@ -170,7 +170,7 @@ class Criteria
     {
         $cleanedCriteria = [];
         foreach ($criteria as $key => $value) {
-            if ($key === 'new_criteria' || $key === 'search' || $key === 'absoluteForms') {
+            if ($key === 'new_criteria' || $key === 'search' || $key === 'absoluteForms' || $key === 'queryName') {
                 continue;
             }
             if (($key === "element_count" || $key === "divine_powers_count") && (($value['operator'] ?? "") === "" || ($value['value'] ?? "") === "")) {

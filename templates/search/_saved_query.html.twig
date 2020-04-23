@@ -131,7 +131,7 @@
             {% endif %}
         </div>
         <div class="d-flex flex-column h-100 justify-content-center" class="query-actions">
-            <button type="button" class="btn btn-primary mb-1 query-load-button" title="{{ 'generic.load'|trans }}" data-query-mode="{{query.mode}}" data-query-criteria="{{query.criteria|url_encode}}">
+            <button type="button" class="btn btn-primary mb-1 query-load-button" title="{{ 'generic.load'|trans }}" data-query-name="{{ query.nom }}" data-query-mode="{{query.mode}}" data-query-criteria="{{query.criteria|url_encode}}">
                 <i class="fas fa-tasks fa-fw"></i>
             </button>
             {% set uuid = 'confirm_deletion_' ~ query.id ~ '_' ~ random() %}

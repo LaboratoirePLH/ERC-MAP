@@ -994,6 +994,8 @@
                     btn.find('span.spinner-border').remove();
                     btn.children().show();
                     $('button.query-load-button').attr('disabled', false);
+
+                    $('#' + data.queryMode).find('form').prepend($('<input>').prop('type', 'hidden').prop('name', 'queryName').attr('value', data.queryName));
                 });
             });
         });

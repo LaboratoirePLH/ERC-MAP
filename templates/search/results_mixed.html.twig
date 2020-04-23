@@ -107,15 +107,17 @@
 {% endblock %}
 
 {% block javascripts %}
+    {% set exportName = queryName != "" ? queryName : (('app_name'|trans) ~ '-' ~ ('search.results'|trans) ~ ('search.'~mode)|trans) %}
     {{ parent() }}
     <script type="text/javascript">
         var mode = "{{ mode }}";
+        var exportName = "{{ exportName }}";
         $(document).ready(function () {
             $('#search-results thead tr#filterRow th').each(function () {
                 var title = $(this).text();
                 var value = $(this).data('value');
                 if (title != "") {
-                    $(this).html('<input type="text" class="w-100 form-control form-control-sm" placeholder="    {{ "generic.search"|trans }}' + ' ' + title + '" />');
+                    $(this).html('<input type="text" class="w-100 form-control form-control-sm" placeholder="           {{ "generic.search"|trans }}' + ' ' + title + '" />');
                     if (value != null) {
                         $(this).children('input').val(value);
                     }
@@ -164,7 +166,7 @@
                 buttons: [
                     {
                         extend: 'csv',
-                        filename: "{{ 'app_name'|trans }}-{{ 'search.results'|trans }}{{ ('search.'~mode)|trans }}",
+                        filename: (() => exportName),
                         text: "{{ 'generic.export_csv'|trans }}",
                         customize: function (document) {
                             var papadata = Papa.parse(document);
@@ -271,7 +273,7 @@
             // Manage query save
             $('#query-save-modal form').on('submit', function (e) {
                 e.preventDefault();
-                const formData = $(this).serializeObject();
+                var formData = $(this).serializeObject();
                 var spinner = $(this).find('#submit-spinner');
                 var results = $(this).find('#save-query-result');
 
@@ -284,6 +286,8 @@
                 $.post($(this).get(0).action, formData).done(function (response) {
                     results.addClass('alert-success');
                     results.text(response.message);
+
+                    exportName = formData.query_name;
 
                     setTimeout(() => {
                         $('#query-save-modal').modal('hide')

@@ -67,7 +67,8 @@ class RechercheController extends AbstractController
     public function simpleSearch(Request $request, TranslatorInterface $translator, Criteria $searchCriteria)
     {
         $searchMode = 'simple';
-        $search = $request->request->get('search_value', '');
+        $queryName  = $request->request->get('queryName', '');
+        $search     = $request->request->get('search_value', '');
         if (!strlen($search)) {
             return $this->_emptySearchResponse($request, $searchMode);
         }
@@ -83,6 +84,7 @@ class RechercheController extends AbstractController
             'mode'            => $searchMode,
             'criteria'        => [$search],
             'criteriaDisplay' => $this->_prepareCriteriaDisplay($searchMode, [$search], $request->getLocale(), $translator, $searchCriteria),
+            'queryName'       => $queryName,
             'breadcrumbs'     => [
                 ['label' => 'nav.home', 'url' => $this->generateUrl('home')],
                 ['label' => 'search.title', 'url' => $this->generateUrl('search')],
@@ -97,6 +99,7 @@ class RechercheController extends AbstractController
     public function guidedSearch(Request $request, TranslatorInterface $translator, Criteria $searchCriteria)
     {
         $searchMode  = 'guided';
+        $queryName   = $request->request->get('queryName', '');
         $criteriaRaw = $request->request->all();
         $criteria    = $searchCriteria->validateGuidedCriteria($criteriaRaw);
 
@@ -115,6 +118,7 @@ class RechercheController extends AbstractController
             'mode'            => $searchMode,
             'criteria'        => $criteria,
             'criteriaDisplay' => $this->_prepareCriteriaDisplay($searchMode, $criteria, $request->getLocale(), $translator, $searchCriteria),
+            'queryName'       => $queryName,
             'breadcrumbs'     => [
                 ['label' => 'nav.home', 'url' => $this->generateUrl('home')],
                 ['label' => 'search.title', 'url' => $this->generateUrl('search')],
@@ -129,6 +133,7 @@ class RechercheController extends AbstractController
     public function advancedSearch(Request $request, TranslatorInterface $translator, Criteria $searchCriteria)
     {
         $searchMode  = 'advanced';
+        $queryName   = $request->request->get('queryName', '');
         $criteriaRaw = $request->request->all();
         $criteria    = $searchCriteria->validateAdvancedCriteria($criteriaRaw);
 
@@ -150,6 +155,7 @@ class RechercheController extends AbstractController
             'resultsType'     => $resultsType,
             'criteria'        => $criteria,
             'criteriaDisplay' => $this->_prepareCriteriaDisplay($searchMode, $criteria, $request->getLocale(), $translator, $searchCriteria),
+            'queryName'       => $queryName,
             'breadcrumbs'     => [
                 ['label' => 'nav.home', 'url' => $this->generateUrl('home')],
                 ['label' => 'search.title', 'url' => $this->generateUrl('search')],
@@ -164,6 +170,7 @@ class RechercheController extends AbstractController
     public function elementsSearch(Request $request, TranslatorInterface $translator, Criteria $searchCriteria)
     {
         $searchMode  = 'elements';
+        $queryName   = $request->request->get('queryName', '');
         $criteriaRaw = $request->request->all();
         $criteria    = $searchCriteria->validateElementsCriteria($criteriaRaw);
 
@@ -184,6 +191,7 @@ class RechercheController extends AbstractController
             'mode'            => $searchMode,
             'criteria'        => $criteria,
             'criteriaDisplay' => $this->_prepareCriteriaDisplay($searchMode, $criteria, $request->getLocale(), $translator, $searchCriteria),
+            'queryName'       => $queryName,
             'breadcrumbs'     => [
                 ['label' => 'nav.home', 'url' => $this->generateUrl('home')],
                 ['label' => 'search.title', 'url' => $this->generateUrl('search')],

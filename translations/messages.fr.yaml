@@ -102,6 +102,7 @@ generic:
         strict: "Strict"
         require_all: "Tous requis"
         reason: "Raison"
+        divers: "Divers"
     choices :
         new: "Nouveau"
         existing: "Existant"

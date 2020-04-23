@@ -270,6 +270,19 @@ class CriteriaList
                         'type'  => 'operation',
                     ],
                 ]
+            ],
+            [
+                'key'      => 'others',
+                'label'    => $translator->trans('generic.fields.divers'),
+                'type'     => null,
+                'children' => [
+                    [
+                        'key'     => 'comments',
+                        'label'   => $translator->trans('generic.fields.commentaire'),
+                        'type'    => 'text',
+                        'semitic' => true,
+                    ],
+                ]
             ]
         ];
     }

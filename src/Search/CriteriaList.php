@@ -16,12 +16,6 @@ class CriteriaList
                 'semitic'  => true,
                 'children' => [
                     [
-                        'key'     => 'absoluteForms',
-                        'label'   => $translator->trans('element.fields.etat_absolu'),
-                        'type'    => 'select',
-                        'semitic' => true,
-                    ],
-                    [
                         'key'     => 'inContext',
                         'label'   => $translator->trans('element.fields.en_contexte'),
                         'type'    => 'text',
@@ -108,12 +102,6 @@ class CriteriaList
                             4 => $translator->trans('datation.precision.niveau_4'),
                             5 => $translator->trans('datation.precision.niveau_5'),
                         ]
-                    ],
-                    [
-                        'key'     => 'datationComments',
-                        'label'   => $translator->trans('datation.fields.commentaires'),
-                        'type'    => 'text',
-                        'semitic' => true,
                     ]
                 ]
             ],

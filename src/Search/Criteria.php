@@ -160,7 +160,7 @@ class Criteria
             }
             $cleanedCriteria[$key] = $value;
         }
-        if (count(array_keys($criteria)) <= 1) {
+        if (count(array_keys($cleanedCriteria)) <= 1) {
             return false;
         }
         return $cleanedCriteria;
@@ -187,7 +187,7 @@ class Criteria
             }
             $cleanedCriteria[$key] = $value;
         }
-        if (count(array_intersect(array_keys($criteria), ['element_count', 'divine_powers_count', 'formule'])) == 0) {
+        if (count(array_intersect(array_keys($cleanedCriteria), ['element_count', 'divine_powers_count', 'formule'])) == 0) {
             return false;
         }
         return $cleanedCriteria;

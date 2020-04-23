@@ -491,6 +491,10 @@
                                         $('#advanced').find('select[name="' + criteriaName + '[' + index + '][operator]"]').val(value.operator).trigger('chosen:updated');
                                         $('#advanced').find('select[name="' + criteriaName + '[' + index + '][value]"]').val(value.value).trigger('chosen:updated');
                                         break;
+                                    case 'operation':
+                                        $('#advanced').find('select[name="' + criteriaName + '[' + index + '][operator]"]').val(value.operator).trigger('chosen:updated');
+                                        $('#advanced').find('input[name="' + criteriaName + '[' + index + '][value]"]').val(value.value);
+                                        break;
                                     case 'datation':
                                         $('#advanced').find('input[name="datation[' + index + '][post_quem]"]').val(value.post_quem);
                                         $('#advanced').find('input[name="datation[' + index + '][ante_quem]"]').val(value.ante_quem);
@@ -733,6 +737,16 @@
                         // Build datalist
                         var datalist = Object.entries(criteria.datalist).map(([value, label]) => $('<option />').attr('value', value).text(label));
                         template.find('select').last().append(... datalist);
+
+                        // Setup Chosen
+                        template.find('select').chosen(SINGLE_CHOSEN_SETTINGS);
+                        break;
+                    case 'operation':
+                        var index = $("#advanced").find('input[name^="' + criteria.key + '"]').length;
+                        var inputId = 'input' + criteria.key.charAt(0).toUpperCase() + criteria.key.slice(1);
+                        template.find('label').prop('for', inputId + index + 'Operator').text(criteria.label);
+                        template.find('select').prop('id', inputId + index + 'Operator').prop('name', criteria.key + '[' + index + '][operator]');
+                        template.find('input').prop('id', inputId + index + 'Value').prop('name', criteria.key + '[' + index + '][value]');
 
                         // Setup Chosen
                         template.find('select').chosen(SINGLE_CHOSEN_SETTINGS);

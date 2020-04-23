@@ -61,8 +61,6 @@ class CriteriaList
                         'key'      => 'attestationFiability',
                         'label'    => $translator->trans('search.criteria_labels.fiabilite_lecture'),
                         'type'     => 'range',
-                        'min'      => 1,
-                        'max'      => 3,
                         'datalist' => [
                             1 => $translator->trans('attestation.fiabilite.niveau_1'),
                             2 => $translator->trans('attestation.fiabilite.niveau_2'),
@@ -93,8 +91,6 @@ class CriteriaList
                         'key'      => 'datationPrecision',
                         'label'    => $translator->trans('datation.fields.precision'),
                         'type'     => 'range',
-                        'min'      => 1,
-                        'max'      => 5,
                         'datalist' => [
                             1 => $translator->trans('datation.precision.niveau_1'),
                             2 => $translator->trans('datation.precision.niveau_2'),
@@ -139,8 +135,6 @@ class CriteriaList
                         'key'      => 'locationPrecision',
                         'label'    => $translator->trans('localisation.fields.precision'),
                         'type'     => 'range',
-                        'min'      => 1,
-                        'max'      => 4,
                         'datalist' => [
                             1 => $translator->trans('localisation.precision.niveau_1'),
                             2 => $translator->trans('localisation.precision.niveau_2'),
@@ -264,6 +258,16 @@ class CriteriaList
                         'label'   => $translator->trans('attestation.fields.materiel'),
                         'type'    => 'select',
                         'semitic' => false,
+                    ],
+                    [
+                        'key'   => 'elementCount',
+                        'label' => $translator->trans('attestation.fields.compte_element'),
+                        'type'  => 'operation',
+                    ],
+                    [
+                        'key'   => 'divinePowersCount',
+                        'label' => $translator->trans('formule.fields.compte_puissances_divines'),
+                        'type'  => 'operation',
                     ],
                 ]
             ]

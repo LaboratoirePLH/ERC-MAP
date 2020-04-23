@@ -387,6 +387,11 @@ class RechercheController extends AbstractController
                             return \App\Utils\StringHelper::operatorToString($v['operator']) . " " . $criteriaSettings['datalist'][$v['value']];
                         }, $value);
                         break;
+                    case 'operation':
+                        $criteriaValues = array_map(function ($v) use ($criteriaSettings) {
+                            return \App\Utils\StringHelper::operatorToString($v['operator']) . " " . $v['value'];
+                        }, $value);
+                        break;
                     case 'prosepoetry':
                         $criteriaValues = array_map(function ($v) use ($translator) {
                             return array_map(function ($v_value) use ($translator) {

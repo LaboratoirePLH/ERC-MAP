@@ -84,6 +84,24 @@
         </div>
         {{ removeCriteriaButton }}
     </div>
+    <div class="form-group row" id="operation-template">
+        <label class="col-sm-3 col-form-label" for="inputNameOperation"></label>
+        <div class="col">
+            <select class="form-control autocomplete-single" name="name" id="inputNameOperator" size="1" data-placeholder="{{('autocomplete.select_single')|trans}}">
+                <option value=""></option>
+                <option value="eq">=</option>
+                <option value="neq">&ne;</option>
+                <option value="lt">&lt;</option>
+                <option value="lte">&le;</option>
+                <option value="gt">&gt;</option>
+                <option value="gte">&ge;</option>
+            </select>
+        </div>
+        <div class="col">
+            <input type="number" min="0" step="1" class="form-control" name="name" id="inputNameValue">
+        </div>
+        {{ removeCriteriaButton }}
+    </div>
     <div class="form-group row" id="datation-template">
         <label class="col-sm-3 col-form-label" for="inputPostQuem#X#">{{ ('generic.fields.datation')|trans }}</label>
         <div class="col">

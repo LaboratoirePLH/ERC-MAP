@@ -173,9 +173,6 @@
                                     <i class="fas fa-search fa-fw"></i>
                                     {{ 'generic.search'|trans }}
                                 </button>
-                                <button class="btn btn-secondary btn-sm mx-2" type="button" name="test" id="test-add-all">
-                                    Test
-                                </button>
                             </div>
                         </div>
                     </form>
@@ -947,18 +944,6 @@
                 changeMode(e.target.hash.replace('#', ''));
             });
 
-            // TODO : Remove debug
-            $('#advanced button#test-add-all').on('click', function (e) {
-                e.preventDefault();
-                $(this).siblings('.reset-button').click();
-                var allCriteria = SEARCH_CRITERIA.reduce((carry, item) => carry.concat([item.key], item.children.map(i => i.key)), []);
-                var interval = setInterval(() => {
-                    addNewCriteria(allCriteria.shift());
-                    if (! allCriteria.length) {
-                        clearInterval(interval);
-                    }
-                }, 100);
-            });
             $('#advanced form').on('submit', function (e) {
                 e.preventDefault();
                 var formData = $(this).serializeObject();

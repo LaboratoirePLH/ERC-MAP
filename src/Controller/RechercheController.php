@@ -101,7 +101,7 @@ class RechercheController extends AbstractController
         $criteria    = $searchCriteria->validateGuidedCriteria($criteriaRaw);
 
         if ($criteria === false) {
-            return $this->_emptySearchResponse($request, $searchMode)
+            return $this->_emptySearchResponse($request, $searchMode);
         }
 
         $results = $this->getDoctrine()
@@ -133,7 +133,7 @@ class RechercheController extends AbstractController
         $criteria    = $searchCriteria->validateAdvancedCriteria($criteriaRaw);
 
         if ($criteria === false) {
-            return $this->_emptySearchResponse($request, $searchMode)
+            return $this->_emptySearchResponse($request, $searchMode);
         }
 
         $resultsType = $criteria['resultsType'];
@@ -376,7 +376,7 @@ class RechercheController extends AbstractController
                         break;
                     case 'range':
                         $criteriaValues = array_map(function ($v) use ($criteriaSettings) {
-                            return $criteriaSettings['datalist'][$v];
+                            return \App\Utils\StringHelper::operatorToString($v['operator']) . " " . $criteriaSettings['datalist'][$v['value']];
                         }, $value);
                         break;
                     case 'prosepoetry':

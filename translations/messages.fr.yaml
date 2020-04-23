@@ -342,11 +342,11 @@ datation:
         precision: "Précision de la Datation"
         commentaires: "Commentaires de la datation"
     precision:
-        niveau_1: "5 ans ou moins"
-        niveau_2: "50 ans ou moins"
-        niveau_3: "100 ans ou moins"
-        niveau_4: "200 ans ou moins"
-        niveau_5: "Plus de 200 ans"
+        niveau_1: "(1) 5 ans ou moins"
+        niveau_2: "(2) 50 ans ou moins"
+        niveau_3: "(3) 100 ans ou moins"
+        niveau_4: "(4) 200 ans ou moins"
+        niveau_5: "(5) Plus de 200 ans"
 
 localisation:
     search_pleiades: "Chercher sur Pleiades"
@@ -369,10 +369,10 @@ localisation:
         fonction: "Fonction"
         precision: "Précision de la Localisation"
     precision:
-        niveau_1: "Site"
-        niveau_2: "Lieu"
-        niveau_3: "Sous-région"
-        niveau_4: "Région"
+        niveau_1: "(1) Site"
+        niveau_2: "(2) Lieu"
+        niveau_3: "(3) Sous-région"
+        niveau_4: "(4) Région"
 
 chercheur:
     profile: "Modifier le profil"

@@ -385,8 +385,22 @@
     {{ encore_entry_script_tags('search_page') }}
     <script type="text/javascript">
         $(document).ready(function () {
+            //
+            // Object to store the list of criteria available for advanced search
             SEARCH_CRITERIA = $.parseJSON("{{ criteria_list|json_encode|e('js')|raw }}");
+
+            // Store current search mode in a variable
             CURRENT_MODE = "";
+
+            // Chosen settings for selects with single selection and deselection allowed
+            SINGLE_CHOSEN_SETTINGS = $.extend(CHOSEN_SETTINGS, {
+                disable_search_threshold: 10,
+                allow_single_deselect: true
+            });
+
+            // Store elements selected for formula search
+            SEARCH_ELEMENTS = {};
+
             function changeMode(mode) { // Save in variable
                 CURRENT_MODE = mode;
                 // Show given tab
@@ -455,12 +469,13 @@
                         $('#search-panel').trigger('async-form-ready');
                     }
                 } else if (mode == "advanced") { // Set the results type
+                    $('#advanced').find('button[type=reset]').click();
+
                     $('#advanced input[name=resultsType]').filter('[value=' + data.resultsType + ']').prop('checked', true);
                     delete data.resultsType;
 
                     // Advanced form will be populated when all its data has been loaded
                     $('#search-panel').on('async-form-ready', function () {
-                        $('#advanced').find('button[type=reset]').click();
                         Object.entries(data).forEach(([criteriaName, values]) => {
                             var criteria = searchCriteria(criteriaName);
 
@@ -474,7 +489,8 @@
                                         break;
                                     case 'text':
                                     case 'range':
-                                        $('#advanced').find('input[name="' + criteriaName + '[]"]').eq(index).val(value).trigger('input');
+                                        $('#advanced').find('select[name="' + criteriaName + '[' + index + '][operator]"]').val(value.operator).trigger('chosen:updated');
+                                        $('#advanced').find('select[name="' + criteriaName + '[' + index + '][value]"]').val(value.value).trigger('chosen:updated');
                                         break;
                                     case 'datation':
                                         $('#advanced').find('input[name="datation[' + index + '][post_quem]"]').val(value.post_quem);
@@ -711,20 +727,16 @@
                     case 'range':
                         var index = $("#advanced").find('input[name^="' + criteria.key + '"]').length;
                         var inputId = 'input' + criteria.key.charAt(0).toUpperCase() + criteria.key.slice(1);
-                        template.find('label').prop('for', inputId + index).text(criteria.label);
-                        template.find('input').prop('id', inputId + index).prop('name', criteria.key + '[]').attr('list', 'datalist' + inputId.slice(5)).attr('min', criteria.min).attr('max', criteria.max);
-                        template.find('output').prop('for', inputId);
+                        template.find('label').prop('for', inputId + index + 'Operator').text(criteria.label);
+                        template.find('select').first().prop('id', inputId + index + 'Operator').prop('name', criteria.key + '[' + index + '][operator]');
+                        template.find('select').last().prop('id', inputId + index + 'Value').prop('name', criteria.key + '[' + index + '][value]');
+
                         // Build datalist
-                        var datalist = Object.entries(criteria.datalist).map(([value, label]) => $('<option />').attr('value', value).attr('label', label));
-                        template.find('datalist').prop('id', 'datalist' + inputId.slice(5)).append(... datalist);
-                        // Setup event to show text value of range
-                        template.find('input').on('input', function (e) {
-                            const label = Array.from(e.target.list.options).find((o) => o.value == e.target.value).label;
-                            template.find('output').val(label);
-                        });
-                        // Set initial value
-                        template.find('input').val(criteria.min);
-                        template.find('output').val(criteria.datalist[criteria.min]);
+                        var datalist = Object.entries(criteria.datalist).map(([value, label]) => $('<option />').attr('value', value).text(label));
+                        template.find('select').last().append(... datalist);
+
+                        // Setup Chosen
+                        template.find('select').chosen(SINGLE_CHOSEN_SETTINGS);
                         break;
                     case 'datation':
                     case 'prosepoetry':
@@ -781,8 +793,6 @@
             });
 
             // Setup events for elements mode
-            SEARCH_ELEMENTS = {};
-            // TODO : Remove debug
             $('#elements button.add-element-button').on('click', function (e) {
                 e.preventDefault();
                 // Get data from the selected option
@@ -798,6 +808,7 @@
                 removeElement(elementId, true);
             });
             $('#elements .add-formula-button').on('click', () => addFormula(true));
+            $('#elements .autocomplete-single').chosen(SINGLE_CHOSEN_SETTINGS);
 
             function addFormula(refreshEditors) {
                 $('button.add-formula-button').before('<div class="row"><div class="col formula-search"><input type="hidden" name="formule[]"></div></div>');
@@ -997,13 +1008,6 @@
                     $('button.query-load-button').attr('disabled', false);
                 });
             });
-
-            // Setup chosen for element count operator
-            LOCAL_CHOSEN_SETTINGS = $.extend(CHOSEN_SETTINGS, {
-                disable_search_threshold: 10,
-                allow_single_deselect: true
-            });
-            $('.autocomplete-single').chosen(LOCAL_CHOSEN_SETTINGS);
         });
     </script>
 {% endblock %}

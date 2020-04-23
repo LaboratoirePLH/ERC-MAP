@@ -922,10 +922,10 @@
             // Watch reset buttons
             $('#guided').on('reset', function (e) {
                 var form = $(this);
+                form.find('input[name$="_mode"]').attr('checked', false);
+                form.find('input[name="datation[exact]"]').attr('checked', true);
                 setTimeout(() => {
                     form.find('select').trigger('chosen:updated');
-                    form.find('input[name$="_mode"]').attr('checked', false);
-                    form.find('input[name="datation[exact]"]').attr('checked', true);
                 }, 10);
             });
             $('#advanced').on('reset', function (e) {

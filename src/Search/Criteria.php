@@ -186,7 +186,9 @@ class Criteria
             if (is_array($value) && !count(array_filter($value))) {
                 continue;
             }
-            $cleanedCriteria[$key] = $value;
+            $cleanedCriteria[$key] = array_filter($value, function ($v) {
+                return $v !== null && $v !== "";
+            });
         }
         if (count(array_intersect(array_keys($cleanedCriteria), ['element_count', 'divine_powers_count', 'formule'])) == 0) {
             return false;

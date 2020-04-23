@@ -128,11 +128,11 @@
 
         function storeVisibleColumns() {
             var cols = Array.from(dt.columns().visible());
-            Cookie.set('search_' + mode + '_columns', JSON.stringify(cols), {expires: 365});
+            Cookie.set('search_' + mode + '_columns_' + '{{ resultsType }}', JSON.stringify(cols), {expires: 365});
         };
 
         function loadVisibleColumns() { // Get cookie (if missing will return undefined)
-            var cols = Cookie.get('search_' + mode + '_columns');
+            var cols = Cookie.get('search_' + mode + '_columns_' + '{{ resultsType }}');
             if (cols !== undefined) { // Try to parse JSON form Cookie (throws Exception if failed)
                 try {
                     cols = JSON.parse(cols);

@@ -123,8 +123,8 @@ class Formule extends AbstractEntity
     public function toArray()
     {
         return [
-            'formule'            => $this->formule,
-            'puissances_divines' => $this->puissancesDivines
+            'formule'           => $this->formule,
+            'puissancesDivines' => $this->puissancesDivines
         ];
     }
 }

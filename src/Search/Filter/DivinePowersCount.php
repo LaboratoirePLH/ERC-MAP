@@ -23,7 +23,7 @@ class DivinePowersCount extends AbstractFilter
             // If at least one attestation is acceptable, we return true immediately
 
             foreach ($data as $d) {
-                $value = array_key_exists('formule1', $d) ? ($d['formule1']['puissances_divines'] ?? 0) : 0;
+                $value = array_key_exists('formule1', $d) ? ($d['formule1']['puissancesDivines'] ?? 0) : 0;
                 if (self::evaluateOperation($value, $crit['operator'], $crit['value'])) {
                     return true;
                 }

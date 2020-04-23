@@ -121,6 +121,10 @@ class Advanced
 
         $result['agents'] = array_filter(array_column($data['agents'] ?? [], 'designation'));
 
+        if (array_key_exists('formule1', $data)) {
+            $result = array_merge($result, $data['formule1']);
+        }
+
         // Add link data
         $result['link'] = ['type' => strtolower($entity->getEntite()), 'id' => $entity->getId()];
 

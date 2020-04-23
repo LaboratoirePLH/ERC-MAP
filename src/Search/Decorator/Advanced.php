@@ -119,6 +119,8 @@ class Advanced
         $result = array_merge($result, self::_decorateDatation($data['datation'] ?? []));
         $result = array_merge($result, self::_decorateLocalisation($data['localisation'] ?? [], $locale));
 
+        $result['agents'] = array_filter(array_column($data['agents'] ?? [], 'designation'));
+
         // Add link data
         $result['link'] = ['type' => strtolower($entity->getEntite()), 'id' => $entity->getId()];
 

@@ -108,11 +108,11 @@
                             {% set valueSort = value.text|default(value.id|default('')) %}
                             {% set value %}
                             {% include "partials/_entitylink.html.twig" with {
-                                    'icon': value.icon|default(''),
-                                    'entity': value.type|default(''),
-                                    'link': value.link is defined ? value.link : url(value.type ~ '_show', {'id': value.id}),
-                                    'text': value.text|default('#' ~ value.id|default(''))
-                                } %}
+                                'icon': value.icon|default(''),
+                                'entity': value.type|default(''),
+                                'link': value.link is defined ? value.link : url(value.type ~ '_show', {'id': value.id}),
+                                'text': value.text|default('#' ~ value.id|default(''))
+                            } %}
                             {% endset %}
 
                         {% elseif value is iterable %}

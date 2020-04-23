@@ -120,6 +120,12 @@ class CriteriaList
                         'semitic' => false,
                     ],
                     [
+                        'key'     => 'citiesSites',
+                        'label'   => $translator->trans('localisation.fields.ville') . ' / ' . $translator->trans('localisation.fields.site'),
+                        'type'    => 'select',
+                        'semitic' => false,
+                    ],
+                    [
                         'key'     => 'cities',
                         'label'   => $translator->trans('localisation.fields.ville'),
                         'type'    => 'select',

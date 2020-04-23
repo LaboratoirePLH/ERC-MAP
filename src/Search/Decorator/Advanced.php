@@ -3,12 +3,16 @@
 namespace App\Search\Decorator;
 
 use App\Entity\IndexRecherche;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class Advanced
 {
 
-    public static function decorate(array $data, array $allData, string $locale): array
+    public static $translator;
+
+    public static function decorate(array $data, array $allData, string $locale, TranslatorInterface $translator): array
     {
+        self::$translator = $translator;
         $result = [];
         foreach ($data as $entity) {
 
@@ -85,7 +89,8 @@ class Advanced
             "passage"                => $data['passage'] ?? '',
             "extraitAvecRestitution" => $data['extraitAvecRestitution'] ?? '',
             "translitteration"       => $data['translitteration'] ?? '',
-            "compteElement"          => count($data['elementIds'] ?? [])
+            "compteElement"          => count($data['elementIds'] ?? []),
+            "fiabilite"              => self::$translator->trans('attestation.fiabilite.niveau_' . $data['fiabilite'])
         ];
 
         foreach (['traductions', 'pratiques'] as $manyToManyField) {

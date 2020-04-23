@@ -9,6 +9,7 @@ use App\Search\FilterSet\Advanced as AdvancedSearchFilter;
 use App\Search\FilterSet\Elements as ElementsSearchFilter;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * @method IndexRecherche|null find($id, $lockMode = null, $lockVersion = null)
@@ -18,8 +19,11 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class IndexRechercheRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    private $translator;
+
+    public function __construct(ManagerRegistry $registry, TranslatorInterface $translator)
     {
+        $this->translator = $translator;
         parent::__construct($registry, IndexRecherche::class);
     }
 
@@ -156,7 +160,7 @@ class IndexRechercheRepository extends ServiceEntityRepository
         $filteredData = $filter->filter($criteria);
 
         if ($mode == 'advanced' || $mode == 'elements') {
-            return \App\Search\Decorator\Advanced::decorate($filteredData, $allData, $locale);
+            return \App\Search\Decorator\Advanced::decorate($filteredData, $allData, $locale, $this->translator);
         } else {
             $response = [];
             foreach ($filteredData as $e) {

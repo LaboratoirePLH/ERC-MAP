@@ -107,12 +107,12 @@ class CriteriaList
                 'type'     => 'select',
                 'semitic'  => false,
                 'children' => [
-                    [
-                        'key'     => 'regions',
-                        'label'   => $translator->trans('localisation.fields.region'),
-                        'type'    => 'select',
-                        'semitic' => false,
-                    ],
+                    // [
+                    //     'key'     => 'regions',
+                    //     'label'   => $translator->trans('localisation.fields.region'),
+                    //     'type'    => 'select',
+                    //     'semitic' => false,
+                    // ],
                     [
                         'key'     => 'politicalEntities',
                         'label'   => $translator->trans('localisation.fields.entite_politique'),
@@ -125,18 +125,18 @@ class CriteriaList
                         'type'    => 'select',
                         'semitic' => false,
                     ],
-                    [
-                        'key'     => 'cities',
-                        'label'   => $translator->trans('localisation.fields.ville'),
-                        'type'    => 'select',
-                        'semitic' => false,
-                    ],
-                    [
-                        'key'     => 'sites',
-                        'label'   => $translator->trans('localisation.fields.site'),
-                        'type'    => 'select',
-                        'semitic' => false,
-                    ],
+                    // [
+                    //     'key'     => 'cities',
+                    //     'label'   => $translator->trans('localisation.fields.ville'),
+                    //     'type'    => 'select',
+                    //     'semitic' => false,
+                    // ],
+                    // [
+                    //     'key'     => 'sites',
+                    //     'label'   => $translator->trans('localisation.fields.site'),
+                    //     'type'    => 'select',
+                    //     'semitic' => false,
+                    // ],
                     [
                         'key'      => 'locationPrecision',
                         'label'    => $translator->trans('localisation.fields.precision'),

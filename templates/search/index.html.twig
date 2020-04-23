@@ -527,7 +527,7 @@
                     }, 100);
                 } else if (mode == 'elements') { // Elements form will be populated when all its data has been loaded
                     $('#elements').find('button[type=reset]').click();
-                    $('#search-panel').on('async-form-ready', function () {
+                    $('#search-panel').one('async-form-ready', function () {
                         $.each(data, function (criteria, value) {
                             switch (criteria) {
                                 case 'element_count':
@@ -830,6 +830,7 @@
                 }
             }
             function addElement(elementId, refreshEditors) { // Get data from the selected option
+                console.log('addElement', elementId);
                 var select = $('#elements #inputElementName');
                 const elementLabel = select.find('option[value="' + elementId + '"]').text();
 
@@ -862,6 +863,7 @@
 
             }
             function removeElement(elementId, refreshEditors) { // Remove element data from object
+                console.log('removeElement', elementId);
                 delete SEARCH_ELEMENTS[elementId];
 
                 // Reenable the corresponding option in the select

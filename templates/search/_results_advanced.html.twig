@@ -102,7 +102,7 @@
                         {% set valueSearch = value %}
                         {% set valueSort = value %}
 
-                        {% if col.link|default(false) %}
+                        {% if col.link|default(false) and value is iterable %}
 
                             {% set valueSearch = value.text|default(value.id|default('')) %}
                             {% set valueSort = value.text|default(value.id|default('')) %}

@@ -14,31 +14,43 @@ class CitiesSites extends AbstractFilter
         // We get all the resolved locations
         $localisations = self::resolveLocalisations($entity, $sortedData);
 
-        // We get the ID (or name if no ID set) of the pleiades City of each location
-        $cities = array_filter(array_map(function ($l) {
-            return $l['pleiadesVille'] ?? $l['nomVille'] ?? null;
+        // We get the ID (or name if no ID set) of the pleiades City and pleiades Site of each location
+        $data = array_filter(array_map(function ($l) {
+            return [$l['pleiadesVille'] ?? $l['nomVille'] ?? null, $l['pleiadesSite'] ?? $l['nomSite'] ?? null];
         }, $localisations));
-        // We get the ID (or name if no ID set) of the pleiades Site of each location
-        $sites = array_filter(array_map(function ($l) {
-            return $l['pleiadesSite'] ?? $l['nomSite'] ?? null;
-        }, $localisations));
-        $data = [];
-        foreach ($cities as $city) {
-            $data[] = json_encode(['city', $city]);
-        }
-        foreach ($sites as $site) {
-            $data[] = json_encode(['site', $site]);
-        }
 
         // For each criteria entry, we will get a boolean result of whether the entry is valid against the data
         // We need at least one truthy value to accept the data
-        return !!count(array_filter(array_map(function ($crit) use ($data) {
+        $match = !!count(array_filter(array_map(function ($crit) use ($data) {
             $requireAll = ($crit['mode'] ?? 'one') === 'all';
-            $crit = array_filter($crit['values']);
+            // Each criteria entry value is a json encoded array
+            $crit = array_map('json_decode', array_filter($crit['values']));
 
-            // If requireAll is true, we require all the values in the criteria to be present (intersection count equals to criteria values count)
-            // If requireAll is false, we require at least one of the value in the criteria to be present
-            return count(array_intersect($crit, $data)) >= ($requireAll ? count($crit) : 1);
+            // We count the matched criteria values
+            $matched = 0;
+            foreach ($crit as $c) {
+                foreach ($data as $d) {
+                    // Single ID is pleiades City ID/Name
+                    if ($c[0] == $d[0]) {
+                        if (count($c) === 2) {
+                            // Double ID is pleiades Site ID/Name
+                            if ($c[1] == $d[1]) {
+                                $matched++;
+                                break; // Break the inner foreach since we found a localisation matching this criteria value
+                            }
+                        } else {
+                            $matched++;
+                            break; // Break the inner foreach since we found a localisation matching this criteria value
+                        }
+                    }
+                }
+            }
+
+            // If we require all values to be matched we must find at least as many as the criteria values
+            // Else we only need one
+            return $matched >= ($requireAll ? count($crit) : 1);
         }, $criteria)));
+
+        return $match;
     }
 }

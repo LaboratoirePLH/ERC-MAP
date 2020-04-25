@@ -97,6 +97,7 @@ generic:
         est_datee: "Is Dated ?"
         est_localisee: "Location ?"
         position: "Position"
+        coordonnees: "Coordinates"
         lieu: "Location"
         categorie: "Category"
         champ: "Field"

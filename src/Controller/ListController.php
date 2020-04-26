@@ -19,13 +19,13 @@ class ListController extends AbstractController
     public function source(Request $request)
     {
         $locale = $request->getLocale();
-        $user = $this->get('security.token_storage')->getToken()->getUser();        
-        
-        $sources = $this->getDoctrine()
-                        ->getRepository(Source::class)
-                        ->findAll();
+        $user = $this->get('security.token_storage')->getToken()->getUser();
 
-        $data = array_map(function($source) use ($locale, $user) {
+        $sources = $this->getDoctrine()
+            ->getRepository(Source::class)
+            ->findAll();
+
+        $data = array_map(function ($source) use ($locale, $user) {
             $lieu = $source->getInSitu() ? $source->getLieuDecouverte() : $source->getLieuOrigine();
 
             return [
@@ -33,8 +33,12 @@ class ListController extends AbstractController
                 'projet' => $source->getProjet()->getNom($locale),
                 'version' => $source->getVersion(),
                 'categorie' => $source->getCategorieSource()->getNom($locale),
-                'types' => $source->getTypeSources()->map(function($ts) use ($locale) { return $ts->getNom($locale); }),
-                'langues' => $source->getLangues()->map(function($l) use ($locale) { return $l->getNom($locale); }),
+                'types' => $source->getTypeSources()->map(function ($ts) use ($locale) {
+                    return $ts->getNom($locale);
+                }),
+                'langues' => $source->getLangues()->map(function ($l) use ($locale) {
+                    return $l->getNom($locale);
+                }),
                 'region' => $lieu !== null ? $lieu->getGrandeRegion()->getNom($locale) : '',
                 'datation' => $source->getEstDatee() ? implode(' / ', [$source->getDatation()->getPostQuem() ?? '?', $source->getDatation()->getAnteQuem() ?? '?']) : '',
                 'titre_abrege' => $source->getEditionPrincipaleBiblio()->getBiblio()->getTitreAbrege(),
@@ -48,7 +52,7 @@ class ListController extends AbstractController
                 'verrou' => ($source->getVerrou() !== null && !$source->getVerrou()->isWritable($user)) ? $source->getVerrou()->toArray() : false
             ];
         }, $sources);
-        
+
         return new JsonResponse($data);
     }
 }

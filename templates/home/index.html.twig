@@ -190,7 +190,6 @@
             $('#corpus-state-title').prepend($('<div class="spinner-border" role="status"></div>'));
             // Load data
             $.get("{{ url('corpus_state') }}").done(function (data) {
-                console.log(data);
                 var root = $('#corpus-state > ul');
                 data.forEach(d => {
                     root.append(listItem('globe-europe', d.label, 0));

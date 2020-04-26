@@ -213,12 +213,15 @@ class HomeController extends AbstractController
                 continue;
             }
 
-            // Get source location. If empty, skip
+            // Get source location. If empty, or no greater region, skip
             $loc = $source->getLieuOrigine() ?? $source->getLieuDecouverte();
             if (is_null($loc)) {
                 continue;
             }
             $loc = $loc->getGrandeSousRegion();
+            if (!array_key_exists('grandeRegion', $loc) || is_null($loc['grandeRegion'])) {
+                continue;
+            }
 
             // Get main bibliographic reference
             $bib = $source->getEditionPrincipaleBiblio();
@@ -250,6 +253,7 @@ class HomeController extends AbstractController
                     ];
                 }
                 $data[$loc['grandeRegion']->getId()]['sousRegions'][$loc['sousRegion']->getId()]['biblios'][$bib->getId()]['value']++;
+                $sourceIds[] = $source->getId();
             } else {
                 if (!array_key_exists($bib->getId(), $data[$loc['grandeRegion']->getId()]['biblios'])) {
                     $data[$loc['grandeRegion']->getId()]['biblios'][$bib->getId()] = [
@@ -258,6 +262,7 @@ class HomeController extends AbstractController
                     ];
                 }
                 $data[$loc['grandeRegion']->getId()]['biblios'][$bib->getId()]['value']++;
+                $sourceIds[] = $source->getId();
             }
         }
 

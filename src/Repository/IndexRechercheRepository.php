@@ -224,14 +224,6 @@ class IndexRechercheRepository extends ServiceEntityRepository
             $localisation = $localisation['nomSite'] ?? $localisation['nomVille'] ?? $localisation['grandeRegion']['nom' . ucFirst($locale)] ?? $localisation['sousRegion']['nom' . ucFirst($locale)] ?? null;
         }
 
-        $datation = array_key_exists('datation', $source) ? (implode(
-            ' / ',
-            array_filter([
-                $source['datation']['postQuem'] ?? null,
-                $source['datation']['anteQuem'] ?? null
-            ])
-        )) : null;
-
         $attestationIds = implode(',', $source['attestations'] ?? []);
         $extraits = [];
         if (!empty($attestationIds)) {
@@ -245,10 +237,11 @@ class IndexRechercheRepository extends ServiceEntityRepository
         }
 
         return [
-            "reference" => $reference,
+            "reference"    => $reference,
             "localisation" => $localisation,
-            "datation" => $datation,
-            "text" => $extraits
+            "postQuem"     => array_key_exists('postQuem', $source['datation'] ?? []) ? $source['datation']['postQuem'] : null,
+            "anteQuem"     => array_key_exists('anteQuem', $source['datation'] ?? []) ? $source['datation']['anteQuem'] : null,
+            "text"         => $extraits
         ];
     }
 
@@ -271,23 +264,15 @@ class IndexRechercheRepository extends ServiceEntityRepository
         if ($localisation !== null) {
             $localisation = $localisation['nomSite'] ?? $localisation['nomVille'] ?? $localisation['grandeRegion']['nom' . ucFirst($locale)] ?? $localisation['sousRegion']['nom' . ucFirst($locale)] ?? null;
         }
-        $datation = array_key_exists('datation', $attestation) ? (implode(
-            ' / ',
-            array_filter([
-                $attestation['datation']['postQuem'] ?? null,
-                $attestation['datation']['anteQuem'] ?? null
-            ], function ($v) {
-                return !is_null($v);
-            })
-        )) : null;
 
         $text = $attestation['extraitAvecRestitution'] ?? $attestation['translitteration'] ?? "";
 
         return [
-            "reference" => $reference,
+            "reference"    => $reference,
             "localisation" => $localisation,
-            "datation" => $datation,
-            "text" => [\App\Utils\StringHelper::ellipsis($text)]
+            "postQuem"     => array_key_exists('postQuem', $attestation['datation'] ?? []) ? $attestation['datation']['postQuem'] : null,
+            "anteQuem"     => array_key_exists('anteQuem', $attestation['datation'] ?? []) ? $attestation['datation']['anteQuem'] : null,
+            "text"         => [\App\Utils\StringHelper::ellipsis($text)]
         ];
     }
 

@@ -187,6 +187,10 @@ class Source extends AbstractEntity
      *      "this.hasEditionPrincipaleBiblio()",
      *      message="edition_principale"
      * )
+     * @Assert\Expression(
+     *      "this.hasUniqueBiblio()",
+     *      message="unique_biblio"
+     * )
      */
     private $sourceBiblios;
 
@@ -238,7 +242,7 @@ class Source extends AbstractEntity
      */
     public function __clone()
     {
-        if($this->id) {
+        if ($this->id) {
             $this->id = null;
 
             // Reset tracking fields
@@ -250,19 +254,19 @@ class Source extends AbstractEntity
             $this->verrou           = null;
 
             // Clone datation and localizations
-            if($this->datation !== null){
+            if ($this->datation !== null) {
                 $this->datation = clone $this->datation;
             }
-            if($this->lieuDecouverte !== null){
+            if ($this->lieuDecouverte !== null) {
                 $this->lieuDecouverte = clone $this->lieuDecouverte;
             }
-            if($this->lieuOrigine !== null){
+            if ($this->lieuOrigine !== null) {
                 $this->lieuOrigine = clone $this->lieuOrigine;
             }
 
             // Clone sourceBiblios
             $cloneSourceBiblios = new ArrayCollection();
-            foreach($this->sourceBiblios as $sb){
+            foreach ($this->sourceBiblios as $sb) {
                 $cloneSb = clone $sb;
                 $cloneSb->setSource($this);
                 $cloneSourceBiblios->add($cloneSb);
@@ -424,8 +428,10 @@ class Source extends AbstractEntity
 
     public function concatTypeSources($lang): string
     {
-        if(empty($this->getTypeSources())){ return ""; }
-        $names = $this->getTypeSources()->map(function($type) use ($lang) {
+        if (empty($this->getTypeSources())) {
+            return "";
+        }
+        $names = $this->getTypeSources()->map(function ($type) use ($lang) {
             return $type->getNom($lang);
         });
         $names = $names->toArray();
@@ -464,7 +470,7 @@ class Source extends AbstractEntity
     {
         $this->setCategorieSource($data['categorieSource']);
         $this->getTypeSources()->clear();
-        foreach($data['typeSources'] as $type){
+        foreach ($data['typeSources'] as $type) {
             $this->getTypeSources()->add($type);
         }
         return $this;
@@ -534,8 +540,10 @@ class Source extends AbstractEntity
 
     public function concatLangues($lang): string
     {
-        if(empty($this->getLangues())){ return ""; }
-        $names = $this->getLangues()->map(function($langue) use ($lang) {
+        if (empty($this->getLangues())) {
+            return "";
+        }
+        $names = $this->getLangues()->map(function ($langue) use ($lang) {
             return $langue->getNom($lang);
         });
         $names = $names->toArray();
@@ -590,13 +598,21 @@ class Source extends AbstractEntity
 
     public function getEditionPrincipaleBiblio(): ?SourceBiblio
     {
-        foreach($this->getSourceBiblios() as $sb)
-        {
-            if($sb->getEditionPrincipale()){
+        foreach ($this->getSourceBiblios() as $sb) {
+            if ($sb->getEditionPrincipale()) {
                 return $sb;
             }
         }
         return null;
+    }
+
+    public function hasUniqueBiblio(): bool
+    {
+        $biblios = [];
+        foreach ($this->getSourceBiblios() as $sb) {
+            $biblios[] = $sb->getBiblio()->getId();
+        }
+        return count(array_unique($biblios)) == count($biblios);
     }
 
     public function getProjet(): ?Projet
@@ -638,15 +654,22 @@ class Source extends AbstractEntity
      * @ORM\PrePersist
      * @ORM\PreUpdate
      */
-    public function _updateFiabiliteLocalisation(){
+    public function _updateFiabiliteLocalisation()
+    {
         $fiabLocalisation = 5;
         $lieu = $this->getInSitu() ? $this->getLieuDecouverte() : $this->getLieuOrigine();
-        if(!is_null($lieu)){
-            if(!empty($lieu->getNomSite())){ $fiabLocalisation = 1; }
-            else if(!empty($lieu->getNomVille())){ $fiabLocalisation = 2; }
-            else if(!is_null($lieu->getSousRegion())){ $fiabLocalisation = 3; }
-            else if(!is_null($lieu->getGrandeRegion())){ $fiabLocalisation = 4; }
-            else { $fiabLocalisation = 5; }
+        if (!is_null($lieu)) {
+            if (!empty($lieu->getNomSite())) {
+                $fiabLocalisation = 1;
+            } else if (!empty($lieu->getNomVille())) {
+                $fiabLocalisation = 2;
+            } else if (!is_null($lieu->getSousRegion())) {
+                $fiabLocalisation = 3;
+            } else if (!is_null($lieu->getGrandeRegion())) {
+                $fiabLocalisation = 4;
+            } else {
+                $fiabLocalisation = 5;
+            }
         }
         $this->setFiabiliteLocalisation($fiabLocalisation);
     }
@@ -665,13 +688,21 @@ class Source extends AbstractEntity
 
     public function toArray(): array
     {
-        $getTranslatedName = function($entry){ return $entry->getTranslatedName(); };
+        $getTranslatedName = function ($entry) {
+            return $entry->getTranslatedName();
+        };
 
         return [
             'categorieSource' => $this->categorieSource->toArray(),
-            'typeSource'      => $this->typeSources->map(function($t) { return $t->toArray(); })->getValues(),
-            'langues'         => $this->langues->map(function($l) { return $l->toArray(); })->getValues(),
-            'auteurs'         => $this->auteurs->map(function($l) { return $l->toArray(); })->getValues(),
+            'typeSource'      => $this->typeSources->map(function ($t) {
+                return $t->toArray();
+            })->getValues(),
+            'langues'         => $this->langues->map(function ($l) {
+                return $l->toArray();
+            })->getValues(),
+            'auteurs'         => $this->auteurs->map(function ($l) {
+                return $l->toArray();
+            })->getValues(),
             'titrePrincipal'  => $this->titrePrincipal === null ? null : array_merge(
                 $this->titrePrincipal->getTranslatedName(),
                 ['auteurs' => $this->titrePrincipal->getAuteurs()->map($getTranslatedName)->getValues()]
@@ -686,13 +717,15 @@ class Source extends AbstractEntity
             'lieuOrigine'       => $this->inSitu
                 ? ($this->lieuDecouverte === null ? null : $this->lieuDecouverte->toArray())
                 : ($this->lieuOrigine === null ? null : $this->lieuOrigine->toArray()),
-            'sourceBiblios' => $this->sourceBiblios->map(function($sb){
+            'sourceBiblios' => $this->sourceBiblios->map(function ($sb) {
                 return array_merge($sb->getBiblio()->toArray(), [
                     'editionPrincipale' => $sb->getEditionPrincipale(),
                     'reference'         => $sb->getReferenceSource()
                 ]);
             })->getValues(),
-            'attestations'  => $this->attestations->map(function($att) { return $att->getId(); })->toArray(),
+            'attestations'  => $this->attestations->map(function ($att) {
+                return $att->getId();
+            })->toArray(),
             'commentaireFr' => $this->commentaireFr,
             'commentaireEn' => $this->commentaireEn
         ];

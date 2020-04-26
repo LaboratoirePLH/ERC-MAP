@@ -1,4 +1,5 @@
 edition_principale: "At least one reference must be specified as the Main Edition"
+unique_biblio: "A reference cannot be entered multiple times in the Bibliography"
 datation_error: "Ante Quem must be greater than or equal to Post Quem if both are present"
 categories_count: "You can only select up to 3 categories"
 unique_elements: "You must select unique values for the position field of your elements"

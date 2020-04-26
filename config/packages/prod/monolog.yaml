@@ -36,7 +36,7 @@ monolog:
             handler: swift
         swift:
             type:       swift_mailer
-            from_email: "%parameters.from_email%"
+            from_email: "%from_email%"
             to_email:   'romain@3rgo.tech'
             subject:    'ERC-MAP error report (%env(APP_ENV)%) %%message%%'
             level:      debug

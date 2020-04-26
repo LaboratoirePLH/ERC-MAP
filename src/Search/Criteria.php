@@ -183,12 +183,15 @@ class Criteria
             if ($key === "languages_mode" && !array_key_exists("languages", $criteria)) {
                 continue;
             }
+            if ($key === "formules_mode" && !array_key_exists("formule", $criteria)) {
+                continue;
+            }
             if (is_array($value) && !count(array_filter($value))) {
                 continue;
             }
-            $cleanedCriteria[$key] = array_filter($value, function ($v) {
+            $cleanedCriteria[$key] = is_array($value) ? array_filter($value, function ($v) {
                 return $v !== null && $v !== "";
-            });
+            }) : $value;
         }
         if (count(array_intersect(array_keys($cleanedCriteria), ['element_count', 'divine_powers_count', 'formule'])) == 0) {
             return false;

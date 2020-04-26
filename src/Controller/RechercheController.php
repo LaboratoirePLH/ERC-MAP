@@ -436,6 +436,7 @@ class RechercheController extends AbstractController
                         $response['search.criteria_labels.formule'] = $value;
                         break;
                     case 'languages_mode':
+                    case 'formules_mode':
                         break;
                     default:
                         $response['search.criteria_labels.' . $key] = $searchCriteria->getDisplay($key, $value, $locale);
@@ -446,6 +447,12 @@ class RechercheController extends AbstractController
             ) {
                 $response['search.criteria_labels.languages_all'] = $response['search.criteria_labels.languages'];
                 unset($response['search.criteria_labels.languages']);
+            }
+            if (($criteria['formules_mode'] ?? 'one') === 'all'
+                && array_key_exists('formule', $criteria)
+            ) {
+                $response['search.criteria_labels.formules_all'] = $response['search.criteria_labels.formule'];
+                unset($response['search.criteria_labels.formule']);
             }
             foreach ($response as $key => $value) {
                 $response[$translator->trans($key)] = $value;

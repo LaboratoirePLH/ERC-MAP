@@ -60,7 +60,11 @@ class Elements extends AbstractFilterSet
                 }
             }
             if (array_key_exists('formule', $criteria)) {
-                if (!\App\Search\Filter\Formula::filter($e, $criteria['formule'], $this->sortedData)) {
+                $crit = [[
+                    "values" => $criteria['formule'],
+                    "mode"   => ($criteria['formules_mode'] ?? "one")
+                ]];
+                if (!\App\Search\Filter\Formula::filter($e, $crit, $this->sortedData)) {
                     continue;
                 }
             }

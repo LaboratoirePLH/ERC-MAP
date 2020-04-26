@@ -521,6 +521,7 @@ search:
         contexte_attestation: "Contexte de l'Attestation"
         all: " (Tous)"
         formule: "Formule(s)"
+        formules_all: "Formules (Toutes)"
         element_en_contexte: "Nom(s) en contexte"
         fiabilite_lecture: "Qualité de lecture du nom"
     element_labels:

@@ -19,16 +19,23 @@ class Formula extends AbstractFilter
         // For each criteria entry, we will get a boolean result of whether the entry is valid against the data
         // We need at least one truthy value to accept the data
         return !!count(array_filter(array_map(function ($crit) use ($data) {
-            // We check all the found attestations against the criteria entry
-            // If at least one attestation is acceptable, we return true immediately
-            foreach ($data as $d) {
-                $value = array_key_exists('formule1', $d) ? ($d['formule1']['formule'] ?? '') : '';
-                if (strlen($value) > 0 && strstr($value, $crit) !== false) {
-                    return true;
+            $requireAll = ($crit['mode'] ?? 'one') === 'all';
+
+            // We count the matched criteria values
+            $matched = 0;
+            foreach ($crit['values'] as $c) {
+                foreach ($data as $d) {
+                    $value = array_key_exists('formule1', $d) ? ($d['formule1']['formule'] ?? '') : '';
+                    if (strlen($value) > 0 && strstr($value, $c) !== false) {
+                        $matched++;
+                        break;
+                    }
                 }
             }
-            // No attestation was found acceptable, return false
-            return false;
+
+            // If we require all values to be matched we must find at least as many as the criteria values
+            // Else we only need one
+            return $matched >= ($requireAll ? count($crit) : 1);
         }, $criteria)));
     }
 }

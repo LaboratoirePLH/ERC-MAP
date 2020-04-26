@@ -242,7 +242,13 @@
                         </div>
                         <hr/>
                         <div class="form-group row">
-                            <label class="col-sm-3 col-form-label">{{ ('search.element_labels.formula')|trans }}</label>
+                            <label class="col-sm-3 col-form-label">
+                                {{ ('search.element_labels.formula')|trans }}
+                                <div class="custom-control custom-switch pt-2" id="formules-mode-wrapper" style="display: none;">
+                                    <input type="checkbox" class="custom-control-input" id="inputFormuleLanguageMode" name="formules_mode" value="all">
+                                    <label class="custom-control-label" for="inputFormuleLanguageMode" style="font-weight: initial;">{{ 'generic.fields.require_all'|trans }}</label>
+                                </div>
+                            </label>
                             <div class="col">
                                 <div class="row">
                                     <div class="col formula-search">
@@ -546,6 +552,7 @@
                                     $('#elements').find('input[name="datation[exact]"]').attr('checked', value.exact === "datation_exact");
                                     break;
                                 case 'languages_mode':
+                                case 'formules_mode':
                                     if (value === "all") {
                                         $('#elements').find('input[name="' + criteria + '"]').attr('checked', true);
                                     }
@@ -884,6 +891,7 @@
                 if (Object.keys(SEARCH_ELEMENTS).length > 0) {
                     $('#elements').find(".add-formula-button").show();
                     $('#elements').find(".no-elements").hide();
+                    $('#formules-mode-wrapper').show();
                     $('#elements .formula-search').formulaEditor({
                         elements: SEARCH_ELEMENTS,
                         labels: {
@@ -916,6 +924,7 @@
                     $('#elements').find(".add-formula-button").siblings('.row').not('.no-elements').not(':first').remove();
                     $('#elements').find(".no-elements").show();
                     $('#elements').find(".add-formula-button").hide();
+                    $('#formules-mode-wrapper').hide();
                 }
             }
 

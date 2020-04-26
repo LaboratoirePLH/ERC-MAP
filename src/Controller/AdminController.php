@@ -38,4 +38,13 @@ class AdminController extends EasyAdminController
     {
         return $this->passwordEncoder->encodePassword($user, $password);
     }
+
+    protected function createNewFormuleEntity()
+    {
+        $formule = new \App\Entity\Formule();
+        $formule->setCreateur(
+            $this->get('security.token_storage')->getToken()->getUser()
+        );
+        return $formule;
+    }
 }

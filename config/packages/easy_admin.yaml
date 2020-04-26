@@ -119,6 +119,14 @@ easy_admin:
         Formule:
             class: App\Entity\Formule
             label: Formule
+            list:
+                sort: ['attestation', 'DESC']
+                fields:
+                 - 'id'
+                 - 'formule'
+                 - 'attestation'
+                 - 'positionFormule'
+                 - 'puissancesDivines'
         Genre:
             class: App\Entity\Genre
             label: Genre

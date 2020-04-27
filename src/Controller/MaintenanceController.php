@@ -2,13 +2,11 @@
 
 namespace App\Controller;
 
-use App\Entity\Element;
 use App\Utils\StringHelper;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 class MaintenanceController extends AbstractController
 {
@@ -92,6 +90,91 @@ class MaintenanceController extends AbstractController
         return $this->render('maintenance/index.html.twig', [
             'controller_name' => 'MaintenanceController',
             'formula_numbers'      => $formulaNumbers
+        ]);
+    }
+
+    /**
+     * @Route("/maintenance/html_cleanup", name="maintenance_html_cleanup")
+     */
+    public function htmlCleanup(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        // If request was posted, do the cleaning
+        if ($request->isMethod('POST')) {
+        }
+
+        $functions = [
+            "\App\Utils\HTMLCleaner::sanitizeOpenXML"        => 'maintenance.messages.openxml',
+            "\App\Utils\HTMLCleaner::sanitizeHtmlEncoding"   => 'maintenance.messages.bad_encoding',
+            "\App\Utils\HTMLCleaner::sanitizeHtmlNewLines"   => 'maintenance.messages.too_many_new_lines',
+            "\App\Utils\HTMLCleaner::sanitizeHtmlTags"       => 'maintenance.messages.forbidden_tags',
+            "\App\Utils\HTMLCleaner::sanitizeHtmlAttributes" => 'maintenance.messages.forbidden_attributes',
+            "\App\Utils\StringHelper::normalizeDiacritics"   => 'maintenance.messages.bad_diacritics',
+        ];
+
+        $html_fields = [
+            // 'Agent'           => ['id', 'designation', 'commentaireFr', 'commentaireEn'],
+            // 'Attestation'     => ['id', 'extraitAvecRestitution', 'translitteration', 'commentaireFr', 'commentaireEn'],
+            // 'Biblio'          => ['id', 'titreAbrege', 'titreComplet'],
+            'ContientElement' => ['id_attestation', 'id_element', 'enContexte'],
+            // 'Datation'        => ['id', 'commentaireFr', 'commentaireEn'],
+            // 'Element'         => ['id', 'etatAbsolu', 'commentaireFr', 'commentaireEn'],
+            // 'Localisation'    => ['id', 'commentaireFr', 'commentaireEn'],
+            // 'Source'          => ['id', 'commentaireFr', 'commentaireEn'],
+        ];
+
+        $html_cleanup = [];
+
+        foreach ($html_fields as $table => $fields) {
+            $id_fields = array_filter($fields, function ($f) {
+                return substr($f, 0, 2) === "id";
+            });
+            $non_id_fields = array_diff($fields, $id_fields);
+
+            $query = $em->createQuery("SELECT e FROM \App\Entity\\$table e");
+            $query->setHint(\Doctrine\ORM\Query::HINT_INCLUDE_META_COLUMNS, 1);
+            // $query->setHint(\Doctrine\ORM\Query::HINT_FORCE_PARTIAL_LOAD, 1);
+            $results = $query->getArrayResult();
+            dump($results);
+            foreach ($results as $row) {
+                foreach ($non_id_fields as $field) {
+
+                    if (strlen($row[$field]) == 0) {
+                        continue;
+                    }
+
+                    $messages = [];
+                    $before = $row[$field];
+                    foreach ($functions as $function => $message) {
+                        $after = $function($before);
+                        if ($after !== $before) {
+                            $messages[] = $message;
+                        }
+                        $before = $after;
+                    }
+                    if (count($messages)) {
+                        $html_cleanup[] = [
+                            'table' => $table,
+                            'field' => $field,
+                            'id' => array_filter($row, function ($key) use ($id_fields) {
+                                return in_array($key, $id_fields);
+                            }, ARRAY_FILTER_USE_KEY),
+                            'before' => $row[$field],
+                            'after' => $after,
+                            'messages' => $messages
+                        ];
+                    }
+                }
+            }
+        }
+        dump($html_cleanup);
+        die;
+
+
+        return $this->render('maintenance/index.html.twig', [
+            'controller_name' => 'MaintenanceController',
+            'html_cleanup'    => []
         ]);
     }
 }

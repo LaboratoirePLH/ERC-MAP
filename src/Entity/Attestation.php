@@ -300,23 +300,23 @@ class Attestation extends AbstractEntity
 
     public function getExtraitAvecRestitution(): ?string
     {
-        return $this->sanitizeWysiwygString($this->sanitizeOpenXMLString($this->extraitAvecRestitution));
+        return $this->sanitizeHtml($this->extraitAvecRestitution);
     }
 
     public function setExtraitAvecRestitution(?string $extraitAvecRestitution): self
     {
-        $this->extraitAvecRestitution = $this->sanitizeWysiwygString($this->sanitizeOpenXMLString($extraitAvecRestitution));
+        $this->extraitAvecRestitution = $this->sanitizeHtml($extraitAvecRestitution);
         return $this;
     }
 
     public function getTranslitteration(): ?string
     {
-        return $this->sanitizeWysiwygString($this->sanitizeOpenXMLString($this->translitteration));
+        return $this->sanitizeHtml($this->translitteration);
     }
 
     public function setTranslitteration(?string $translitteration): self
     {
-        $this->translitteration = $this->sanitizeWysiwygString($this->sanitizeOpenXMLString($translitteration));
+        $this->translitteration = $this->sanitizeHtml($translitteration);
         return $this;
     }
 

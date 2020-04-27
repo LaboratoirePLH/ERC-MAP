@@ -87,7 +87,7 @@ class Biblio extends AbstractEntity
      */
     public function __clone()
     {
-        if($this->id !== null){
+        if ($this->id !== null) {
             $this->id             = null;
             $this->verrou         = null;
             $this->sourceBiblios  = new ArrayCollection();
@@ -97,24 +97,24 @@ class Biblio extends AbstractEntity
 
     public function getTitreAbrege(): ?string
     {
-        return $this->sanitizeWysiwygString($this->sanitizeOpenXMLString($this->titreAbrege));
+        return $this->sanitizeHtml($this->titreAbrege);
     }
 
     public function setTitreAbrege(?string $titreAbrege): self
     {
-        $this->titreAbrege = $this->sanitizeWysiwygString($this->sanitizeOpenXMLString($titreAbrege));
+        $this->titreAbrege = $this->sanitizeHtml($titreAbrege);
 
         return $this;
     }
 
     public function getTitreComplet(): ?string
     {
-        return $this->sanitizeWysiwygString($this->sanitizeOpenXMLString($this->titreComplet));
+        return $this->sanitizeHtml($this->titreComplet);
     }
 
     public function setTitreComplet(?string $titreComplet): self
     {
-        $this->titreComplet = $this->sanitizeWysiwygString($this->sanitizeOpenXMLString($titreComplet));
+        $this->titreComplet = $this->sanitizeHtml($titreComplet);
 
         return $this;
     }
@@ -156,7 +156,7 @@ class Biblio extends AbstractEntity
 
     public function getAffichage(): string
     {
-        if($this->getEstCorpus()){
+        if ($this->getEstCorpus()) {
             return sprintf("Corpus : %s", $this->getTitreAbrege());
         } else {
             return sprintf("Biblio : %s, %s (%d)", $this->auteurBiblio, $this->titreAbrege, $this->annee);
@@ -237,5 +237,4 @@ class Biblio extends AbstractEntity
             'auteur'       => $this->auteurBiblio
         ];
     }
-
 }

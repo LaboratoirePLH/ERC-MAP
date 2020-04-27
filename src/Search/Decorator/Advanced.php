@@ -90,7 +90,7 @@ class Advanced
             "extraitAvecRestitution" => $data['extraitAvecRestitution'] ?? '',
             "translitteration"       => $data['translitteration'] ?? '',
             "compteElement"          => count($data['elementIds'] ?? []),
-            "fiabilite"              => self::$translator->trans('attestation.fiabilite.niveau_' . $data['fiabilite'])
+            "fiabilite"              => array_key_exists('fiabilite', $data) ? self::$translator->trans('attestation.fiabilite.niveau_' . $data['fiabilite']) : ''
         ];
 
         if (array_key_exists('traductions', $data)) {

@@ -939,10 +939,10 @@
             });
             $('#advanced').on('reset', function (e) {
                 var form = $(this);
+                form.find('input[name="resultsType"]').filter('[value=source]').prop('checked', true);
                 setTimeout(() => {
                     form.find('.criteria-row, .new-criteria').remove();
                     form.find('.row.no-criteria').show();
-                    form.find('input[name="resultsType"]').val('source');
                 }, 10);
             });
             $('#elements').on('reset', function (e) {

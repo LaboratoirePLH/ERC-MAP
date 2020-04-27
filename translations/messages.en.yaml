@@ -105,6 +105,7 @@ generic:
         require_all: "Require all"
         reason: "Reason"
         divers: "Miscellaneous"
+        indetermine: "Undetermined"
     choices :
         new: "New"
         existing: "Existing"

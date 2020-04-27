@@ -104,6 +104,7 @@ generic:
         require_all: "Tous requis"
         reason: "Raison"
         divers: "Divers"
+        indetermine: "Indéterminé"
     choices :
         new: "Nouveau"
         existing: "Existant"

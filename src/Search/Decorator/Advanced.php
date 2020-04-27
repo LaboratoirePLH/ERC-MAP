@@ -128,6 +128,9 @@ class Advanced
 
         if (array_key_exists('formule1', $data)) {
             $result = array_merge($result, $data['formule1']);
+            if (!array_key_exists('puissancesDivines', $result) || $result['puissancesDivines'] == "") {
+                $result['puissancesDivines'] = self::$translator->trans('generic.fields.indetermine');
+            }
         }
 
         // Add link data

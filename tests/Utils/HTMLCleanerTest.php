@@ -24,12 +24,24 @@ class HTMLCleanerTest extends TestCase
         $this->assertEquals('Λοκ[ρος]', HTMLCleaner::sanitizeHtmlEncoding('Λοκ[ρος]'));
     }
 
+    public function testSanitizeEncodingWillKeepChevronsEncoded()
+    {
+        $this->assertEquals('Foo&lt;Bar&gt;Baz', HTMLCleaner::sanitizeHtmlEncoding('Foo&lt;Bar&gt;Baz'));
+        $this->assertEquals('Foo&lt;&lt;Bar&gt;&gt;Baz', HTMLCleaner::sanitizeHtmlEncoding('Foo&lt;&lt;Bar&gt;&gt;Baz'));
+        $this->assertEquals('Foo&gt;Bar&lt;Baz', HTMLCleaner::sanitizeHtmlEncoding('Foo&gt;Bar&lt;Baz'));
+        $this->assertEquals('é', HTMLCleaner::sanitizeHtmlEncoding('&amp;eacute;'));
+        $this->assertEquals('Λοκ[ρος]', HTMLCleaner::sanitizeHtmlEncoding('&Lambda;&omicron;&kappa;[&rho;&omicron;&sigmaf;]'));
+        $this->assertEquals('Λοκ[ρος]', HTMLCleaner::sanitizeHtmlEncoding('Λοκ[ρος]'));
+    }
+
 
     public function testSanitizeTagsWillKeepAllowedTags()
     {
         $allowedTags = [
             'strong',
+            'b',
             'em',
+            'i',
             'u',
             's',
             'sub',
@@ -67,20 +79,28 @@ class HTMLCleanerTest extends TestCase
             HTMLCleaner::sanitizeHtmlAttributes('Foo')
         );
         $this->assertEquals(
-            'Foo <span style="font-family:ifaogreek">Bar</span> Baz',
+            'Foo <span style="font-family: IFAOGreek;">Bar</span> Baz',
             HTMLCleaner::sanitizeHtmlAttributes('Foo <span style="font-family: IFAOGreek;">Bar</span> Baz')
         );
         $this->assertEquals(
-            'Foo <span style="font-family:ifaogreek">Bar</span> Baz',
+            'Foo <span style="font-family:IFAOGreek;">Bar</span> Baz',
             HTMLCleaner::sanitizeHtmlAttributes('Foo <span style="font-family:IFAOGreek;">Bar</span> Baz')
         );
         $this->assertEquals(
-            'Foo <span style="font-family:ifaogreek">Bar</span> Baz',
+            'Foo <span style="font-family:IFAOGreek">Bar</span> Baz',
             HTMLCleaner::sanitizeHtmlAttributes('Foo <span style="font-family:IFAOGreek">Bar</span> Baz')
         );
         $this->assertEquals(
-            'Foo <span style="font-family:ifaogreek">Bar</span> Baz',
+            'Foo <span style="font-family:IFAOGreek;">Bar</span> Baz',
             HTMLCleaner::sanitizeHtmlAttributes('Foo <span style="font-family:IFAOGreek;background-color: rgb(211, 211, 211);">Bar</span> Baz')
+        );
+        $this->assertEquals(
+            'Foo <span style="font-family:IFAOGreek;">Bar</span> Baz',
+            HTMLCleaner::sanitizeHtmlAttributes('Foo <span style="background-color: rgb(211, 211, 211);font-family:IFAOGreek;">Bar</span> Baz')
+        );
+        $this->assertEquals(
+            'Foo <span style="font-family:IFAOGreek;">Bar</span> Baz',
+            HTMLCleaner::sanitizeHtmlAttributes('Foo <span style="background-color: rgb(211, 211, 211);font-family:IFAOGreek;color: red;">Bar</span> Baz')
         );
     }
 
@@ -127,6 +147,14 @@ class HTMLCleanerTest extends TestCase
             HTMLCleaner::sanitizeHtmlNewLines('Foo')
         );
         $this->assertEquals(
+            'Foo',
+            HTMLCleaner::sanitizeHtmlNewLines('Foo<br/> ')
+        );
+        $this->assertEquals(
+            'Foo',
+            HTMLCleaner::sanitizeHtmlNewLines('Foo<br />&nbsp;')
+        );
+        $this->assertEquals(
             'Foo<br/>Bar',
             HTMLCleaner::sanitizeHtmlNewLines('Foo<br/>Bar')
         );
@@ -140,15 +168,23 @@ class HTMLCleanerTest extends TestCase
     {
         $this->assertEquals(
             'Foo',
-            HTMLCleaner::sanitizeHtmlNewLines('Foo')
+            HTMLCleaner::sanitizeOpenXML('Foo')
         );
         $this->assertEquals(
             'Foo<br/>Bar',
-            HTMLCleaner::sanitizeHtmlNewLines('Foo<br/>Bar')
+            HTMLCleaner::sanitizeOpenXML('Foo<br/>Bar')
         );
         $this->assertEquals(
             'Foo',
             HTMLCleaner::sanitizeOpenXML('<!--StartFragment-->Foo<!--EndFragment-->')
+        );
+        $this->assertEquals(
+            'Bar',
+            HTMLCleaner::sanitizeOpenXML('<xml>Foo</xml>Bar')
+        );
+        $this->assertEquals(
+            'Bar',
+            HTMLCleaner::sanitizeOpenXML('<xml>Foo</xml>Bar<xml>Baz</xml>')
         );
     }
 }

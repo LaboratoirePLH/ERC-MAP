@@ -19,11 +19,16 @@ class HTMLCleaner
             return null;
         }
 
+        // Prevent &lt; and &gt; from being decoded
+        $string = str_replace(['&lt;', '&gt;'], ['#@LT@#', '#@GT@#'], $string);
+
         do {
             $before = $string;
-            // Replace ampersand and unbreakable space html entities
+            // Replace html entities
             $string = html_entity_decode($string);
         } while ($string !== $before); // Repeat until no changes are done
+
+        $string = str_replace(['#@LT@#', '#@GT@#'], ['&lt;', '&gt;'], $string);
 
         return $string;
     }
@@ -38,7 +43,7 @@ class HTMLCleaner
             return null;
         }
 
-        return strip_tags($string, '<strong><em><u><s><sub><sup><span><br>');
+        return strip_tags($string, '<strong><b><em><i><u><s><sub><sup><span><br>');
     }
 
     /**
@@ -53,7 +58,7 @@ class HTMLCleaner
         $dom = new Dom();
         $dom->setOptions([
             "removeDoubleSpace" => false,
-            "htmlSpecialCharsDecode" => true
+            // "htmlSpecialCharsDecode" => true
         ]);
         $dom->load($string);
         $spans = $dom->find('span');
@@ -63,7 +68,10 @@ class HTMLCleaner
             $attributes = $span->getAttributes();
             foreach ($attributes as $attr => $value) {
                 if ($attr == 'style' && stristr($value, 'ifaogreek') !== false) {
-                    $span->setAttribute('style', 'font-family:ifaogreek');
+                    $newValue = preg_replace("/.*(font-family:\s*ifaogreek;?).*/i", "$1", $value);
+                    if ($newValue !== $value) {
+                        $span->setAttribute('style', $newValue);
+                    }
                 } else {
                     $span->removeAttribute($attr);
                 }
@@ -78,7 +86,11 @@ class HTMLCleaner
                 unset($span);
             }
         }
-        return $dom;
+        $string = strval($dom);
+
+        // Clean <br/> tags to unify syntax
+        $string = preg_replace("/(<br[^>]*?>)/", "<br/>", $string);
+        return $string;
     }
 
     /**
@@ -90,14 +102,12 @@ class HTMLCleaner
         if (is_null($string)) {
             return null;
         }
-        $string = str_replace(['<<', '>>'], ['&lt;&lt;', '&gt;&gt;'], $string);
-
 
         // Replace <p> and <div> with a <br/>
         $dom = new Dom();
         $dom->setOptions([
             "removeDoubleSpace" => false,
-            'cleanupInput' => false,
+            // 'cleanupInput' => false,
         ]);
         $dom->load($string);
         $blocks = $dom->find('div, p');
@@ -123,10 +133,13 @@ class HTMLCleaner
         // Clean <br/> tags to unify syntax
         $string = preg_replace("/(<br[^>]*?>)/", "<br/>", $string);
 
-        // Remove multiple <br/>
+        // Remove empty lines
         $str_array = explode('<br/>', $string);
-        $str_array = array_map('trim', $str_array);
-        $str_array = array_filter($str_array, 'strlen');
+        $str_array = array_filter($str_array, function ($row) {
+            $row = htmlentities($row);
+            $row = str_replace(['&nbsp;', '&amp;nbsp;'], '', $row);
+            return strlen(trim($row));
+        });
         $string = implode('<br/>', $str_array);
 
         return $string;
@@ -140,9 +153,11 @@ class HTMLCleaner
         if (is_null($string)) {
             return null;
         }
+
+        // Fragments
         $start = "<!--StartFragment-->";
         $end = "<!--EndFragment-->";
-        if (strpos($string, $start) !== false && strpos($string, $end)) { // checks existence of StartFragment
+        if (strpos($string, $start) !== false && strpos($string, $end) !== false) { // checks existence of StartFragment
             $startCharCount = strpos($string, $start) + strlen($start);
             $firstSubStr = substr($string, $startCharCount, strlen($string));
             $endCharCount = strpos($firstSubStr, $end);
@@ -150,8 +165,27 @@ class HTMLCleaner
                 $endCharCount = strlen($firstSubStr);
             }
             return substr($firstSubStr, 0, $endCharCount);
-        } else {
-            return $string;
         }
+
+        // XML tags (when the text is not inside a fragment)
+        $start = "<xml>";
+        $end = "</xml>";
+        while (strpos($string, $start) !== false && strpos($string, $end) !== false) { // checks existence of <xml> and </xml>
+            $startXML = strpos($string, $start);
+            $endXML = strpos($string, $end) + strlen($end);
+
+            $string = substr($string, 0, $startXML) . substr($string, $endXML);
+        }
+        // Style tags (when the text is not inside a fragment)
+        $start = "<style>";
+        $end = "</style>";
+        while (strpos($string, $start) !== false && strpos($string, $end) !== false) { // checks existence of <xml> and </xml>
+            $startXML = strpos($string, $start);
+            $endXML = strpos($string, $end) + strlen($end);
+
+            $string = substr($string, 0, $startXML) . substr($string, $endXML);
+        }
+
+        return $string;
     }
 }

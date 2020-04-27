@@ -69,6 +69,9 @@ generic:
     link: "Link"
     fields:
         id: "ID"
+        table: "Table"
+        avant: "Avant"
+        apres: "Après"
         createur: "Creator"
         date: "Date"
         date_creation: "Creation"
@@ -589,6 +592,7 @@ maintenance:
     title: "Database Maintenance"
     beta_codes: "List of out of format Beta Codes"
     formula_numbers: "List of misnumbered formulae"
+    html: "HTML Cleanup"
     messages:
         invalid_char: "Invalid character(s)"
         invalid_length: "Length difference"

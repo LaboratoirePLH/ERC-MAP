@@ -1,0 +1,130 @@
+{% extends 'page.html.twig' %}
+{% block title %}
+    {{ 'maintenance.title'|trans }}
+{% endblock %}
+{% block content %}
+    <h4 class="text-center">
+        {{ 'maintenance.html_cleanup'|trans }}
+        {% if filter_table is defined and filter_table != "" %}
+            ({{filter_table}})
+        {% endif %}
+    </h4>
+    <hr/>
+    <div class="row text-center">
+        <div class="col-8 offset-2">
+            <table class="table-sm table-bordered h-100 mx-auto">
+                <thead class="thead-light">
+                    <tr>
+                        {% for table, count in count_tables %}
+                            <th scope="col">
+                                <a href="{{ url('maintenance_html_cleanup', {'filter_table': table}) }}">
+                                    {{table}}
+                                </a>
+                            </th>
+                        {% endfor %}
+                        {% if count_tables|keys|length > 1 %}
+                            <th scope="col">Total</th>
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        {% set total = 0 %}
+                        {% for table, count in count_tables %}
+                            <td>{{count}}</td>
+                            {% set total = total + count %}
+                        {% endfor %}
+                        {% if count_tables|keys|length > 1 %}
+                            <td>{{total}}</td>
+                        {% endif %}
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-10 offset-1 mt-1">
+            <table class="table-sm table-bordered">
+                <thead class="thead-light">
+                    <tr>
+                        {% for message, count in count_messages %}
+                            <th scope="col">{{message|trans}}</th>
+                        {% endfor %}
+                        <th scope="col">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        {% set total = 0 %}
+                        {% for message, count in count_messages %}
+                            <td>{{count}}</td>
+                            {% set total = total + count %}
+                        {% endfor %}
+                        <td>{{total}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <hr/>
+    <div class="row">
+        <div class="col-12">
+            <table class="table table-responsive table-bordered table-striped table-hover">
+                <thead>
+                    <tr class="text-center">
+                        <th scope="col">{{'generic.fields.table'|trans}}</th>
+                        <th scope="col">{{'generic.fields.champ'|trans}}</th>
+                        <th scope="col">{{'generic.fields.id'|trans}}</th>
+                        <th scope="col">{{'generic.fields.avant'|trans}}</th>
+                        <th scope="col">{{'generic.fields.apres'|trans}}</th>
+                        <th scope="col">{{'generic.fields.reason'|trans}}</th>
+                        <th scope="col">{{'generic.edit'|trans}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in html_cleanup %}
+                        <tr>
+                            <td class="text-center">
+                                {{item.table}}
+                            </td>
+                            <td class="text-center">
+                                {{ item.field }}
+                            </td>
+                            <td class="text-center">
+                                {% if item.id|keys|length == 1 %}
+                                    {{item.id.id}}
+                                {% else %}
+                                    Attestation
+                                    {{item.id.id_attestation}}<br/>
+                                    Element
+                                    {{item.id.id_element}}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {{ item.before|trans }}
+                            </td>
+                            <td>
+                                {{ item.after|trans }}
+                            </td>
+                            <td>
+                                {% for r in item.messages %}
+                                    {{r|trans}}
+                                    {% if not loop.last %}
+                                        <hr/>
+                                    {% endif %}
+                                {% endfor %}
+                            </td>
+                            <td class="text-center">
+                                {% if item.id|keys|length == 1 %}
+                                    {% set id = item.id|keys[0] %}
+                                {% else %}
+                                    {% set id = 'id_attestation:' ~ item.id.id_attestation ~ ',id_element:' ~ item.id.id_element %}
+                                {% endif %}
+                                {% set identifier = [item.table, item.field, id] %}
+                                <input type="checkbox" name"change[]" value="{{ identifier|join(';') }}"/>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

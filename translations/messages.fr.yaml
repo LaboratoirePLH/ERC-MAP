@@ -68,6 +68,9 @@ generic:
     link: "Lien"
     fields:
         id: "ID"
+        table: "Table"
+        avant: "Avant"
+        apres: "Après"
         createur: "Créateur"
         date: "Date"
         date_creation: "Création"
@@ -588,6 +591,7 @@ maintenance:
     title: "Maintenance de la Base de Données"
     beta_codes: "Liste des Beta Codes hors format"
     formula_numbers: "Liste des formules mal numérotées"
+    html_cleanup: "Nettoyage du HTML"
     messages:
         invalid_char: "Caractère(s) invalide(s)"
         invalid_length: "Différence de longueur"
@@ -597,5 +601,5 @@ maintenance:
         bad_encoding: "Caractères HTML encodés"
         too_many_new_lines: "Trop de sauts de lignes"
         forbidden_tags: "Balises HTML non autorisées"
-        forbidden_attributes: "Instruction de style non autorisées"
-        bad_diacritics: "Caractères diacritiques anormaux"
+        forbidden_attributes: "Style non autorisé"
+        bad_diacritics: "Signes diacritiques anormaux"

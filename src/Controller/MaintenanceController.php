@@ -114,17 +114,27 @@ class MaintenanceController extends AbstractController
         ];
 
         $html_fields = [
-            // 'Agent'           => ['id', 'designation', 'commentaireFr', 'commentaireEn'],
-            // 'Attestation'     => ['id', 'extraitAvecRestitution', 'translitteration', 'commentaireFr', 'commentaireEn'],
-            // 'Biblio'          => ['id', 'titreAbrege', 'titreComplet'],
+            'Agent'           => ['id', 'designation', 'commentaireFr', 'commentaireEn'],
+            'Attestation'     => ['id', 'extraitAvecRestitution', 'translitteration', 'commentaireFr', 'commentaireEn'],
+            'Biblio'          => ['id', 'titreAbrege', 'titreComplet'],
             'ContientElement' => ['id_attestation', 'id_element', 'enContexte'],
-            // 'Datation'        => ['id', 'commentaireFr', 'commentaireEn'],
-            // 'Element'         => ['id', 'etatAbsolu', 'commentaireFr', 'commentaireEn'],
-            // 'Localisation'    => ['id', 'commentaireFr', 'commentaireEn'],
-            // 'Source'          => ['id', 'commentaireFr', 'commentaireEn'],
+            'Datation'        => ['id', 'commentaireFr', 'commentaireEn'],
+            'Element'         => ['id', 'etatAbsolu', 'commentaireFr', 'commentaireEn'],
+            'Localisation'    => ['id', 'commentaireFr', 'commentaireEn'],
+            'Source'          => ['id', 'commentaireFr', 'commentaireEn'],
         ];
 
+        $filter_table = $request->query->get('filter_table', '');
+        if ($filter_table !== '') {
+            $html_fields = array_filter($html_fields, function ($t) use ($filter_table) {
+                return strtolower($t) === strtolower($filter_table);
+            }, ARRAY_FILTER_USE_KEY);
+        }
+
         $html_cleanup = [];
+
+        $count_messages = array_fill_keys(array_values($functions), 0);
+        $count_tables = array_fill_keys(array_keys($html_fields), 0);
 
         foreach ($html_fields as $table => $fields) {
             $id_fields = array_filter($fields, function ($f) {
@@ -133,10 +143,12 @@ class MaintenanceController extends AbstractController
             $non_id_fields = array_diff($fields, $id_fields);
 
             $query = $em->createQuery("SELECT e FROM \App\Entity\\$table e");
+
+            // Include foreign key primitive values without needing to add joins
             $query->setHint(\Doctrine\ORM\Query::HINT_INCLUDE_META_COLUMNS, 1);
-            // $query->setHint(\Doctrine\ORM\Query::HINT_FORCE_PARTIAL_LOAD, 1);
+
+
             $results = $query->getArrayResult();
-            dump($results);
             foreach ($results as $row) {
                 foreach ($non_id_fields as $field) {
 
@@ -150,6 +162,8 @@ class MaintenanceController extends AbstractController
                         $after = $function($before);
                         if ($after !== $before) {
                             $messages[] = $message;
+                            $count_messages[$message]++;
+                            $count_tables[$table]++;
                         }
                         $before = $after;
                     }
@@ -168,13 +182,13 @@ class MaintenanceController extends AbstractController
                 }
             }
         }
-        dump($html_cleanup);
-        die;
 
-
-        return $this->render('maintenance/index.html.twig', [
+        return $this->render('maintenance/html_cleanup.html.twig', [
             'controller_name' => 'MaintenanceController',
-            'html_cleanup'    => []
+            'filter_table'           => $filter_table,
+            'html_cleanup'    => $html_cleanup,
+            'count_messages'  => $count_messages,
+            'count_tables'    => $count_tables,
         ]);
     }
 }

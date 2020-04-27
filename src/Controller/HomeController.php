@@ -239,7 +239,7 @@ class HomeController extends AbstractController
                 ];
             }
 
-            if (!is_null($loc['sousRegion'])) {
+            if (!is_null($loc['sousRegion'] ?? null)) {
                 if (!array_key_exists($loc['sousRegion']->getId(), $data[$loc['grandeRegion']->getId()]['sousRegions'])) {
                     $data[$loc['grandeRegion']->getId()]['sousRegions'][$loc['sousRegion']->getId()] = [
                         "label"    => $loc['sousRegion']->getNom($locale),

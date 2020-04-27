@@ -188,17 +188,13 @@ class Advanced
 
     protected static function _decorateLocalisation(array $localisation, string $locale): array
     {
-        $position = !is_null($localisation['longitude'] ?? null) && !is_null($localisation['latitude'] ?? null) ? [
-            'icon' => 'fa-location-arrow',
-            'text' => $localisation['latitude'] . ', ' . $localisation['longitude'],
-            'link' => 'https://www.google.com/maps/search/?api=1&query=' . $localisation['latitude'] . ',' . $localisation['longitude']
-        ] : '';
         return [
             'grandeRegion' => ($localisation['grandeRegion'] ?? [])['nom' . ucFirst($locale)] ?? '',
             'sousRegion'   => ($localisation['sousRegion'] ?? [])['nom' . ucFirst($locale)] ?? '',
             'ville'        => (($localisation['nomVille'] ?? '') . (($localisation['pleiadesVille'] ?? null) ? ' (' . $localisation['pleiadesVille'] . ')' : '')) ?? '',
             'site'         => (($localisation['nomSite'] ?? '') . (($localisation['pleiadesSite'] ?? null) ? ' (' . $localisation['pleiadesSite'] . ')' : '')) ?? '',
-            'coordonnees'  => $position
+            'latitude'     => $localisation['latitude'] ?? '',
+            'longitude'    => $localisation['longitude'] ?? ''
         ];
     }
 }

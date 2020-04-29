@@ -192,4 +192,9 @@ abstract class AbstractFilter
         }
         return false;
     }
+
+    protected static function cleanStringValue(string $str): string
+    {
+        return mb_strtolower(\App\Utils\StringHelper::removeAccents(strip_tags($str)));
+    }
 }

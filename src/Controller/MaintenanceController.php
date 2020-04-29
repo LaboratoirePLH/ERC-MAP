@@ -117,7 +117,6 @@ class MaintenanceController extends AbstractController
                 $selection[$selection_key][] = $id;
                 $totalSelected++;
             }
-            dump($selection);
         }
 
         $functions = [

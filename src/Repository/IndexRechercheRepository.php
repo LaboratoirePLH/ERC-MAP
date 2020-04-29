@@ -53,8 +53,6 @@ class IndexRechercheRepository extends ServiceEntityRepository
         $query = $em->createQuery("SELECT e FROM \App\Entity\\$entityType e");
         $all = $query->getResult();
 
-        // var_dump($entityType, count($all), $query->getDQL());die;
-
         // For each entity
         foreach ($all as $entity) {
             // call toArray function

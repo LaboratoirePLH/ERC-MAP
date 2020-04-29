@@ -24,9 +24,6 @@ class MorphologicalForms extends AbstractFilter
             return $morphologicalStates ?: null;
         }, $contextualElements));
 
-        dump($data);
-        dump($criteria);
-
         // For each criteria entry, we will get a boolean result of whether the entry is valid against the data
         // We need at least one truthy value to accept the data
         return !!count(array_filter(array_map(function ($crit) use ($data) {

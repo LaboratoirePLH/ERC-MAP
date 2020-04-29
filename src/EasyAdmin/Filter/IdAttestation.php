@@ -8,7 +8,7 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class FormuleAttestation extends FilterType
+class IdAttestation extends FilterType
 {
     public function configureOptions(OptionsResolver $resolver)
     {

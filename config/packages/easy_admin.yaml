@@ -26,6 +26,7 @@ easy_admin:
          - TypeSource
          - TypeSupport
          - { label: 'Attestation' }
+         - Agent
          - CategorieMateriel
          - CategorieOccasion
          - EtatFiche
@@ -53,6 +54,16 @@ easy_admin:
          - SousRegion
 
     entities:
+        Agent:
+            class: App\Entity\Agent
+            label: Agent
+            list:
+                sort: ['attestation', 'DESC']
+                filters:
+                - property: 'id_attestation'
+                  label: 'ID Attestation'
+                  type: 'App\EasyAdmin\Filter\IdAttestation'
+                  mapped: false
         ActiviteAgent:
             class: App\Entity\ActiviteAgent
             label: Activité (Agent)
@@ -130,7 +141,7 @@ easy_admin:
                 filters:
                 - property: 'id_attestation'
                   label: 'ID Attestation'
-                  type: 'App\EasyAdmin\Filter\FormuleAttestation'
+                  type: 'App\EasyAdmin\Filter\IdAttestation'
                   mapped: false
         Genre:
             class: App\Entity\Genre

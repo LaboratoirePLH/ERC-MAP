@@ -32,7 +32,9 @@ class Translitteration extends AbstractFilter
         return !!count(array_filter(array_map(function ($crit) use ($data) {
             // We require the criteria value to be present in data
             return !!count(array_filter($data, function ($d) use ($crit) {
-                return stristr($d, $crit) !== false;
+                $d_no_tags = strip_tags($d);
+                $d_no_brackets = trim(str_replace(['[', ']', '{', '}', '-'], '', $d_no_tags));
+                return stristr($d_no_brackets, $crit) !== false || stristr($d_no_tags, $crit) !== false || stristr($d, $crit) !== false;
             }));
         }, $criteria)));
     }

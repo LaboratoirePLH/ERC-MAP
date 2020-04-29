@@ -5,25 +5,27 @@ namespace App\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 
-use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class TranslatedNameType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('nomFr', TextType::class, [
+            ->add('nomFr', TextareaType::class, [
                 'label'    => 'languages.fr',
-                'required' => false
+                'required' => false,
+                'attr'     => ['class' => 'no-return-textarea']
             ])
-            ->add('nomEn', TextType::class, [
+            ->add('nomEn', TextareaType::class, [
                 'label'    => 'languages.en',
-                'required' => false
-            ])
-        ;
+                'required' => false,
+                'attr'     => ['class' => 'no-return-textarea']
+            ]);
     }
 
-    public function getBlockPrefix(){
+    public function getBlockPrefix()
+    {
         return "translatedname";
     }
 }

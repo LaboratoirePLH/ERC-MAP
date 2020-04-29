@@ -159,7 +159,7 @@ class Biblio extends AbstractEntity
         if ($this->getEstCorpus()) {
             return sprintf("Corpus : %s", $this->getTitreAbrege());
         } else {
-            return sprintf("Biblio : %s, %s (%d)", $this->auteurBiblio, $this->titreAbrege, $this->annee);
+            return sprintf("%s, %s (%d)", $this->auteurBiblio, $this->titreAbrege, $this->annee);
         }
     }
 

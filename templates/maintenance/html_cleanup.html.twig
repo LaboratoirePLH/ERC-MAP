@@ -1,0 +1,192 @@
+{% extends 'page.html.twig' %}
+{% block title %}
+    {{ 'maintenance.title'|trans }}
+{% endblock %}
+{% block content %}
+    <h4 class="text-center">
+        {{ 'maintenance.html_cleanup'|trans }}
+        {% if filter_table is defined and filter_table != "" %}
+            ({{filter_table}})
+        {% endif %}
+    </h4>
+    <hr/>
+    {% if total_selected > 0 %}
+        {% if total_updated == total_selected %}
+            <div class="alert alert-success" role="alert">
+                {{'maintenance.html_cleanup_updated'|trans({'%updated%': total_updated})}}
+            </div>
+        {% else %}
+            <div class="alert alert-warning" role="alert">
+                {{'maintenance.html_cleanup_updated_incomplete'|trans({'%updated%': total_updated, '%selected%': total_selected})}}
+            </div>
+        {% endif %}
+    {% endif %}
+    <div class="row text-center">
+        <div class="col-8 offset-2">
+            <table class="table-sm table-bordered h-100 mx-auto">
+                <tbody>
+                    <tr>
+                        {% for table, count in count_tables %}
+                            <th scope="col">
+                                <a href="{{ url('maintenance_html_cleanup', {'filter_table': table}) }}">
+                                    {{table}}
+                                </a>
+                            </th>
+                        {% endfor %}
+                        {% if count_tables|keys|length > 1 %}
+                            <th scope="col">Total</th>
+                        {% endif %}
+                        {% if filter_table is defined and filter_table != "" %}
+                            <th rowspan="2">
+                                <a href="{{ url('maintenance_html_cleanup') }}">
+                                    {{ 'datatable.all'|trans }}
+                                </a>
+                            </th>
+                        {% endif %}
+                    </tr>
+                    <tr>
+                        {% set total = 0 %}
+                        {% for table, count in count_tables %}
+                            <td>{{count}}</td>
+                            {% set total = total + count %}
+                        {% endfor %}
+                        {% if count_tables|keys|length > 1 %}
+                            <td>{{total}}</td>
+                        {% endif %}
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-10 offset-1 mt-1">
+            <table class="table-sm table-bordered">
+                <thead class="thead-light">
+                    <tr>
+                        {% for message, count in count_messages %}
+                            <th scope="col">{{message|trans}}</th>
+                        {% endfor %}
+                        <th scope="col">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        {% set total = 0 %}
+                        {% for message, count in count_messages %}
+                            <td>{{count}}</td>
+                            {% set total = total + count %}
+                        {% endfor %}
+                        <td>{{total}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <hr/>
+    <div class="row">
+        <div class="col-12">
+            <table class="table table-responsive table-bordered table-striped table-hover">
+                <thead>
+                    <tr class="text-center">
+                        <th scope="col">{{'generic.fields.table'|trans}}</th>
+                        <th scope="col">{{'generic.fields.champ'|trans}}</th>
+                        <th scope="col">{{'generic.fields.id'|trans}}</th>
+                        <th scope="col">
+                            {{'generic.fields.avant'|trans}}
+                            <i class="fas fa-question-circle" data-toggle="tooltip" data-placement="top" data-html="false" title="{{ 'maintenance.html_cleanup_help'|trans }}"></i>
+                        </th>
+                        <th scope="col">
+                            {{'generic.fields.apres'|trans}}
+                            <i class="fas fa-question-circle" data-toggle="tooltip" data-placement="top" data-html="false" title="{{ 'maintenance.html_cleanup_help'|trans }}"></i>
+                        </th>
+                        <th scope="col">{{'generic.fields.reason'|trans}}</th>
+                        <th scope="col">{{'generic.edit'|trans}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <form action="" method="post">
+                        {% for item in html_cleanup %}
+                            <tr>
+                                <td class="text-center">
+                                    {{item.table}}
+                                </td>
+                                <td class="text-center">
+                                    {{ item.field }}
+                                </td>
+                                <td class="text-center">
+                                    {% if item.id|keys|length == 1 %}
+                                        {{item.id.id}}
+                                    {% else %}
+                                        Attestation&nbsp;#{{item.id.id_attestation}}
+                                        <br/>
+                                        Element&nbsp;#{{item.id.id_element}}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% for r in item.before|replace({"<br />": "<br/>"})|split("<br/>") %}
+                                        {{ r }}
+                                        {% if not loop.last %}
+                                            {{ '<br/>'|e('html') }}
+                                            <br/>
+                                        {% endif %}
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    {% for r in item.after|replace({"<br />": "<br/>"})|split("<br/>") %}
+                                        {{ r }}
+                                        {% if not loop.last %}
+                                            {{ '<br/>'|e('html') }}
+                                            <br/>
+                                        {% endif %}
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    {% for r in item.messages %}
+                                        {{r|trans}}
+                                        {% if not loop.last %}
+                                            <hr/>
+                                        {% endif %}
+                                    {% endfor %}
+                                </td>
+                                <td class="text-center">
+                                    {% set identifier = [item.table, item.field, item.id|json_encode] %}
+                                    <input type="checkbox" name="change[]" class="change-checkbox" value="{{ identifier|join(';') }}"/>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        <div class="alert alert-info w-50 fixed-bottom text-center" role="alert" id="total-checked-wrapper" style="display:none;">
+                            <span id="total-checked">XX</span>
+                            {{ 'maintenance.html_cleanup_selection'|trans }}
+                            <button class="btn btn-danger ml-4" type="submit">
+                                {{ 'generic.edit'|trans }}
+                            </button>
+                            <button class="btn btn-sm btn-secondary" type="reset">
+                                {{ 'generic.cancel'|trans }}
+                            </button>
+                        </div>
+                    </form>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {{ include('partials/_backtotop.html.twig') }}
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            function toggleSubmitButton() {
+                const totalChecked = $('.change-checkbox:checked').length;
+                if (totalChecked > 0) {
+                    $('#total-checked-wrapper').find('#total-checked').text(totalChecked);
+                    $('#total-checked-wrapper').show();
+                } else {
+                    $('#total-checked-wrapper').hide();
+                }
+            };
+            $('.change-checkbox').on('change', toggleSubmitButton);
+            $('form').on('reset', function () {
+                setTimeout(() => toggleSubmitButton(), 100);
+            });
+        });
+    </script>
+{% endblock %}

@@ -11,6 +11,7 @@
         "easycorp/easyadmin-bundle": "^2.0",
         "excelwebzone/recaptcha-bundle": "^1.5",
         "jsor/doctrine-postgis": "^1.7",
+        "paquettg/php-html-parser": "^2.2",
         "sensio/framework-extra-bundle": "^5.2",
         "symfony/apache-pack": "^1.0",
         "symfony/cache": "5.0.*",
@@ -76,6 +77,7 @@
     },
     "require-dev": {
         "symfony/maker-bundle": "^1.11",
+        "symfony/phpunit-bridge": "^5.0",
         "symfony/profiler-pack": "^1.0"
     }
 }

@@ -65,7 +65,7 @@ class ContientElement extends AbstractEntity
      *
      * @ORM\Column(name="en_contexte", type="text", nullable=true)
      */
-    private $enContexte;
+    protected $enContexte;
 
     /**
      * @var \CategorieElement
@@ -192,12 +192,12 @@ class ContientElement extends AbstractEntity
 
     public function getEnContexte(): ?string
     {
-        return $this->sanitizeWysiwygString($this->sanitizeOpenXMLString($this->enContexte));
+        return $this->sanitizeHtml($this->enContexte);
     }
 
     public function setEnContexte(?string $enContexte): self
     {
-        $this->enContexte = $this->sanitizeWysiwygString($this->sanitizeOpenXMLString($enContexte));
+        $this->enContexte = $this->sanitizeHtml($enContexte);
 
         return $this;
     }

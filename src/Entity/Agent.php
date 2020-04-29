@@ -128,11 +128,11 @@ class Agent extends AbstractEntity
      */
     public function __clone()
     {
-        if($this->id !== null){
+        if ($this->id !== null) {
             $this->id = null;
 
             // Clone localisation
-            if($this->localisation !== null){
+            if ($this->localisation !== null) {
                 $this->localisation = clone $this->localisation;
             }
         }
@@ -140,12 +140,12 @@ class Agent extends AbstractEntity
 
     public function getDesignation(): ?string
     {
-        return $this->sanitizeWysiwygString($this->sanitizeOpenXMLString($this->designation));
+        return $this->sanitizeHtml($this->designation);
     }
 
     public function setDesignation(?string $designation): self
     {
-        $this->designation = $this->sanitizeWysiwygString($this->sanitizeOpenXMLString($designation));
+        $this->designation = $this->sanitizeHtml($designation);
         return $this;
     }
 
@@ -281,10 +281,9 @@ class Agent extends AbstractEntity
         return $this;
     }
 
-    public function isBlank() :bool
+    public function isBlank(): bool
     {
-        return !(
-               strlen($this->designation) > 0
+        return !(strlen($this->designation) > 0
             || !$this->agentivites->isEmpty()
             || !$this->statutAffiches->isEmpty()
             || !$this->natures->isEmpty()
@@ -292,13 +291,14 @@ class Agent extends AbstractEntity
             || !$this->activites->isEmpty()
             || !is_null($this->localisation)
             || strlen($this->commentaireFr) > 0
-            || strlen($this->commentaireEn) > 0
-        );
+            || strlen($this->commentaireEn) > 0);
     }
 
     public function toArray(): array
     {
-        $toArray = function($entry){ return $entry->toArray(); };
+        $toArray = function ($entry) {
+            return $entry->toArray();
+        };
 
         return [
             'designation'    => $this->designation,

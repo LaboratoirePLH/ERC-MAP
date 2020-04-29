@@ -392,7 +392,7 @@ chercheur:
         username: "Nom d'utilisateur"
         nom: "Nom complet"
         institution: "Institution"
-        mail: "Addresse e-mail"
+        mail: "Adresse e-mail"
         langue: "Préférence de langue"
         old_password: "Ancien mot de passe"
         new_password: "Nouveau mot de passe"
@@ -471,6 +471,9 @@ pages:
         network_analysis: "Analyse de Réseaux"
         webmapping: "Webmapping"
         corpus_state: "Etat de dépouillement du corpus"
+    messages:
+        subject_mandatory: "Merci de saisir l'objet de votre message"
+        message_mandatory: "Merci de saisir votre message"
     error:
         404:
             title: "Page introuvable"
@@ -489,6 +492,8 @@ mails:
     contact:
         title: "ERC-MAP - Contact"
         text: "Un utilisateur vous a envoyé un message via le formulaire de contact :"
+        subject: "Objet"
+        message: "Message"
 
 search:
     title: "Interface de Recherche"

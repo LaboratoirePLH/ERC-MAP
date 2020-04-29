@@ -76,7 +76,17 @@ class HomeController extends AbstractController
     {
         if ($request->isMethod('POST')) {
             $user = $this->get('security.token_storage')->getToken()->getUser();
-            $message = $request->request->get('message');
+            $message = $request->request->get('message', '');
+            $subject = $request->request->get('subject', '');
+
+            if (!strlen($message)) {
+                $request->getSession()->getFlashBag()->add('error', 'pages.messages.message_mandatory');
+                return $this->redirectToRoute('contact');
+            }
+            if (!strlen($subject)) {
+                $request->getSession()->getFlashBag()->add('error', 'pages.messages.subject_mandatory');
+                return $this->redirectToRoute('contact');
+            }
 
             $admins = $this->getDoctrine()
                 ->getRepository(Chercheur::class)
@@ -92,7 +102,7 @@ class HomeController extends AbstractController
                 ->setBody(
                     $this->renderView(
                         'email/contact.html.twig',
-                        compact('user', 'message')
+                        compact('user', 'subject', 'message')
                     ),
                     'text/html'
                 );

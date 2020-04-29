@@ -471,6 +471,9 @@ pages:
         network_analysis: "Network Analysis"
         webmapping: "Webmapping"
         corpus_state: "Corpus counting state"
+    messages:
+        subject_mandatory: "Please enter the subject of your message"
+        message_mandatory: "Please enter your message"
     error:
         404:
             title: "Page not found"
@@ -490,6 +493,8 @@ mails:
     contact:
         title: "ERC-MAP - Contact"
         text: "A user sent you a message through the contact form : "
+        subject: "Objet"
+        message: "Message"
 
 search:
     title: "Search Interface"

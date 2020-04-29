@@ -593,6 +593,7 @@ maintenance:
     beta_codes: "List of out of format Beta Codes"
     formula_numbers: "List of misnumbered formulae"
     html_cleanup: "HTML Cleanup"
+    html_cleanup_help: "A newline is added after each <br/> tag to improve this table's display. These newlines do not exist in the HTML stored in the database"
     html_cleanup_selection: " line(s) selected"
     html_cleanup_updated: "%updated% ligne(s) updated"
     html_cleanup_updated_incomplete: "%updated% ligne(s) updated (out of %selected% selected)"

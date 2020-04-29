@@ -89,8 +89,14 @@
                         <th scope="col">{{'generic.fields.table'|trans}}</th>
                         <th scope="col">{{'generic.fields.champ'|trans}}</th>
                         <th scope="col">{{'generic.fields.id'|trans}}</th>
-                        <th scope="col">{{'generic.fields.avant'|trans}}</th>
-                        <th scope="col">{{'generic.fields.apres'|trans}}</th>
+                        <th scope="col">
+                            {{'generic.fields.avant'|trans}}
+                            <i class="fas fa-question-circle" data-toggle="tooltip" data-placement="top" data-html="false" title="{{ 'maintenance.html_cleanup_help'|trans }}"></i>
+                        </th>
+                        <th scope="col">
+                            {{'generic.fields.apres'|trans}}
+                            <i class="fas fa-question-circle" data-toggle="tooltip" data-placement="top" data-html="false" title="{{ 'maintenance.html_cleanup_help'|trans }}"></i>
+                        </th>
                         <th scope="col">{{'generic.fields.reason'|trans}}</th>
                         <th scope="col">{{'generic.edit'|trans}}</th>
                     </tr>
@@ -115,10 +121,16 @@
                                     {% endif %}
                                 </td>
                                 <td>
-                                    {{ item.before|trans }}
+                                    {% for r in item.before|replace({"<br />": "<br/>"})|split("<br/>") %}
+                                        {{ (r~'<br/>') }}
+                                        <br/>
+                                    {% endfor %}
                                 </td>
                                 <td>
-                                    {{ item.after|trans }}
+                                    {% for r in item.after|replace({"<br />": "<br/>"})|split("<br/>") %}
+                                        {{ (r~'<br/>') }}
+                                        <br/>
+                                    {% endfor %}
                                 </td>
                                 <td>
                                     {% for r in item.messages %}
@@ -128,13 +140,7 @@
                                         {% endif %}
                                     {% endfor %}
                                 </td>
-                                <td
-                                    class="text-center">
-                                    {# {% if item.id|keys|length == 1 %}
-                                                                                                                                                                                                                                                                                                                                        {% set id = item.id ~ '' %}
-                                                                                                                                                                                                                                                                                                                                    {% else %}
-                                                                                                                                                                                                                                                                                                                                        {% set id = 'id_attestation:' ~ item.id.id_attestation ~ ',id_element:' ~ item.id.id_element %}
-                                                                                                                                                                                                                                                                                                                                    {% endif %} #}
+                                <td class="text-center">
                                     {% set identifier = [item.table, item.field, item.id|json_encode] %}
                                     <input type="checkbox" name="change[]" class="change-checkbox" value="{{ identifier|join(';') }}"/>
                                 </td>

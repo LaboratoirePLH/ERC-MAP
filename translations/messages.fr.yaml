@@ -593,6 +593,7 @@ maintenance:
     formula_numbers: "Liste des formules mal numérotées"
     html_cleanup: "Nettoyage du HTML"
     html_cleanup_selection: " ligne(s) sélectionnée(s)"
+    html_cleanup_help: "Un retour à la ligne est ajouté après chaque balise <br/> afin d'améliorer l'affichage de ce tableau. Ces retours à la ligne n'existent pas dans le HTML stocké en base de données"
     html_cleanup_updated: "%updated% ligne(s) mise(s) à jour"
     html_cleanup_updated_incomplete: "%updated% ligne(s) mise(s) à jour (sur %selected% sélectionnée(s))"
     messages:

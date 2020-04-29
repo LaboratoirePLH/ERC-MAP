@@ -29,7 +29,7 @@
                         {% for table, count in count_tables %}
                             <th scope="col">
                                 <a href="{{ url('maintenance_html_cleanup', {'filter_table': table}) }}">
-                                    {{table}}
+                                    {{table|snake_case|replace({'_':' '})|title}}
                                 </a>
                             </th>
                         {% endfor %}
@@ -106,10 +106,10 @@
                         {% for item in html_cleanup %}
                             <tr>
                                 <td class="text-center">
-                                    {{item.table}}
+                                    {{item.table|snake_case|replace({'_':' '})|title}}
                                 </td>
                                 <td class="text-center">
-                                    {{ item.field }}
+                                    {{ item.field|snake_case|replace({'_':' '})|title }}
                                 </td>
                                 <td class="text-center">
                                     {% if item.id|keys|length == 1 %}

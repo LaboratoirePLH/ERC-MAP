@@ -14,6 +14,7 @@ class AppExtension extends AbstractExtension
             new TwigFilter('remove_accents', [$this, 'removeAccents']),
             new TwigFilter('ellipsis', [$this, 'ellipsis']),
             new TwigFilter('operatorToString', [$this, 'operatorToString']),
+            new TwigFilter('snake_case', [$this, 'snake_case']),
         ];
     }
 
@@ -35,5 +36,10 @@ class AppExtension extends AbstractExtension
     public function operatorToString($text)
     {
         return \App\Utils\StringHelper::operatorToString($text);
+    }
+
+    public function snake_case($text)
+    {
+        return \App\Utils\StringHelper::snakeCase($text);
     }
 }

@@ -153,7 +153,8 @@ class Criteria
                 $value = array_filter($value, function ($cv) {
                     return array_key_exists('values', $cv)
                         || ((array_key_exists('post_quem', $cv) && !empty($cv['post_quem'])) || (array_key_exists('ante_quem', $cv) && !empty($cv['ante_quem'])))
-                        || (array_key_exists('operator', $cv) && array_key_exists('value', $cv) && !!strlen($cv['operator']) && !!strlen($cv['value']));
+                        || (array_key_exists('operator', $cv) && array_key_exists('value', $cv) && !!strlen($cv['operator']) && !!strlen($cv['value']))
+                        || (count(array_intersect(['prose', 'poesie'], $cv)));
                 });
             }
             if (is_array($value) && !count(array_filter($value))) {

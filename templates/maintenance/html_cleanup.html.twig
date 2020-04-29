@@ -122,14 +122,20 @@
                                 </td>
                                 <td>
                                     {% for r in item.before|replace({"<br />": "<br/>"})|split("<br/>") %}
-                                        {{ (r~'<br/>') }}
-                                        <br/>
+                                        {{ r }}
+                                        {% if not loop.last %}
+                                            {{ '<br/>'|e('html') }}
+                                            <br/>
+                                        {% endif %}
                                     {% endfor %}
                                 </td>
                                 <td>
                                     {% for r in item.after|replace({"<br />": "<br/>"})|split("<br/>") %}
-                                        {{ (r~'<br/>') }}
-                                        <br/>
+                                        {{ r }}
+                                        {% if not loop.last %}
+                                            {{ '<br/>'|e('html') }}
+                                            <br/>
+                                        {% endif %}
                                     {% endfor %}
                                 </td>
                                 <td>

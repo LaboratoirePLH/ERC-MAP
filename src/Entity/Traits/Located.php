@@ -49,8 +49,9 @@ trait Located
      * @ORM\PrePersist
      * @ORM\PreUpdate
      */
-    public function _clearOrphanLocalisation(){
-        if(!$this->getEstLocalisee()){
+    public function _clearOrphanLocalisation()
+    {
+        if (!$this->getEstLocalisee()) {
             $this->setLocalisation(null);
         }
     }

@@ -289,7 +289,7 @@ class Agent extends AbstractEntity
             || !$this->natures->isEmpty()
             || !$this->genres->isEmpty()
             || !$this->activites->isEmpty()
-            || !is_null($this->localisation)
+            || (!is_null($this->localisation) && !$this->localisation->isBlank())
             || strlen($this->commentaireFr) > 0
             || strlen($this->commentaireEn) > 0);
     }

@@ -16,7 +16,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class AttestationController extends AbstractController
 {
-        /**
+    /**
      * @var int
      */
     private $dureeVerrou;
@@ -32,8 +32,8 @@ class AttestationController extends AbstractController
     public function index()
     {
         $attestations = $this->getDoctrine()
-                        ->getRepository(Attestation::class)
-                        ->findAll();
+            ->getRepository(Attestation::class)
+            ->findAll();
         return $this->render('attestation/index.html.twig', [
             'controller_name' => 'AttestationController',
             'action'          => 'list',
@@ -51,9 +51,9 @@ class AttestationController extends AbstractController
     public function indexSource($source_id, Request $request, TranslatorInterface $translator)
     {
         $source = $this->getDoctrine()
-                        ->getRepository(Source::class)
-                        ->find($source_id);
-        if(is_null($source)){
+            ->getRepository(Source::class)
+            ->find($source_id);
+        if (is_null($source)) {
             $request->getSession()->getFlashBag()->add(
                 'error',
                 $translator->trans('source.messages.missing', ['%id%' => $source_id])
@@ -81,8 +81,8 @@ class AttestationController extends AbstractController
     public function create(Request $request, TranslatorInterface $translator)
     {
         $sources = $this->getDoctrine()
-                        ->getRepository(Source::class)
-                        ->findAll();
+            ->getRepository(Source::class)
+            ->findAll();
 
         $data = [
             'controller_name' => 'AttestationController',
@@ -98,8 +98,7 @@ class AttestationController extends AbstractController
             ]
         ];
 
-        if(($cloneId = $request->query->get('cloneFrom', null)) !== null)
-        {
+        if (($cloneId = $request->query->get('cloneFrom', null)) !== null) {
             $data['cloneFrom'] = $cloneId;
         }
 
@@ -114,9 +113,9 @@ class AttestationController extends AbstractController
         $user = $this->get('security.token_storage')->getToken()->getUser();
 
         $source = $this->getDoctrine()
-                       ->getRepository(Source::class)
-                       ->find($source_id);
-        if(is_null($source)){
+            ->getRepository(Source::class)
+            ->find($source_id);
+        if (is_null($source)) {
             $request->getSession()->getFlashBag()->add(
                 'error',
                 $translator->trans('source.messages.missing', ['%id%' => $source_id])
@@ -124,13 +123,12 @@ class AttestationController extends AbstractController
             return $this->redirectToRoute('attestation_list');
         }
 
-        if(($cloneId = $request->query->get('cloneFrom', null)) !== null)
-        {
+        if (($cloneId = $request->query->get('cloneFrom', null)) !== null) {
             $attestation = $this->getDoctrine()
-                                ->getRepository(Attestation::class)
-                                ->find($cloneId);
+                ->getRepository(Attestation::class)
+                ->find($cloneId);
 
-            if(is_null($attestation)){
+            if (is_null($attestation)) {
                 $request->getSession()->getFlashBag()->add(
                     'error',
                     $translator->trans('attestation.messages.missing', ['%id%' => $cloneId])
@@ -139,14 +137,12 @@ class AttestationController extends AbstractController
             }
             $attestation = clone $attestation;
             $clone = true;
-        }
-        else
-        {
+        } else {
 
             $attestation = new Attestation();
             $etatFiche = $this->getDoctrine()
-                              ->getRepository(EtatFiche::class)
-                              ->find(1);
+                ->getRepository(EtatFiche::class)
+                ->find(1);
             $attestation->setEtatFiche($etatFiche);
 
             $clone = false;
@@ -154,11 +150,9 @@ class AttestationController extends AbstractController
 
         $attestation->setSource($source);
 
-        if($source->getVerrou() === null){
+        if ($source->getVerrou() === null) {
             $verrou = $this->getDoctrine()->getRepository(VerrouEntite::class)->create($source, $user, $this->dureeVerrou);
-        }
-        else if(!$source->getVerrou()->isWritable($user))
-        {
+        } else if (!$source->getVerrou()->isWritable($user)) {
             $request->getSession()->getFlashBag()->add(
                 'error',
                 $translator->trans('generic.messages.error_locked', [
@@ -185,30 +179,30 @@ class AttestationController extends AbstractController
             ]
         ]);
 
-        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()){
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $attestation->setCreateur($user);
             $attestation->setDernierEditeur($user);
             // Sauvegarde
             $em = $this->getDoctrine()->getManager();
             $em->persist($attestation);
-            foreach($attestation->getAttestationMateriels() as $am){
-                if($am->getMateriel() !== null || $am->getCategorieMateriel() !== null){
+            foreach ($attestation->getAttestationMateriels() as $am) {
+                if ($am->getMateriel() !== null || $am->getCategorieMateriel() !== null) {
                     $am->setAttestation($attestation);
                     $em->persist($am);
                 } else {
                     $attestation->removeAttestationMateriel($am);
                 }
             }
-            foreach($attestation->getAttestationOccasions() as $ao){
-                if($ao->getOccasion() !== null || $ao->getCategorieOccasion() !== null){
+            foreach ($attestation->getAttestationOccasions() as $ao) {
+                if ($ao->getOccasion() !== null || $ao->getCategorieOccasion() !== null) {
                     $ao->setAttestation($attestation);
                     $em->persist($ao);
                 } else {
                     $attestation->removeAttestationOccasion($ao);
                 }
             }
-            foreach($attestation->getAgents() as $a){
-                if(!$a->isBlank()){
+            foreach ($attestation->getAgents() as $a) {
+                if (!$a->isBlank()) {
                     $a->setAttestation($attestation);
                     $em->persist($a);
                 } else {
@@ -216,9 +210,9 @@ class AttestationController extends AbstractController
                     $em->remove($a);
                 }
             }
-            foreach($attestation->getContientElements() as $ce){
-                if($ce->getElement() !== null){
-                    if(!$em->contains($ce->getElement())){
+            foreach ($attestation->getContientElements() as $ce) {
+                if ($ce->getElement() !== null) {
+                    if (!$em->contains($ce->getElement())) {
                         $ce->getElement()->setCreateur($user);
                         $ce->getElement()->setDernierEditeur($user);
                         $em->persist($ce->getElement());
@@ -255,16 +249,17 @@ class AttestationController extends AbstractController
         ]);
     }
 
-        /**
+    /**
      * @Route("/attestation/cancelcreate/{source_id}", name="attestation_cancelcreate")
      */
-    public function cancelcreate($source_id, Request $request){
+    public function cancelcreate($source_id, Request $request)
+    {
         $user = $this->get('security.token_storage')->getToken()->getUser();
         $source = $this->getDoctrine()
-                       ->getRepository(Source::class)
-                       ->find($source_id);
+            ->getRepository(Source::class)
+            ->find($source_id);
         $verrou = $source->getVerrou();
-        if($verrou !== null && $verrou->isWritable($user)){
+        if ($verrou !== null && $verrou->isWritable($user)) {
             $this->getDoctrine()->getRepository(VerrouEntite::class)->remove($verrou);
         }
         return $this->redirectToRoute('attestation_list');
@@ -277,9 +272,9 @@ class AttestationController extends AbstractController
     public function show($id, Request $request, TranslatorInterface $translator)
     {
         $attestation = $this->getDoctrine()
-                       ->getRepository(Attestation::class)
-                       ->find($id);
-        if(is_null($attestation)){
+            ->getRepository(Attestation::class)
+            ->find($id);
+        if (is_null($attestation)) {
             $request->getSession()->getFlashBag()->add(
                 'error',
                 $translator->trans('attestation.messages.missing', ['%id%' => $id])
@@ -307,25 +302,23 @@ class AttestationController extends AbstractController
         $user = $this->get('security.token_storage')->getToken()->getUser();
 
         $attestation = $this->getDoctrine()
-                       ->getRepository(Attestation::class)
-                       ->find($id);
+            ->getRepository(Attestation::class)
+            ->find($id);
 
-        if(is_null($attestation)){
+        if (is_null($attestation)) {
             $request->getSession()->getFlashBag()->add(
                 'error',
                 $translator->trans('attestation.messages.missing', ['%id%' => $id])
             );
             return $this->redirectToRoute('attestation_list');
         }
-        if(!$this->isGranted('ROLE_MODERATOR') && $attestation->getCreateur()->getId() !== $user->getId()){
+        if (!$this->isGranted('ROLE_MODERATOR') && $attestation->getCreateur()->getId() !== $user->getId()) {
             $request->getSession()->getFlashBag()->add('error', 'generic.messages.error_unauthorized');
             return $this->redirectToRoute('attestation_list');
         }
-        if($attestation->getVerrou() === null){
+        if ($attestation->getVerrou() === null) {
             $verrou = $this->getDoctrine()->getRepository(VerrouEntite::class)->create($attestation, $user, $this->dureeVerrou);
-        }
-        else if(!$attestation->getVerrou()->isWritable($user))
-        {
+        } else if (!$attestation->getVerrou()->isWritable($user)) {
             $request->getSession()->getFlashBag()->add(
                 'error',
                 $translator->trans('generic.messages.error_locked', [
@@ -358,51 +351,51 @@ class AttestationController extends AbstractController
             ]
         ]);
 
-        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()){
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $attestation->setDernierEditeur($user);
-            foreach($attestation->getAttestationMateriels() as $am){
-                if($am->getMateriel() !== null || $am->getCategorieMateriel() !== null){
+            foreach ($attestation->getAttestationMateriels() as $am) {
+                if ($am->getMateriel() !== null || $am->getCategorieMateriel() !== null) {
                     $am->setAttestation($attestation);
-                    if(!$em->contains($am)){
+                    if (!$em->contains($am)) {
                         $em->persist($am);
                     }
                 } else {
                     $attestation->removeAttestationMateriel($am);
-                    if($em->contains($am)){
+                    if ($em->contains($am)) {
                         $em->remove($am);
                     }
                 }
             }
-            foreach($attestation->getAttestationOccasions() as $am){
-                if($am->getOccasion() !== null || $am->getCategorieOccasion() !== null){
+            foreach ($attestation->getAttestationOccasions() as $am) {
+                if ($am->getOccasion() !== null || $am->getCategorieOccasion() !== null) {
                     $am->setAttestation($attestation);
-                    if(!$em->contains($am)){
+                    if (!$em->contains($am)) {
                         $em->persist($am);
                     }
                 } else {
                     $attestation->removeAttestationOccasion($am);
-                    if($em->contains($am)){
+                    if ($em->contains($am)) {
                         $em->remove($am);
                     }
                 }
             }
-            foreach($attestation->getAgents() as $a){
-                if(!$a->isBlank()){
+            foreach ($attestation->getAgents() as $a) {
+                if (!$a->isBlank()) {
                     $a->setAttestation($attestation);
-                    if(!$em->contains($a)){
+                    if (!$em->contains($a)) {
                         $em->persist($a);
                     }
                 } else {
                     $attestation->removeAgent($a);
-                    if($em->contains($a)){
+                    if ($em->contains($a)) {
                         $em->remove($a);
                     }
                 }
             }
-            foreach($attestation->getContientElements() as $ce){
-                if($ce->getElement() !== null){
-                    if(!$em->contains($ce->getElement())){
+            foreach ($attestation->getContientElements() as $ce) {
+                if ($ce->getElement() !== null) {
+                    if (!$em->contains($ce->getElement())) {
                         $ce->getElement()->setCreateur($user);
                         $ce->getElement()->setDernierEditeur($user);
                         $em->persist($ce->getElement());
@@ -413,15 +406,15 @@ class AttestationController extends AbstractController
                     $attestation->removeContientElement($ce);
                 }
             }
-            foreach($contientElements as $ce){
+            foreach ($contientElements as $ce) {
                 if (false === $attestation->getContientElements()->contains($ce)) {
                     $em->remove($ce);
                 }
             }
 
-            foreach($attestation->getFormules() as $f){
-                if(!empty($f->getFormule())){
-                    if(!$em->contains($f)){
+            foreach ($attestation->getFormules() as $f) {
+                if (!empty($f->getFormule())) {
+                    if (!$em->contains($f)) {
                         $f->setCreateur($user);
                         $f->setAttestation($attestation);
                         $em->persist($f);
@@ -458,13 +451,14 @@ class AttestationController extends AbstractController
     /**
      * @Route("/attestation/{id}/canceledit", name="attestation_canceledit")
      */
-    public function canceledit($id, Request $request){
+    public function canceledit($id, Request $request)
+    {
         $user = $this->get('security.token_storage')->getToken()->getUser();
         $attestation = $this->getDoctrine()
-                            ->getRepository(Attestation::class)
-                            ->find($id);
+            ->getRepository(Attestation::class)
+            ->find($id);
         $verrou = $attestation->getVerrou();
-        if($verrou !== null && $verrou->isWritable($user)){
+        if ($verrou !== null && $verrou->isWritable($user)) {
             $this->getDoctrine()->getRepository(VerrouEntite::class)->remove($verrou);
         }
         return $this->redirectToRoute('attestation_list');
@@ -478,14 +472,14 @@ class AttestationController extends AbstractController
         $submittedToken = $request->request->get('token');
         $user = $this->get('security.token_storage')->getToken()->getUser();
 
-        if ($this->isCsrfTokenValid('delete_attestation_'.$id, $submittedToken)) {
+        if ($this->isCsrfTokenValid('delete_attestation_' . $id, $submittedToken)) {
             $repository = $this->getDoctrine()->getRepository(Attestation::class);
             $attestation = $repository->find($id);
-            if($attestation instanceof Attestation){
-                if($this->isGranted('ROLE_ADMIN')) {
+            if ($attestation instanceof Attestation) {
+                if ($this->isGranted('ROLE_ADMIN')) {
                     $user = $this->get('security.token_storage')->getToken()->getUser();
                     $verrou = $attestation->getVerrou();
-                    if(!$verrou || $verrou->isWritable($user)) {
+                    if (!$verrou || $verrou->isWritable($user)) {
                         $em = $this->getDoctrine()->getManager();
                         $em->remove($attestation);
                         $em->flush();

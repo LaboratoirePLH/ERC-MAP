@@ -364,6 +364,23 @@ class Localisation extends AbstractEntity
         }
     }
 
+    public function isBlank(): bool
+    {
+        return !(!is_null($this->entitePolitique)
+            || !is_null($this->grandeRegion)
+            || !is_null($this->sousRegion)
+            || !is_null($this->pleiadesVille)
+            || (!is_null($this->nomVille) && strlen($this->nomVille) > 0)
+            || !is_null($this->pleiadesSite)
+            || (!is_null($this->nomSite) && strlen($this->nomSite) > 0)
+            || !is_null($this->latitude)
+            || !is_null($this->longitude)
+            || !$this->topographies->isEmpty()
+            || !$this->fonctions->isEmpty()
+            || strlen($this->commentaireFr) > 0
+            || strlen($this->commentaireEn) > 0);
+    }
+
     public function toArray(): array
     {
         return [

@@ -592,6 +592,9 @@ maintenance:
     beta_codes: "Liste des Beta Codes hors format"
     formula_numbers: "Liste des formules mal numérotées"
     html_cleanup: "Nettoyage du HTML"
+    html_cleanup_selection: " ligne(s) sélectionnée(s)"
+    html_cleanup_updated: "%updated% ligne(s) mise(s) à jour"
+    html_cleanup_updated_incomplete: "%updated% ligne(s) mise(s) à jour (sur %selected% sélectionnée(s))"
     messages:
         invalid_char: "Caractère(s) invalide(s)"
         invalid_length: "Différence de longueur"

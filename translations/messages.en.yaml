@@ -592,7 +592,10 @@ maintenance:
     title: "Database Maintenance"
     beta_codes: "List of out of format Beta Codes"
     formula_numbers: "List of misnumbered formulae"
-    html: "HTML Cleanup"
+    html_cleanup: "HTML Cleanup"
+    html_cleanup_selection: " line(s) selected"
+    html_cleanup_updated: "%updated% ligne(s) updated"
+    html_cleanup_updated_incomplete: "%updated% ligne(s) updated (out of %selected% selected)"
     messages:
         invalid_char: "Invalid character(s)"
         invalid_length: "Length difference"

@@ -127,6 +127,11 @@ easy_admin:
                  - 'attestation'
                  - 'positionFormule'
                  - 'puissancesDivines'
+                filters:
+                - property: 'id_attestation'
+                  label: 'ID Attestation'
+                  type: 'App\EasyAdmin\Filter\FormuleAttestation'
+                  mapped: false
         Genre:
             class: App\Entity\Genre
             label: Genre

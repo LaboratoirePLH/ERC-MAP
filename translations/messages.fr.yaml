@@ -470,7 +470,7 @@ pages:
         display: "Afficher"
         network_analysis: "Analyse de Réseaux"
         webmapping: "Webmapping"
-        corpus_state: "Etat de dépouillement du corpus"
+        corpus_state: "Etat de dépouillement des corpus"
     messages:
         subject_mandatory: "Merci de saisir l'objet de votre message"
         message_mandatory: "Merci de saisir votre message"

@@ -27,6 +27,24 @@ class IndexRechercheRepository extends ServiceEntityRepository
         parent::__construct($registry, IndexRecherche::class);
     }
 
+    public function getStatus()
+    {
+        $index = $this->createQueryBuilder('i')
+            ->select('count(i.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        $sources = $this->getEntityManager()->createQuery("SELECT count(e.id) FROM \App\Entity\Source e")->getSingleScalarResult();
+        $attestations = $this->getEntityManager()->createQuery("SELECT count(e.id) FROM \App\Entity\Attestation e")->getSingleScalarResult();
+        $elements = $this->getEntityManager()->createQuery("SELECT count(e.id) FROM \App\Entity\Element e")->getSingleScalarResult();
+
+        return [
+            "index" => $index,
+            "records" => $sources + $attestations + $elements,
+            "upToDate" => $index == ($sources + $attestations + $elements)
+        ];
+    }
+
     public function fullRebuild()
     {
         return $this->rebuildByEntityType('Source')

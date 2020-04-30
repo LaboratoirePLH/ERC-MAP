@@ -21,6 +21,11 @@ class RechercheController extends AbstractController
     {
         $locale = $request->getLocale();
 
+        // Compute index status
+        $indexStatus = $this->getDoctrine()
+            ->getRepository(\App\Entity\IndexRecherche::class)
+            ->getStatus();
+
         $populate_mode = $request->request->get('populate_mode', '');
         $populate_criteria = urldecode($request->request->get('populate_criteria', ''));
 
@@ -33,6 +38,7 @@ class RechercheController extends AbstractController
         return $this->render('search/index.html.twig', [
             'controller_name' => 'RechercheController',
             'locale'          => $locale,
+            'indexStatus'     => $indexStatus,
             'populate'        => [
                 'mode'     => $populate_mode,
                 'criteria' => $populate_criteria,

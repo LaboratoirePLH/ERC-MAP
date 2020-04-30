@@ -540,6 +540,7 @@ search:
         remove_element: "Remove element"
         formula: "Formula search"
     messages:
+        not_up_to_date: "Warning : the Search Index is not up to date, the results can be incomplete."
         reindex_done: "The Search Index has been rebuilt (%records% records, %time% seconds)"
         cache_cleared: "The Search cache has been cleared"
         no_empty_search: "You must input a value in the search field"

@@ -1,5 +1,6 @@
 app_name: "ERC MAP"
 locale: "fr"
+locale_date: "d/m/Y"
 locale_datetime: "d/m/Y H:i:s (e)"
 languages:
     fr: "Français"
@@ -466,6 +467,7 @@ autocomplete:
 misc:
     back_to_top: "Retour en haut de la page"
     copyright: "ERC-MAP - Laboratoire PLH - Université Toulouse - Jean Jaurès"
+    export_copyright: "Bonnet C., ERC Mapping Ancient Polytheisms 741182 (DB MAP), Toulouse 2017-2022 : https://base-map-polytheisms.huma-num.fr/ (%date%)."
 
 pages:
     home:

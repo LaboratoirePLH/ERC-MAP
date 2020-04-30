@@ -29,7 +29,8 @@
             var title = $(this).text();
             var value = $(this).data('value');
             if (title != "") {
-                $(this).html('<input type="text" class="w-100 form-control form-control-sm" placeholder="                                {{ "generic.search"|trans }}' + ' ' + title + '" />');
+                var placeholder = '{{ "generic.search"|trans }}';
+                $(this).html('<input type="text" class="w-100 form-control form-control-sm" placeholder="' + placeholder + ' ' + title + '" />');
                 if (value != null) {
                     $(this).children('input').val(value);
                 }
@@ -100,6 +101,11 @@
 
                         // Now remove all hidden columns
                         data = data.map(row => row.filter((v, i) => table.column(i).visible()));
+
+                        // Adds copyright on the first row
+                        var copyright_row = new Array(data[0].length).fill('');
+                        copyright_row[0] = "{{ 'misc.export_copyright'|trans({'%date%': 'now'|date('locale_date'|trans)}) }}";
+                        data.unshift(copyright_row);
 
                         return Papa.unparse(data, {quotes: true});
                     },

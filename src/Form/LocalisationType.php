@@ -44,14 +44,14 @@ class LocalisationType extends AbstractType
                 'multiple'     => false,
                 'expanded'     => false,
                 'class'        => EntitePolitique::class,
-                'choice_label' => 'affichage'.ucfirst($locale),
+                'choice_label' => 'affichage' . ucfirst($locale),
                 'attr'         => [
                     'class' => 'autocomplete',
                     'data-placeholder' => $options['translations']['autocomplete.select_element']
                 ],
                 'query_builder' => function (EntityRepository $er) use ($locale) {
                     return $er->createQueryBuilder('e')
-                        ->orderBy('e.nom'.ucfirst($locale), 'ASC');
+                        ->orderBy('e.nom' . ucfirst($locale), 'ASC');
                 }
             ])
             ->add('grandeSousRegion', DependentSelectType::class, [
@@ -70,14 +70,14 @@ class LocalisationType extends AbstractType
                     ],
                     'required'     => $options['region_required'],
                     'class'        => GrandeRegion::class,
-                    'choice_label' => 'nom'.ucfirst($locale),
+                    'choice_label' => 'nom' . ucfirst($locale),
                     'attr'         => [
                         'class' => 'autocomplete',
                         'data-placeholder' => $options['translations']['autocomplete.select_element']
                     ],
                     'query_builder' => function (EntityRepository $er) use ($locale) {
                         return $er->createQueryBuilder('e')
-                        ->orderBy('e.nom'.ucfirst($locale), 'ASC');
+                            ->orderBy('e.nom' . ucfirst($locale), 'ASC');
                     }
                 ],
                 'secondary_field_options' => [
@@ -85,7 +85,7 @@ class LocalisationType extends AbstractType
                     'label_attr'   => ['id' => 'localisation_ville_sousregion', 'class' => 'citysearch_field'],
                     'required'     => false,
                     'class'        => SousRegion::class,
-                    'choice_label' => 'nom'.ucfirst($locale),
+                    'choice_label' => 'nom' . ucfirst($locale),
                     'help'         => 'generic.help.regional_data',
                     'attr'         => [
                         'class' => 'autocomplete',
@@ -140,14 +140,14 @@ class LocalisationType extends AbstractType
                 'multiple'     => true,
                 'expanded'     => false,
                 'class'        => QTopographie::class,
-                'choice_label' => 'nom'.ucfirst($locale),
+                'choice_label' => 'nom' . ucfirst($locale),
                 'attr'         => [
                     'class' => 'autocomplete',
                     'data-placeholder' => $options['translations']['autocomplete.select_multiple']
                 ],
                 'query_builder' => function (EntityRepository $er) use ($locale) {
                     return $er->createQueryBuilder('e')
-                        ->orderBy('e.nom'.ucfirst($locale), 'ASC');
+                        ->orderBy('e.nom' . ucfirst($locale), 'ASC');
                 }
             ])
             ->add('fonctions', EntityType::class, [
@@ -156,14 +156,14 @@ class LocalisationType extends AbstractType
                 'multiple'     => true,
                 'expanded'     => false,
                 'class'        => QFonction::class,
-                'choice_label' => 'nom'.ucfirst($locale),
+                'choice_label' => 'nom' . ucfirst($locale),
                 'attr'         => [
                     'class' => 'autocomplete',
                     'data-placeholder' => $options['translations']['autocomplete.select_multiple']
                 ],
                 'query_builder' => function (EntityRepository $er) use ($locale) {
                     return $er->createQueryBuilder('e')
-                        ->orderBy('e.nom'.ucfirst($locale), 'ASC');
+                        ->orderBy('e.nom' . ucfirst($locale), 'ASC');
                 }
             ])
             ->add('commentaireFr', Type\QuillType::class, array(
@@ -175,15 +175,14 @@ class LocalisationType extends AbstractType
                 'attr'        => ['class' => 'wysiwyg-editor', 'rows' => 2],
                 'label'       => 'generic.fields.commentaire_en',
                 'required'    => false
-            ))
-        ;
+            ));
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
             'data_class' => Localisation::class,
-            'region_required' => false
+            'region_required' => true
         ]);
         $resolver->setRequired(['translations', 'locale']);
     }

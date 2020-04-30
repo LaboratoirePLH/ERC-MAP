@@ -99,14 +99,14 @@ class SourceType extends AbstractType
                     'label'        => 'source.fields.categorie_source',
                     'required'     => true,
                     'class'        => CategorieSource::class,
-                    'choice_label' => 'nom'.ucfirst($locale),
+                    'choice_label' => 'nom' . ucfirst($locale),
                     'attr'         => [
                         'class' => 'autocomplete',
                         'data-placeholder' => $options['translations']['autocomplete.select_element']
                     ],
                     'query_builder' => function (EntityRepository $er) use ($locale) {
                         return $er->createQueryBuilder('e')
-                            ->orderBy('e.nom'.ucfirst($locale), 'ASC');
+                            ->orderBy('e.nom' . ucfirst($locale), 'ASC');
                     }
                 ],
                 'secondary_field_options' => [
@@ -114,7 +114,7 @@ class SourceType extends AbstractType
                     'required'     => false,
                     'multiple'     => true,
                     'class'        => TypeSource::class,
-                    'choice_label' => 'nom'.ucfirst($locale),
+                    'choice_label' => 'nom' . ucfirst($locale),
                     'attr'         => [
                         'class' => 'autocomplete autocomplete-max-3',
                         'data-placeholder' => $options['translations']['autocomplete.select_element']
@@ -131,21 +131,21 @@ class SourceType extends AbstractType
                     'label'        => 'source.fields.categorie_materiau',
                     'required'     => false,
                     'class'        => CategorieMateriau::class,
-                    'choice_label' => 'nom'.ucfirst($locale),
+                    'choice_label' => 'nom' . ucfirst($locale),
                     'attr'         => [
                         'class' => 'autocomplete',
                         'data-placeholder' => $options['translations']['autocomplete.select_element']
                     ],
                     'query_builder' => function (EntityRepository $er) use ($locale) {
                         return $er->createQueryBuilder('e')
-                            ->orderBy('e.nom'.ucfirst($locale), 'ASC');
+                            ->orderBy('e.nom' . ucfirst($locale), 'ASC');
                     }
                 ],
                 'secondary_field_options' => [
                     'label'        => 'source.fields.materiau',
                     'required'     => false,
                     'class'        => Materiau::class,
-                    'choice_label' => 'nom'.ucfirst($locale),
+                    'choice_label' => 'nom' . ucfirst($locale),
                     'attr'         => [
                         'class' => 'autocomplete',
                         'data-placeholder' => $options['translations']['autocomplete.select_element']
@@ -162,21 +162,21 @@ class SourceType extends AbstractType
                     'label'        => 'source.fields.categorie_support',
                     'required'     => false,
                     'class'        => CategorieSupport::class,
-                    'choice_label' => 'nom'.ucfirst($locale),
+                    'choice_label' => 'nom' . ucfirst($locale),
                     'attr'         => [
                         'class' => 'autocomplete',
                         'data-placeholder' => $options['translations']['autocomplete.select_element']
                     ],
                     'query_builder' => function (EntityRepository $er) use ($locale) {
                         return $er->createQueryBuilder('e')
-                            ->orderBy('e.nom'.ucfirst($locale), 'ASC');
+                            ->orderBy('e.nom' . ucfirst($locale), 'ASC');
                     }
                 ],
                 'secondary_field_options' => [
                     'label'        => 'source.fields.support',
                     'required'     => false,
                     'class'        => TypeSupport::class,
-                    'choice_label' => 'nom'.ucfirst($locale),
+                    'choice_label' => 'nom' . ucfirst($locale),
                     'attr'         => [
                         'class' => 'autocomplete',
                         'data-placeholder' => $options['translations']['autocomplete.select_element']
@@ -187,7 +187,7 @@ class SourceType extends AbstractType
                 'label'         => 'source.fields.projet',
                 'required'      => true,
                 'class'         => Projet::class,
-                'choice_label'  => 'nom'.ucfirst($locale),
+                'choice_label'  => 'nom' . ucfirst($locale),
                 'disabled'      => ($options['formAction'] !== "create"),
                 'attr'          => [
                     'class' => 'autocomplete',
@@ -197,7 +197,7 @@ class SourceType extends AbstractType
                     return $er->createQueryBuilder('e')
                         ->where(":user MEMBER OF e.chercheurs")
                         ->setParameter("user", $user)
-                        ->orderBy('e.nom'.ucfirst($locale), 'ASC');
+                        ->orderBy('e.nom' . ucfirst($locale), 'ASC');
                 }
             ])
             ->add('auteurs', EntityType::class, [
@@ -206,7 +206,7 @@ class SourceType extends AbstractType
                 'multiple'     => true,
                 'expanded'     => false,
                 'class'        => Auteur::class,
-                'choice_label' => 'nom'.ucfirst($locale),
+                'choice_label' => 'nom' . ucfirst($locale),
                 'label_attr' => [
                     'class' => 'dependent_field_auteurs'
                 ],
@@ -216,7 +216,7 @@ class SourceType extends AbstractType
                 ],
                 'query_builder' => function (EntityRepository $er) use ($locale) {
                     return $er->createQueryBuilder('e')
-                        ->orderBy('e.nom'.ucfirst($locale), 'ASC');
+                        ->orderBy('e.nom' . ucfirst($locale), 'ASC');
                 }
             ])
             ->add('langues', EntityType::class, [
@@ -225,14 +225,14 @@ class SourceType extends AbstractType
                 'multiple'     => true,
                 'expanded'     => false,
                 'class'        => Langue::class,
-                'choice_label' => 'nom'.ucfirst($locale),
+                'choice_label' => 'nom' . ucfirst($locale),
                 'attr'         => [
                     'class' => 'autocomplete',
                     'data-placeholder' => $options['translations']['autocomplete.select_multiple']
                 ],
                 'query_builder' => function (EntityRepository $er) use ($locale) {
                     return $er->createQueryBuilder('e')
-                        ->orderBy('e.nom'.ucfirst($locale), 'ASC');
+                        ->orderBy('e.nom' . ucfirst($locale), 'ASC');
                 }
             ])
             ->add('titrePrincipal', SelectOrCreateType::class, [
@@ -246,21 +246,20 @@ class SourceType extends AbstractType
                 'field_name'              => 'titrePrincipal',
                 'object_class'            => Titre::class,
                 'creation_form_class'     => TitreType::class,
-                'selection_choice_label'  => 'affichage'.ucfirst($locale),
+                'selection_choice_label'  => 'affichage' . ucfirst($locale),
                 'allow_none'              => true,
                 'default_decision'        => 'select',
                 'formAction'                  => $options['formAction'],
                 'isClone'                 => $options['isClone'],
                 'selection_query_builder' => function (EntityRepository $er) use ($locale) {
                     return $er->createQueryBuilder('e')
-                        ->orderBy('e.nom'.ucfirst($locale), 'ASC');
+                        ->orderBy('e.nom' . ucfirst($locale), 'ASC');
                 }
             ])
             ->add('datation', DatationType::class)
             ->add('lieuDecouverte', LocalisationType::class, [
                 'label'           => 'source.fields.lieu_decouverte',
                 'required'        => false,
-                'region_required' => true,
                 'attr'            => ['class' => 'localisation_form'],
                 'locale'          => $options['locale'],
                 'translations'    => $options['translations'],
@@ -278,7 +277,7 @@ class SourceType extends AbstractType
             ->add('sourceBiblios', CollectionType::class, [
                 'label'         => false,
                 'entry_type'    => SourceBiblioType::class,
-                'entry_options' => array_intersect_key($options, array_flip(["translations","locale"])),
+                'entry_options' => array_intersect_key($options, array_flip(["translations", "locale"])),
                 'allow_add'     => true,
                 'allow_delete'  => true,
                 'required'      => false,
@@ -289,8 +288,7 @@ class SourceType extends AbstractType
                 'allow_add'     => true,
                 'allow_delete'  => false,
                 'required'      => false,
-            ])
-        ;
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)

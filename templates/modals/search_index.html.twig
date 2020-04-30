@@ -1,0 +1,45 @@
+{#
+Modal component.
+Parameters :
+- modalName : Name of the modal, used to fetch translation sentences
+- uuid : Unique ID of the modal
+- confirmationLabel : Text of the primary button
+- useForm : Should the delete button be included in a form (default: true)
+- targetUrl : URL to redirect to if user clicks the primary button (only if useForm is true)
+- method : Method to send data with (only if useForm is true)
+- csrfToken : CSRF token to pass in the form (only if useForm is true)
+#}
+
+<div class="modal fade" id="search-reindex-modal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{ ('modals.search_reindex.title')|trans }}</h5>
+                <button type="button" class="close before-element" data-dismiss="modal" aria-label="{{ 'generic.close'|trans}}">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p class="before-element">{{ ('modals.search_reindex.body')|trans }}</p>
+                <p class="progress-element" style="display:none;">
+                    {{ ('modals.search_reindex.progress')|trans }}
+                </p>
+                <div class="progress progress-element" style="height:20px;display:none;">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">0%</div>
+                </div>
+                <p class="done-element mt-3 text-success" style="display:none;">{{ ('modals.search_reindex.done')|trans }}</p>
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-secondary before-element" data-dismiss="modal">
+                    {{ 'generic.cancel'|trans }}
+                </a>
+                <a class="btn btn-danger before-element modal-accept-button" href="#">
+                    {{ 'generic.start'|trans }}
+                </a>
+                <a class="btn btn-success done-element" data-dismiss="modal" style="display:none;">
+                    {{ 'generic.close'|trans }}
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

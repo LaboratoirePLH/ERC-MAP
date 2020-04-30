@@ -63,6 +63,7 @@ generic:
     stay: "Stay"
     choose: "Choose"
     confirm: "Confirm"
+    start: "Start"
     toggle_section: "Show/Hide section"
     export_csv: "Export as CSV file"
     locked: "Locked"
@@ -437,9 +438,11 @@ modals:
     confirm_exit_dirty:
         title: "Confirm exit"
         body: "You have unsaved changes. Are you sure you want to exit ?"
-    confirm_search_reindex:
-        title: "Confirm search index rebuild"
-        body: "Are you sure you want to rebuild the search index ? This action will take several minutes and cannot be interrupted."
+    search_reindex:
+        title: "Search index rebuild"
+        body: "Are you sure you want to rebuild the search index ? This action will take several minutes."
+        progress: "Reindexation in progress. Please do not close this page."
+        done: "Reindexation done. You can close this window."
     query_save:
         title: "Query save"
         body: "Please enter a name for your query"

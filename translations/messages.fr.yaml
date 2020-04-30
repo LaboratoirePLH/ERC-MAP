@@ -62,6 +62,7 @@ generic:
     stay: "Rester"
     choose: "Choisir"
     confirm: "Confirmer"
+    start: "Démarrer"
     toggle_section: "Afficher/Cacher la section"
     export_csv: "Exporter en CSV"
     locked: "Verrouillé"
@@ -437,9 +438,11 @@ modals:
     confirm_exit_dirty:
         title: "Confirmer la sortie"
         body: "Vous avez des modifications non sauvegardées. Êtes-vous sûr de vouloir quitter ?"
-    confirm_search_reindex:
-        title: "Confirmer la réindexation"
-        body: "Êtes-vous sûr de vouloir reconstruire l'index de recherche ? Cette action peut durer plusieurs minutes et ne pourra pas être interrompue."
+    search_reindex:
+        title: "Reconstruction de l'index de recherche"
+        body: "Êtes-vous sûr de vouloir reconstruire l'index de recherche ? Cette action peut durer plusieurs minutes."
+        progress: "Réindexation en cours. Merci de ne pas fermer cette page."
+        done: "Réindexation terminée. Vous pouvez fermer cette fenêtre."
     query_save:
         title: "Enregistrement de la requête"
         body: "Veuillez saisir un nom pour votre requête"

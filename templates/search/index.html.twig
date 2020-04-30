@@ -8,7 +8,7 @@
 {% block content %}
     {% if not indexStatus.upToDate %}
         <div class="row justify-content-center">
-            <div class="col-sm-6 alert alert-danger font-weight-bold " role="alert">
+            <div class="col-sm-6 alert alert-danger font-weight-bold" role="alert" id="index-not-up-to-date">
                 {{ 'search.messages.not_up_to_date'|trans }}
             </div>
         </div>
@@ -367,13 +367,7 @@
                     <i class="fas fa-fw fa-sync"></i>
                     {{ 'search.reindex'|trans }}
                 </button>
-                {% include "modals/confirmation.html.twig" with {
-            'modalName': 'confirm_search_reindex',
-            'uuid': 'search-reindex-modal',
-            'targetUrl': url('search_reindex'),
-            'confirmationLabel': 'generic.confirm',
-            'useForm': false
-        } %}
+                {% include "modals/search_index.html.twig" %}
                 <a href="{{ url('search_clear_cache') }}" class="btn btn-danger">
                     <i class="fas fa-fw fa-trash"></i>
                     {{ 'search.clear_cache'|trans }}
@@ -1036,6 +1030,48 @@
                     $('#' + data.queryMode).find('form').prepend($('<input>').prop('type', 'hidden').prop('name', 'queryName').attr('value', data.queryName));
                 });
             });
+
+            // Search reindex management
+            $('#search-reindex-modal .modal-accept-button').on('click', function (e) {
+                e.preventDefault();
+                const modal = $('#search-reindex-modal');
+                const baseUrl = "{{ url('search_reindex') }}";
+
+                modal.on('hide.bs.modal', function () {
+                    return false;
+                });
+
+                modal.find('.before-element, .done-element').hide();
+                modal.find('.progress-element').show();
+
+                const progressBar = modal.find('.progress-bar');
+                progressBar.css('width', '100%').text('0%');
+
+                var rebuildKey;
+
+                function nextQuery() {
+                    $.get(baseUrl, {rebuildKey}).done(data => {
+                        const progress = Math.floor(100 * data.doneCount / data.totalCount);
+                        progressBar.css('width', progress + '%').text(progress + '%');
+                        if (data.rebuildKey != rebuildKey) {
+                            alert('Error');
+                        } else if (data.doneCount == data.totalCount) {
+                            progressBar.addClass('bg-success');
+                            modal.find('p.progress-element').hide();
+                            modal.find('.done-element').show();
+                            modal.off('hide.bs.modal');
+                            $('#index-not-up-to-date').hide();
+                        } else {
+                            nextQuery();
+                        }
+                    });
+                }
+
+                $.get(baseUrl).done(data => {
+                    rebuildKey = data.rebuildKey;
+                    nextQuery();
+                });
+            })
         });
     </script>
 {% endblock %}

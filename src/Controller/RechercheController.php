@@ -6,6 +6,7 @@ use App\Entity\RechercheEnregistree;
 use App\Search\Criteria;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -305,10 +306,7 @@ class RechercheController extends AbstractController
         return $this->redirectToRoute('search');
     }
 
-    /**
-     * @Route("/search/rebuild_index", name="search_reindex")
-     */
-    public function rebuildIndex(Request $request, TranslatorInterface $translator)
+    public function rebuildIndexSync(Request $request, TranslatorInterface $translator, TagAwareCacheInterface $mapCache)
     {
         set_time_limit(3600);
         $start = microtime(true);
@@ -328,6 +326,83 @@ class RechercheController extends AbstractController
             ])
         );
         return $this->redirectToRoute('search');
+    }
+
+    /**
+     * @Route("/search/rebuild_index", name="search_reindex")
+     */
+    public function rebuildIndex(Request $request, TranslatorInterface $translator)
+    {
+        // Store request start time, to prevent time_limit being reached
+        $start_request = time();
+        $MAX_REQUEST_TIME = 5;
+
+        // Cache adapter
+        $cache = new FilesystemAdapter('search_index_rebuild', 3600);
+
+        // Repository
+        $repo = $this->getDoctrine()->getRepository(\App\Entity\IndexRecherche::class);
+
+        // Check if we have a key in parameter
+        $rebuildKey = $request->query->get('rebuildKey', null);
+
+        $rebuildData = [];
+        if ($rebuildKey != null) {
+            // If we have a key check that it exists in the cache
+            $cacheItem = $cache->getItem($rebuildKey);
+            if ($cacheItem->isHit()) {
+                // If if exists, checkes that the TTL has not expired
+                $rebuildData = $cacheItem->get();
+                if (time() - $rebuildData['startTime'] > 3600) {
+                    // If TTL has expired, remove item from cache
+                    $cache->deleteItem($rebuildKey);
+                    $rebuildData = [];
+                }
+            }
+        }
+
+
+        // If we have no rebuild data, we start a new session
+        if (empty($rebuildData)) {
+            // List all the records to reindex
+            $allRecords = $repo->buildReindexList();
+
+            // Delete existing entries
+            $repo->deleteAll();
+
+            // Generate a key
+            $rebuildKey = uniqid('rebuild_');
+
+            // Generate data array
+            $rebuildData = [
+                'startTime' => $start_request,
+                'rebuildKey' => $rebuildKey,
+                'remaining' => $allRecords,
+                'totalCount' => count($allRecords),
+                'doneCount' => 0,
+            ];
+        }
+        // If we have data, we process as many entries as we cas
+        else {
+            do {
+                // Unstack an entry
+                list($entityType, $entityId) = array_shift($rebuildData['remaining']);
+
+                // Rebuild the entry
+                $repo->rebuildEntry($entityType, $entityId, true);
+
+                // Update rebuild data array
+                $rebuildData['doneCount']++;
+            } while (count($rebuildData['remaining']) > 0 && (time() - $start_request) <= $MAX_REQUEST_TIME);
+        }
+
+        // Save data array in cache
+        $cacheItem = $cache->getItem($rebuildKey);
+        $cacheItem->set($rebuildData);
+        $cache->save($cacheItem);
+
+        // Respond with current data
+        return new JsonResponse($rebuildData);
     }
 
     private function _emptySearchResponse(Request $request, string $mode)

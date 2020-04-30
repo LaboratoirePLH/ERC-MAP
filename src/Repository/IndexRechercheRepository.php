@@ -45,6 +45,25 @@ class IndexRechercheRepository extends ServiceEntityRepository
         ];
     }
 
+    public function buildReindexList()
+    {
+        $sources = $this->getEntityManager()->createQuery("SELECT e.id FROM \App\Entity\Source e ORDER BY e.id ASC")->getScalarResult();
+        $attestations = $this->getEntityManager()->createQuery("SELECT e.id FROM \App\Entity\Attestation e ORDER BY e.id ASC")->getScalarResult();
+        $elements = $this->getEntityManager()->createQuery("SELECT e.id FROM \App\Entity\Element e ORDER BY e.id ASC")->getScalarResult();
+
+        $sources = array_map(function ($id) {
+            return ['Source', $id];
+        }, array_column($sources, 'id'));
+        $attestations = array_map(function ($id) {
+            return ['Attestation', $id];
+        }, array_column($attestations, 'id'));
+        $elements = array_map(function ($id) {
+            return ['Element', $id];
+        }, array_column($elements, 'id'));
+
+        return array_merge($sources, $attestations, $elements);
+    }
+
     public function fullRebuild()
     {
         return $this->rebuildByEntityType('Source')
@@ -58,12 +77,7 @@ class IndexRechercheRepository extends ServiceEntityRepository
         $entityType = \ucfirst(\strtolower($entityType));
 
         // Remove all of entity type
-        $this->createQueryBuilder('clear_index')
-            ->delete("App\Entity\IndexRecherche", "i")
-            ->where('i.entite = :entityType')
-            ->setParameter('entityType', $entityType)
-            ->getQuery()
-            ->execute();
+        $this->deleteByEntityType($entityType);
 
         // Select all entities of type
         $em = $this->getEntityManager();
@@ -90,13 +104,15 @@ class IndexRechercheRepository extends ServiceEntityRepository
         return count($all);
     }
 
-    public function rebuildEntry(string $entityType, int $entityId)
+    public function rebuildEntry(string $entityType, int $entityId, bool $skipDeletion = false)
     {
         // Ensure $entityType has correct case
         $entityType = \ucfirst(\strtolower($entityType));
 
         // Removes existing data
-        $this->deleteEntry($entityType, $entityId);
+        if ($skipDeletion !== true) {
+            $this->deleteEntry($entityType, $entityId);
+        }
 
         // Fetch up-to-date data
         $query = $this->getEntityManager()->createQuery("SELECT e FROM \App\Entity\\$entityType e WHERE e.id = $entityId");
@@ -119,12 +135,35 @@ class IndexRechercheRepository extends ServiceEntityRepository
         }
     }
 
-    public function deleteEntry(string $entityType, int $entityId)
+    public function deleteAll()
+    {
+        // Remove all entries
+        $this->createQueryBuilder('clear_index')
+            ->delete("App\Entity\IndexRecherche", "i")
+            ->getQuery()
+            ->execute();
+    }
+
+    public function deleteByEntityType(string $entityType)
     {
         // Ensure $entityType has correct case
         $entityType = \ucfirst(\strtolower($entityType));
 
         // Remove all of entity type
+        $this->createQueryBuilder('clear_index')
+            ->delete("App\Entity\IndexRecherche", "i")
+            ->where('i.entite = :entityType')
+            ->setParameter('entityType', $entityType)
+            ->getQuery()
+            ->execute();
+    }
+
+    public function deleteEntry(string $entityType, int $entityId)
+    {
+        // Ensure $entityType has correct case
+        $entityType = \ucfirst(\strtolower($entityType));
+
+        // Remove entry
         $this->createQueryBuilder('clear_index')
             ->delete("App\Entity\IndexRecherche", "i")
             ->where('i.entite = :entityType')

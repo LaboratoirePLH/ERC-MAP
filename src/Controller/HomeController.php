@@ -276,30 +276,70 @@ class HomeController extends AbstractController
             }
         }
 
-        // Sort
-        $data = array_values($data);
-        usort($data, function ($a, $b) {
-            return $a['label'] <=> $b['label'];
-        });
-        foreach ($data as &$r) {
-            if (count($r['sousRegions'])) {
-                $r['sousRegions'] = array_values($r['sousRegions']);
-                usort($r['sousRegions'], function ($a, $b) {
-                    return $a['label'] <=> $b['label'];
-                });
-                foreach ($r['sousRegions'] as &$sr) {
-                    $sr['biblios'] = array_values($sr['biblios']);
-                    uasort($sr['biblios'], function ($a, $b) {
-                        return $a['label'] <=> $b['label'];
-                    });
+        $tree = [];
+
+        foreach ($data as $r) {
+            $tree_r = [
+                'text' => $r['label'],
+                'icon' => 'globe-europe',
+                'badge' => 0,
+                'children' => []
+            ];
+            foreach ($r['sousRegions'] as $sr) {
+                $tree_sr = [
+                    'text' => $sr['label'],
+                    'icon' => 'map-marked',
+                    'badge' => 0,
+                    'children' => []
+                ];
+
+                foreach ($sr['biblios'] as $b_id => $b) {
+                    $tree_b = [
+                        'text' => $b['label'],
+                        'icon' => 'book',
+                        'badge' => $b['value'],
+                        'link' => $this->generateUrl('bibliography_show', [
+                            'id' => $b_id,
+                        ])
+                    ];
+                    $tree_sr['badge'] += $b['value'];
+                    $tree_sr['children'][] = $tree_b;
                 }
+
+                usort($tree_sr['children'], function ($a, $b) {
+                    return $a['text'] <=> $b['text'];
+                });
+
+                $tree_r['badge'] += $tree_sr['badge'];
+                $tree_r['children'][] = $tree_sr;
             }
-            $r['biblios'] = array_values($r['biblios']);
-            usort($r['biblios'], function ($a, $b) {
-                return $a['label'] <=> $b['label'];
+            foreach ($r['biblios'] as $b_id => $b) {
+                $tree_b = [
+                    'text' => $b['label'],
+                    'icon' => 'book',
+                    'badge' => $b['value'],
+                    'link' => $this->generateUrl('bibliography_show', [
+                        'id' => $b_id,
+                    ])
+                ];
+                $tree_r['badge'] += $b['value'];
+                $tree_r['children'][] = $tree_b;
+            }
+
+            usort($tree_r['children'], function ($a, $b) {
+                if ($a['icon'] != $b['icon']) {
+                    return $b['icon'] <=> $a['icon'];
+                }
+                return $a['text'] <=> $b['text'];
             });
+
+            $tree[] = $tree_r;
         }
 
-        return new JsonResponse($data);
+        usort($tree, function ($a, $b) {
+            return $a['text'] <=> $b['text'];
+        });
+
+        return new JsonResponse($tree);
     }
 }

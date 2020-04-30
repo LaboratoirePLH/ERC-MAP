@@ -68,12 +68,8 @@
                         <div class="row">
                             <div class="col">
                                 <span class="collapsible-icon cursor-pointer text-muted mr-3" data-toggle="collapse" data-target="#corpus-state" aria-expanded="false" aria-controls="corpus-state">
-                                    <span class="d-inline">
-                                        <i class="fas fa-fw fa-2x fa-plus"></i>
-                                    </span>
-                                    <span class="d-none">
-                                        <i class="fas fa-fw fa-2x fa-minus"></i>
-                                    </span>
+                                    <i class="fas fa-fw fa-2x fa-plus d-inline"></i>
+                                    <i class="fas fa-fw fa-2x fa-minus d-none"></i>
                                 </span>
                                 <h3 class="cursor-pointer d-inline-block" id="corpus-state-title" data-toggle="collapse" data-target="#corpus-state" aria-expanded="false" aria-controls="corpus-state">
                                     {{ 'pages.home.corpus_state'|trans }}
@@ -174,62 +170,28 @@
 
             // Corpus state management
 
-            function listItem(icon, label, level, badge) {
-                var iconEl = $('<i>').addClass('fas fa-fw fa-' + icon + ' mr-2')
-                var li = $('<li>').addClass('list-group-item').text(label).prepend(iconEl);
-                li.css('margin-left', level * 50 + 'px');
-
-                if (badge !== undefined) {
-                    li.append($('<span>').addClass('badge badge-primary badge-pill float-right').text(badge))
-                }
-
-                return li;
-            }
-
             // Show spinner on corpus state title
             $('#corpus-state-title').prepend($('<div class="spinner-border" role="status"></div>'));
             // Load data
             $.get("{{ url('corpus_state') }}").done(function (data) {
-                var root = $('#corpus-state > ul');
-                data.forEach(d => {
-                    root.append(listItem('globe-europe', d.label, 0));
-
-                    if (d.sousRegions.length) {
-                        d.sousRegions.forEach(sr => {
-                            root.append(listItem('map-marked', sr.label, 1));
-
-                            if (sr.biblios.length) {
-                                sr.biblios.forEach(b => {
-                                    root.append(listItem('book', b.label, 2, b.value))
-                                })
-                            }
-                        })
-                    }
-                    if (d.biblios.length) {
-                        d.biblios.forEach(b => {
-                            root.append(listItem('book', b.label, 1, b.value))
-                        })
-                    }
-                })
-
+                $('#corpus-state > ul').tree(data);
             }).always(function () {
                 $('#corpus-state-title').find('.spinner-border').remove();
             });
 
-
             // Collapse icons
             $('.collapse').on('show.bs.collapse', function () {
                 var id = $(this).prop('id');
-                var icons = $('span.collapsible-icon[data-target="#' + id + '"]').children('span');
+                var icons = $('span.collapsible-icon[data-target="#' + id + '"]').children();
                 $(icons.get(0)).removeClass('d-inline').addClass('d-none');
                 $(icons.get(1)).removeClass('d-none').addClass('d-inline');
-            })
+            });
             $('.collapse').on('hide.bs.collapse', function () {
                 var id = $(this).prop('id');
-                var icons = $('span.collapsible-icon[data-target="#' + id + '"]').children('span');
+                var icons = $('span.collapsible-icon[data-target="#' + id + '"]').children();
                 $(icons.get(0)).removeClass('d-none').addClass('d-inline');
                 $(icons.get(1)).removeClass('d-inline').addClass('d-none');
-            })
+            });
         });
     </script>
 {% endblock %}

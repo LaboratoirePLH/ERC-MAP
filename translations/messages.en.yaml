@@ -112,6 +112,7 @@ generic:
         reason: "Reason"
         divers: "Miscellaneous"
         indetermine: "Undetermined"
+        lien_direct: "Direct link"
     choices :
         new: "New"
         existing: "Existing"

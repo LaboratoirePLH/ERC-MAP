@@ -1,51 +1,56 @@
 {% extends 'page.html.twig' %}
 {% block stylesheets %}
-{{ encore_entry_link_tags('attestation_view_page') }}
+    {{ encore_entry_link_tags('attestation_view_page') }}
 {% endblock %}
 {% block title %}
-{{ ('attestation.view')|trans({'%id%': attestation.id}) }}
+    {{ ('attestation.view')|trans({'%id%': attestation.id}) }}
 {% endblock %}
 {% block content %}
-{% if is_granted('ROLE_MODERATOR') or attestation.createur.id == app.user.id %}
-<div class="text-center">
-    <a href="{{ url('attestation_edit', {'id': attestation.id}) }}" class="btn btn-sm my-1 btn-warning">
-        <i class="fas fa-fw fa-edit"></i>
-        {{ 'generic.edit'|trans }}
-    </a>
-</div>
-{% endif %}
-<hr />
-{% include "display/attestation.html.twig" with {'attestation': attestation} %}
-<hr />
-<div class="row">
-    <div class="col-12 text-center">
-        <a href=" {{ url('attestation_list') }}" class="btn btn-secondary">{{ 'generic.back'|trans }}</a>
+    {% if is_granted('ROLE_MODERATOR') or attestation.createur.id == app.user.id %}
+        <div class="text-center">
+            <a href="{{ url('attestation_edit', {'id': attestation.id}) }}" class="btn btn-sm my-1 btn-warning">
+                <i class="fas fa-fw fa-edit"></i>
+                {{ 'generic.edit'|trans }}
+            </a>
+            <br/>
+            <u>{{ 'generic.fields.lien_direct'|trans }}:</u>
+            <a href="{{ app.request.uri }}">{{ app.request.uri }}</a>
+        </div>
+    {% endif %}
+    <hr/>
+    {% include "display/attestation.html.twig" with {'attestation': attestation} %}
+    <hr/>
+    <div class="row">
+        <div class="col-12 text-center">
+            <a href=" {{ url('attestation_list') }}" class="btn btn-secondary">{{ 'generic.back'|trans }}</a>
+        </div>
     </div>
-</div>
 {% endblock %}
 {% block javascripts %}
-{{ encore_entry_script_tags('attestation_view_page') }}
-<script type="text/javascript">
-    (function ($) {
-        const elements = {{ attestation.elementsFormule|default({})|json_encode|raw }};
-        $('td.formula-cell').each(function () {
-            var me = $(this);
-            var formule = me.text();
-            var buttons = $.fn.formulaRenderer(formule, {
-                elements: elements,
-                elementCls: 'btn-info',
-                operatorCls: 'btn-warning',
-                errors: {
-                    valid: "{{ 'formule.errors.valid'|trans }}",
-                    unknown_element: "{{ 'formule.errors.unknown_element'|trans }}",
-                    brackets: "{{ 'formule.errors.brackets'|trans }}",
-                    parenthesis: "{{ 'formule.errors.parenthesis'|trans }}",
-                    operator: "{{ 'formule.errors.operator'|trans }}",
-                },
+    {{ encore_entry_script_tags('attestation_view_page') }}
+    <script type="text/javascript">
+        (function ($) {
+            const elements = {{ attestation.elementsFormule|default({})|json_encode|raw }};
+            $('td.formula-cell').each(function () {
+                var me = $(this);
+                var formule = me.text();
+                var buttons = $.fn.formulaRenderer(formule, {
+                    elements: elements,
+                    elementCls: 'btn-info',
+                    operatorCls: 'btn-warning',
+                    errors: {
+                        valid: "{{ 'formule.errors.valid'|trans }}",
+                        unknown_element: "{{ 'formule.errors.unknown_element'|trans }}",
+                        brackets: "{{ 'formule.errors.brackets'|trans }}",
+                        parenthesis: "{{ 'formule.errors.parenthesis'|trans }}",
+                        operator: "{{ 'formule.errors.operator'|trans }}"
+                    }
+                });
+                me.empty();
+                $.each(buttons, function (i, b) {
+                    me.append(b)
+                });
             });
-            me.empty();
-            $.each(buttons, function (i, b) { me.append(b) });
-        });
-    })(jQuery);
-</script>
+        })(jQuery);
+    </script>
 {% endblock %}

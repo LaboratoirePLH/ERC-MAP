@@ -111,6 +111,7 @@ generic:
         reason: "Raison"
         divers: "Divers"
         indetermine: "Indéterminé"
+        lien_direct: "Lien direct"
     choices :
         new: "Nouveau"
         existing: "Existant"

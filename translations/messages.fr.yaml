@@ -215,7 +215,7 @@ biblio:
         deleted: "La Bibliographie a été supprimée"
         missing: "La Bibliographie #%id% n'existe pas"
     fields:
-        titre_abrege: "Mots du titre/Titre Abrégé"
+        titre_abrege: "Titre Abrégé"
         titre_complet: "Titre Complet"
         annee: "Année"
         auteur: "Auteur"

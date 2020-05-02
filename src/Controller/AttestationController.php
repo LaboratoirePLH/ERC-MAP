@@ -80,16 +80,11 @@ class AttestationController extends AbstractController
      */
     public function create(Request $request, TranslatorInterface $translator)
     {
-        $sources = $this->getDoctrine()
-            ->getRepository(Source::class)
-            ->findAll();
-
         $data = [
             'controller_name' => 'AttestationController',
             'action'          => 'select',
             'selectionRoute'  => 'attestation_create_source',
             'title'           => 'attestation.choose_source',
-            'sources'         => $sources,
             'breadcrumbs'     => [
                 ['label' => 'nav.home', 'url' => $this->generateUrl('home')],
                 ['label' => 'source.list', 'url' => $this->generateUrl('source_list')],

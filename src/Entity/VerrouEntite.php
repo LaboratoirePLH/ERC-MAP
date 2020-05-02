@@ -184,9 +184,15 @@ class VerrouEntite extends AbstractEntity
      */
     public function releaseLockOnDelete()
     {
-        foreach($this->getSources() as $source){ $this->removeSource($source); }
-        foreach($this->getAttestations() as $attestation){ $this->removeAttestation($attestation); }
-        foreach($this->getElements() as $element){ $this->removeElement($element); }
+        foreach ($this->getSources() as $source) {
+            $this->removeSource($source);
+        }
+        foreach ($this->getAttestations() as $attestation) {
+            $this->removeAttestation($attestation);
+        }
+        foreach ($this->getElements() as $element) {
+            $this->removeElement($element);
+        }
     }
 
     /**
@@ -220,11 +226,15 @@ class VerrouEntite extends AbstractEntity
         return $this;
     }
 
-    public function toArray()
+    public function toArray(string $format = null)
     {
+        $date_fin = $this->date_fin;
+        if ($format !== null) {
+            $date_fin = $date_fin->format($format);
+        }
         return [
             'createur' => $this->createur->getPrenomNom(),
-            'date_fin' => $this->date_fin
+            'date_fin' => $date_fin
         ];
     }
 }

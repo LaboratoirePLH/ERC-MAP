@@ -9,6 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Cache\TagAwareCacheInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -84,10 +85,14 @@ class RechercheController extends AbstractController
             ->getRepository(\App\Entity\IndexRecherche::class)
             ->simpleSearch($search, $request->getLocale());
 
+        if (count($results)) {
+            $cacheKey = $this->_cacheSearchResults($searchMode, $results);
+        }
+
         return $this->render('search/results_mixed.html.twig', [
             'controller_name' => 'RechercheController',
             'locale'          => $request->getLocale(),
-            'results'         => $results,
+            'cacheKey'        => $cacheKey ?? false,
             'mode'            => $searchMode,
             'criteria'        => [$search],
             'criteriaDisplay' => $searchCriteria->getCriteriaDisplay($searchMode, [$search], $request->getLocale()),
@@ -118,10 +123,14 @@ class RechercheController extends AbstractController
             ->getRepository(\App\Entity\IndexRecherche::class)
             ->search($searchMode, $criteria, $request->getLocale());
 
+        if (count($results)) {
+            $cacheKey = $this->_cacheSearchResults($searchMode, $results);
+        }
+
         return $this->render('search/results_mixed.html.twig', [
             'controller_name' => 'RechercheController',
             'locale'          => $request->getLocale(),
-            'results'         => $results,
+            'cacheKey'        => $cacheKey ?? false,
             'mode'            => $searchMode,
             'criteria'        => $criteria,
             'criteriaDisplay' => $searchCriteria->getCriteriaDisplay($searchMode, $criteria, $request->getLocale()),
@@ -206,6 +215,39 @@ class RechercheController extends AbstractController
                 ['label' => 'search.results']
             ]
         ]);
+    }
+
+    /**
+     * @Route("/search/results", name="json_search_results")
+     */
+    public function searchResults(Request $request, TranslatorInterface $translator)
+    {
+        // Cache adapter
+        $cache = new FilesystemAdapter('search_results', 3600);
+
+        // Check if we have a key in parameter
+        $cacheKey = $request->query->get('cacheKey', null);
+
+        $success = false;
+        $data = [];
+        if ($cacheKey != null) {
+            // If we have a key check that it exists in the cache
+            $cacheItem = $cache->getItem($cacheKey);
+            if ($cacheItem->isHit()) {
+                // If if exists, checkes that the TTL has not expired
+                $data = $cacheItem->get();
+                $success = true;
+            }
+        }
+
+        $result = [
+            'success' => $success,
+            'data' => $data
+        ];
+
+        $response = new Response(json_encode($result, JSON_INVALID_UTF8_IGNORE));
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
     }
 
     /**
@@ -414,5 +456,20 @@ class RechercheController extends AbstractController
         return $this->redirect(
             $this->get('router')->generate('search', ['_fragment' => $mode])
         );
+    }
+
+    private function _cacheSearchResults(string $mode, array $results): string
+    {
+        // Cache adapter
+        $cache = new FilesystemAdapter("search_results", 1800);
+        // Generate a key
+        $cacheKey = uniqid("search_results_{$mode}_");
+
+        // Save data array in cache
+        $cacheItem = $cache->getItem($cacheKey);
+        $cacheItem->set($results);
+        $cache->save($cacheItem);
+
+        return $cacheKey;
     }
 }

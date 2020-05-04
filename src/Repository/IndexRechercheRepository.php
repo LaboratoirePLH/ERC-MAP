@@ -244,14 +244,14 @@ class IndexRechercheRepository extends ServiceEntityRepository
             $r = $this->_prepareSourceResult($entityData, $locale);
             $r['linkType'] = "source";
             $r['linkId'] = $entity->getId();
-            $r['type'] = "source.name";
+            $r['type'] = $this->translator->trans("source.name");
             $r['field'] = $search === null ? [] : $fieldName;
             return $r;
         } else if ($entity->getEntite() == "Attestation") {
             $r = $this->_prepareAttestationResult($entityData, $locale);
             $r['linkType'] = "attestation";
             $r['linkId'] = $entity->getId();
-            $r['type'] = "attestation.name";
+            $r['type'] = $this->translator->trans("attestation.name");
             $r['field'] = $search === null ? [] : $fieldName;
             return $r;
         } else if ($entity->getEntite() == "Element") {
@@ -415,7 +415,7 @@ class IndexRechercheRepository extends ServiceEntityRepository
 
         foreach ($field as &$f) {
             if (array_key_exists($f, $mapping)) {
-                $f = $mapping[$f];
+                $f = $this->translator->trans($mapping[$f]);
             } else if (is_numeric($f)) {
                 $f = null;
             }

@@ -31,13 +31,9 @@ class AttestationController extends AbstractController
      */
     public function index()
     {
-        $attestations = $this->getDoctrine()
-            ->getRepository(Attestation::class)
-            ->findAll();
         return $this->render('attestation/index.html.twig', [
             'controller_name' => 'AttestationController',
             'action'          => 'list',
-            'attestations'    => $attestations,
             'breadcrumbs'     => [
                 ['label' => 'nav.home', 'url' => $this->generateUrl('home')],
                 ['label' => 'attestation.list']
@@ -64,8 +60,7 @@ class AttestationController extends AbstractController
         return $this->render('attestation/index.html.twig', [
             'controller_name' => 'AttestationController',
             'action'          => 'list',
-            'attestations'    => $source->getAttestations(),
-            'source'          => $source,
+            'source'          => $source_id,
             'title'           => $translator->trans('attestation.list_for_source', ['%id%' => $source_id]),
             'breadcrumbs'     => [
                 ['label' => 'nav.home', 'url' => $this->generateUrl('home')],
@@ -467,7 +462,7 @@ class AttestationController extends AbstractController
         $submittedToken = $request->request->get('token');
         $user = $this->get('security.token_storage')->getToken()->getUser();
 
-        if ($this->isCsrfTokenValid('delete_attestation_' . $id, $submittedToken)) {
+        if ($this->isCsrfTokenValid('delete_attestation', $submittedToken)) {
             $repository = $this->getDoctrine()->getRepository(Attestation::class);
             $attestation = $repository->find($id);
             if ($attestation instanceof Attestation) {

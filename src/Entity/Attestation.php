@@ -11,7 +11,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Attestation
  *
  * @ORM\Table(name="attestation")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\AttestationRepository")
  * @ORM\HasLifecycleCallbacks()
  */
 class Attestation extends AbstractEntity

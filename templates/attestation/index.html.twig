@@ -51,117 +51,7 @@
                 </th>
             </tr>
         </thead>
-        <tbody>
-            {% for attestation in attestations %}
-                <tr>
-                    <th scope="row" class="px-0" data-sort="{{ attestation.id }}">
-                        <a href="{{ url('attestation_show', {'id': attestation.id}) }}">
-                            {{ attestation.source.projet is not empty ? attestation.source.projet.nom(locale) : "" }}
-                            #{{ attestation.id }}
-                        </a>
-                        <br/>
-                        <small>{{ 'generic.fields.version'|trans }}&nbsp;{{ attestation.version|default("?") }}</small>
-                        <br/>
-                        <small>
-                            <i>({{ 'source.name'|trans }}&nbsp;#{{ attestation.source.id }})</i>
-                        </small>
-                    </th>
-                    <td>
-                        {{ attestation.source.sourceBiblios is not empty ?
-                    attestation.source.editionPrincipaleBiblio.biblio.titreAbrege|raw : "" }}
-                    </td>
-                    <td>
-                        {{ attestation.source.sourceBiblios is not empty ?
-                    attestation.source.editionPrincipaleBiblio.referenceSource|raw : "" }}
-                    </td>
-                    <td>
-                        {{ attestation.passage|raw }}
-                    </td>
-                    <td>
-                        {% set cellValue = attestation.translitteration|length > 0 ? attestation.translitteration : attestation.extraitAvecRestitution %}
-                        {{ cellValue|ellipsis(200)|raw }}
-                    </td>
-                    <td data-order="{{ attestation.etatFiche is not empty ? attestation.etatFiche.id : 0 }}">
-                        {{ attestation.etatFiche is not empty ? attestation.etatFiche.getNom(locale) : '' }}
-                    </td>
-                    <td data-order="{{ attestation.dateCreation|date('U') }}">
-                        {{ attestation.dateCreation|date(('locale_datetime'|trans), "Europe/Paris") }}
-                        <br/>
-                        <small>
-                            {{ attestation.createur.prenomNom }}<br/>
-                        </small>
-                    </td>
-                    <td data-order="{{ attestation.dateModification|date('U') }}">
-                        {{ attestation.dateModification|date(('locale_datetime'|trans), "Europe/Paris") }}
-                        <br/>
-                        <small>
-                            {{ attestation.dernierEditeur.prenomNom }}<br/>
-                        </small>
-                    </td>
-                    <td>
-                        {{ attestation.traduireFr ? "languages.fr"|trans : "" }}
-                        {% if attestation.traduireFr and attestation.traduireEn %}
-                            <br/>
-                        {% endif %}
-                        {{ attestation.traduireEn ? "languages.en"|trans : "" }}
-                    </td>
-                    <td class="py-0 px-1">
-                        <a href="{{ url('element_attestation', {'attestation_id': attestation.id}) }}" class="btn btn-sm btn-block my-1 btn-success">
-                            <i class="fas fa-fw {{ icons.element }}"></i>
-                            {{ 'attestation.sections.elements'|trans }}
-                        </a>
-                        <a href="{{ url('attestation_show', {'id': attestation.id}) }}" class="btn btn-sm btn-block my-1 btn-primary">
-                            <i class="fas fa-eye"></i>
-                            {{ 'generic.view'|trans }}
-                        </a>
-                        {% if attestation.verrou != null and not attestation.verrou.isWritable(app.user) %}
-                            {% set error = "generic.messages.error_locked"|trans({
-                    '%type%': 'attestation.name'|trans,
-                    '%id%'  : attestation.id,
-                    '%user%': attestation.verrou.createur.prenomNom,
-                    '%time%': attestation.verrou.dateFin|date(('locale_datetime'|trans), "Europe/Paris")
-                }) %}
-                            <button type="button" class="btn btn-sm btn-block my-1 btn-danger disabled" data-toggle="tooltip" data-placement="left" title="{{ error }}">
-                                <i class="fas fa-fw fa-lock"></i>
-                                {{ 'generic.locked'|trans }}
-                            </button>
-                        {% else %}
-                            {% if is_granted('ROLE_MODERATOR') or attestation.createur.id == app.user.id %}
-                                <a href="{{ url('attestation_edit', {'id': attestation.id}) }}" class="btn btn-sm btn-block my-1 btn-warning">
-                                    <i class="fas fa-edit"></i>
-                                    {{ 'generic.edit'|trans }}
-                                </a>
-                            {% endif %}
-                            {% if is_granted('ROLE_ADMIN') or attestation.createur.id == app.user.id %}
-                                {% set uuid = 'confirm_deletion_' ~ attestation.id ~ '_' ~ random() %}
-                                <button type="button" class="btn btn-sm btn-block my-1 btn-danger" id="delete-link-{{attestation.id}}" data-toggle="modal" data-target="#{{ uuid }}">
-                                    <i class="fas fa-trash"></i>
-                                    {{ 'generic.delete'|trans }}
-                                </button>
-                                {% include "modals/confirmation.html.twig" with {
-                    'modalName': 'confirm_deletion',
-                    'uuid': uuid,
-                    'targetUrl': url('attestation_delete', {'id' : attestation.id}),
-                    'confirmationLabel': 'generic.delete',
-                    'csrfToken': 'delete_attestation_' ~ attestation.id,
-                } %}
-                            {% endif %}
-                        {% endif %}
-                        {% if source is defined %}
-                            <a href="{{ url('attestation_create_source', { 'source_id' : source.id, 'cloneFrom': attestation.id }) }}" class="btn btn-sm btn-block my-1 btn-secondary">
-                                <i class="fas fa-fw fa-copy"></i>
-                                {{ 'generic.clone'|trans }}
-                            </a>
-                        {% else %}
-                            <a href="{{ url('attestation_create', { 'cloneFrom': attestation.id }) }}" class="btn btn-sm btn-block my-1 btn-secondary">
-                                <i class="fas fa-fw fa-copy"></i>
-                                {{ 'generic.clone'|trans }}
-                            </a>
-                        {% endif %}
-                    </td>
-                </tr>
-            {% endfor %}
-        </tbody>
+        <tbody></tbody>
         <tfoot>
             <tr>
                 <th>{{ 'generic.fields.id'|trans }}</th>
@@ -185,45 +75,146 @@
             </button>
         </div>
     </div>
+    {% include "modals/confirmation.html.twig" with {
+        'modalName': 'confirm_deletion',
+        'uuid': 'confirm-deletion-modal',
+        'targetUrl': url('attestation_delete', {'id' : '__ID__'}),
+        'confirmationLabel': 'generic.delete',
+        'csrfToken': 'delete_attestation',
+    } %}
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
     <script type="text/javascript">
         $(document).ready(function () {
-            $('#attestation_list tfoot th').each(function () {
-                var title = $(this).text();
-                var value = $(this).data('value');
-                if (title != "") {
-                    $(this).html('<input type="text" class="w-100 form-control form-control-sm" placeholder="   {{ "generic.search"|trans }}' + ' ' + title + '" />');
-                    if (value != null) {
-                        $(this).children('input').val(value);
-                    }
-                }
-            });
-            var dt = $('#attestation_list').DataTable({
-                responsive: true,
-                autoWidth: true,
-                lengthChange: true,
-                scrollX: false,
-                searching: true,
-                ordering: true,
+            //
+            // Store Source ID in variable
+            const sourceId = "{{ source is defined ? source : '' }}";
+
+            // Prepare AJAX URL depending on filters
+            var ajax = {
+                url: "{{ url('json_attestation_list') }}",
+                type: "GET"
+            };
+            if (sourceId !== "") {
+                ajax.data = {
+                    filter: "source:" + sourceId
+                };
+            }
+
+            // Routes
+            var elementsRoute = "{{ url('element_attestation', {'attestation_id': '__ID__'}) }}";
+            var showRoute = "{{ url('attestation_show', {'id': '__ID__'}) }}";
+            var editRoute = "{{ url('attestation_edit', {'id': '__ID__'}) }}";
+            var deleteRoute = "{{ url('attestation_delete', {'id': '__ID__'}) }}";
+            var cloneRoute = "{{ source is defined ? url('attestation_create_source', { 'source_id' : source, 'cloneFrom': '__ID__' }) : url('attestation_create', {'cloneFrom': '__ID__'}) }}";
+
+            // Error message for locks
+            var lockError = "{{ 'generic.messages.error_locked'|trans({'%type%': 'attestation.name'|trans}) }}";
+
+            // Role management
+            var isAdmin = "{{ is_granted('ROLE_ADMIN') ? 1 : 0 }}" === "1";
+            var isModerator = "{{ is_granted('ROLE_MODERATOR') ? 1 : 0 }}" === "1";
+            var currentUser = parseInt("{{ app.user.id }}", 10);
+
+            const tableOptions = {
+                ajax: ajax,
                 columns: [
                     {
-                        responsivePriority: 1
+                        responsivePriority: 1,
+                        data: 'id',
+                        render: function (data, type, row) {
+                            if (type === 'filter') {
+                                return row.projet + ' #' + data + ' source #' + row.source;
+                            }
+                            if (type === 'sort' || type === 'type') {
+                                return data;
+                            }
+                            const versionLabel = "{{ 'generic.fields.version'|trans }}";
+                            const sourceLabel = "{{ 'source.name'|trans }}";
+                            return row.projet + ' #' + data + '<br/><small>' + versionLabel + ' ' + (
+                                row.version || '?'
+                            ) + "<br/><i>(" + sourceLabel + " #" + row.source + ")</i></small>";
+                        }
                     },
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null, {
+                    {
+                        data: 'titre_abrege'
+                    },
+                    {
+                        data: 'reference'
+                    },
+                    {
+                        data: 'passage'
+                    }, {
+                        data: 'translitteration',
+                        render: function (data, type, row) {
+                            if (type === 'display') {
+                                return data.display;
+                            }
+                            return data.full
+                        }
+                    }, {
+                        data: 'etat_fiche',
+                        render: function (data, type, row) {
+                            if (type === 'sort') {
+                                return data.id;
+                            }
+                            return data.display;
+                        }
+                    }, {
+                        data: 'date_creation',
+                        render: function (data, type, row) {
+                            if (type === 'display' || type === 'filter') {
+                                return data.display + '<br/><small>' + row.createur + '</small>';
+                            }
+                            return data.timestamp;
+                        }
+                    }, {
+                        data: 'date_modification',
+                        render: function (data, type, row) {
+                            if (type === 'display' || type === 'filter') {
+                                return data.display + '<br/><small>' + row.editeur + '</small>';
+                            }
+                            return data.timestamp;
+                        }
+                    }, {
+                        data: 'traduire',
+                        render: function (data, type, row) {
+                            return data.join('<br/>');
+                        }
+                    }, {
+                        data: null,
                         searchable: false,
                         orderable: false,
-                        width: 90,
-                        responsivePriority: 1
+                        width: 110,
+                        responsivePriority: 1,
+                        render: function (data, type, row) {
+                            var verrou = false;
+                            var buttons = [];
+                            if (row.verrou !== false) {
+                                let texteVerrou = lockError.replace('%id%', row.id).replace('%user%', row.verrou.createur).replace('%time%', row.verrou.date_fin);
+                                texteVerrou = $('<div>').html(texteVerrou).text();
+                                verrou = $.fn.createListButton('button', 'danger', 'lock', "{{ 'generic.locked'|trans }}");
+                                verrou.attr('data-toggle', 'tooltip').attr('data-placement', 'left').attr('title', texteVerrou).addClass('disabled');
+                            }
+                            buttons.push($.fn.createListButton('a', 'success', '{{ icons.element }}'.replace('fa-', ''), "{{ 'attestation.sections.elements'|trans }}", elementsRoute.replace('__ID__', row.id)));
+                            buttons.push($.fn.createListButton('a', 'primary', 'eye', "{{ 'generic.view'|trans }}", showRoute.replace('__ID__', row.id)));
+                            if (verrou === false) {
+                                if (isModerator || row.createur_id === currentUser) {
+                                    buttons.push($.fn.createListButton('a', 'warning', 'edit', "{{ 'generic.edit'|trans }}", editRoute.replace('__ID__', row.id)));
+                                }
+                                if (isAdmin || row.createur_id === currentUser) {
+                                    buttons.push($.fn.createDeleteButton("{{ 'generic.delete'|trans }}", row.id));
+                                }
+                            } else {
+                                buttons.push(verrou);
+                            }
+                            //
+                            buttons.push($.fn.createListButton('a', 'secondary', 'copy', "{{ 'generic.clone'|trans }}", cloneRoute.replace('__ID__', row.id)));
+
+                            return buttons.map(btn => btn[0].outerHTML).join("\n");
+                        }
                     }
                 ],
                 order: [
@@ -262,38 +253,8 @@
                         }
                     }
                 ]
-            });
-            $('#attestation_list_wrapper select').removeClass('custom-select');
-            dt.columns().every(function () {
-                var me = this;
-                $('input', this.footer()).on('keyup change', function () {
-                    if (me.search() !== this.value) {
-                        me.search(
-                            // Remove accented characters from search string
-                                jQuery.fn.DataTable.ext.type.search.string(this.value)
-                        ).draw();
-                    }
-                })
-                $('input', this.footer()).each(function () {
-                    if ($(this).val() != "") {
-                        console.log('test');
-                        $(this).trigger('change');
-                    }
-                })
-            });
-            $('input[type=search]').on('keyup change', function () {
-                dt.search(
-                    // Remove accented characters from search string
-                        jQuery.fn.DataTable.ext.type.search.string(this.value)
-                ).draw();
-            })
-            dt.buttons().container().appendTo('.table-buttons');
-            $('.clear-filter-button').on('click', function (e) {
-                e.preventDefault();
-                dt.columns().every(function () {
-                    $('input', this.footer()).val("").trigger('change');
-                });
-            })
+            };
+            $.fn.setupList('attestation_list', tableOptions, "{{ 'generic.search'|trans }}");
         });
     </script>
 {% endblock %}

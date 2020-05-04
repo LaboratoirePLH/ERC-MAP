@@ -70,7 +70,18 @@ jQuery.fn.dataTable.ext.type.order['id-pre'] = function (d) {
         });
 
         // Setup datatable
-        var tableRef = $('#' + listId).DataTable(tableOptions);
+        var options = $.extend({
+            processing: true, // Displays loader when table is processing
+            serverSide: false, // Do local filtering/sorting
+            responsive: true,
+            autoWidth: true,
+            lengthChange: true,
+            scrollX: false,
+            searching: true,
+            ordering: true,
+        }, tableOptions);
+        console.log(options);
+        var tableRef = $('#' + listId).DataTable(options);
 
         // Remove class from page length selector
         $('#' + listId + '_wrapper select').removeClass('custom-select');

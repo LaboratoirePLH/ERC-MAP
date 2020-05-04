@@ -118,18 +118,10 @@
             var currentUser = parseInt("{{ app.user.id }}", 10);
 
             const tableOptions = {
-                processing: true, // Displays loader when table is processing
-                serverSide: false, // Do local filtering/sorting
                 ajax: {
                     url: "{{ url('json_source_list') }}",
                     type: "GET"
                 },
-                responsive: true,
-                autoWidth: true,
-                lengthChange: true,
-                scrollX: false,
-                searching: true,
-                ordering: true,
                 columns: [
                     {
                         responsivePriority: 1,
@@ -138,7 +130,7 @@
                             if (type === 'filter') {
                                 return row.projet + ' #' + data;
                             }
-                            if (type === 'sort') {
+                            if (type === 'sort' || type === 'type') {
                                 return data;
                             }
                             const versionLabel = "{{ 'generic.fields.version'|trans }}";

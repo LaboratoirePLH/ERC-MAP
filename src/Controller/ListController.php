@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Source;
+use App\Entity\Attestation;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
@@ -62,6 +63,76 @@ class ListController extends AbstractController
                 'verrou' => ($source->getVerrou() !== null && !$source->getVerrou()->isWritable($user)) ? $source->getVerrou()->toArray($translator->trans('locale_datetime')) : false
             ];
         }, $sources);
+
+        return new JsonResponse([
+            'success' => true,
+            'data'    => $data
+        ]);
+    }
+
+    /**
+     * @Route("/list/attestation", name="json_attestation_list")
+     */
+    public function attestation(Request $request, TranslatorInterface $translator)
+    {
+        $locale = $request->getLocale();
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        $repository = $this->getDoctrine()->getRepository(Attestation::class);
+
+        // Check if we have a filter in parameter
+        $filter = $request->query->get('filter', null);
+        if ($filter !== null) {
+            list($criteria, $value) = explode(':', $filter);
+            switch ($criteria) {
+                case 'source':
+                    $attestations = $repository->findBySource($value);
+                    break;
+                default:
+                    $attestations = $repository->findAll();
+            }
+        } else {
+            $attestations = $repository->findAll();
+        }
+
+        $data = array_map(function ($attestation) use ($locale, $user, $translator) {
+            $translitteration = strlen($attestation->getTranslitteration()) > 0 ? $attestation->getTranslitteration() : $attestation->getExtraitAvecRestitution();
+            $etat_fiche = [
+                'id'      => $attestation->getEtatFiche() === null ? 0 : $attestation->getEtatFiche()->getId(),
+                'display' => $attestation->getEtatFiche() === null ? '' : $attestation->getEtatFiche()->getNom($locale)
+            ];
+
+            return [
+                'id'               => $attestation->getId(),
+                'source'           => $attestation->getSource()->getId(),
+                'projet'           => $attestation->getSource()->getProjet()->getNom($locale),
+                'version'          => $attestation->getVersion(),
+                'titre_abrege'     => $attestation->getSource()->getEditionPrincipaleBiblio()->getBiblio()->getTitreAbrege(),
+                'reference'        => $attestation->getSource()->getEditionPrincipaleBiblio()->getReferenceSource(),
+                'passage'          => $attestation->getPassage(),
+                'translitteration' => [
+                    "display" => \App\Utils\StringHelper::ellipsis($translitteration, 200),
+                    "full"    => $translitteration
+                ],
+                'etat_fiche'       => $etat_fiche,
+                'date_creation'    => [
+                    'display'   => $attestation->getDateCreation()->format($translator->trans('locale_datetime')),
+                    'timestamp' => $attestation->getDateCreation()->getTimestamp(),
+                ],
+                'date_modification' => [
+                    'display'   => $attestation->getDateModification()->format($translator->trans('locale_datetime')),
+                    'timestamp' => $attestation->getDateModification()->getTimestamp(),
+                ],
+                'createur_id' => $attestation->getCreateur()->getId(),
+                'createur' => $attestation->getCreateur()->getPrenomNom(),
+                'editeur'  => $attestation->getDernierEditeur()->getPrenomNom(),
+                'traduire' => array_values(array_filter([
+                    $attestation->getTraduireFr() ? $translator->trans('languages.fr') : null,
+                    $attestation->getTraduireEn() ? $translator->trans('languages.en') : null
+                ])),
+                'verrou' => ($attestation->getVerrou() !== null && !$attestation->getVerrou()->isWritable($user)) ? $attestation->getVerrou()->toArray($translator->trans('locale_datetime')) : false
+            ];
+        }, $attestations);
 
         return new JsonResponse([
             'success' => true,

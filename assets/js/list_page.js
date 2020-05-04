@@ -80,7 +80,6 @@ jQuery.fn.dataTable.ext.type.order['id-pre'] = function (d) {
             searching: true,
             ordering: true,
         }, tableOptions);
-        console.log(options);
         var tableRef = $('#' + listId).DataTable(options);
 
         // Remove class from page length selector

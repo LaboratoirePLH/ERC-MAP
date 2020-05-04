@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
-use App\Entity\Source;
 use App\Entity\Attestation;
+use App\Entity\Biblio;
+use App\Entity\Element;
+use App\Entity\Source;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
@@ -133,6 +135,102 @@ class ListController extends AbstractController
                 'verrou' => ($attestation->getVerrou() !== null && !$attestation->getVerrou()->isWritable($user)) ? $attestation->getVerrou()->toArray($translator->trans('locale_datetime')) : false
             ];
         }, $attestations);
+
+        return new JsonResponse([
+            'success' => true,
+            'data'    => $data
+        ]);
+    }
+
+    /**
+     * @Route("/list/element", name="json_element_list")
+     */
+    public function element(Request $request, TranslatorInterface $translator)
+    {
+        $locale = $request->getLocale();
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        $repository = $this->getDoctrine()->getRepository(Element::class);
+
+        // Check if we have a filter in parameter
+        $filter = $request->query->get('filter', null);
+        if ($filter !== null) {
+            list($criteria, $value) = explode(':', $filter);
+            switch ($criteria) {
+                case 'attestation':
+                    $elements = $repository->findByAttestation($value);
+                    break;
+                default:
+                    $elements = $repository->findAll();
+            }
+        } else {
+            $elements = $repository->findAll();
+        }
+
+        $data = array_map(function ($element) use ($locale, $user, $translator) {
+            return [
+                'id'               => $element->getId(),
+                'version'          => $element->getVersion(),
+                'etat_absolu'      => $element->getEtatAbsolu(),
+                'nature'           => ($element->getNatureElement() != null) ? $element->getNatureElement()->getNom($locale) : '',
+                'traductions'      => $element->getTraductions()->map(function ($tr) use ($locale) {
+                    return $tr->getNom($locale);
+                })->toArray(),
+                'categories'       => $element->getCategories()->map(function ($c) use ($locale) {
+                    return $c->getNom($locale);
+                })->toArray(),
+                'date_creation'    => [
+                    'display'   => $element->getDateCreation()->format($translator->trans('locale_datetime')),
+                    'timestamp' => $element->getDateCreation()->getTimestamp(),
+                ],
+                'date_modification' => [
+                    'display'   => $element->getDateModification()->format($translator->trans('locale_datetime')),
+                    'timestamp' => $element->getDateModification()->getTimestamp(),
+                ],
+                'createur_id' => $element->getCreateur()->getId(),
+                'createur' => $element->getCreateur()->getPrenomNom(),
+                'editeur'  => $element->getDernierEditeur()->getPrenomNom(),
+                'traduire' => array_values(array_filter([
+                    $element->getTraduireFr() ? $translator->trans('languages.fr') : null,
+                    $element->getTraduireEn() ? $translator->trans('languages.en') : null
+                ])),
+                'verrou' => ($element->getVerrou() !== null && !$element->getVerrou()->isWritable($user)) ? $element->getVerrou()->toArray($translator->trans('locale_datetime')) : false
+            ];
+        }, $elements);
+
+        return new JsonResponse([
+            'success' => true,
+            'data'    => $data
+        ]);
+    }
+
+    /**
+     * @Route("/list/bibliography", name="json_bibliography_list")
+     */
+    public function bibliography(Request $request, TranslatorInterface $translator)
+    {
+        $locale = $request->getLocale();
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        $bibliographies = $this->getDoctrine()
+            ->getRepository(Biblio::class)
+            ->findAll();
+
+        $data = array_map(function ($bibliography) use ($locale, $user, $translator) {
+            return [
+                'id'            => $bibliography->getId(),
+                'type'          => $translator->trans($bibliography->getEstCorpus() ? 'biblio.fields.corpus' : 'biblio.fields.bibliographique'),
+                'auteur'        => $bibliography->getAuteurBiblio() ?? '',
+                'annee'         => $bibliography->getAnnee() ?? '',
+                'titre_abrege'  => $bibliography->getTitreAbrege(),
+                'titre_complet' => $bibliography->getTitreComplet(),
+                'stats'         => [
+                    'sources'  => count($bibliography->getSourceBiblios()),
+                    'elements' => count($bibliography->getElementBiblios()),
+                ],
+                'verrou' => ($bibliography->getVerrou() !== null && !$bibliography->getVerrou()->isWritable($user)) ? $bibliography->getVerrou()->toArray($translator->trans('locale_datetime')) : false
+            ];
+        }, $bibliographies);
 
         return new JsonResponse([
             'success' => true,

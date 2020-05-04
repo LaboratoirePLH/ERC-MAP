@@ -48,91 +48,7 @@
                 </th>
             </tr>
         </thead>
-        <tbody>
-            {% for element in elements %}
-                <tr>
-                    <th scope="row" class="px-0" data-order="{{ element.id }}">
-                        <a href="{{ url('element_show', {'id': element.id}) }}">
-                            #{{ element.id }}
-                        </a>
-                        <br/>
-                        <small>{{ 'generic.fields.version'|trans }}&nbsp;{{ element.version|default("?") }}</small>
-                    </th>
-                    <td>
-                        {{ element.etatAbsolu|raw }}
-                    </td>
-                    <td>
-                        {{ element.natureElement is not null ? element.natureElement.nom(locale) : "" }}
-                    </td>
-                    <td>
-                        {{ element.concatTraductions(locale)|raw }}
-                    </td>
-                    <td>
-                        {{ element.concatCategories(locale)|raw }}
-                    </td>
-                    <td data-order="{{ element.dateCreation|date('U') }}">
-                        {{ element.dateCreation|date(('locale_datetime'|trans), "Europe/Paris") }}
-                        <br/>
-                        <small>
-                            {{ element.createur.prenomNom }}<br/>
-                        </small>
-                    </td>
-                    <td data-order="{{ element.dateModification|date('U') }}">
-                        {{ element.dateModification|date(('locale_datetime'|trans), "Europe/Paris") }}
-                        <br/>
-                        <small>
-                            {{ element.dernierEditeur.prenomNom }}<br/>
-                        </small>
-                    </td>
-                    <td>
-                        {{ element.traduireFr ? "languages.fr"|trans : "" }}
-                        {% if element.traduireFr and element.traduireEn %}
-                            <br/>
-                        {% endif %}
-                        {{ element.traduireEn ? "languages.en"|trans : "" }}
-                    </td>
-                    <td class="py-0 px-1">
-                        <a href="{{ url('element_show', {'id': element.id}) }}" class="btn btn-sm btn-block my-1 btn-primary">
-                            <i class="fas fa-fw fa-eye"></i>
-                            {{ 'generic.view'|trans }}
-                        </a>
-                        {% if element.verrou != null and not element.verrou.isWritable(app.user) %}
-                            {% set error = "generic.messages.error_locked"|trans({
-                                        '%type%': 'element.name'|trans,
-                                        '%id%' : element.id,
-                                        '%user%': element.verrou.createur.prenomNom,
-                                        '%time%': element.verrou.dateFin|date(('locale_datetime'|trans), "Europe/Paris")
-                                    }) %}
-                            <button type="button" class="btn btn-sm btn-block my-1 btn-danger disabled" data-toggle="tooltip" data-placement="left" title="{{ error }}">
-                                <i class="fas fa-fw fa-lock"></i>
-                                {{ 'generic.locked'|trans }}
-                            </button>
-                        {% else %}
-                            {% if is_granted('ROLE_MODERATOR') or element.createur.id == app.user.id %}
-                                <a href="{{ url('element_edit', {'id': element.id}) }}" class="btn btn-sm btn-block my-1 btn-warning">
-                                    <i class="fas fa-fw fa-edit"></i>
-                                    {{ 'generic.edit'|trans }}
-                                </a>
-                            {% endif %}
-                            {% if is_granted('ROLE_ADMIN') or element.createur.id == app.user.id %}
-                                {% set uuid = 'confirm_deletion_' ~ element.id ~ '_' ~ random() %}
-                                <button type="button" class="btn btn-sm btn-block my-1 btn-danger" id="delete-link-{{element.id}}" data-toggle="modal" data-target="#{{ uuid }}">
-                                    <i class="fas fa-fw fa-trash"></i>
-                                    {{ 'generic.delete'|trans }}
-                                </button>
-                                {% include "modals/confirmation.html.twig" with {
-                            'modalName': 'confirm_deletion',
-                            'uuid': uuid,
-                            'targetUrl': url('element_delete', {'id' : element.id}),
-                            'confirmationLabel': 'generic.delete',
-                            'csrfToken': 'delete_element_' ~ element.id,
-                        } %}
-                            {% endif %}
-                        {% endif %}
-                    </td>
-                </tr>
-            {% endfor %}
-        </tbody>
+        <tbody></tbody>
         <tfoot>
             <tr>
                 <th>{{ 'generic.fields.id'|trans }}</th>
@@ -157,44 +73,138 @@
             </div>
         </div>
     {% endif %}
+    {% include "modals/confirmation.html.twig" with {
+        'modalName': 'confirm_deletion',
+        'uuid': 'confirm-deletion-modal',
+        'targetUrl': url('element_delete', {'id' : '__ID__'}),
+        'confirmationLabel': 'generic.delete',
+        'csrfToken': 'delete_element',
+    } %}
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
     <script type="text/javascript">
         $(document).ready(function () {
-            $('#element_list tfoot th').each(function () {
-                var title = $(this).text();
-                var value = $(this).data('value');
-                if (title != "") {
-                    $(this).html('<input type="text" class="w-100 form-control form-control-sm" placeholder=" {{ "generic.search"|trans }}' + ' ' + title + '" />');
-                    if (value != null) {
-                        $(this).children('input').val(value);
-                    }
-                }
-            });
-            var dt = $('#element_list').DataTable({
-                responsive: true,
-                autoWidth: true,
-                lengthChange: true,
-                scrollX: false,
-                searching: true,
-                ordering: true,
+            //
+            // Store Source ID in variable
+            const attestationId = "{{ attestation is defined ? attestation : '' }}";
+
+            // Prepare AJAX URL depending on filters
+            var ajax = {
+                url: "{{ url('json_element_list') }}",
+                type: "GET"
+            };
+            if (attestationId !== "") {
+                ajax.data = {
+                    filter: "attestation:" + attestationId
+                };
+            }
+
+            // Routes
+            var showRoute = "{{ url('element_show', {'id': '__ID__'}) }}";
+            var editRoute = "{{ url('element_edit', {'id': '__ID__'}) }}";
+            var deleteRoute = "{{ url('element_delete', {'id': '__ID__'}) }}";
+
+            // Error message for locks
+            var lockError = "{{ 'generic.messages.error_locked'|trans({'%type%': 'element.name'|trans}) }}";
+
+            // Role management
+            var isAdmin = "{{ is_granted('ROLE_ADMIN') ? 1 : 0 }}" === "1";
+            var isModerator = "{{ is_granted('ROLE_MODERATOR') ? 1 : 0 }}" === "1";
+            var currentUser = parseInt("{{ app.user.id }}", 10);
+
+            const tableOptions = {
+                ajax: ajax,
                 columns: [
                     {
-                        responsivePriority: 1
+                        responsivePriority: 1,
+                        data: 'id',
+                        render: function (data, type, row) {
+                            if (type === 'filter') {
+                                return '#' + data;
+                            }
+                            if (type === 'sort' || type === 'type') {
+                                return data;
+                            }
+                            const versionLabel = "{{ 'generic.fields.version'|trans }}";
+                            return '#' + data + '<br/><small>' + versionLabel + ' ' + (
+                                row.version || '?'
+                            ) + "</small>";
+                        }
                     },
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null, {
+                    {
+                        data: 'etat_absolu'
+                    },
+                    {
+                        data: 'nature'
+                    },
+                    {
+                        data: 'traductions',
+                        render: function (data, type, row) {
+                            if (type === 'display') {
+                                return data.join('<br/>');
+                            }
+                            return data.join(' ; ');
+                        }
+                    }, {
+                        data: 'categories',
+                        render: function (data, type, row) {
+                            if (type === 'display') {
+                                return data.join('<br/>');
+                            }
+                            return data.join(' ; ');
+                        }
+                    }, {
+                        data: 'date_creation',
+                        render: function (data, type, row) {
+                            if (type === 'display' || type === 'filter') {
+                                return data.display + '<br/><small>' + row.createur + '</small>';
+                            }
+                            return data.timestamp;
+                        }
+                    }, {
+                        data: 'date_modification',
+                        render: function (data, type, row) {
+                            if (type === 'display' || type === 'filter') {
+                                return data.display + '<br/><small>' + row.editeur + '</small>';
+                            }
+                            return data.timestamp;
+                        }
+                    }, {
+                        data: 'traduire',
+                        render: function (data, type, row) {
+                            return data.join('<br/>');
+                        }
+                    }, {
+                        data: null,
                         searchable: false,
                         orderable: false,
                         width: 110,
-                        responsivePriority: 1
+                        responsivePriority: 1,
+                        render: function (data, type, row) {
+                            var verrou = false;
+                            var buttons = [];
+                            if (row.verrou !== false) {
+                                let texteVerrou = lockError.replace('%id%', row.id).replace('%user%', row.verrou.createur).replace('%time%', row.verrou.date_fin);
+                                texteVerrou = $('<div>').html(texteVerrou).text();
+                                verrou = $.fn.createListButton('button', 'danger', 'lock', "{{ 'generic.locked'|trans }}");
+                                verrou.attr('data-toggle', 'tooltip').attr('data-placement', 'left').attr('title', texteVerrou).addClass('disabled');
+                            }
+                            buttons.push($.fn.createListButton('a', 'primary', 'eye', "{{ 'generic.view'|trans }}", showRoute.replace('__ID__', row.id)));
+                            if (verrou === false) {
+                                if (isModerator || row.createur_id === currentUser) {
+                                    buttons.push($.fn.createListButton('a', 'warning', 'edit', "{{ 'generic.edit'|trans }}", editRoute.replace('__ID__', row.id)));
+                                }
+                                if (isAdmin || row.createur_id === currentUser) {
+                                    buttons.push($.fn.createDeleteButton("{{ 'generic.delete'|trans }}", row.id));
+                                }
+                            } else {
+                                buttons.push(verrou);
+                            }
+
+                            return buttons.map(btn => btn[0].outerHTML).join("\n");
+                        }
                     }
                 ],
                 order: [
@@ -232,38 +242,8 @@
                         }
                     }
                 ]
-            });
-            $('#element_list_wrapper select').removeClass('custom-select');
-            dt.columns().every(function () {
-                var me = this;
-                $('input', this.footer()).on('keyup change', function () {
-                    if (me.search() !== this.value) {
-                        me.search(
-                            // Remove accented characters from search string
-                                jQuery.fn.DataTable.ext.type.search.string(this.value)
-                        ).draw();
-                    }
-                })
-                $('input', this.footer()).each(function () {
-                    if ($(this).val() != "") {
-                        console.log('test');
-                        $(this).trigger('change');
-                    }
-                })
-            });
-            $('input[type=search]').on('keyup change', function () {
-                dt.search(
-                    // Remove accented characters from search string
-                        jQuery.fn.DataTable.ext.type.search.string(this.value)
-                ).draw();
-            })
-            dt.buttons().container().appendTo('.table-buttons');
-            $('.clear-filter-button').on('click', function (e) {
-                e.preventDefault();
-                dt.columns().every(function () {
-                    $('input', this.footer()).val("").trigger('change');
-                });
-            })
+            };
+            $.fn.setupList('element_list', tableOptions, "{{ 'generic.search'|trans }}");
         });
     </script>
 {% endblock %}

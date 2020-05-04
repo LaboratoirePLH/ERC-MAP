@@ -1,228 +1,201 @@
 {% extends 'list_page.html.twig' %}
 {% block title %}
-{{ 'biblio.list'|trans }}
+    {{ 'biblio.list'|trans }}
 {% endblock %}
 {% block content %}
-<div class="row">
-    <div class="col-12 table-buttons">
-        <a href=" {{ url('bibliography_create') }}" class="btn btn-primary">{{ 'biblio.create'|trans }}</a>
-        <button type="button" class="btn btn-warning clear-filter-button">
-            {{ 'generic.clear_filters'|trans }}
-        </button>
+    <div class="row">
+        <div class="col-12 table-buttons">
+            <a href=" {{ url('bibliography_create') }}" class="btn btn-primary">{{ 'biblio.create'|trans }}</a>
+            <button type="button" class="btn btn-warning clear-filter-button">
+                {{ 'generic.clear_filters'|trans }}
+            </button>
+        </div>
     </div>
-</div>
-<table class="table table-striped table-hover table-bordered w-100 text-center list_table" id="biblio_list">
-    <thead>
-        <tr>
-            <th scope="col">
-                {{ 'generic.fields.id'|trans }}
-            </th>
-            <th scope="col">
-                {{ 'generic.fields.type'|trans }}
-            </th>
-            <th scope="col">
-                {{ 'biblio.fields.auteur'|trans }}
-            </th>
-            <th scope="col">
-                {{ 'biblio.fields.annee'|trans }}
-            </th>
-            <th scope="col">
-                {{ 'biblio.fields.titre_abrege'|trans }}
-            </th>
-            <th scope="col">
-                {{ 'biblio.fields.titre_complet'|trans }}
-            </th>
-            <th scope="col">
-                {{ 'generic.fields.utilisation'|trans }}
-            </th>
-            <th scope="col">
-                {{ 'generic.actions'|trans }}
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for biblio in biblios %}
-        <tr>
-            <th scope="row" class="px-0" data-sort="{{ biblio.id }}">
-                <a href="{{ url('bibliography_show', {'id': biblio.id}) }}">
-                    #{{ biblio.id }}
-                </a>
-            </th>
-            <td data-search="{{ (biblio.estCorpus ? 'biblio.fields.corpus' : 'biblio.fields.bibliographique')|trans }}">
-                {{ (biblio.estCorpus ? 'biblio.fields.corpus' : 'biblio.fields.bibliographique')|trans }}
-            </td>
-            <td>
-                {{ biblio.auteurBiblio }}
-            </td>
-            <td>
-                {{ biblio.annee }}
-            </td>
-            <td>
-                {{ biblio.titreAbrege|raw }}
-            </td>
-            <td>
-                {{ biblio.titreComplet|raw }}
-            </td>
-            <td>
-                {% set count_sources = biblio.getSourceBiblios()|length %}
-                {% set count_elements = biblio.getElementBiblios()|length %}
-                <span class="badge badge-{{ count_sources == 0 ? "danger" : "light"}}">
-                    {{ count_sources }}
-                </span>
-                &nbsp;{{ 'biblio.fields.sources'|trans }}
-                <br />
-                <span class="badge badge-{{ count_elements == 0 ? "danger" : "light"}}">
-                    {{ count_elements }}
-                </span>
-                &nbsp;{{ 'biblio.fields.elements'|trans }}
-            </td>
-            <td class="py-0 px-1">
-                <a href="{{ url('bibliography_show', {'id': biblio.id}) }}"
-                    class="btn btn-sm btn-block my-1 btn-primary">
-                    <i class="fas fa-eye"></i>
-                    {{ 'generic.view'|trans }}
-                </a>
-                {% if biblio.verrou != null and not biblio.verrou.isWritable(app.user) %}
-                {% set error = "generic.messages.error_locked"|trans({
-                                    '%type%': 'biblio.list'|trans,
-                                    '%id%' : biblio.id,
-                                    '%user%': biblio.verrou.createur.prenomNom,
-                                    '%time%': biblio.verrou.dateFin|date(('locale_datetime'|trans), "Europe/Paris")
-                                }) %}
-                <button type="button" class="btn btn-sm btn-block my-1 btn-danger disabled" data-toggle="tooltip"
-                    data-placement="left" title="{{ error }}">
-                    <i class="fas fa-fw fa-lock"></i>
-                    {{ 'generic.locked'|trans }}
-                </button>
-                {% else %}
-                <a href="{{ url('bibliography_edit', {'id': biblio.id}) }}"
-                    class="btn btn-sm btn-block my-1 btn-warning">
-                    <i class="fas fa-edit"></i>
-                    {{ 'generic.edit'|trans }}
-                </a>
-                {% if is_granted('ROLE_ADMIN') %}
-                {% set uuid = 'confirm_deletion_' ~ biblio.id ~ '_' ~ random() %}
-                <button type="button" class="btn btn-sm btn-block my-1 btn-danger" id="delete-link-{{biblio.id}}"
-                    data-toggle="modal" data-target="#{{ uuid }}">
-                    <i class="fas fa-trash"></i>
-                    {{ 'generic.delete'|trans }}
-                </button>
-                {% include "modals/confirmation.html.twig" with {
-                'modalName': 'confirm_deletion',
-                'uuid': uuid,
-                'targetUrl': url('bibliography_delete', {'id' : biblio.id}),
-                'confirmationLabel': 'generic.delete',
-                'csrfToken': 'delete_biblio_' ~ biblio.id,
-                } %}
-                {% endif %}
-                {% endif %}
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-    <tfoot>
-        <tr>
-            <th>{{ 'generic.fields.id'|trans }}</th>
-            <th>{{ 'generic.fields.type'|trans }}</th>
-            <th>{{ 'biblio.fields.auteur'|trans }}</th>
-            <th>{{ 'biblio.fields.annee'|trans }}</th>
-            <th>{{ 'biblio.fields.titre_abrege'|trans }}</th>
-            <th>{{ 'biblio.fields.titre_complet'|trans }}</th>
-            <th></th>
-            <th></th>
-        </tr>
-    </tfoot>
-</table>
-<div class="row">
-    <div class="col-12 table-buttons">
-        <a href=" {{ url('bibliography_create') }}" class="btn btn-primary">{{ 'biblio.create'|trans }}</a>
-        <button type="button" class="btn btn-warning clear-filter-button">
-            {{ 'generic.clear_filters'|trans }}
-        </button>
+    <table class="table table-striped table-hover table-bordered w-100 text-center list_table" id="biblio_list">
+        <thead>
+            <tr>
+                <th scope="col">
+                    {{ 'generic.fields.id'|trans }}
+                </th>
+                <th scope="col">
+                    {{ 'generic.fields.type'|trans }}
+                </th>
+                <th scope="col">
+                    {{ 'biblio.fields.auteur'|trans }}
+                </th>
+                <th scope="col">
+                    {{ 'biblio.fields.annee'|trans }}
+                </th>
+                <th scope="col">
+                    {{ 'biblio.fields.titre_abrege'|trans }}
+                </th>
+                <th scope="col">
+                    {{ 'biblio.fields.titre_complet'|trans }}
+                </th>
+                <th scope="col">
+                    {{ 'generic.fields.utilisation'|trans }}
+                </th>
+                <th scope="col">
+                    {{ 'generic.actions'|trans }}
+                </th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+        <tfoot>
+            <tr>
+                <th>{{ 'generic.fields.id'|trans }}</th>
+                <th>{{ 'generic.fields.type'|trans }}</th>
+                <th>{{ 'biblio.fields.auteur'|trans }}</th>
+                <th>{{ 'biblio.fields.annee'|trans }}</th>
+                <th>{{ 'biblio.fields.titre_abrege'|trans }}</th>
+                <th>{{ 'biblio.fields.titre_complet'|trans }}</th>
+                <th></th>
+                <th></th>
+            </tr>
+        </tfoot>
+    </table>
+    <div class="row">
+        <div class="col-12 table-buttons">
+            <a href=" {{ url('bibliography_create') }}" class="btn btn-primary">{{ 'biblio.create'|trans }}</a>
+            <button type="button" class="btn btn-warning clear-filter-button">
+                {{ 'generic.clear_filters'|trans }}
+            </button>
+        </div>
     </div>
-</div>
+    {% include "modals/confirmation.html.twig" with {
+        'modalName': 'confirm_deletion',
+        'uuid': 'confirm-deletion-modal',
+        'targetUrl': url('bibliography_delete', {'id' : '__ID__'}),
+        'confirmationLabel': 'generic.delete',
+        'csrfToken': 'delete_biblio',
+    } %}
 {% endblock %}
 
 {% block javascripts %}
-{{ parent() }}
-<script type="text/javascript">
-    $(document).ready(function () {
-        $('#biblio_list tfoot th').each(function () {
-            var title = $(this).text();
-            if (title != "") {
-                $(this).html(
-                    '<input type="text" class="w-100 form-control form-control-sm" placeholder="{{"generic.search"|trans}}' +
-                    ' ' + title + '" />'
-                );
-            }
-        });
-        var dt = $('#biblio_list').DataTable({
-            responsive: true,
-            autoWidth: true,
-            lengthChange: true,
-            scrollX: false,
-            searching: true,
-            ordering: true,
-            columns: [{ responsivePriority: 1 }, null, null, null, null, null, {
-                searchable: false,
-                orderable: false,
-                width: 140
-            }, {
-                searchable: false,
-                orderable: false,
-                width: 110,
-                responsivePriority: 1
-            }],
-            order: [
-                [0, 'desc']
-            ],
-            language: $.parseJSON('{{ "datatable.language"|trans|raw }}'),
-            pageLength: 10,
-            lengthMenu: [
-                [
-                    10, 25, 50, -1
-                ],
-                [
-                    10, 25, 50, "{{'datatable.all'|trans}}"
-                ]
-            ],
-            buttons: [{
-                extend: 'csv',
-                filename: "{{ 'app_name'|trans }}-{{ 'biblio.list'|trans }}",
-                text: "{{'generic.export_csv'|trans}}",
-                customize: function (document) {
-                    return document.replace(/(\s)\s+/g, "$1");
+    {{ parent() }}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            //
+            // Routes
+            var showRoute = "{{ url('bibliography_show', {'id': '__ID__'}) }}";
+            var editRoute = "{{ url('bibliography_edit', {'id': '__ID__'}) }}";
+            var deleteRoute = "{{ url('bibliography_delete', {'id': '__ID__'}) }}";
+
+            // Error message for locks
+            var lockError = "{{ 'generic.messages.error_locked'|trans({'%type%': 'biblio.list'|trans}) }}";
+
+            // Role management
+            var isAdmin = "{{ is_granted('ROLE_ADMIN') ? 1 : 0 }}" === "1";
+            var isModerator = "{{ is_granted('ROLE_MODERATOR') ? 1 : 0 }}" === "1";
+            var currentUser = parseInt("{{ app.user.id }}", 10);
+
+            const tableOptions = {
+                ajax: {
+                    url: "{{ url('json_bibliography_list') }}",
+                    type: "GET"
                 },
-                exportOptions: {
-                    columns: [0, 1, 2, 3, 4, 5]
-                }
-            }]
+                columns: [
+                    {
+                        responsivePriority: 1,
+                        data: 'id',
+                        render: function (data, type, row) {
+                            if (type === 'sort' || type === 'type') {
+                                return data;
+                            }
+                            return '#' + data;
+                        }
+                    },
+                    {
+                        data: 'type'
+                    },
+                    {
+                        data: 'auteur'
+                    },
+                    {
+                        data: 'annee'
+                    }, {
+                        data: 'titre_abrege'
+                    }, {
+                        data: 'titre_complet'
+                    }, {
+                        data: 'stats',
+                        searchable: false,
+                        orderable: false,
+                        render: function (data, type, row) {
+                            const sourceLabel = '{{ "biblio.fields.sources"|trans }}';
+                            const elementLabel = '{{ "biblio.fields.elements"|trans }}';
+                            const sourceColor = data.sources == 0 ? "danger" : "light";
+                            const elementColor = data.elements == 0 ? "danger" : "light";
+                            return '<span class="badge badge-' + sourceColor + '">' + data.sources + '</span>&nbsp;' + sourceLabel + '</span>' + '<br/><span class="badge badge-' + elementColor + '">' + data.elements + '</span>&nbsp;' + elementLabel + '</span>';
+                        }
+                    }, {
+                        data: null,
+                        searchable: false,
+                        orderable: false,
+                        width: 110,
+                        responsivePriority: 1,
+                        render: function (data, type, row) {
+                            var verrou = false;
+                            var buttons = [];
+                            if (row.verrou !== false) {
+                                let texteVerrou = lockError.replace('%id%', row.id).replace('%user%', row.verrou.createur).replace('%time%', row.verrou.date_fin);
+                                texteVerrou = $('<div>').html(texteVerrou).text();
+                                verrou = $.fn.createListButton('button', 'danger', 'lock', "{{ 'generic.locked'|trans }}");
+                                verrou.attr('data-toggle', 'tooltip').attr('data-placement', 'left').attr('title', texteVerrou).addClass('disabled');
+                            }
+                            buttons.push($.fn.createListButton('a', 'primary', 'eye', "{{ 'generic.view'|trans }}", showRoute.replace('__ID__', row.id)));
+                            if (verrou === false) {
+                                if (isModerator || row.createur_id === currentUser) {
+                                    buttons.push($.fn.createListButton('a', 'warning', 'edit', "{{ 'generic.edit'|trans }}", editRoute.replace('__ID__', row.id)));
+                                }
+                                if (isAdmin || row.createur_id === currentUser) {
+                                    buttons.push($.fn.createDeleteButton("{{ 'generic.delete'|trans }}", row.id));
+                                }
+                            } else {
+                                buttons.push(verrou);
+                            }
+
+                            return buttons.map(btn => btn[0].outerHTML).join("\n");
+                        }
+                    }
+                ],
+                order: [
+                    [0, 'desc']
+                ],
+                language: $.parseJSON('{{ "datatable.language"|trans|raw }}'),
+                pageLength: 10,
+                lengthMenu: [
+                    [
+                        10, 25, 50, -1
+                    ],
+                    [
+                        10, 25, 50, "{{ 'datatable.all'|trans }}"
+                    ]
+                ],
+                buttons: [
+                    {
+                        extend: 'csv',
+                        filename: "{{ 'app_name'|trans }}-{{ 'element.list'|trans }}",
+                        text: "{{ 'generic.export_csv'|trans }}",
+                        customize: function (document) {
+                            return document.replace(/(\s)\s+/g, "$1");
+                        },
+                        exportOptions: {
+                            columns: [
+                                0,
+                                1,
+                                2,
+                                3,
+                                4,
+                                5,
+                                6,
+                                7
+                            ]
+                        }
+                    }
+                ]
+            };
+            $.fn.setupList('biblio_list', tableOptions, "{{ 'generic.search'|trans }}");
         });
-        $('#biblio_list_wrapper select').removeClass('custom-select');
-        dt.columns().every(function () {
-            var me = this;
-            $('input', this.footer()).on('keyup change', function () {
-                if (me.search() !== this.value) {
-                    me.search(
-                        // Remove accented characters from search string
-                        jQuery.fn.DataTable.ext.type.search.string(this.value)
-                    ).draw();
-                }
-            })
-        });
-        $('input[type=search]').on('keyup change', function () {
-            dt.search(
-                // Remove accented characters from search string
-                jQuery.fn.DataTable.ext.type.search.string(this.value)
-            ).draw();
-        })
-        dt.buttons().container().appendTo('.table-buttons');
-        $('.clear-filter-button').on('click', function (e) {
-            e.preventDefault();
-            dt.columns().every(function () {
-                $('input', this.footer()).val("").trigger('change');
-            });
-        })
-    });
-</script>
+    </script>
 {% endblock %}

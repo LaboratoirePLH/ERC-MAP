@@ -29,13 +29,9 @@ class ElementController extends AbstractController
      */
     public function index()
     {
-        $elements = $this->getDoctrine()
-                        ->getRepository(Element::class)
-                        ->findAll();
         return $this->render('element/index.html.twig', [
             'controller_name' => 'ElementController',
             'action'          => 'list',
-            'elements'        => $elements,
             'breadcrumbs'     => [
                 ['label' => 'nav.home', 'url' => $this->generateUrl('home')],
                 ['label' => 'element.list']
@@ -49,9 +45,9 @@ class ElementController extends AbstractController
     public function indexAttestation($attestation_id, Request $request, TranslatorInterface $translator)
     {
         $attestation = $this->getDoctrine()
-                        ->getRepository(Attestation::class)
-                        ->find($attestation_id);
-        if(is_null($attestation)){
+            ->getRepository(Attestation::class)
+            ->find($attestation_id);
+        if (is_null($attestation)) {
             $request->getSession()->getFlashBag()->add(
                 'error',
                 $translator->trans('attestation.messages.missing', ['%id%' => $attestation_id])
@@ -59,16 +55,10 @@ class ElementController extends AbstractController
             return $this->redirectToRoute('attestation_list');
         }
 
-        $elements = [];
-        foreach($attestation->getContientElements() as $ce){
-            $elements[] = $ce->getElement();
-        }
-
         return $this->render('element/index.html.twig', [
             'controller_name' => 'ElementController',
             'action'          => 'list',
-            'elements'        => $elements,
-            'attestation'     => $attestation,
+            'attestation'     => $attestation_id,
             'title'           => $translator->trans('element.list_for_attestation', ['%id%' => $attestation_id]),
             'breadcrumbs'     => [
                 ['label' => 'nav.home', 'url' => $this->generateUrl('home')],
@@ -96,7 +86,7 @@ class ElementController extends AbstractController
             ]
         ]);
 
-        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()){
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $em = $this->getDoctrine()->getManager();
 
             $element->setCreateur($user);
@@ -105,8 +95,8 @@ class ElementController extends AbstractController
             $em = $this->getDoctrine()->getManager();
             $em->persist($element);
 
-            foreach($element->getElementBiblios() as $eb){
-                if($eb->getBiblio() !== null){
+            foreach ($element->getElementBiblios() as $eb) {
+                if ($eb->getBiblio() !== null) {
                     $em->persist($eb->getBiblio());
                     $eb->setElement($element);
                     $em->persist($eb);
@@ -114,9 +104,9 @@ class ElementController extends AbstractController
                     $element->removeElementBiblio($eb);
                 }
             }
-            foreach($element->getTheonymesImplicites() as $ti){
-                if(!$em->contains($ti)){
-                    if($ti->getEtatAbsolu() !== null){
+            foreach ($element->getTheonymesImplicites() as $ti) {
+                if (!$em->contains($ti)) {
+                    if ($ti->getEtatAbsolu() !== null) {
                         $ti->setCreateur($user);
                         $ti->setDernierEditeur($user);
                         $em->persist($ti);
@@ -125,9 +115,9 @@ class ElementController extends AbstractController
                     }
                 }
             }
-            foreach($element->getTheonymesConstruits() as $tc){
-                if(!$em->contains($tc)){
-                    if($tc->getEtatAbsolu() !== null){
+            foreach ($element->getTheonymesConstruits() as $tc) {
+                if (!$em->contains($tc)) {
+                    if ($tc->getEtatAbsolu() !== null) {
                         $tc->setCreateur($user);
                         $tc->setDernierEditeur($user);
                         $em->persist($tc);
@@ -164,12 +154,13 @@ class ElementController extends AbstractController
     /**
      * @Route("/element/{id}", name="element_show")
      */
-    public function show($id, Request $request, TranslatorInterface $translator){
+    public function show($id, Request $request, TranslatorInterface $translator)
+    {
         $element = $this->getDoctrine()
-                       ->getRepository(Element::class)
-                       ->find($id);
+            ->getRepository(Element::class)
+            ->find($id);
 
-        if(is_null($element)){
+        if (is_null($element)) {
             $request->getSession()->getFlashBag()->add(
                 'error',
                 $translator->trans('element.messages.missing', ['%id%' => $id])
@@ -192,27 +183,26 @@ class ElementController extends AbstractController
     /**
      * @Route("/element/{id}/edit", name="element_edit")
      */
-    public function edit($id, Request $request, TranslatorInterface $translator){
+    public function edit($id, Request $request, TranslatorInterface $translator)
+    {
         $user = $this->get('security.token_storage')->getToken()->getUser();
         $element = $this->getDoctrine()
-                       ->getRepository(Element::class)
-                       ->find($id);
-        if(is_null($element)){
+            ->getRepository(Element::class)
+            ->find($id);
+        if (is_null($element)) {
             $request->getSession()->getFlashBag()->add(
                 'error',
                 $translator->trans('element.messages.missing', ['%id%' => $id])
             );
             return $this->redirectToRoute('element_list');
         }
-        if(!$this->isGranted('ROLE_MODERATOR') && $element->getCreateur()->getId() !== $user->getId()){
+        if (!$this->isGranted('ROLE_MODERATOR') && $element->getCreateur()->getId() !== $user->getId()) {
             $request->getSession()->getFlashBag()->add('error', 'generic.messages.error_unauthorized');
             return $this->redirectToRoute('element_list');
         }
-        if($element->getVerrou() === null){
+        if ($element->getVerrou() === null) {
             $verrou = $this->getDoctrine()->getRepository(VerrouEntite::class)->create($element, $user, $this->dureeVerrou);
-        }
-        else if(!$element->getVerrou()->isWritable($user))
-        {
+        } else if (!$element->getVerrou()->isWritable($user)) {
             $request->getSession()->getFlashBag()->add(
                 'error',
                 $translator->trans('generic.messages.error_locked', [
@@ -236,27 +226,26 @@ class ElementController extends AbstractController
             ]
         ]);
 
-        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()){
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $element->setDernierEditeur($user);
             // Sauvegarde
             $em = $this->getDoctrine()->getManager();
-            foreach($element->getElementBiblios() as $sb){
-                if($sb->getBiblio() !== null){
-                    if(!$em->contains($sb->getBiblio())){
+            foreach ($element->getElementBiblios() as $sb) {
+                if ($sb->getBiblio() !== null) {
+                    if (!$em->contains($sb->getBiblio())) {
                         $em->persist($sb->getBiblio());
                     }
                     $sb->setElement($element);
-                    if(!$em->contains($sb)){
+                    if (!$em->contains($sb)) {
                         $em->persist($sb);
                     }
-                }
-                else {
+                } else {
                     $element->removeElementBiblio($sb);
                 }
             }
-            foreach($element->getTheonymesImplicites() as $ti){
-                if(!$em->contains($ti)){
-                    if($ti->getEtatAbsolu() !== null){
+            foreach ($element->getTheonymesImplicites() as $ti) {
+                if (!$em->contains($ti)) {
+                    if ($ti->getEtatAbsolu() !== null) {
                         $ti->setCreateur($user);
                         $ti->setDernierEditeur($user);
                         $em->persist($ti);
@@ -265,9 +254,9 @@ class ElementController extends AbstractController
                     }
                 }
             }
-            foreach($element->getTheonymesConstruits() as $tc){
-                if(!$em->contains($tc)){
-                    if($tc->getEtatAbsolu() !== null){
+            foreach ($element->getTheonymesConstruits() as $tc) {
+                if (!$em->contains($tc)) {
+                    if ($tc->getEtatAbsolu() !== null) {
                         $tc->setCreateur($user);
                         $tc->setDernierEditeur($user);
                         $em->persist($tc);
@@ -304,13 +293,14 @@ class ElementController extends AbstractController
     /**
      * @Route("/element/{id}/canceledit", name="element_canceledit")
      */
-    public function canceledit($id, Request $request){
+    public function canceledit($id, Request $request)
+    {
         $user = $this->get('security.token_storage')->getToken()->getUser();
         $element = $this->getDoctrine()
-                       ->getRepository(Element::class)
-                       ->find($id);
+            ->getRepository(Element::class)
+            ->find($id);
         $verrou = $this->getDoctrine()->getRepository(VerrouEntite::class)->fetch($element);
-        if($verrou !== null && $verrou->isWritable($user)){
+        if ($verrou !== null && $verrou->isWritable($user)) {
             $this->getDoctrine()->getRepository(VerrouEntite::class)->remove($verrou);
         }
         return $this->redirectToRoute('element_list');
@@ -319,17 +309,18 @@ class ElementController extends AbstractController
     /**
      * @Route("/element/{id}/delete", name="element_delete")
      */
-    public function delete($id, Request $request){
+    public function delete($id, Request $request)
+    {
         $submittedToken = $request->request->get('token');
         $user = $this->get('security.token_storage')->getToken()->getUser();
 
-        if ($this->isCsrfTokenValid('delete_element_'.$id, $submittedToken)) {
+        if ($this->isCsrfTokenValid('delete_element', $submittedToken)) {
             $repository = $this->getDoctrine()->getRepository(Element::class);
             $element = $repository->find($id);
-            if($element instanceof Element){
-                if($this->isGranted('ROLE_ADMIN')){
+            if ($element instanceof Element) {
+                if ($this->isGranted('ROLE_ADMIN')) {
                     $verrou = $element->getVerrou();
-                    if(!$verrou || $verrou->isWritable($user)) {
+                    if (!$verrou || $verrou->isWritable($user)) {
                         $em = $this->getDoctrine()->getManager();
                         $em->remove($element);
                         $em->flush();

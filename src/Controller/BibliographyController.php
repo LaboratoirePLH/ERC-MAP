@@ -29,8 +29,8 @@ class BibliographyController extends AbstractController
     public function index()
     {
         $biblios = $this->getDoctrine()
-                        ->getRepository(Biblio::class)
-                        ->findAll();
+            ->getRepository(Biblio::class)
+            ->findAll();
         return $this->render('bibliography/index.html.twig', [
             'controller_name' => 'BibliographyController',
             'biblios'         => $biblios,
@@ -57,7 +57,7 @@ class BibliographyController extends AbstractController
             ]
         ]);
 
-        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()){
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->persist($biblio);
             $em->flush();
@@ -89,9 +89,9 @@ class BibliographyController extends AbstractController
     public function show($id, Request $request, TranslatorInterface $translator)
     {
         $bibliography = $this->getDoctrine()
-                       ->getRepository(Biblio::class)
-                       ->find($id);
-        if(is_null($bibliography)){
+            ->getRepository(Biblio::class)
+            ->find($id);
+        if (is_null($bibliography)) {
             $request->getSession()->getFlashBag()->add(
                 'error',
                 $translator->trans('biblio.messages.missing', ['%id%' => $id])
@@ -118,20 +118,18 @@ class BibliographyController extends AbstractController
     {
         $user = $this->get('security.token_storage')->getToken()->getUser();
         $biblio = $this->getDoctrine()
-                       ->getRepository(Biblio::class)
-                       ->find($id);
-        if(is_null($biblio)){
+            ->getRepository(Biblio::class)
+            ->find($id);
+        if (is_null($biblio)) {
             $request->getSession()->getFlashBag()->add(
                 'error',
                 $translator->trans('biblio.messages.missing', ['%id%' => $id])
             );
             return $this->redirectToRoute('bibliography_list');
         }
-        if($biblio->getVerrou() === null){
+        if ($biblio->getVerrou() === null) {
             $verrou = $this->getDoctrine()->getRepository(VerrouEntite::class)->create($biblio, $user, $this->dureeVerrou);
-        }
-        else if(!$biblio->getVerrou()->isWritable($user))
-        {
+        } else if (!$biblio->getVerrou()->isWritable($user)) {
             $request->getSession()->getFlashBag()->add(
                 'error',
                 $translator->trans('generic.messages.error_locked', [
@@ -155,7 +153,7 @@ class BibliographyController extends AbstractController
             ]
         ]);
 
-        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()){
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->persist($biblio);
             $this->getDoctrine()->getRepository(VerrouEntite::class)->remove($biblio->getVerrou());
@@ -186,13 +184,14 @@ class BibliographyController extends AbstractController
     /**
      * @Route("/biblio/{id}/canceledit", name="biblio_canceledit")
      */
-    public function canceledit($id, Request $request){
+    public function canceledit($id, Request $request)
+    {
         $user = $this->get('security.token_storage')->getToken()->getUser();
         $biblio = $this->getDoctrine()
-                       ->getRepository(Biblio::class)
-                       ->find($id);
+            ->getRepository(Biblio::class)
+            ->find($id);
         $verrou = $this->getDoctrine()->getRepository(VerrouEntite::class)->fetch($biblio);
-        if($verrou !== null && $verrou->isWritable($user)){
+        if ($verrou !== null && $verrou->isWritable($user)) {
             $this->getDoctrine()->getRepository(VerrouEntite::class)->remove($verrou);
         }
         return $this->redirectToRoute('bibliography_list');
@@ -201,17 +200,18 @@ class BibliographyController extends AbstractController
     /**
      * @Route("/bibliography/{id}/delete", name="bibliography_delete")
      */
-    public function delete($id, Request $request){
+    public function delete($id, Request $request)
+    {
         $submittedToken = $request->request->get('token');
         $user = $this->get('security.token_storage')->getToken()->getUser();
 
-        if ($this->isCsrfTokenValid('delete_biblio_'.$id, $submittedToken)) {
+        if ($this->isCsrfTokenValid('delete_biblio', $submittedToken)) {
             $repository = $this->getDoctrine()->getRepository(Biblio::class);
             $biblio = $repository->find($id);
-            if($biblio instanceof Biblio){
-                if($this->isGranted('ROLE_ADMIN')){
+            if ($biblio instanceof Biblio) {
+                if ($this->isGranted('ROLE_ADMIN')) {
                     $verrou = $biblio->getVerrou();
-                    if(!$verrou || $verrou->isWritable($user)) {
+                    if (!$verrou || $verrou->isWritable($user)) {
                         $em = $this->getDoctrine()->getManager();
                         $em->remove($biblio);
                         $em->flush();

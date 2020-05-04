@@ -199,4 +199,131 @@ class Criteria
         }
         return $cleanedCriteria;
     }
+
+    public function getCriteriaDisplay($mode, $criteria, $locale)
+    {
+        $nameField = "nom" . ucfirst(strtolower($locale));
+
+        if ($mode == "simple") {
+            return $criteria;
+        }
+        if ($mode == "guided") {
+            $response = [];
+            foreach ($criteria as $key => $value) {
+                if ($key !== 'names_mode' && $key !== 'languages_mode') {
+                    $response['search.criteria_labels.' . $key] = $this->getDisplay($key, $value, $locale);
+                }
+            }
+            if (($criteria['names_mode'] ?? 'one') === 'all'
+                && array_key_exists('names', $criteria)
+            ) {
+                $response['search.criteria_labels.names_all'] = $response['search.criteria_labels.names'];
+                unset($response['search.criteria_labels.names']);
+            }
+            if (($criteria['languages_mode'] ?? 'one') === 'all'
+                && array_key_exists('languages', $criteria)
+            ) {
+                $response['search.criteria_labels.languages_all'] = $response['search.criteria_labels.languages'];
+                unset($response['search.criteria_labels.languages']);
+            }
+            foreach ($response as $key => $value) {
+                $response[$this->translator->trans($key)] = $value;
+                unset($response[$key]);
+            }
+            return $response;
+        }
+        if ($mode == "advanced") {
+            $response = [];
+            foreach ($criteria as $key => $value) {
+                if ($key == "resultsType") {
+                    continue;
+                }
+
+                // Find translated key
+                $criteriaSettings = \App\Search\CriteriaList::getCriteria($key, $this->translator);
+
+                $criteriaLabel = $criteriaSettings['label'];
+
+                switch ($criteriaSettings['type']) {
+                    case 'text':
+                        $criteriaValues = $value;
+                        break;
+                    case 'range':
+                        $criteriaValues = array_map(function ($v) use ($criteriaSettings) {
+                            return \App\Utils\StringHelper::operatorToString($v['operator']) . " " . $criteriaSettings['datalist'][$v['value']];
+                        }, $value);
+                        break;
+                    case 'operation':
+                        $criteriaValues = array_map(function ($v) use ($criteriaSettings) {
+                            return \App\Utils\StringHelper::operatorToString($v['operator']) . " " . $v['value'];
+                        }, $value);
+                        break;
+                    case 'prosepoetry':
+                        $criteriaValues = array_map(function ($v) {
+                            return array_map(function ($v_value) {
+                                return $this->translator->trans('attestation.fields.' . $v_value);
+                            }, $v);
+                        }, $value);
+                        break;
+                    case 'datation':
+                        $criteriaValues = array_map(function ($v) use ($key, $locale) {
+                            return $this->getDisplay($key, $v, $locale);
+                        }, $value);
+                        break;
+                    case 'select':
+                        $criteriaValues = array_map(function ($v) use ($key, $locale) {
+                            $values = $this->getDisplay($key, $v['values'], $locale);
+                            if ("all" === ($v['mode'] ?? null)) {
+                                array_unshift($values, 'all');
+                            }
+                            return $values;
+                        }, $value);
+                        break;
+                    default:
+                        throw new \InvalidArgumentException("Criteria $key (with value '" . json_encode($value) . "') is not of an accepted type ('{$criteriaSettings['type']}')");
+                }
+
+                $response[$criteriaLabel] = $criteriaValues;
+            }
+            return $response;
+        }
+        if ($mode == "elements") {
+            $response = [];
+            foreach ($criteria as $key => $value) {
+                switch ($key) {
+                    case 'element_count':
+                        $response['attestation.sections.elements'] = \App\Utils\StringHelper::operatorToString($value['operator']) . " " . $value['value'];
+                        break;
+                    case 'divine_powers_count':
+                        $response['formule.fields.puissances_divines'] = \App\Utils\StringHelper::operatorToString($value['operator']) . " " . $value['value'];
+                        break;
+                    case 'formule':
+                        $response['search.criteria_labels.formule'] = $value;
+                        break;
+                    case 'languages_mode':
+                    case 'formules_mode':
+                        break;
+                    default:
+                        $response['search.criteria_labels.' . $key] = $this->getDisplay($key, $value, $locale);
+                }
+            }
+            if (($criteria['languages_mode'] ?? 'one') === 'all'
+                && array_key_exists('languages', $criteria)
+            ) {
+                $response['search.criteria_labels.languages_all'] = $response['search.criteria_labels.languages'];
+                unset($response['search.criteria_labels.languages']);
+            }
+            if (($criteria['formules_mode'] ?? 'one') === 'all'
+                && array_key_exists('formule', $criteria)
+            ) {
+                $response['search.criteria_labels.formules_all'] = $response['search.criteria_labels.formule'];
+                unset($response['search.criteria_labels.formule']);
+            }
+            foreach ($response as $key => $value) {
+                $response[$this->translator->trans($key)] = $value;
+                unset($response[$key]);
+            }
+            return $response;
+        }
+    }
 }

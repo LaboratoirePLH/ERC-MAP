@@ -71,7 +71,7 @@ class RechercheController extends AbstractController
     /**
      * @Route("/search/simple", name="search_simple")
      */
-    public function simpleSearch(Request $request, TranslatorInterface $translator, Criteria $searchCriteria)
+    public function simpleSearch(Request $request, Criteria $searchCriteria)
     {
         $searchMode = 'simple';
         $queryName  = $request->request->get('queryName', '');
@@ -90,7 +90,7 @@ class RechercheController extends AbstractController
             'results'         => $results,
             'mode'            => $searchMode,
             'criteria'        => [$search],
-            'criteriaDisplay' => $this->_prepareCriteriaDisplay($searchMode, [$search], $request->getLocale(), $translator, $searchCriteria),
+            'criteriaDisplay' => $searchCriteria->getCriteriaDisplay($searchMode, [$search], $request->getLocale()),
             'queryName'       => $queryName,
             'breadcrumbs'     => [
                 ['label' => 'nav.home', 'url' => $this->generateUrl('home')],
@@ -103,7 +103,7 @@ class RechercheController extends AbstractController
     /**
      * @Route("/search/guided", name="search_guided")
      */
-    public function guidedSearch(Request $request, TranslatorInterface $translator, Criteria $searchCriteria)
+    public function guidedSearch(Request $request, Criteria $searchCriteria)
     {
         $searchMode  = 'guided';
         $queryName   = $request->request->get('queryName', '');
@@ -124,7 +124,7 @@ class RechercheController extends AbstractController
             'results'         => $results,
             'mode'            => $searchMode,
             'criteria'        => $criteria,
-            'criteriaDisplay' => $this->_prepareCriteriaDisplay($searchMode, $criteria, $request->getLocale(), $translator, $searchCriteria),
+            'criteriaDisplay' => $searchCriteria->getCriteriaDisplay($searchMode, $criteria, $request->getLocale()),
             'queryName'       => $queryName,
             'breadcrumbs'     => [
                 ['label' => 'nav.home', 'url' => $this->generateUrl('home')],
@@ -137,7 +137,7 @@ class RechercheController extends AbstractController
     /**
      * @Route("/search/advanced", name="search_advanced")
      */
-    public function advancedSearch(Request $request, TranslatorInterface $translator, Criteria $searchCriteria)
+    public function advancedSearch(Request $request, Criteria $searchCriteria)
     {
         $searchMode  = 'advanced';
         $queryName   = $request->request->get('queryName', '');
@@ -161,7 +161,7 @@ class RechercheController extends AbstractController
             'mode'            => $searchMode,
             'resultsType'     => $resultsType,
             'criteria'        => $criteria,
-            'criteriaDisplay' => $this->_prepareCriteriaDisplay($searchMode, $criteria, $request->getLocale(), $translator, $searchCriteria),
+            'criteriaDisplay' => $searchCriteria->getCriteriaDisplay($searchMode, $criteria, $request->getLocale()),
             'queryName'       => $queryName,
             'breadcrumbs'     => [
                 ['label' => 'nav.home', 'url' => $this->generateUrl('home')],
@@ -174,7 +174,7 @@ class RechercheController extends AbstractController
     /**
      * @Route("/search/elements", name="search_elements")
      */
-    public function elementsSearch(Request $request, TranslatorInterface $translator, Criteria $searchCriteria)
+    public function elementsSearch(Request $request, Criteria $searchCriteria)
     {
         $searchMode  = 'elements';
         $queryName   = $request->request->get('queryName', '');
@@ -198,7 +198,7 @@ class RechercheController extends AbstractController
             'mode'            => $searchMode,
             'resultsType'     => $resultsType,
             'criteria'        => $criteria,
-            'criteriaDisplay' => $this->_prepareCriteriaDisplay($searchMode, $criteria, $request->getLocale(), $translator, $searchCriteria),
+            'criteriaDisplay' => $searchCriteria->getCriteriaDisplay($searchMode, $criteria, $request->getLocale()),
             'queryName'       => $queryName,
             'breadcrumbs'     => [
                 ['label' => 'nav.home', 'url' => $this->generateUrl('home')],
@@ -414,132 +414,5 @@ class RechercheController extends AbstractController
         return $this->redirect(
             $this->get('router')->generate('search', ['_fragment' => $mode])
         );
-    }
-
-    private function _prepareCriteriaDisplay($mode, $criteria, $locale, TranslatorInterface $translator, Criteria $searchCriteria)
-    {
-        $nameField = "nom" . ucfirst(strtolower($locale));
-
-        if ($mode == "simple") {
-            return $criteria;
-        }
-        if ($mode == "guided") {
-            $response = [];
-            foreach ($criteria as $key => $value) {
-                if ($key !== 'names_mode' && $key !== 'languages_mode') {
-                    $response['search.criteria_labels.' . $key] = $searchCriteria->getDisplay($key, $value, $locale);
-                }
-            }
-            if (($criteria['names_mode'] ?? 'one') === 'all'
-                && array_key_exists('names', $criteria)
-            ) {
-                $response['search.criteria_labels.names_all'] = $response['search.criteria_labels.names'];
-                unset($response['search.criteria_labels.names']);
-            }
-            if (($criteria['languages_mode'] ?? 'one') === 'all'
-                && array_key_exists('languages', $criteria)
-            ) {
-                $response['search.criteria_labels.languages_all'] = $response['search.criteria_labels.languages'];
-                unset($response['search.criteria_labels.languages']);
-            }
-            foreach ($response as $key => $value) {
-                $response[$translator->trans($key)] = $value;
-                unset($response[$key]);
-            }
-            return $response;
-        }
-        if ($mode == "advanced") {
-            $response = [];
-            foreach ($criteria as $key => $value) {
-                if ($key == "resultsType") {
-                    continue;
-                }
-
-                // Find translated key
-                $criteriaSettings = \App\Search\CriteriaList::getCriteria($key, $translator);
-
-                $criteriaLabel = $criteriaSettings['label'];
-
-                switch ($criteriaSettings['type']) {
-                    case 'text':
-                        $criteriaValues = $value;
-                        break;
-                    case 'range':
-                        $criteriaValues = array_map(function ($v) use ($criteriaSettings) {
-                            return \App\Utils\StringHelper::operatorToString($v['operator']) . " " . $criteriaSettings['datalist'][$v['value']];
-                        }, $value);
-                        break;
-                    case 'operation':
-                        $criteriaValues = array_map(function ($v) use ($criteriaSettings) {
-                            return \App\Utils\StringHelper::operatorToString($v['operator']) . " " . $v['value'];
-                        }, $value);
-                        break;
-                    case 'prosepoetry':
-                        $criteriaValues = array_map(function ($v) use ($translator) {
-                            return array_map(function ($v_value) use ($translator) {
-                                return $translator->trans('attestation.fields.' . $v_value);
-                            }, $v);
-                        }, $value);
-                        break;
-                    case 'datation':
-                        $criteriaValues = array_map(function ($v) use ($key, $searchCriteria, $locale) {
-                            return $searchCriteria->getDisplay($key, $v, $locale);
-                        }, $value);
-                        break;
-                    case 'select':
-                        $criteriaValues = array_map(function ($v) use ($key, $searchCriteria, $locale) {
-                            $values = $searchCriteria->getDisplay($key, $v['values'], $locale);
-                            if ("all" === ($v['mode'] ?? null)) {
-                                array_unshift($values, 'all');
-                            }
-                            return $values;
-                        }, $value);
-                        break;
-                    default:
-                        throw new \InvalidArgumentException("Criteria $key (with value '" . json_encode($value) . "') is not of an accepted type ('{$criteriaSettings['type']}')");
-                }
-
-                $response[$criteriaLabel] = $criteriaValues;
-            }
-            return $response;
-        }
-        if ($mode == "elements") {
-            $response = [];
-            foreach ($criteria as $key => $value) {
-                switch ($key) {
-                    case 'element_count':
-                        $response['attestation.sections.elements'] = \App\Utils\StringHelper::operatorToString($value['operator']) . " " . $value['value'];
-                        break;
-                    case 'divine_powers_count':
-                        $response['formule.fields.puissances_divines'] = \App\Utils\StringHelper::operatorToString($value['operator']) . " " . $value['value'];
-                        break;
-                    case 'formule':
-                        $response['search.criteria_labels.formule'] = $value;
-                        break;
-                    case 'languages_mode':
-                    case 'formules_mode':
-                        break;
-                    default:
-                        $response['search.criteria_labels.' . $key] = $searchCriteria->getDisplay($key, $value, $locale);
-                }
-            }
-            if (($criteria['languages_mode'] ?? 'one') === 'all'
-                && array_key_exists('languages', $criteria)
-            ) {
-                $response['search.criteria_labels.languages_all'] = $response['search.criteria_labels.languages'];
-                unset($response['search.criteria_labels.languages']);
-            }
-            if (($criteria['formules_mode'] ?? 'one') === 'all'
-                && array_key_exists('formule', $criteria)
-            ) {
-                $response['search.criteria_labels.formules_all'] = $response['search.criteria_labels.formule'];
-                unset($response['search.criteria_labels.formule']);
-            }
-            foreach ($response as $key => $value) {
-                $response[$translator->trans($key)] = $value;
-                unset($response[$key]);
-            }
-            return $response;
-        }
     }
 }

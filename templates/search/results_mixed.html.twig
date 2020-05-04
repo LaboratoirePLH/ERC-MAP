@@ -230,7 +230,7 @@
                                 if (index > 0) { // Prepare ID Column
                                     var id = $("<div/>").html(row[0]).text().trim();
                                     var link = $("<div />").html(row[0]).find("a").attr("href");
-                                    row[0] = row[5] + ' ' + id;
+                                    row[0] = row.pop() + ' ' + id;
                                     row.push(link);
 
                                     // Keep newlines in "Texte de l'Attestation" column
@@ -248,20 +248,22 @@
                         },
                         exportOptions: {
                             columns: mode == "simple" ? [
-                                6,
+                                7,
                                 0,
                                 1,
                                 2,
                                 3,
                                 4,
+                                6,
                                 5
                             ] : [
-                                6,
+                                7,
                                 0,
                                 1,
                                 2,
                                 3,
-                                4
+                                4,
+                                5,
                             ],
                             stripHtml: false,
                             stripNewlines: false

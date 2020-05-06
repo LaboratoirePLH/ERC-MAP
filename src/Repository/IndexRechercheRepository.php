@@ -233,7 +233,8 @@ class IndexRechercheRepository extends ServiceEntityRepository
         $entityData = $entity->getData();
 
         if ($search !== null) {
-            $fieldName = $this->_cleanFieldName($this->_array_search($entityData, $search));
+            $normalized_search = strtolower(\App\Utils\StringHelper::removeAccents($search));
+            $fieldName = $this->_cleanFieldName($this->_array_search($entityData, $normalized_search));
             // If field name is empty, it means it is not a real match (for exemple a partial match on a numeric value)
             if (empty($fieldName)) {
                 return false;
@@ -337,7 +338,7 @@ class IndexRechercheRepository extends ServiceEntityRepository
     private function _array_search(array $data, string $search)
     {
         foreach ($data as $key => $value) {
-            if ((is_string($value) && \stripos($value, strval($search)) !== false)
+            if ((is_string($value) && \stripos(strtolower(\App\Utils\StringHelper::removeAccents($value)), strval($search)) !== false)
                 || (is_numeric($value) && $value == $search)
             ) {
                 return [$key];

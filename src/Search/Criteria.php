@@ -172,7 +172,7 @@ class Criteria
     {
         $cleanedCriteria = [];
         foreach ($criteria as $key => $value) {
-            if ($key === 'new_criteria' || $key === 'search' || $key === 'absoluteForms' || $key === 'queryName') {
+            if ($key === 'new_criteria' || $key === 'search' || $key === 'names' || $key === 'queryName') {
                 continue;
             }
             if (($key === "element_count" || $key === "divine_powers_count") && (($value['operator'] ?? "") === "" || ($value['value'] ?? "") === "")) {

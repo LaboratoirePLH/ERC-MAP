@@ -66,7 +66,13 @@ class CriteriaList
                             2 => $translator->trans('attestation.fiabilite.niveau_2'),
                             3 => $translator->trans('attestation.fiabilite.niveau_3'),
                         ]
-                    ]
+                    ],
+                    [
+                        'key'     => 'translitteration',
+                        'label'   => $translator->trans('attestation.fields.translitteration'),
+                        'type'    => 'text',
+                        'semitic' => false,
+                    ],
                 ]
             ],
             [
@@ -241,12 +247,6 @@ class CriteriaList
                 'label'    => $translator->trans('search.criteria_labels.contexte_attestation'),
                 'type'     => null,
                 'children' => [
-                    [
-                        'key'     => 'translitteration',
-                        'label'   => $translator->trans('attestation.fields.translitteration'),
-                        'type'    => 'text',
-                        'semitic' => false,
-                    ],
                     [
                         'key'     => 'testimonyOccasions',
                         'label'   => $translator->trans('attestation.fields.occasion'),

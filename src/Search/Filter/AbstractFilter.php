@@ -158,6 +158,7 @@ abstract class AbstractFilter
                 $eData['lieuOrigine'] ?? null
             ]);
         }
+        return [];
     }
 
     public static function resolveAgents(IndexRecherche $e, array $sortedData): array
@@ -170,6 +171,7 @@ abstract class AbstractFilter
             },
             []
         ));
+        return [];
     }
 
     public static function evaluateOperation($value, $operator, $criteria): bool

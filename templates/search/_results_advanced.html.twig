@@ -32,17 +32,17 @@
                         {% set colIndex = 0 %}
                         {% for group, cols in columns %}
                             <div class="col">
-                                <div class="dropdown-header text-capitalize">
-                                    <input type="checkbox" class="form-check-input toggle-group-column" id="checkboxGroup{{ group }}" data-group="{{group}}" checked>
-                                    <label for="checkboxGroup{{ group }}" class="form-check-label">
+                                <div class="dropdown-header text-capitalize cursor-pointer">
+                                    <input type="checkbox" class="form-check-input cursor-pointer toggle-group-column" id="checkboxGroup{{ group }}" data-group="{{group}}" checked>
+                                    <label for="checkboxGroup{{ group }}" class="form-check-label cursor-pointer">
                                         {{ (group~'.name')|trans }}
                                     </label>
                                 </div>
                                 <div class="dropdown-divider"></div>
                                 {% for col in cols %}
-                                    <div class="dropdown-item">
-                                        <input type="checkbox" class="form-check-input toggle-column checkbox-{{group}}-item" id="checkboxColumn{{ colIndex }}" data-column="{{ colIndex }}" checked>
-                                        <label for="checkboxColumn{{ colIndex }}" class="form-check-label">
+                                    <div class="dropdown-item cursor-pointer">
+                                        <input type="checkbox" class="form-check-input cursor-pointer toggle-column checkbox-{{group}}-item" id="checkboxColumn{{ colIndex }}" data-column="{{ colIndex }}" checked>
+                                        <label for="checkboxColumn{{ colIndex }}" class="form-check-label cursor-pointer">
                                             <small>
                                                 {{ col.label|trans }}
                                             </small>

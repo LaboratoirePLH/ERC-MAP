@@ -13,7 +13,7 @@
     {% endfor %}
 {% endfor %}
 
-{% set exportName = queryName != "" ? queryName : (('app_name'|trans) ~ '-' ~ ('search.results'|trans) ~ ('search.'~mode)|trans) %}
+{% set exportName = ('app_name'|trans) ~ ' - ' ~ (queryName != "" ? queryName : (('search.results'|trans) ~ ' ' ~ ('search.'~mode)|trans)) %}
 
 <script type="text/javascript">
     var mode = "{{ mode }}";

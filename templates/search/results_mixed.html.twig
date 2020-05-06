@@ -217,7 +217,8 @@
                                 "ID",
                                 "{{ 'source.fields.source_biblio'|trans|raw }}",
                                 "{{ 'generic.fields.lieu'|trans|raw }}",
-                                "{{ 'generic.fields.date'|trans|raw }}",
+                                "{{ 'datation.fields.post_quem'|trans|raw }}",
+                                "{{ 'datation.fields.ante_quem'|trans|raw }}",
                                 "{{ 'attestation.sections.texte_attestation'|trans|raw }}",
                                 "{{ 'generic.fields.categorie'|trans|raw }}",
                             ];
@@ -230,7 +231,7 @@
                                 if (index > 0) { // Prepare ID Column
                                     var id = $("<div/>").html(row[0]).text().trim();
                                     var link = $("<div />").html(row[0]).find("a").attr("href");
-                                    row[0] = row.pop() + ' ' + id;
+                                    row[0] = row[row.length - 1] + ' ' + id;
                                     row.push(link);
 
                                     // Keep newlines in "Texte de l'Attestation" column

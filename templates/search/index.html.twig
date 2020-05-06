@@ -838,6 +838,14 @@
                 if (refreshEditors === true) {
                     setupFormulaEditors();
                 }
+
+                // Show require all switch if we have more than 2 formula editors
+                if ($('#elements .formula-search').length > 1) {
+                    $('#formules-mode-wrapper').show();
+                } /*else {
+                    $('#formules-mode-wrapper').hide();
+                    $('#elements input[name="formules_mode"]').prop('checked', false);
+                }*/
             }
             function addElement(elementId, refreshEditors) { // Get data from the selected option
                 var select = $('#elements #inputElementName');
@@ -869,7 +877,6 @@
                 if (refreshEditors === true) {
                     setupFormulaEditors();
                 }
-
             }
             function removeElement(elementId, refreshEditors) { // Remove element data from object
                 delete SEARCH_ELEMENTS[elementId];
@@ -892,7 +899,6 @@
                 if (Object.keys(SEARCH_ELEMENTS).length > 0) {
                     $('#elements').find(".add-formula-button").show();
                     $('#elements').find(".no-elements").hide();
-                    $('#formules-mode-wrapper').show();
                     $('#elements .formula-search').formulaEditor({
                         elements: SEARCH_ELEMENTS,
                         labels: {

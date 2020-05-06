@@ -98,7 +98,7 @@
 {% endblock %}
 
 {% block javascripts %}
-    {% set exportName = queryName != "" ? queryName : (('app_name'|trans) ~ '-' ~ ('search.results'|trans) ~ ('search.'~mode)|trans) %}
+    {% set exportName = queryName != "" ? queryName : (('app_name'|trans) ~ ' - ' ~ ('search.results'|trans) ~ ' ' ~ ('search.'~mode)|trans) %}
     {{ parent() }}
     <script type="text/javascript">
         $(document).ready(function () {

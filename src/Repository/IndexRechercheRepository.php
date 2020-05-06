@@ -339,7 +339,7 @@ class IndexRechercheRepository extends ServiceEntityRepository
     {
         foreach ($data as $key => $value) {
             if ((is_string($value) && \stripos(strtolower(\App\Utils\StringHelper::removeAccents($value)), strval($search)) !== false)
-                || (is_numeric($value) && $value == $search)
+                || (is_numeric($value) && is_numeric($search) && $value == $search)
             ) {
                 return [$key];
             } else if (is_array($value)) {

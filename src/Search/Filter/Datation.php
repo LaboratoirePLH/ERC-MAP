@@ -27,7 +27,6 @@ class Datation extends AbstractFilter
             // We check all the found datations against the criteria entry
             // If at least one datation is acceptable, we return true immediately
             foreach ($data as $d) {
-
                 // If exact is checked, we need to have both PostQuem and AnteQuem criteria set
                 // Otherwise we consider exact is not checked
                 if ($criteriaExact && !is_null($criteriaPostQuem) && !is_null($criteriaAnteQuem)) {

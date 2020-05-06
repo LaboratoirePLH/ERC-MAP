@@ -114,8 +114,14 @@ abstract class AbstractFilter
     {
         $eData = $e->getData();
         if ($e->getEntite() === 'Element') {
-            // TODO : Add datation filtering on elements
-            return [];
+            $attestations = self::resolveAttestations($e, $sortedData);
+            return array_filter(array_reduce(
+                $attestations,
+                function ($result, $attestation) use ($sortedData, $e) {
+                    return array_merge($result, self::resolveDatations($attestation, $sortedData));
+                },
+                []
+            ));
         } else if ($e->getEntite() === 'Attestation') {
             $datation = $eData['datation'] ?? null;
 
@@ -124,14 +130,13 @@ abstract class AbstractFilter
                 $datation = null;
             }
 
-            // If attestation has no datation, we get it from the source
-            return array_filter(array_merge([$datation, array_reduce(
+            return array_filter(array_merge([$datation], array_reduce(
                 self::resolveSources($e, $sortedData),
                 function ($result, $source) use ($sortedData) {
                     return array_merge($result, self::resolveDatations($source, $sortedData));
                 },
                 []
-            )]));
+            )));
         } else if ($e->getEntite() === 'Source') {
             return array_filter([$eData['datation'] ?? null]);
         }

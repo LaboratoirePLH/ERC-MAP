@@ -179,7 +179,7 @@ class IndexRechercheRepository extends ServiceEntityRepository
         $normalized_search = strtolower(\App\Utils\StringHelper::removeAccents($search));
         $results = $this->createQueryBuilder('i')
             ->select('i')
-            ->where('unaccent(lower(i.data)) LIKE :search')
+            ->where("(i.entite = 'Source' OR i.entite = 'Attestation') AND unaccent(lower(i.data)) LIKE :search")
             ->setParameter('search', '%' . addcslashes($normalized_search, '%_') . '%')
             ->getQuery()
             ->getResult();

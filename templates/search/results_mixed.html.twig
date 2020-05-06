@@ -116,8 +116,7 @@
                         cacheKey: cacheKey
                     }
                 };
-
-            } else {}
+            }
 
             $('#search-results thead tr#filterRow th').each(function () {
                 var title = $(this).text();
@@ -317,7 +316,6 @@
                 });
             });
 
-
             // Wait for data being loaded before adding table buttons and setting the counter
             dt.on('init', () => {
                 dt.buttons().container().appendTo('.table-buttons');
@@ -328,7 +326,6 @@
             dt.on('draw', () => {
                 $('#search-results [data-toggle="tooltip"]').tooltip();
             })
-
 
             // Manage query save
             $('#query-save-modal form').on('submit', function (e) {

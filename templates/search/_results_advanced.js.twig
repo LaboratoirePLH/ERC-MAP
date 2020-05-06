@@ -12,8 +12,29 @@
         {% set colIndex = colIndex + 1 %}
     {% endfor %}
 {% endfor %}
-
 {% set exportName = ('app_name'|trans) ~ ' - ' ~ (queryName != "" ? queryName : (('search.results'|trans) ~ ' ' ~ ('search.'~mode)|trans)) %}
+
+<div id="template-link-source" class="d-none">
+    {% include "partials/_entitylink.html.twig" with {
+        'entity': 'source',
+        'link': url('source_show', {'id': '__ID__'}),
+        'text': '#__ID__'
+    } %}
+</div>
+<div id="template-link-attestation" class="d-none">
+    {% include "partials/_entitylink.html.twig" with {
+        'entity': 'attestation',
+        'link': url('attestation_show', {'id': '__ID__'}),
+        'text': '#__ID__'
+    } %}
+</div>
+<div id="template-link-element" class="d-none">
+    {% include "partials/_entitylink.html.twig" with {
+        'entity': 'element',
+        'link': url('element_show', {'id': '__ID__'}),
+        'text': '#__ID__'
+    } %}
+</div>
 
 <script type="text/javascript">
     var mode = "{{ mode }}";
@@ -22,6 +43,10 @@
     var groups = $.parseJSON("{{ groups|json_encode|e('js')|raw }}")
     var hiddenCols = $.parseJSON("{{ hiddenCols|json_encode|e('js')|raw }}");
     var exportName = "{{ exportName }}";
+    var cacheKey = "{{ cacheKey }}";
+    var searchPlaceholder = '{{ "generic.search"|trans }}';
+
+    console.log(columns);
 
     $(document).ready(function () {
 
@@ -29,17 +54,65 @@
             var title = $(this).text();
             var value = $(this).data('value');
             if (title != "") {
-                var placeholder = '{{ "generic.search"|trans }}';
-                $(this).html('<input type="text" class="w-100 form-control form-control-sm" placeholder="' + placeholder + ' ' + title + '" />');
+                $(this).html('<input type="text" class="w-100 form-control form-control-sm" placeholder="' + searchPlaceholder + ' ' + title + '" />');
                 if (value != null) {
                     $(this).children('input').val(value);
                 }
             }
         });
+
+        var ajax = {};
+        if (cacheKey !== "false") {
+            ajax = {
+                url: "{{ url('json_search_results') }}",
+                mode: "GET",
+                data: {
+                    cacheKey: cacheKey
+                }
+            };
+        }
+
+        // Setup columns based on twig data
+        var dtCols = [];
+        Object.entries(columns).forEach(([group_name, group_columns]) => {
+            group_columns.forEach(col => {
+                dtCols.push({
+                    data: [group_name, col.field].join('.'),
+                    visible: col.visible,
+                    render: function (data, type, row) {
+                        if (col.link === true) {
+                            if (type === 'display') {
+                                const html = $('#template-link-' + data.type).html();
+                                return html.replace(/__ID__/g, data.id);
+                            }
+                            return data.id;
+                        }
+                        var ret;
+                        if (Array.isArray(data)) {
+                            if (type === 'display') {
+                                ret = data.join('<hr/>');
+                            }
+                            ret = data.join(' ; ');
+                        }
+                        ret = data;
+                        if (col.extraEncode === true) {
+                            ret = ret.replace('<<', '&lt;&lt;').replace('>>', '&gt;&gt;');
+                        }
+                        return ret;
+                    }
+                })
+            })
+        })
+
         var dt = $('#search-results').DataTable({
+            processing: true, // Displays loader when table is processing
+            serverSide: false, // Do local filtering/sorting
+            ajax: ajax,
+            lengthChange: true,
             scrollX: true,
             searching: true,
             ordering: true,
+            columns: dtCols,
             order: [
                 [
                     headers.length - 1,
@@ -212,8 +285,6 @@
             cb.trigger('change');
             return false;
         });
-        loadVisibleColumns();
-
 
         $('input[type=search]').on('keyup change', function () {
             dt.search(
@@ -222,14 +293,25 @@
             ).draw();
             updateCounter(dt.page.info());
         });
-        dt.buttons().container().appendTo('.table-buttons');
         $('.clear-filter-button').on('click', function (e) {
             e.preventDefault();
             dt.columns().every(function () {
                 $('input', this.footer()).val("").trigger('change');
             });
         });
-        updateCounter(dt.page.info());
+
+
+        // Wait for data being loaded before adding table buttons, setting the counter and toggling columns based on cookie
+        dt.on('init', () => {
+            dt.buttons().container().appendTo('.table-buttons');
+            updateCounter(dt.page.info());
+            loadVisibleColumns();
+        })
+
+        // Enable tooltips on table redraw
+        dt.on('draw', () => {
+            $('#search-results [data-toggle="tooltip"]').tooltip();
+        })
 
 
         // Manage query save

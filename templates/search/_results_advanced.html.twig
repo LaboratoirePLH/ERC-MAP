@@ -93,54 +93,6 @@
         </tr>
     </thead>
     <tbody>
-        {% for result in results %}
-            <tr>
-                {% for group, cols in columns %}
-                    {% for col in cols %}
-                        {% if result[group][col.field] is defined %}
-
-                            {% set value = result[group][col.field] %}
-                            {% set valueSearch = value %}
-                            {% set valueSort = value %}
-
-                            {% if col.link|default(false) and value is iterable %}
-
-                                {% set valueSearch = value.text|default(value.id|default('')) %}
-                                {% set valueSort = value.text|default(value.id|default('')) %}
-                                {% set value %}
-                                {% include "partials/_entitylink.html.twig" with {
-                                    'icon': value.icon|default(''),
-                                    'entity': value.type|default(''),
-                                    'link': value.link is defined ? value.link : url(value.type ~ '_show', {'id': value.id}),
-                                    'text': value.text|default('#' ~ value.id|default(''))
-                                } %}
-                                {% endset %}
-
-                            {% elseif value is iterable %}
-
-                                {% set valueSearch = valueSearch|join(' ') %}
-                                {% set valueSort = valueSearch %}
-                                {% set value = value|join('<hr/>') %}
-
-                            {% endif %}
-
-                            {% if col.extraEncode|default(false) %}
-                                {% set value = value|replace({'<<': '&lt;&lt;', '>>': '&gt;&gt;'}) %}
-                            {% endif %}
-
-                        {% else %}
-                            {% set value = "" %}
-                            {% set valueSearch = value %}
-                            {% set valueSort = value %}
-
-                        {% endif %}
-                        <td data-search="{{ valueSearch|striptags|remove_accents|raw }}" data-sort="{{ valueSort|striptags|remove_accents|raw }}">
-                            {{ value|raw }}
-                        </td>
-
-                    {% endfor %}
-                {% endfor %}
-            </tr>
-        {% endfor %}
+        {# set value = value|replace({'<<': '&lt;&lt;', '>>': '&gt;&gt;'}) #}
     </tbody>
 </table>

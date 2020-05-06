@@ -131,6 +131,9 @@ class Advanced
             if (!array_key_exists('puissancesDivines', $result) || $result['puissancesDivines'] == "") {
                 $result['puissancesDivines'] = self::$translator->trans('generic.fields.indetermine');
             }
+        } else {
+            $result['formule'] = '';
+            $result['puissancesDivines'] = '';
         }
 
         // Add link data

@@ -163,10 +163,14 @@ class RechercheController extends AbstractController
             ->getRepository(\App\Entity\IndexRecherche::class)
             ->search($searchMode, $criteria, $request->getLocale());
 
+        if (count($results)) {
+            $cacheKey = $this->_cacheSearchResults($searchMode, $results);
+        }
+
         return $this->render("search/results_{$resultsType}.html.twig", [
             'controller_name' => 'RechercheController',
             'locale'          => $request->getLocale(),
-            'results'         => $results,
+            'cacheKey'        => $cacheKey ?? false,
             'mode'            => $searchMode,
             'resultsType'     => $resultsType,
             'criteria'        => $criteria,
@@ -200,10 +204,14 @@ class RechercheController extends AbstractController
             ->getRepository(\App\Entity\IndexRecherche::class)
             ->search($searchMode, $criteria, $request->getLocale());
 
+        if (count($results)) {
+            $cacheKey = $this->_cacheSearchResults($searchMode, $results);
+        }
+
         return $this->render("search/results_{$resultsType}.html.twig", [
             'controller_name' => 'RechercheController',
             'locale'          => $request->getLocale(),
-            'results'         => $results,
+            'cacheKey'        => $cacheKey ?? false,
             'mode'            => $searchMode,
             'resultsType'     => $resultsType,
             'criteria'        => $criteria,

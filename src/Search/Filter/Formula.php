@@ -35,7 +35,7 @@ class Formula extends AbstractFilter
 
             // If we require all values to be matched we must find at least as many as the criteria values
             // Else we only need one
-            return $matched >= ($requireAll ? count($crit) : 1);
+            return $matched >= ($requireAll ? count($crit['values']) : 1);
         }, $criteria)));
     }
 }

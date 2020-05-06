@@ -125,13 +125,13 @@ abstract class AbstractFilter
             }
 
             // If attestation has no datation, we get it from the source
-            return $datation ? [$datation] : array_filter(array_reduce(
+            return array_filter(array_merge([$datation, array_reduce(
                 self::resolveSources($e, $sortedData),
                 function ($result, $source) use ($sortedData) {
                     return array_merge($result, self::resolveDatations($source, $sortedData));
                 },
                 []
-            ));
+            )]));
         } else if ($e->getEntite() === 'Source') {
             return array_filter([$eData['datation'] ?? null]);
         }

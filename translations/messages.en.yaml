@@ -481,6 +481,7 @@ pages:
         network_analysis: "Network Analysis"
         webmapping: "Webmapping"
         corpus_state: "Corpus counting state"
+        corpus_state_filter: "Type text to filter bibliographic references"
     messages:
         subject_mandatory: "Please enter the subject of your message"
         message_mandatory: "Please enter your message"
@@ -517,7 +518,6 @@ search:
     results: "Search Results"
     results_count: "%records% record%plural%"
     results_count_filtered: "%records% record%plural% displayed (out of %total% total)"
-    coverage: "Corpus Coverage"
     reindex: "Rebuild Search Index"
     clear_cache: "Clear Cache"
     new_query: "New Search"

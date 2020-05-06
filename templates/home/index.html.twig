@@ -174,7 +174,7 @@
             $('#corpus-state-title').prepend($('<div class="spinner-border" role="status"></div>'));
             // Load data
             $.get("{{ url('corpus_state') }}").done(function (data) {
-                $('#corpus-state > ul').tree(data);
+                $('#corpus-state > ul').tree(data, "{{ 'pages.home.corpus_state_filter'|trans }}");
             }).always(function () {
                 $('#corpus-state-title').find('.spinner-border').remove();
             });

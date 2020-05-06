@@ -481,6 +481,7 @@ pages:
         network_analysis: "Analyse de Réseaux"
         webmapping: "Webmapping"
         corpus_state: "Etat de dépouillement des corpus"
+        corpus_state_filter: "Tapez du texte pour filtrer les Références Bibliographiques"
     messages:
         subject_mandatory: "Merci de saisir l'objet de votre message"
         message_mandatory: "Merci de saisir votre message"
@@ -516,7 +517,6 @@ search:
     results: "Résultats de la Recherche"
     results_count: "%records% enregistrement%plural%"
     results_count_filtered: "%records% enregistrement%plural% affiché%plural% (sur un total de %total%)"
-    coverage: "Etat de dépouillement du corpus"
     reindex: "Reconstruire l'Index de Recherche"
     clear_cache: "Effacer le cache"
     new_query: "Nouvelle Recherche"

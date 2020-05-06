@@ -19,11 +19,12 @@
     {% if removable is defined and removable == true %}
         <div class="btn-group" role="group">
         {% endif %}
-        <a href="{{ link }}" class="btn btn-sm {{color}}" role="button" target="_blank" rel="noopener noreferrer">
+        <a href="{{ link }}" class="btn btn-sm btn-block {{color}}" role="button" target="_blank" rel="noopener noreferrer">
             {% if icon != false %}
-                <i class="fas fa-fw {{ icon }}"></i>
+                {{ ('<i class="fas fa-fw ' ~ icon ~ '"></i>' ~ text|raw)|spaceless }}
+            {% else %}
+                {{ text|raw }}
             {% endif %}
-            {{ text|raw }}
         </a>
         {% if removable is defined and removable == true %}
             <button type="button" class="btn btn-sm {{color}} remove-button">

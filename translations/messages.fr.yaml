@@ -355,11 +355,11 @@ datation:
         precision: "Précision de la Datation"
         commentaires: "Commentaires de la datation"
     precision:
-        niveau_1: "(1) 5 ans ou moins"
-        niveau_2: "(2) 50 ans ou moins"
-        niveau_3: "(3) 100 ans ou moins"
-        niveau_4: "(4) 200 ans ou moins"
-        niveau_5: "(5) Plus de 200 ans"
+        niveau_1: "(1) Date &le; 5 ans"
+        niveau_2: "(2) 5 &lt; Date &le; 50 ans"
+        niveau_3: "(3) 50 &lt; Date &le; 100 ans"
+        niveau_4: "(4) 100 &lt; Date &le; 200 ans"
+        niveau_5: "(5) Date &gt; 200 ans"
 
 localisation:
     search_pleiades: "Chercher sur Pleiades"

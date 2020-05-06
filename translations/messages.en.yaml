@@ -355,11 +355,11 @@ datation:
         precision: "Dating precision"
         commentaires: "Dating comments"
     precision:
-        niveau_1: "(1) 5 years or less"
-        niveau_2: "(2) 50 years or less"
-        niveau_3: "(3) 100 years or less"
-        niveau_4: "(4) 200 years or less"
-        niveau_5: "(5) More than 200 years"
+        niveau_1: "(1) Dating &le; 5 years"
+        niveau_2: "(2) 5 &lt; Dating &le; 50 years"
+        niveau_3: "(3) 50 &lt; Dating &le; 100 years"
+        niveau_4: "(4) 100 &lt; Dating &le; 200 years"
+        niveau_5: "(5) Dating &gt; 200 years"
 
 localisation:
     search_pleiades: "Search on Pleiades"

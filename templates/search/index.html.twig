@@ -396,7 +396,7 @@
         $(document).ready(function () {
             //
             // Object to store the list of criteria available for advanced search
-            SEARCH_CRITERIA = $.parseJSON("{{ criteria_list|json_encode|e('js')|raw }}");
+            SEARCH_CRITERIA = $.parseJSON('{{ criteria_list|json_encode|e("js")|raw }}');
 
             // Store current search mode in a variable
             CURRENT_MODE = "";
@@ -748,7 +748,7 @@
                         template.find('select').last().prop('id', inputId + index + 'Value').prop('name', criteria.key + '[' + index + '][value]');
 
                         // Build datalist
-                        var datalist = Object.entries(criteria.datalist).map(([value, label]) => $('<option />').attr('value', value).text(label));
+                        var datalist = Object.entries(criteria.datalist).map(([value, label]) => $('<option />').attr('value', value).html(label));
                         template.find('select').last().append(... datalist);
 
                         // Setup Chosen

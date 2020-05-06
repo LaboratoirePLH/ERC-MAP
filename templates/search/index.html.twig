@@ -261,6 +261,11 @@
                                     <div class="col formula-search">
                                         <input type="hidden" name="formule[]">
                                     </div>
+                                    <div class="col-sm-auto pl-0 remove-formula-wrapper" style="display:none;">
+                                        <button type="button" class="btn btn-sm btn-warning remove-formula-button">
+                                            <i class="fas fa-fw fa-times"></i>
+                                        </button>
+                                    </div>
                                 </div>
 
                                 <button class="btn btn-warning btn-sm mx-2 mt-1 add-formula-button" type="button" style="display:none;">
@@ -831,10 +836,13 @@
                 removeElement(elementId, true);
             });
             $('#elements .add-formula-button').on('click', () => addFormula(true));
+            $('#elements').on('click', '.remove-formula-button', (e) => removeFormula(e.currentTarget));
             $('#elements .autocomplete-single').chosen(SINGLE_CHOSEN_SETTINGS);
 
             function addFormula(refreshEditors) {
-                $('button.add-formula-button').before('<div class="row"><div class="col formula-search"><input type="hidden" name="formule[]"></div></div>');
+                const removeFormulaWrapper = '<div class="col-sm-auto pl-0 remove-formula-wrapper"><button type="button" class="btn btn-sm btn-warning remove-formula-button"><i class="fas fa-fw fa-times"></i></button></div>';
+                $('button.add-formula-button').before('<div class="row"><div class="col formula-search"><input type="hidden" name="formule[]"></div>' + removeFormulaWrapper + '</div>');
+
                 if (refreshEditors === true) {
                     setupFormulaEditors();
                 }
@@ -842,10 +850,16 @@
                 // Show require all switch if we have more than 2 formula editors
                 if ($('#elements .formula-search').length > 1) {
                     $('#formules-mode-wrapper').show();
-                } /*else {
+                }
+            }
+
+            function removeFormula(button) {
+                $(button).parents('.remove-formula-wrapper').parent().remove();
+                // Hide require all switch if we have less than 2 formula editors
+                if ($('#elements .formula-search').length < 2) {
                     $('#formules-mode-wrapper').hide();
                     $('#elements input[name="formules_mode"]').prop('checked', false);
-                }*/
+                }
             }
             function addElement(elementId, refreshEditors) { // Get data from the selected option
                 var select = $('#elements #inputElementName');
@@ -898,6 +912,7 @@
             function setupFormulaEditors() {
                 if (Object.keys(SEARCH_ELEMENTS).length > 0) {
                     $('#elements').find(".add-formula-button").show();
+                    $('#elements').find(".remove-formula-wrapper").show();
                     $('#elements').find(".no-elements").hide();
                     $('#elements .formula-search').formulaEditor({
                         elements: SEARCH_ELEMENTS,
@@ -929,6 +944,7 @@
                     $('#elements .formula-editor').remove();
                     $('#elements').find("input[name='formule[]']").val("");
                     $('#elements').find(".add-formula-button").siblings('.row').not('.no-elements').not(':first').remove();
+                    $('#elements').find(".remove-formula-wrapper").hide();
                     $('#elements').find(".no-elements").show();
                     $('#elements').find(".add-formula-button").hide();
                     $('#formules-mode-wrapper').hide();

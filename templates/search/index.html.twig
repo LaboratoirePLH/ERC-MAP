@@ -817,8 +817,10 @@
             $('#elements button.add-element-button').on('click', function (e) {
                 e.preventDefault();
                 // Get data from the selected option
-                var select = $('#elements #inputElementName');
-                addElement(select.val(), true)
+                var elementId = $('#elements #inputElementName').val();
+                if (elementId !== "" && elementId !== null) {
+                    addElement(elementId, true)
+                }
             });
             $('#elements #added-elements').on('click', '.remove-button', function (e) {
                 e.preventDefault();
@@ -838,7 +840,6 @@
                 }
             }
             function addElement(elementId, refreshEditors) { // Get data from the selected option
-                console.log('addElement', elementId);
                 var select = $('#elements #inputElementName');
                 const elementLabel = select.find('option[value="' + elementId + '"]').text();
 
@@ -871,7 +872,6 @@
 
             }
             function removeElement(elementId, refreshEditors) { // Remove element data from object
-                console.log('removeElement', elementId);
                 delete SEARCH_ELEMENTS[elementId];
 
                 // Reenable the corresponding option in the select
@@ -1005,7 +1005,6 @@
                     }
                 }
 
-                // console.log('submit', formData);
                 this.submit();
             });
 

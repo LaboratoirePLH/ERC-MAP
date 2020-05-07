@@ -202,6 +202,9 @@ abstract class AbstractFilter
 
     protected static function cleanStringValue(string $str): string
     {
+        // First replace <br/> tags by newliens to keep the word boundaries
+        $str = preg_replace('/\<br(\s*)?\/?\>/i', "\n", $str);
+
         return mb_strtolower(\App\Utils\StringHelper::removeAccents(strip_tags($str)));
     }
 }

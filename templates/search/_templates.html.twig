@@ -62,6 +62,12 @@
         <div class="col">
             <input class="form-control flex-grow-1" type="text" name="name" id="inputNameText"/>
         </div>
+        <div class="col-sm-2 text-strict">
+            <div class="custom-control custom-switch pt-2">
+                <input type="checkbox" class="custom-control-input" id="name_mode" name="name_mode" value="strict">
+                <label class="custom-control-label" for="name_mode">{{ ('generic.fields.strict')|trans }}</label>
+            </div>
+        </div>
         {{ removeCriteriaButton }}
     </div>
     <div class="form-group row" id="range-template">

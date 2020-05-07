@@ -42,10 +42,9 @@
                                 </li>
                                 {% for subvalue in value %}
 
-                                    {% if subvalue is iterable %}
+                                    {% if subvalue is iterable and subvalue.values is defined %}
 
                                         {% for subsubvalue in subvalue %}
-
                                             {% if loop.first %}
                                                 <li class="list-group-item">
                                                     <strong>
@@ -57,7 +56,7 @@
                                                         </em>
                                                     </strong>
                                                 </li>
-                                                {% if subsubvalue != 'all' %}
+                                                {% if subsubvalue != 'all'  %}
                                                     <li class="list-group-item">
                                                         &rarr;
                                                         {{ subsubvalue|raw }}
@@ -71,7 +70,15 @@
                                             {% endif %}
 
                                         {% endfor %}
-
+                                    {% elseif subvalue is iterable and subvalue.value is defined %}
+                                        <li class="list-group-item">
+                                            {{ subvalue.value|raw }}
+                                            {% if subvalue.mode|default('') == 'strict' %}
+                                                <strong>
+                                                    ({{ 'generic.fields.strict'|trans }})
+                                                </strong>
+                                            {% endif %}
+                                        </li>
                                     {% else %}
                                         {# If subvalue is not iterable #}
                                         <li class="list-group-item">

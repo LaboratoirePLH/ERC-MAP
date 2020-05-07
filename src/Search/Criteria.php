@@ -152,6 +152,7 @@ class Criteria
             if (is_array($value) && is_array($value[0])) {
                 $value = array_filter($value, function ($cv) {
                     return array_key_exists('values', $cv)
+                        || array_key_exists('value', $cv)
                         || ((array_key_exists('post_quem', $cv) && !empty($cv['post_quem'])) || (array_key_exists('ante_quem', $cv) && !empty($cv['ante_quem'])))
                         || (array_key_exists('operator', $cv) && array_key_exists('value', $cv) && !!strlen($cv['operator']) && !!strlen($cv['value']))
                         || (count(array_intersect(['prose', 'poesie'], $cv)));

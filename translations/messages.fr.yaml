@@ -548,6 +548,12 @@ search:
         add_new: "Ajouter un nouvel élément"
         remove_element: "Retirer l'élément"
         formula: "Recherche de formule"
+        position: "Position de l'élément"
+        position_values:
+            any: "Indifférent"
+            start: "Début"
+            end: "Fin"
+            other: "Autre"
     messages:
         not_up_to_date: "Attention : l'Index de Recherche n'est pas à jour, les résultats peuvent être incomplets."
         reindex_done: "L'Index de Recherche a bien été reconstruit (%records% enregistrements, %time% secondes)"

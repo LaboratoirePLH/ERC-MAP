@@ -206,6 +206,7 @@ class ContientElement extends AbstractEntity
     {
         return [
             'element'           => $this->element->toArray(),
+            'positionElement'   => $this->getPositionElement(),
             'enContexte'        => $this->enContexte,
             'etatMorphologique' => $this->etatMorphologique,
             'genreElement'      => $this->genreElement === null ? null : $this->genreElement->toArray(),

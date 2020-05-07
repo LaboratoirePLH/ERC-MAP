@@ -110,9 +110,9 @@
                                 {{ values|length }}
                             </span>
                         </div>
-                    {% elseif label == 'locations' or label == 'sourceTypes' or label == 'formule' %}
+                    {% elseif label == 'locations' or label == 'sourceTypes' or label == 'formule' or label == 'element_position' %}
                         <div class="border border-color-map-yellow rounded p-2 mr-1 my-1">
-                            {{ ('search.criteria_labels.'~label)|trans }}
+                            {{ (label == 'element_position' ? 'generic.fields.position' : 'search.criteria_labels.'~label)|trans }}
                             <span class="badge badge-primary">
                                 {{ values|length }}
                             </span>

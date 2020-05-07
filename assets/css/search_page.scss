@@ -48,3 +48,16 @@ select:invalid[multiple] {
     font-weight: bold;
     color: $map-grey;
 }
+
+.input-group .chosen-container.chosen-container-single .chosen-single {
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+    min-width: 200px;
+
+    &.chosen-single-with-deselect {
+        min-width: 150px;
+    }
+
+}

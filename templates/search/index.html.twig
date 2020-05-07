@@ -383,12 +383,29 @@
 {% endblock %}
 {% block javascripts %}
     {% set elementButtonTemplate %}
-    {% include "partials/_entitylink.html.twig" with {
-        'entity': 'element',
-        'link': url('element_show', {'id': '#ID#'}),
-        'text': '##ID# #LABEL#',
-        'removable': true
-    } %}
+    <div class="input-group">
+        <div class="input-group-prepend">
+            {% include "partials/_entitylink.html.twig" with {
+                'entity': 'element',
+                'link': url('element_show', {'id': '#ID#'}),
+                'text': '##ID# #LABEL#',
+                'small': false
+            } %}
+        </div>
+        <input type="hidden" name="element_position[#INDEX#][id]" value="#ID#">
+        <select class="form-control autocomplete-single" name="element_position[#INDEX#][position]" size="1" data-placeholder="{{('search.element_labels.position')|trans|raw ~ ' '}}">
+            <option value=""></option>
+            <option value="any">{{ 'search.element_labels.position_values.any'|trans }}</option>
+            <option value="start">{{ 'search.element_labels.position_values.start'|trans }}</option>
+            <option value="end">{{ 'search.element_labels.position_values.end'|trans }}</option>
+            <option value="other">{{ 'search.element_labels.position_values.other'|trans }}</option>
+        </select>
+        <div class="input-group-append">
+            <button type="button" class="btn btn-secondary remove-button">
+                <i class="fas fa-fw fa-times"></i>
+            </button>
+        </div>
+    </div>
     {% endset %}
     {{ parent() }}
     {{ encore_entry_script_tags('search_page') }}
@@ -566,27 +583,32 @@
                                         $('#elements').find('input[name="' + criteria + '"]').attr('checked', true);
                                     }
                                     break;
-                                case 'formule':
-                                    // Extract elements
-                                    value.forEach((f, i) => {
+                                case 'element_position':
+                                    //
+                                    Object.values(value).forEach(v => {
+                                        addElement(v.id, v.position, false);
+                                    });
+                                    break;
+                                case 'formule': value.forEach((f, i) => {
                                         if (i > 0) {
                                             addFormula(false);
                                         }
                                         $('#elements').find('input[name="formule[]"]').last().val(f);
                                     });
 
-                                    var elementIds = value.reduce((total, f) => {
-                                        var regex = /\{(\d+)\}/;
-                                        var matches = f.match(/\{(\d+)\}/gi);
-                                        matches.forEach(m => {
-                                            m = m.replace('{', '').replace('}', '');
-                                            if (!total.includes(m)) {
-                                                total.push(m);
-                                            }
-                                        });
-                                        return total;
-                                    }, []);
-                                    elementIds.forEach(id => addElement(id, false));
+                                    // Extract elements
+                                    // var elementIds = value.reduce((total, f) => {
+                                    //     var regex = /\{(\d+)\}/;
+                                    //     var matches = f.match(/\{(\d+)\}/gi);
+                                    //     matches.forEach(m => {
+                                    //         m = m.replace('{', '').replace('}', '');
+                                    //         if (!total.includes(m)) {
+                                    //             total.push(m);
+                                    //         }
+                                    //     });
+                                    //     return total;
+                                    // }, []);
+                                    // elementIds.forEach(id => addElement(id, false));
                                     setupFormulaEditors();
                                     break;
                             }
@@ -829,7 +851,7 @@
                 // Get data from the selected option
                 var elementId = $('#elements #inputElementName').val();
                 if (elementId !== "" && elementId !== null) {
-                    addElement(elementId, true)
+                    addElement(elementId, null, true)
                 }
             });
             $('#elements #added-elements').on('click', '.remove-button', function (e) {
@@ -866,7 +888,8 @@
                     $('#elements input[name="formules_mode"]').prop('checked', false);
                 }
             }
-            function addElement(elementId, refreshEditors) { // Get data from the selected option
+            var ELEMENT_INDEX = 0;
+            function addElement(elementId, position, refreshEditors) { // Get data from the selected option
                 var select = $('#elements #inputElementName');
                 const elementLabel = select.find('option[value="' + elementId + '"]').text();
 
@@ -884,13 +907,23 @@
                 $('#added-elements-row').removeClass('d-none');
 
                 // Add the element button
-                var button = $('{{ elementButtonTemplate|e("js") }}'.replace(/(#|%23)ID(#|%23)/gi, elementId).replace(/#LABEL#/gi, absoluteState));
+                var html = '{{ elementButtonTemplate|e("js") }}';
+                var button = $(html.replace(/(#|%23)ID(#|%23)/gi, elementId).replace(/(#|%23)LABEL(#|%23)/gi, absoluteState).replace(/(#|%23)INDEX(#|%23)/gi, ELEMENT_INDEX++));
                 button.find('.remove-button').attr('data-target', elementId);
                 $('#added-elements').append($('<div>').addClass('col-sm-auto pr-0 mr-1 mb-1 added-element-item').append(button));
+
+                // Set position value if we have one
+                if (position !== undefined && position !== null) {
+                    $('#added-elements').children().last().find('select').val(position);
+                }
+
+                // Start chosen
+                $('#added-elements').children().last().find('select').chosen(SINGLE_CHOSEN_SETTINGS);
 
                 // Disable the option we just chose
                 select.find('option[value="' + elementId + '"]').attr('disabled', true);
                 select.val('').trigger('chosen:updated');
+
 
                 // Setup/Update the formula editor
                 if (refreshEditors === true) {

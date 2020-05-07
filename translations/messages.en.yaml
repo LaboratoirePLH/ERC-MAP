@@ -549,6 +549,12 @@ search:
         add_new: "Add a new element"
         remove_element: "Remove element"
         formula: "Formula search"
+        position: "Element position"
+        position_values:
+            any: "Any"
+            start: "Start"
+            end: "End"
+            other: "Other"
     messages:
         not_up_to_date: "Warning : the Search Index is not up to date, the results can be incomplete."
         reindex_done: "The Search Index has been rebuilt (%records% records, %time% seconds)"

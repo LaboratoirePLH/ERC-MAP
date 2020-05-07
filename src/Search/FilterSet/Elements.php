@@ -54,6 +54,11 @@ class Elements extends AbstractFilterSet
                     continue;
                 }
             }
+            if (array_key_exists('element_position', $criteria)) {
+                if (!\App\Search\Filter\ElementPosition::filter($e, $criteria['element_position'], $this->sortedData)) {
+                    continue;
+                }
+            }
             if (array_key_exists('divine_powers_count', $criteria)) {
                 if (!\App\Search\Filter\DivinePowersCount::filter($e, [$criteria['divine_powers_count']], $this->sortedData)) {
                     continue;

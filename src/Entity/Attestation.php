@@ -605,6 +605,7 @@ class Attestation extends AbstractEntity
         })->first();
 
         return [
+            'id'                     => $this->getId(),
             'source'                 => $this->source->getId(),
             'prose'                  => $this->prose,
             'poesie'                 => $this->poesie,

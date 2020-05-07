@@ -1,4 +1,5 @@
 {% set entity = entity|default(null) %}
+{% set small = small is defined ? small : true %}
 {% if entity == "source" %}
     {% set color = "btn-primary" %}
     {% set icon = icons.source %}
@@ -16,20 +17,11 @@
     {% set icon = icon|default(false) %}
 {% endif %}
 {% if color is defined and icon is defined and link is defined and text is defined %}
-    {% if removable is defined and removable == true %}
-        <div class="btn-group" role="group">
+    <a href="{{ link }}" class="btn {{ small ? 'btn-sm' : ''}} btn-block {{color}}" role="button" target="_blank" rel="noopener noreferrer">
+        {% if icon != false %}
+            {{ ('<i class="fas fa-fw ' ~ icon ~ '"></i>' ~ text|raw)|spaceless }}
+        {% else %}
+            {{ text|raw }}
         {% endif %}
-        <a href="{{ link }}" class="btn btn-sm btn-block {{color}}" role="button" target="_blank" rel="noopener noreferrer">
-            {% if icon != false %}
-                {{ ('<i class="fas fa-fw ' ~ icon ~ '"></i>' ~ text|raw)|spaceless }}
-            {% else %}
-                {{ text|raw }}
-            {% endif %}
-        </a>
-        {% if removable is defined and removable == true %}
-            <button type="button" class="btn btn-sm {{color}} remove-button">
-                <i class="fas fa-fw fa-times"></i>
-            </button>
-        </div>
-    {% endif %}
+    </a>
 {% endif %}

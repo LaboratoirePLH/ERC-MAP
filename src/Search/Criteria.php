@@ -191,11 +191,26 @@ class Criteria
             if (is_array($value) && !count(array_filter($value))) {
                 continue;
             }
-            $cleanedCriteria[$key] = is_array($value) ? array_filter($value, function ($v) {
-                return $v !== null && $v !== "";
-            }) : $value;
+            if ($key === "element_position") {
+                $value = array_filter(array_map(function ($v) {
+                    if (!is_numeric($v['id'] ?? null)) {
+                        return null;
+                    }
+                    if (!array_key_exists('position', $v) || !in_array($v['position'], ['start', 'end', 'other'])) {
+                        $v['position'] = 'any';
+                    }
+                    return $v;
+                }, $value));
+                if (count($value) > 0) {
+                    $cleanedCriteria[$key] = $value;
+                }
+            } else {
+                $cleanedCriteria[$key] = is_array($value) ? array_filter($value, function ($v) {
+                    return $v !== null && $v !== "";
+                }) : $value;
+            }
         }
-        if (count(array_intersect(array_keys($cleanedCriteria), ['element_count', 'divine_powers_count', 'formule'])) == 0) {
+        if (count(array_intersect(array_keys($cleanedCriteria), ['element_count', 'divine_powers_count', 'element_position', 'formule'])) == 0) {
             return false;
         }
         return $cleanedCriteria;
@@ -300,6 +315,11 @@ class Criteria
                         break;
                     case 'formule':
                         $response['search.criteria_labels.formule'] = $value;
+                        break;
+                    case 'element_position':
+                        $response['search.element_labels.position'] = array_map(function ($v) {
+                            return "#{$v['id']} &rarr; " . $this->translator->trans('search.element_labels.position_values.' . $v['position']);
+                        }, $value);
                         break;
                     case 'languages_mode':
                     case 'formules_mode':

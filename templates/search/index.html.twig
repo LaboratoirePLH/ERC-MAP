@@ -589,7 +589,9 @@
                                         addElement(v.id, v.position, false);
                                     });
                                     break;
-                                case 'formule': value.forEach((f, i) => {
+                                case 'formule':
+                                    //
+                                    Object.values(value).forEach((f, i) => {
                                         if (i > 0) {
                                             addFormula(false);
                                         }

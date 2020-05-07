@@ -25,7 +25,7 @@ class ElementTranslation extends AbstractFilter
                         function ($traductions, $trad) {
                             return array_merge(
                                 $traductions,
-                                array_filter([$trad['nomFr'], $trad['nomEn']])
+                                array_filter([$trad['nomFr'] ?? null, $trad['nomEn'] ?? null])
                             );
                         },
                         []

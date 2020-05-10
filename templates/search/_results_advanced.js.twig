@@ -177,7 +177,7 @@
 
                         // Adds copyright on the first row
                         var copyright_row = new Array(data[0].length).fill('');
-                        copyright_row[0] = "{{ 'misc.export_copyright'|trans({'%date%': 'now'|date('YYYY/MM/DD')}) }}";
+                        copyright_row[0] = "{{ 'misc.export_copyright'|trans({'%date%': 'now'|date('Y/m/d')}) }}";
                         data.unshift(copyright_row);
 
                         return Papa.unparse(data, {quotes: true});

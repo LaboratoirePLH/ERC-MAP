@@ -87,6 +87,19 @@
             dataArray.forEach(d => {
                 rootNode.append(buildLi(d, 1));
             });
+
+            rootNode.find('.collapse').on('show.bs.collapse', function () {
+                var id = $(this).prop('id');
+                var icons = $('span.collapsible-icon[data-target="#' + id + '"]').children();
+                $(icons.get(0)).removeClass('d-inline').addClass('d-none');
+                $(icons.get(1)).removeClass('d-none').addClass('d-inline');
+            });
+            rootNode.find('.collapse').on('hide.bs.collapse', function () {
+                var id = $(this).prop('id');
+                var icons = $('span.collapsible-icon[data-target="#' + id + '"]').children();
+                $(icons.get(0)).removeClass('d-none').addClass('d-inline');
+                $(icons.get(1)).removeClass('d-inline').addClass('d-none');
+            });
         }
 
         return this.each(function () {
@@ -106,20 +119,7 @@
 
             buildTree(root, data);
 
-            root.find('.collapse').on('show.bs.collapse', function () {
-                var id = $(this).prop('id');
-                var icons = $('span.collapsible-icon[data-target="#' + id + '"]').children();
-                $(icons.get(0)).removeClass('d-inline').addClass('d-none');
-                $(icons.get(1)).removeClass('d-none').addClass('d-inline');
-            });
-            root.find('.collapse').on('hide.bs.collapse', function () {
-                var id = $(this).prop('id');
-                var icons = $('span.collapsible-icon[data-target="#' + id + '"]').children();
-                $(icons.get(0)).removeClass('d-none').addClass('d-inline');
-                $(icons.get(1)).removeClass('d-inline').addClass('d-none');
-            });
             root.find('#corpus-state-filter').on('input', e => {
-                console.log('filter', e.target.value);
                 filter(root, e.target.value);
             });
         });

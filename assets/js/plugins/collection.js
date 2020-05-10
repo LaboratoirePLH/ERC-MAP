@@ -39,12 +39,15 @@
                 deleteLink.click(function (e) {
                     e.preventDefault();
                     if (settings.confirmationModal !== null && settings.confirmationModal.length) {
-                        settings.confirmationModal.on('show.bs.modal', function () {
+                        settings.confirmationModal.off('show.bs.modal');
+                        settings.confirmationModal.one('show.bs.modal', function () {
+                            settings.confirmationModal.find('a.btn').on('click', function () {
+                                settings.confirmationModal.find('a.btn').off('click');
+                            });
                             settings.confirmationModal.find('.modal-accept-button').on('click', function () {
                                 prototype.remove();
                                 settings.deleteListener.call(me, prototype);
                                 settings.confirmationModal.modal('hide');
-                                settings.confirmationModal.find('.modal-accept-button').off('click');
                             });
                         });
                         settings.confirmationModal.modal();

@@ -331,7 +331,7 @@
                 results.addClass('alert-success');
                 results.text(response.message);
 
-                exportName = formData.query_name;
+                exportName = "{{ ('app_name'|trans) ~ ' - ' }}" + formData.query_name;
 
                 setTimeout(() => {
                     $('#query-save-modal').modal('hide')

@@ -497,11 +497,10 @@
                 } else if (mode == "advanced") { // Set the results type
                     $('#advanced').find('button[type=reset]').click();
 
-                    $('#advanced input[name=resultsType]').filter('[value=' + data.resultsType + ']').prop('checked', true);
-                    delete data.resultsType;
-
                     // Advanced form will be populated when all its data has been loaded
                     $('#search-panel').on('async-form-ready', function () {
+                        $('#advanced input[name=resultsType]').filter('[value=' + data.resultsType + ']').prop('checked', true);
+                        delete data.resultsType;
                         Object.entries(data).forEach(([criteriaName, values]) => {
                             var criteria = searchCriteria(criteriaName);
 

@@ -460,6 +460,9 @@
             function populateCriteriaData(mode, data, callback) {
                 if (mode === "simple") {
                     $('#simple').find('input[name="search_value"]').val(data[0]);
+                    if (callback !== undefined) {
+                        callback.apply(null);
+                    }
                 } else if (mode === "guided") { // Guided form will be populated when all its data has been loaded
                     $('#search-panel').on('async-form-ready', function () {
                         $('#guided').find('button[type=reset]').click();

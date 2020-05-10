@@ -95,7 +95,7 @@ class Advanced
 
         if (array_key_exists('traductions', $data)) {
             $result['traductions'] = array_slice(array_map(function ($item) use ($nameField) {
-                return $item[$nameField];
+                return $item[$nameField] ?? '';
             }, $data['traductions']), 0, 1);
         } else {
             $result['traductions'] = [];

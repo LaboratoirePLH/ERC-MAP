@@ -168,18 +168,18 @@
                 })
             }
 
-            // Corpus state management
-
-            // Show spinner on corpus state title
-            $('#corpus-state-title').prepend($('<div class="spinner-border" role="status"></div>'));
-            // Load data
-            $.get("{{ url('corpus_state') }}").done(function (data) {
-                $('#corpus-state > ul').tree(data, "{{ 'pages.home.corpus_state_filter'|trans }}");
-            }).always(function () {
-                $('#corpus-state-title').find('.spinner-border').remove();
+            // Corpus state collapse
+            $('#corpus-state.collapse').one('show.bs.collapse', function () {
+                // First time we expand, so we load the data
+                // Show spinner on corpus state title
+                $('#corpus-state-title').prepend($('<div class="spinner-border" role="status"></div>'));
+                // Load data
+                $.get("{{ url('corpus_state') }}").done(function (data) {
+                    $('#corpus-state > ul').tree(data, "{{ 'pages.home.corpus_state_filter'|trans }}");
+                }).always(function () {
+                    $('#corpus-state-title').find('.spinner-border').remove();
+                });
             });
-
-            // Collapse icons
             $('.collapse').on('show.bs.collapse', function () {
                 var id = $(this).prop('id');
                 var icons = $('span.collapsible-icon[data-target="#' + id + '"]').children();

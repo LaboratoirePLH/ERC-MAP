@@ -24,9 +24,22 @@ class ListController extends AbstractController
         $locale = $request->getLocale();
         $user = $this->get('security.token_storage')->getToken()->getUser();
 
-        $sources = $this->getDoctrine()
-            ->getRepository(Source::class)
-            ->findAll();
+        $repository = $this->getDoctrine()->getRepository(Source::class);
+
+        // Check if we have a filter in parameter
+        $filter = $request->query->get('filter', null);
+        if ($filter !== null) {
+            list($criteria, $value) = explode(':', $filter);
+            switch ($criteria) {
+                case 'element':
+                    $sources = $repository->findByElement($value);
+                    break;
+                default:
+                    $sources = $repository->findAll();
+            }
+        } else {
+            $sources = $repository->findAll();
+        }
 
         $data = array_map(function ($source) use ($locale, $user, $translator) {
             $lieu = $source->getInSitu() ? $source->getLieuDecouverte() : $source->getLieuOrigine();
@@ -89,6 +102,9 @@ class ListController extends AbstractController
             switch ($criteria) {
                 case 'source':
                     $attestations = $repository->findBySource($value);
+                    break;
+                case 'element':
+                    $attestations = $repository->findByElement($value);
                     break;
                 default:
                     $attestations = $repository->findAll();

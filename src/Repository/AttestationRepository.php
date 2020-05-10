@@ -18,4 +18,14 @@ class AttestationRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Attestation::class);
     }
+
+    public function findByElement($elementId)
+    {
+        $queryBuilder = $this->createQueryBuilder("att");
+        $queryBuilder->leftJoin("att.contientElements", "ce");
+        $queryBuilder->leftJoin("ce.element", "e");
+        $queryBuilder->where("e.id = :eId");
+        $queryBuilder->setParameter(":eId", $elementId);
+        return $queryBuilder->getQuery()->getResult();
+    }
 }

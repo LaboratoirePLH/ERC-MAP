@@ -178,6 +178,20 @@ class Advanced
 
         $result = array_merge($result, self::_decorateLocalisation($data['localisation'] ?? [], $locale));
 
+        // Add usage data 
+        $attestations = array_filter(
+            $allData,
+            function ($a) use ($entity) {
+                return $a->getEntite() == "Attestation" && in_array($entity->getId(), $a->getData()['elementIds'] ?? []);
+            }
+        );
+        $sources = array_unique(array_map(function ($a) {
+            return $a->getData()['source'];
+        }, $attestations));
+
+        $result['sources'] = count($sources);
+        $result['attestations'] = count($attestations);
+
         // Add link data
         $result['link'] = ['type' => strtolower($entity->getEntite()), 'id' => $entity->getId()];
 

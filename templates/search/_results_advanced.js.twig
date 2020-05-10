@@ -35,6 +35,10 @@
         'text': '#__ID__'
     } %}
 </div>
+<div id="template-link-usage" class="d-none">
+    <span class="badge badge-light">__DATA__</span>
+    <a href="__LINK__" class="btn btn-sm btn-block btn-light" target="_blank" rel="noopener">__TEXT__</a>
+</div>
 
 <script type="text/javascript">
     var mode = "{{ mode }}";
@@ -46,12 +50,10 @@
     var cacheKey = "{{ cacheKey }}";
     var searchPlaceholder = '{{ "generic.search"|trans }}';
 
-    console.log(columns);
-
     $(document).ready(function () {
 
         $('#search-results thead tr#filterRow th').each(function () {
-            var title = $(this).text();
+            var title = $(this).text().trim();
             var value = $(this).data('value');
             if (title != "") {
                 $(this).html('<input type="text" class="w-100 form-control form-control-sm" placeholder="' + searchPlaceholder + ' ' + title + '" />');
@@ -86,6 +88,13 @@
                                 return html.replace(/__ID__/g, data.id);
                             }
                             return data.id;
+                        } else if (typeof col.link === 'object' && col.link !== null) {
+                            if (type === 'display') {
+                                const html = $('#template-link-usage').html();
+                                const link = col.link.url.replace(/__ID__/g, row[group_name].link.id);
+                                return html.replace(/__LINK__/g, link).replace(/__TEXT__/g, col.link.text).replace(/__DATA__/g, data);
+                            }
+                            return data;
                         }
                         var ret;
                         if (Array.isArray(data)) {

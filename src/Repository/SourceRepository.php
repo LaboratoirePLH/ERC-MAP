@@ -18,4 +18,15 @@ class SourceRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Source::class);
     }
+
+    public function findByElement($elementId)
+    {
+        $queryBuilder = $this->createQueryBuilder("s");
+        $queryBuilder->leftJoin("s.attestations", "att");
+        $queryBuilder->leftJoin("att.contientElements", "ce");
+        $queryBuilder->leftJoin("ce.element", "e");
+        $queryBuilder->where("e.id = :eId");
+        $queryBuilder->setParameter(":eId", $elementId);
+        return $queryBuilder->getQuery()->getResult();
+    }
 }

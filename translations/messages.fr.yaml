@@ -68,6 +68,7 @@ generic:
     export_csv: "Exporter en CSV"
     locked: "Verrouillé"
     link: "Lien"
+    view_list: "Voir la liste"
     fields:
         id: "ID"
         table: "Table"
@@ -142,6 +143,7 @@ generic:
 source:
     name: "Source"
     list: "Liste des Sources"
+    list_for_element: "Sources liées à l'Élément #%id%"
     view: "Visualiser la Source #%id%"
     create: "Nouvelle Source"
     edit: "Modifier la Source #%id%"
@@ -258,6 +260,7 @@ attestation:
         niveau_3: "(3) Lecture Incertaine"
     list: "Liste des Attestations"
     list_for_source: "Attestations de la Source #%id%"
+    list_for_element: "Attestations liées à l'Élément #%id%"
     view: "Visualiser l'Attestation #%id%"
     create: "Créer une Attestation"
     create_for_source: "Créer une Attestation pour la Source #%id%"

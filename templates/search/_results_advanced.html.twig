@@ -87,7 +87,11 @@
         <tr id="filterRow">
             {% for group, cols in columns %}
                 {% for col in cols %}
-                    <th>{{ col.label|trans }}</th>
+                    <th>
+                        {% if col.disableFilter is not defined or col.disableFilter != true %}
+                            {{ col.label|trans }}
+                        {% endif %}
+                    </th>
                 {% endfor %}
             {% endfor %}
         </tr>

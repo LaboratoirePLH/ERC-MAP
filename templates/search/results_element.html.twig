@@ -12,6 +12,12 @@
         {'field': 'site','label': 'localisation.fields.site', 'visible': true},
         {'field': 'latitude','label': 'localisation.fields.latitude', 'visible': true},
         {'field': 'longitude','label': 'localisation.fields.longitude', 'visible': true},
+        {'field': 'sources','label': 'biblio.fields.sources', 'link': {
+            'text': 'generic.view_list'|trans, 'url': url('source_element', {'element_id': '__ID__'})
+        }, 'visible': true, 'disableFilter': true},
+        {'field': 'attestations','label': 'source.sections.attestations', 'link': {
+            'text': 'generic.view_list'|trans, 'url': url('attestation_element', {'element_id': '__ID__'})
+        }, 'visible': true, 'disableFilter': true},
         {'field': 'link', 'label': 'generic.view', 'visible': true, 'link': true},
     ]
 } %}

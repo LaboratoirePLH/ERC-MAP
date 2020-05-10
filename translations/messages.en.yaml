@@ -69,6 +69,7 @@ generic:
     export_csv: "Export as CSV file"
     locked: "Locked"
     link: "Link"
+    view_list: "View list"
     fields:
         id: "ID"
         table: "Table"
@@ -143,6 +144,7 @@ generic:
 source:
     name: "Source"
     list: "Sources List"
+    list_for_element: "Sources linked to Element #%id%"
     view: "View Source #%id%"
     create: "Create Source"
     edit: "Edit Source #%id%"
@@ -259,6 +261,7 @@ attestation:
         niveau_3: "(3) Uncertain reading"
     list: "Testimonies List"
     list_for_source: "Testimonies of Source #%id%"
+    list_for_element: "Testimonies linked to Element #%id%"
     view: "View Testimony #%id%"
     create: "Create Testimony"
     create_for_source: "Create Testimony for Source #%id%"

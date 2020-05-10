@@ -89,8 +89,9 @@
     <script type="text/javascript">
         $(document).ready(function () {
             //
-            // Store Source ID in variable
+            // Store Source or Element ID in variable
             const sourceId = "{{ source is defined ? source : '' }}";
+            const elementId = "{{ element is defined ? element : '' }}";
 
             // Prepare AJAX URL depending on filters
             var ajax = {
@@ -100,6 +101,10 @@
             if (sourceId !== "") {
                 ajax.data = {
                     filter: "source:" + sourceId
+                };
+            } else if (elementId !== "") {
+                ajax.data = {
+                    filter: "element:" + elementId
                 };
             }
 

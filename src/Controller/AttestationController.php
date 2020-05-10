@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Attestation;
+use App\Entity\Element;
 use App\Entity\EtatFiche;
 use App\Entity\Source;
 use App\Entity\VerrouEntite;
@@ -66,6 +67,34 @@ class AttestationController extends AbstractController
                 ['label' => 'nav.home', 'url' => $this->generateUrl('home')],
                 ['label' => 'source.list', 'url' => $this->generateUrl('source_list')],
                 ['label' => $translator->trans('attestation.list_for_source', ['%id%' => $source_id])]
+            ]
+        ]);
+    }
+
+    /**
+     * @Route("/attestation/element/{element_id}", name="attestation_element")
+     */
+    public function indexForElement($element_id, Request $request, TranslatorInterface $translator)
+    {
+        $element = $this->getDoctrine()
+            ->getRepository(Element::class)
+            ->find($element_id);
+        if (is_null($element)) {
+            $request->getSession()->getFlashBag()->add(
+                'error',
+                $translator->trans('element.messages.missing', ['%id%' => $element_id])
+            );
+            return $this->redirectToRoute('attestation_list');
+        }
+
+        return $this->render('attestation/index.html.twig', [
+            'controller_name' => 'AttestationController',
+            'action'          => 'list',
+            'element'         => $element_id,
+            'title'           => $translator->trans('attestation.list_for_element', ['%id%' => $element_id]),
+            'breadcrumbs'     => [
+                ['label' => 'nav.home', 'url' => $this->generateUrl('home')],
+                ['label' => $translator->trans('attestation.list_for_element', ['%id%' => $element_id])]
             ]
         ]);
     }

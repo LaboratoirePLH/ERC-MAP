@@ -101,6 +101,20 @@
 
             var action = "{{ action }}";
 
+            // Store Element ID in variable
+            const elementId = "{{ element is defined ? element : '' }}";
+
+            // Prepare AJAX URL depending on filters
+            var ajax = {
+                url: "{{ url('json_source_list') }}",
+                type: "GET"
+            };
+            if (elementId !== "") {
+                ajax.data = {
+                    filter: "element:" + elementId
+                };
+            }
+
             // Routes
             var selectionRoute = "{{ action == 'select' ? (cloneFrom is defined ? url(selectionRoute, {'source_id': '__ID__', 'cloneFrom': cloneFrom}) : url(selectionRoute, {'source_id': '__ID__'})) : '' }}";
             var attestationsRoute = "{{ url('attestation_source', {'source_id': '__ID__'}) }}";
@@ -118,10 +132,7 @@
             var currentUser = parseInt("{{ app.user.id }}", 10);
 
             const tableOptions = {
-                ajax: {
-                    url: "{{ url('json_source_list') }}",
-                    type: "GET"
-                },
+                ajax: ajax,
                 columns: [
                     {
                         responsivePriority: 1,

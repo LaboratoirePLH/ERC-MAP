@@ -44,7 +44,7 @@ class IndexRecherche
     }
 
     /**
-     * @ORM\Column(type="text", nullable=false, options={"collation":"utf8_bin"})
+     * @ORM\Column(type="text", nullable=true, options={"collation":"utf8_bin"})
      */
     private $data;
 

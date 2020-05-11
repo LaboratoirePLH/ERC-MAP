@@ -1,14 +1,22 @@
 {% extends 'base.html.twig' %}
 
+{# apply multiple form themes but only to the form of this template #}
+{% form_theme form with [
+    'bootstrap_4_horizontal_layout.html.twig',
+    'form/custom_register.twig'
+] %}
+
 {% block title %}
     {{'login_page.login_required'|trans}}
 {% endblock %}
 
-{% block bodyclass %}login-page
+{% block bodyclass %}
+    login-page
 {% endblock %}
+
 {% block body %}
     <div class="container">
-        <div class="row justify-content-center" style="margin-top: 100px">
+        <div class="row justify-content-center" style="margin-top: 20px;">
             <div class="col-8 text-center">
                 <img src="{{ asset('build/images/logo-ercmap.png') }}" class="w-100"/>
             </div>
@@ -16,7 +24,7 @@
         <div class="row justify-content-center mt-4">
             <div class="col-8">
                 <h2 class="text-center">
-                    {{'login_page.access_database'|trans}}
+                    {{ (open_access ? 'login_page.register' : 'login_page.request_account')|trans }}
                     {% if env != "prod" %}
                         <br>
                         <span class="text-danger font-weight-bold">
@@ -42,43 +50,21 @@
         {% endfor %}
         <div class="row justify-content-center mt-4">
             <div class="col-8">
-                {{ form_start(form, {'attr' : {'id': 'loginform'}}) }}
-                {% if error %}
-                    <div class="alert alert-danger" role="alert">
-                        <span class="badge badge-danger text-uppercase">
-                            {{ 'generic.messages.error'|trans }}
-                        </span>
-                        {{ error.messageKey|trans(error.messageData, 'security') }}
-                    </div>
-                {% endif %}
+                {{ form_start(form, {'attr' : {'id': 'registerform'}}) }}
+                {{ form_row(form.username) }}
+                {{ form_row(form.password) }}
+                {{ form_row(form.mail) }}
+                {{ form_row(form.prenomNom) }}
+                {{ form_row(form.institution) }}
                 <div class="form-group row">
-                    <label class="col-form-label col-4 text-right required" for="_username">
-                        {{ 'login_page.form.username'|trans }}
-                    </label>
-                    <div class="col-6">
-                        {{form_widget(form._username)}}
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label class="col-form-label col-4 text-right required" for="_password">
-                        {{ 'login_page.form.password'|trans }}
-                    </label>
-                    <div class="col-6">
-                        {{form_widget(form._password)}}
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <div class="col-10 offset-4">
-                        {{form_widget(form._remember_me)}}
-                        <br/>
+                    <div class="col-8 offset-4">
                         {{form_widget(form.recaptcha)}}
                     </div>
                 </div>
-                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
                 <div class="form-group row">
                     <div class="col-12 text-center">
-                        <button type="submit" id="login" name="login" class="btn-primary btn">
-                            {{ 'login_page.form.login'|trans }}
+                        <button type="submit" class="btn-primary btn">
+                            {{ (open_access ? 'login_page.register' : 'login_page.request_account')|trans }}
                         </button>
                     </div>
                 </div>
@@ -86,11 +72,8 @@
 
                 <div class="form-group row">
                     <div class="col-12 text-center">
-                        <a href="{{ url('register') }}" class="btn btn-success">
-                            {{ (open_access ? 'login_page.register' : 'login_page.request_account')|trans }}
-                        </a>
-                        <a href="{{ url('forgotten_password') }}" class="btn btn-sm btn-secondary">
-                            {{ 'login_page.form.reset_password'|trans }}
+                        <a href="{{ url('login') }}" class="btn btn-sm btn-secondary">
+                            {{ 'generic.back'|trans }}
                         </a>
                     </div>
                 </div>
@@ -108,7 +91,6 @@
         </div>
     </div>
 {% endblock %}
-
 {% block javascripts %}
     {{ parent() }}
-</script>{% endblock %}
+{% endblock %}

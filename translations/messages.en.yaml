@@ -23,6 +23,8 @@ nav:
 login_page:
     login_required: "Login required"
     access_database: "Access the database"
+    request_account: "Request an account"
+    register: "Register"
     reset_password: "Reset your password"
     input_username: "Input your username or email address to receive a reset link"
     input_new_password: "Input your new password"
@@ -30,6 +32,7 @@ login_page:
         username: "Username"
         username_email: "Username or Email Address"
         password: "Password"
+        password_confirmation: "Password Confirmation"
         remember_me: "Remember me ?"
         login: "Login"
         reset_password: "Reset password"
@@ -41,6 +44,8 @@ login_page:
         password_reset: "Password has been updated"
         message_sent: "Your message was sent to the website's administrators"
         invalid_captcha: "Your request was denied by the anti-robot protection. Please complete the CAPTCHA and retry"
+        account_created: "Your account has been created. You can now log in to access the database."
+        account_requested: "Your account request has been saved and administrators have been notified. You will soon receive an email informing you of you account's activation."
 
 generic:
     actions: "Actions"
@@ -507,8 +512,15 @@ mails:
     contact:
         title: "ERC-MAP - Contact"
         text: "A user sent you a message through the contact form : "
-        subject: "Objet"
+        subject: "Subject"
         message: "Message"
+    new_account:
+        title: "ERC-MAP - Account request"
+        text: "A visitor just requested an account on the ERC-MAP database with the following information :"
+        link: "List of accounts to activate"
+    account_activated:
+        title: "ERC-MAP - Account activated"
+        text: "Your account '%username%' on the ERC-MAP database has been activated by administrators. You can now connect to it and browse the database."
 
 search:
     title: "Search Interface"

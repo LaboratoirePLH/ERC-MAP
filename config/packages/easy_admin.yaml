@@ -12,6 +12,7 @@ easy_admin:
         menu:
          - label: 'Gestion'
          - { entity: 'Chercheur', default: true }
+         - NewAccounts
          - Projet
          - Suivi
          - VerrouEntite
@@ -96,6 +97,7 @@ easy_admin:
             class: App\Entity\Chercheur
             label: Chercheur
             list:
+                dql_filter: 'entity.actif = true'
                 fields:
                  - 'id'
                  - 'prenomNom'
@@ -113,6 +115,9 @@ easy_admin:
                  - 'institution'
                  - { property: 'role', type: 'choice', type_options: { choices: {Administrateur: 'admin', Modérateur: 'moderator', Utilisateur: 'user'}}}
                  - { property: 'projets', type_options: { required: true, by_reference: false }}
+                 - { property: 'actif'}
+                 - { property: 'gestionnaireComptes'}
+
             new:
                 fields:
                  - { property: 'prenomNom', type_options: { required: true }}
@@ -122,6 +127,7 @@ easy_admin:
                  - 'institution'
                  - { property: 'role', type: 'choice', type_options: { choices: {Administrateur: 'admin', Modérateur: 'moderator', Utilisateur: 'user'}}}
                  - { property: 'projets', type_options: { required: true, by_reference: false }}
+                 - { property: 'actif'}
         EntitePolitique:
             class: App\Entity\EntitePolitique
             label: Entité Politique
@@ -230,3 +236,26 @@ easy_admin:
         VerrouEntite:
             class: App\Entity\VerrouEntite
             label: Verrou Entité
+        NewAccounts:
+            class: App\Entity\Chercheur
+            label: Nouveaux utilisateurs
+            list:
+                dql_filter: 'entity.actif = false'
+                fields:
+                 - 'id'
+                 - 'prenomNom'
+                 - 'username'
+                 - { property: 'mail', type: 'email' }
+                 - 'institution'
+                 - 'dateAjout'
+                actions: ['-search', '-new', {name: 'validateUser', label: 'Activer le compte'}]
+            edit:
+                fields:
+                 - { property: 'prenomNom', type_options: { required: true }}
+                 - { property: 'username', type_options: { required: true }}
+                 - { property: 'mail', type: 'email', type_options: { required: true }}
+                 - 'institution'
+                 - { property: 'role', type: 'choice', type_options: { choices: {Administrateur: 'admin', Modérateur: 'moderator', Utilisateur: 'user'}}}
+                 - { property: 'projets', type_options: { required: true, by_reference: false }}
+                 - { property: 'actif'}
+                 - { property: 'gestionnaireComptes'}

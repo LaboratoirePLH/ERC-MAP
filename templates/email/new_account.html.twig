@@ -1,0 +1,51 @@
+<table width="100%" style="margin:0;padding:0;width:100%;box-sizing:border-box;background-color:#f5f8fa;font-family:Arial, Helvetica, sans-serif;font-size:19px;">
+    <tbody>
+        <tr>
+            <td style="padding:25px 0;text-align:center;background:url({{ absolute_url(asset('build/images/bkg-ercmap.jpg')) }});">
+                <a href="{{ absolute_url(url('home')) }}" style="display:block;padding:10px;">
+                    <img src="{{ absolute_url(asset('build/images/logo-ercmap.png')) }}" alt="{{ 'app_name'|trans }}" title="{{ 'app_name'|trans }}">
+                </a>
+            </td>
+        </tr>
+        <tr>
+            <td style="border-top: 1px solid #edeff2;border-bottom: 1px solid #edeff2;box-sizing:border-box;background-color:#ffffff;padding: 25px;">
+                <h3>{{ "mails.new_account.title"|trans }}</h3>
+
+                <p>{{ "mails.new_account.text"|trans }}</p>
+
+                <table border="1px solid black" border-collapse="collapse">
+                    <tbody>
+                        <tr>
+                            <th width="200">{{ "chercheur.fields.username"|trans }}</th>
+                            <td width="500">{{ user.username }}</td>
+                        </tr>
+                        <tr>
+                            <th width="200">{{ "chercheur.fields.mail"|trans }}</th>
+                            <td width="500">
+                                <a href="mailto:{{ user.mail }}">{{ user.mail }}</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th width="200">{{ "chercheur.fields.nom"|trans }}</th>
+                            <td width="500">{{ user.prenomNom }}</td>
+                        </tr>
+                        <tr>
+                            <th width="200">{{ "chercheur.fields.institution"|trans }}</th>
+                            <td width="500">{{ user.institution }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <p>
+                    <a href="{{ absolute_url(url('easyadmin', {'entity': 'NewAccounts', 'action': 'list'}))}}">{{ "mails.new_account.link"|trans }}</a>
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding:25px 0;text-align:center;">
+                &copy;
+                {{ 'misc.copyright'|trans }}
+            </td>
+        </tr>
+    </tbody>
+</div>

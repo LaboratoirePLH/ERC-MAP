@@ -3,3 +3,4 @@ unique_biblio: "Une référence ne peut pas être spécifiée plusieurs fois dan
 datation_error: "Ante Quem doit être supérieur ou égal à Post Quem si les deux sont renseignés"
 categories_count: "Vous ne pouvez sélectionner que jusqu'à 3 catégories"
 unique_elements: "Vous devez saisir des valeurs uniques pour le champ position des Éléments"
+repeat_password_error: "Les mots de passe doivent correspondre"

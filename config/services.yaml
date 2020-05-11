@@ -9,6 +9,7 @@ parameters:
     from_email: map.polytheisms@gmail.com
     from_name: "ERC-MAP-BD"
     google_recaptcha_site_key: '%env(GOOGLE_RECAPTCHA_SITE_KEY)%'
+    open_access: false
 
 services:
     # default configuration for services in *this* file
@@ -19,6 +20,7 @@ services:
             $dureeVerrou: '%duree_verrou%'
             $fromEmail: '%from_email%'
             $fromName: '%from_name%'
+            $openAccess: '%open_access%'
 
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name

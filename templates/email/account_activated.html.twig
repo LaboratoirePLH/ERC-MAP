@@ -1,0 +1,26 @@
+<table width="100%" style="margin:0;padding:0;width:100%;box-sizing:border-box;background-color:#f5f8fa;font-family:Arial, Helvetica, sans-serif;font-size:19px;">
+    <tbody>
+        <tr>
+            <td style="padding:25px 0;text-align:center;background:url({{ absolute_url(asset('build/images/bkg-ercmap.jpg')) }});">
+                <a href="{{ absolute_url(url('home')) }}" style="display:block;padding:10px;">
+                    <img src="{{ absolute_url(asset('build/images/logo-ercmap.png')) }}" alt="{{ 'app_name'|trans }}" title="{{ 'app_name'|trans }}">
+                </a>
+            </td>
+        </tr>
+        <tr>
+            <td style="border-top: 1px solid #edeff2;border-bottom: 1px solid #edeff2;box-sizing:border-box;background-color:#ffffff;padding: 25px;">
+                <h3>{{ "mails.account_activated.title"|trans }}</h3>
+
+                <p>{{ "mails.account_activated.text"|trans({'%username%': user.username}) }}</p>
+
+
+            </td>
+        </tr>
+        <tr>
+            <td style="padding:25px 0;text-align:center;">
+                &copy;
+                {{ 'misc.copyright'|trans }}
+            </td>
+        </tr>
+    </tbody>
+</div>

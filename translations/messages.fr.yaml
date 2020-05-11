@@ -23,6 +23,8 @@ nav:
 login_page:
     login_required: "Identification requise"
     access_database: "Accès à la base de données"
+    request_account: "Demander un compte d'accès"
+    register: "Créer un compte"
     reset_password: "Réinitialiser votre mot de passe"
     input_username: "Saisissez votre nom d'utilisateur ou adresse e-mail pour recevoir un lien de réinitialisation"
     input_new_password: "Saisissez votre nouveau mot de passe"
@@ -30,6 +32,7 @@ login_page:
         username: "Nom d'utilisateur"
         username_email: "Nom d'utilisateur ou Adresse e-mail"
         password: "Mot de passe"
+        password_confirmation: "Confirmation du mot de passe"
         remember_me: "Se souvenir de moi ?"
         login: "Connexion"
         reset_password: "Réinitialiser le mot de passe"
@@ -41,6 +44,8 @@ login_page:
         password_reset: "Mot de passe réinitialisé"
         message_sent: "Votre message a bien été envoyé aux administrateurs du site"
         invalid_captcha: "Votre requête a été refusée par la protection anti-robot. Veuillez compléter le CAPTCHA et recommencer"
+        account_created: "Votre compte a bien été créé. Vous pouvez dès à présent vous identifier pour accéder à la base de données."
+        account_requested: "Votre demande de compte a été enregistrée et les administrateurs ont été informés. Vous recevrez prochainement un e-mail vous informant de l'activation de votre compte"
 generic:
     actions: "Actions"
     close: "Fermer"
@@ -508,6 +513,13 @@ mails:
         text: "Un utilisateur vous a envoyé un message via le formulaire de contact :"
         subject: "Objet"
         message: "Message"
+    new_account:
+        title: "ERC-MAP - Demande de compte"
+        text: "Un visiteur vient d'effectuer une demande de compte sur la base de données ERC-MAP avec les informations suivantes :"
+        link: "Liste des comptes à activer"
+    account_activated:
+        title: "ERC-MAP - Compte activé"
+        text: "Votre compte '%username%' sur la base de données ERC-MAP vient d'être activé par les administrateurs. Vous pouvez maintenant vous y connecter et parcourir la base de données."
 
 search:
     title: "Interface de Recherche"

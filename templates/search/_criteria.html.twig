@@ -79,6 +79,12 @@
                                                 </strong>
                                             {% endif %}
                                         </li>
+                                    {% elseif subvalue is iterable %}
+                                        {% for subsubvalue in subvalue %}
+                                            <li class="list-group-item">
+                                                {{ subsubvalue|raw }}
+                                            </li>
+                                        {% endfor %}
                                     {% else %}
                                         {# If subvalue is not iterable #}
                                         <li class="list-group-item">

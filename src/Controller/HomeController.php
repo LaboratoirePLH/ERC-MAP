@@ -130,12 +130,12 @@ class HomeController extends AbstractController
     {
         if (!in_array($lang, ["fr", "en"])) {
             $request->getSession()->getFlashBag()->add('error', 'generic.messages.invalid_locale');
-        } else {
+        } else if ($this->isGranted('ROLE_USER')) {
             $user = $this->get('security.token_storage')->getToken()->getUser();
             $user->setPreferenceLangue($lang);
             $this->getDoctrine()->getManager()->flush();
-            $request->getSession()->set('_locale', $lang);
         }
+        $request->getSession()->set('_locale', $lang);
         $referer = $request->headers->get('referer');
         if ($referer == NULL) {
             $url = $this->generateUrl('home');

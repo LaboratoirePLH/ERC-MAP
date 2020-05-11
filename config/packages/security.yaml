@@ -42,4 +42,5 @@ security:
         - { path: ^/forgotten_password, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/reset_password,     roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/login,              roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/language,           roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/,                   roles: ROLE_USER }

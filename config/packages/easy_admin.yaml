@@ -47,6 +47,7 @@ easy_admin:
          - NombreElement
          - TraductionElement
          - { label: 'Localisation'}
+         - Localisation
          - EntitePolitique
          - GrandeRegion
          - QFonction
@@ -155,6 +156,19 @@ easy_admin:
         Langue:
             class: App\Entity\Langue
             label: Langue
+        Localisation:
+            class: App\Entity\Localisation
+            label: Localisation
+            list:
+                sort: ['id', 'DESC']
+                fields:
+                 - 'id'
+                 - 'grandeRegion'
+                 - 'sousRegion'
+                 - { property: 'pleiadesVille', format: '%d'}
+                 - 'nomVille'
+                 - { property: 'pleiadesSite', format: '%d'}
+                 - 'nomSite'
         Materiau:
             class: App\Entity\Materiau
             label: Matériau

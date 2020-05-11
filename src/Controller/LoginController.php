@@ -15,6 +15,9 @@ class LoginController extends AbstractController
      */
     public function index(AuthenticationUtils $authenticationUtils)
     {
+        if ($this->isGranted('ROLE_USER')) {
+            return $this->redirectToRoute('home');
+        }
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
         // last username entered by the user
@@ -32,10 +35,14 @@ class LoginController extends AbstractController
     /**
      * @Route("/logout", name="logout")
      */
-    public function logout() {}
+    public function logout()
+    {
+    }
 
     /**
      * @Route("/login_check", name="login_check")
      */
-    public function login_check() {}
+    public function login_check()
+    {
+    }
 }

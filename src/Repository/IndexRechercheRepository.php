@@ -109,11 +109,6 @@ class IndexRechercheRepository extends ServiceEntityRepository
         // Ensure $entityType has correct case
         $entityType = \ucfirst(\strtolower($entityType));
 
-        // Removes existing data
-        if ($skipDeletion !== true) {
-            $this->deleteEntry($entityType, $entityId);
-        }
-
         // Fetch up-to-date data
         $query = $this->getEntityManager()->createQuery("SELECT e FROM \App\Entity\\$entityType e WHERE e.id = $entityId");
         $entity = $query->getOneOrNullResult();
@@ -124,6 +119,8 @@ class IndexRechercheRepository extends ServiceEntityRepository
             $entityData = $entity->toArray();
             // Clean data to optimize it for indexation
             $entityData = $this->_cleanData($entityData);
+
+            $secondaryRebuilds = false;
 
             // Check corpus state
             if ($entityType == 'Source' || $entityType == 'Attestation') {
@@ -136,8 +133,34 @@ class IndexRechercheRepository extends ServiceEntityRepository
                     return $att->getEtatFiche()->getId();
                 })->toArray();
                 $corpusReady = array_unique($states) === [3];
+
+                // When rebuilding an Attestation, check if we need to update source and other attestations
+                if ($entityType === 'Attestation') {
+                    $corpusReadySources = $this->getEntityIds('Source', true);
+                    $corpusReadyAttestations = $this->getEntityIds('Attestation', true);
+
+                    // Rebuild if corpus Ready but source not in existing corpus ready
+                    // Or not corpus ready (changed back state) but source is in existing corpus ready
+                    if (in_array($source->getId(), $corpusReadySources) !== $corpusReady) {
+                        $attestations = $source->getAttestations()->filter(function ($att) use ($entity) {
+                            return $att->getId() != $entity->getId();
+                        })->map(function ($att) {
+                            return $att->getId();
+                        })->toArray();
+                        $secondaryRebuilds = [
+                            'Source' => [$source->getId()],
+                            'Attestation' => $attestations
+                        ];
+                    }
+                }
             } else {
                 $corpusReady = true;
+            }
+
+
+            // Removes existing data
+            if ($skipDeletion !== true) {
+                $this->deleteEntry($entityType, $entityId);
             }
 
             // store given data
@@ -148,6 +171,14 @@ class IndexRechercheRepository extends ServiceEntityRepository
             $newEntry->setCorpusReady($corpusReady);
             $this->getEntityManager()->persist($newEntry);
             $this->getEntityManager()->flush();
+
+            if ($secondaryRebuilds !== false) {
+                foreach ($secondaryRebuilds as $eType => $ids) {
+                    foreach ($ids as $eId) {
+                        $this->rebuildEntry($eType, $eId, false);
+                    }
+                }
+            }
         }
     }
 

@@ -318,7 +318,7 @@ class Criteria
                         break;
                     case 'element_position':
                         $response['search.element_labels.position'] = array_map(function ($v) {
-                            return "ID {$v['id']} &rarr; " . $this->translator->trans('search.element_labels.position_values.' . $v['position']);
+                            return "{{$v['id']}} &rarr; " . $this->translator->trans('search.element_labels.position_values.' . $v['position']);
                         }, $value);
                         break;
                     case 'languages_mode':

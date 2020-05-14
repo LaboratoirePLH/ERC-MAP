@@ -6,7 +6,7 @@
 {% block content %}
     {% set createUrl = url('attestation_create') %}
     {% if source is defined %}
-        {% set createUrl = url('attestation_create_source', { 'source_id' : source.id }) %}
+        {% set createUrl = url('attestation_create_source', { 'source_id' : source }) %}
     {% endif %}
     <div class="row">
         <div class="col-12 table-buttons">

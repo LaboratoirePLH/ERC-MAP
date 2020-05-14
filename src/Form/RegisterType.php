@@ -12,6 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use EWZ\Bundle\RecaptchaBundle\Form\Type\EWZRecaptchaType;
+use EWZ\Bundle\RecaptchaBundle\Validator\Constraints\IsTrue as RecaptchaTrue;
 
 class RegisterType extends AbstractType
 {
@@ -42,12 +43,20 @@ class RegisterType extends AbstractType
                 'label'    => 'chercheur.fields.institution',
                 'required' => true
             ])
-            ->add('recaptcha', EWZRecaptchaType::class, ['mapped' => false]);
+            ->add('g-recaptcha-response', EWZRecaptchaType::class, [
+                'mapped' => false,
+                'constraints' => [new RecaptchaTrue(["message" => "login_page.message.invalid_captcha"])]
+            ]);
     }
 
     public function getBlockPrefix()
     {
         return '';
+    }
+
+    public function getName()
+    {
+        return 'register';
     }
 
     public function configureOptions(OptionsResolver $resolver)

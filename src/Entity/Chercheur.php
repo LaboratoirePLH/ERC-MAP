@@ -5,13 +5,23 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Chercheur
  *
  * @ORM\Table(name="chercheur")
  * @ORM\Entity(repositoryClass="App\Repository\ChercheurRepository")
+ * @UniqueEntity(
+ *     fields={"mail"},
+ *     message="email_duplicate"
+ * )
+ * @UniqueEntity(
+ *     fields={"username"},
+ *     message="username_duplicate"
+ * )
  */
 class Chercheur extends AbstractEntity implements UserInterface
 {
@@ -42,6 +52,7 @@ class Chercheur extends AbstractEntity implements UserInterface
      * @var string|null
      *
      * @ORM\Column(name="mail", type="string", length=250, nullable=true)
+     * @Assert\Email(message="invalid_email_format")
      */
     private $mail;
 

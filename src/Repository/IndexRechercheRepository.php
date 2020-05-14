@@ -226,14 +226,19 @@ class IndexRechercheRepository extends ServiceEntityRepository
         return array_column($result, 'id');
     }
 
-    public function simpleSearch(string $search, string $locale): array
+    public function simpleSearch(string $search, string $locale, bool $restrictToCorpusReady = false): array
     {
         $normalized_search = strtolower(\App\Utils\StringHelper::removeAccents($search));
-        $results = $this->createQueryBuilder('i')
+        $query = $this->createQueryBuilder('i')
             ->select('i')
             ->where("(i.entite = 'Source' OR i.entite = 'Attestation') AND i.textData LIKE :search")
-            ->setParameter('search', '%' . addcslashes($normalized_search, '%_') . '%')
-            ->getQuery()
+            ->setParameter('search', '%' . addcslashes($normalized_search, '%_') . '%');
+
+        if ($restrictToCorpusReady) {
+            $query = $query->andWhere("i.corpusReady = 't'");
+        }
+
+        $results = $query->getQuery()
             ->getResult();
 
         $response = [];
@@ -246,20 +251,20 @@ class IndexRechercheRepository extends ServiceEntityRepository
         return $response;
     }
 
-    public function search(string $mode, array $criteria, string $locale): array
+    public function search(string $mode, array $criteria, string $locale, bool $restrictToCorpusReady = false): array
     {
         // Get all data and sort it by entity type
         $allData = $this->findAll();
 
         switch ($mode) {
             case 'guided':
-                $filter = new GuidedSearchFilter($allData);
+                $filter = new GuidedSearchFilter($allData, $restrictToCorpusReady);
                 break;
             case 'advanced':
-                $filter = new AdvancedSearchFilter($allData);
+                $filter = new AdvancedSearchFilter($allData, $restrictToCorpusReady);
                 break;
             case 'elements':
-                $filter = new ElementsSearchFilter($allData);
+                $filter = new ElementsSearchFilter($allData, $restrictToCorpusReady);
                 break;
             default:
                 throw new \InvalidArgumentException("Cannot process search mode $mode. Only 'guided' and 'advanced' search modes are available");

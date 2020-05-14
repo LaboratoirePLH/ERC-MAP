@@ -83,7 +83,7 @@ class RechercheController extends AbstractController
 
         $results = $this->getDoctrine()
             ->getRepository(\App\Entity\IndexRecherche::class)
-            ->simpleSearch($search, $request->getLocale());
+            ->simpleSearch($search, $request->getLocale(), !$this->isGranted('ROLE_CONTRIBUTOR'));
 
         if (count($results)) {
             $cacheKey = $this->_cacheSearchResults($searchMode, $results);
@@ -121,7 +121,7 @@ class RechercheController extends AbstractController
 
         $results = $this->getDoctrine()
             ->getRepository(\App\Entity\IndexRecherche::class)
-            ->search($searchMode, $criteria, $request->getLocale());
+            ->search($searchMode, $criteria, $request->getLocale(), !$this->isGranted('ROLE_CONTRIBUTOR'));
 
         if (count($results)) {
             $cacheKey = $this->_cacheSearchResults($searchMode, $results);
@@ -161,7 +161,7 @@ class RechercheController extends AbstractController
 
         $results = $this->getDoctrine()
             ->getRepository(\App\Entity\IndexRecherche::class)
-            ->search($searchMode, $criteria, $request->getLocale());
+            ->search($searchMode, $criteria, $request->getLocale(), !$this->isGranted('ROLE_CONTRIBUTOR'));
 
         if (count($results)) {
             $cacheKey = $this->_cacheSearchResults($searchMode, $results);
@@ -202,7 +202,7 @@ class RechercheController extends AbstractController
 
         $results = $this->getDoctrine()
             ->getRepository(\App\Entity\IndexRecherche::class)
-            ->search($searchMode, $criteria, $request->getLocale());
+            ->search($searchMode, $criteria, $request->getLocale(), !$this->isGranted('ROLE_CONTRIBUTOR'));
 
         if (count($results)) {
             $cacheKey = $this->_cacheSearchResults($searchMode, $results);

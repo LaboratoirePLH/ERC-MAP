@@ -18,17 +18,19 @@ class LoginType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('_username', TextType::class, ['label' => 'login_page.form.username'])
+            ->add('_username', TextType::class, ['label' => 'login_page.form.username', 'attr' => ['autofocus' => true]])
             ->add('_password', PasswordType::class, ['label' => 'login_page.form.password'])
             ->add('_remember_me', CheckboxType::class, [
                 'label'    => 'login_page.form.remember_me',
                 'required' => false,
             ])
-            ->add('recaptcha', EWZRecaptchaType::class, ['mapped' => false])
-        ;
+            ->add('recaptcha', EWZRecaptchaType::class, ['mapped' => false]);
     }
 
-    public function getBlockPrefix() { return ''; }
+    public function getBlockPrefix()
+    {
+        return '';
+    }
 
     public function configureOptions(OptionsResolver $resolver)
     {

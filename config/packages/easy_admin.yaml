@@ -175,6 +175,11 @@ easy_admin:
                  - 'nomVille'
                  - { property: 'pleiadesSite', format: '%d'}
                  - 'nomSite'
+                filters:
+                - property: 'grandeSousRegion'
+                  label: ''
+                  type: 'App\EasyAdmin\Filter\GrandeSousRegion'
+                  mapped: false
         Materiau:
             class: App\Entity\Materiau
             label: Matériau

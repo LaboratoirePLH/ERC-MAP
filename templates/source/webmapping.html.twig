@@ -28,8 +28,9 @@
                         filter: "element:" + elementId
                     }
                 }).then(({data, success}) => {
-                    var fct = geoApp.getFunctionalityByName("MAP - Source - id")[0];
-                    // var fct = geoApp.getFunctionalityById("{{webmapping.function_id}}");
+                    //
+                    // var fct = geoApp.getFunctionalityByName("MAP - Source - id")[0];
+                    var fct = geoApp.getFunctionalityById("{{ webmapping.function_id }}");
                     fct.execute({
                         select: true,
                         filters: [

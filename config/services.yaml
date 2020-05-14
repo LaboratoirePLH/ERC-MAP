@@ -12,8 +12,8 @@ parameters:
     open_access: false
     geo.app_url_fr: "https://geoapps.huma-num.fr/adws/app/8cc4e1b9-3a92-11e9-8702-e571f836e404/"
     geo.app_url_en: "https://geoapps.huma-num.fr/adws/app/8cc4e1b9-3a92-11e9-8702-e571f836e404/"
-    geo.function_id_fr: "MAP - Source - id"
-    geo.function_id_en: "MAP - Source - id"
+    geo.function_id_fr: "1e143ce6-6ce3-11ea-90e3-f7ccf6c80337"
+    geo.function_id_en: "1e143ce6-6ce3-11ea-90e3-f7ccf6c80337"
 
 services:
     # default configuration for services in *this* file

@@ -15,7 +15,7 @@
         <a href="{{ app.request.uri }}">{{ app.request.uri }}</a>
     </div>
     <hr/>
-    {% include "display/element.html.twig" with {'element': element} %}
+    {% include "display/element.html.twig" with {'element': element, 'valid_attestations': valid_attestations} %}
     <hr/>
     <div class="row">
         <div class="col-12 text-center">

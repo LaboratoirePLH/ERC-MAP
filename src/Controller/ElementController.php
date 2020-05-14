@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Attestation;
 use App\Entity\Element;
+use App\Entity\IndexRecherche;
 use App\Entity\VerrouEntite;
 use App\Form\ElementType;
 
@@ -170,11 +171,14 @@ class ElementController extends AbstractController
             return $this->redirectToRoute('element_list');
         }
 
+        $valid_attestations = $this->getDoctrine()->getRepository(IndexRecherche::class)->getEntityIds('Attestation', !$this->isGranted('ROLE_CONTRIBUTOR'));
+
         return $this->render('element/show.html.twig', [
-            'controller_name' => 'ElementController',
-            'element'          => $element,
-            'locale'          => $request->getLocale(),
-            'breadcrumbs'     => [
+            'controller_name'    => 'ElementController',
+            'element'            => $element,
+            'valid_attestations' => $valid_attestations,
+            'locale'             => $request->getLocale(),
+            'breadcrumbs'        => [
                 ['label' => 'nav.home', 'url' => $this->generateUrl('home')],
                 ['label' => 'element.list', 'url' => $this->generateUrl('element_list')],
                 ['label' => $translator->trans('element.view', ['%id%' => $element->getId()])]

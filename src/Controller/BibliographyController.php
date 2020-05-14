@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Biblio;
+use App\Entity\IndexRecherche;
 use App\Entity\VerrouEntite;
 use App\Form\BiblioType;
 
@@ -101,9 +102,12 @@ class BibliographyController extends AbstractController
             return $this->redirectToRoute('bibliography_list');
         }
 
+        $valid_sources = $this->getDoctrine()->getRepository(IndexRecherche::class)->getEntityIds('Source', !$this->isGranted('ROLE_CONTRIBUTOR'));
+
         return $this->render('bibliography/show.html.twig', [
             'controller_name' => 'BibliographyController',
             'bibliography'    => $bibliography,
+            'valid_sources'   => $valid_sources,
             'locale'          => $request->getLocale(),
             'breadcrumbs'     => [
                 ['label' => 'nav.home', 'url' => $this->generateUrl('home')],

@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Attestation;
 use App\Entity\Element;
 use App\Entity\EtatFiche;
+use App\Entity\IndexRecherche;
 use App\Entity\Source;
 use App\Entity\VerrouEntite;
 use App\Form\AttestationType;
@@ -307,11 +308,14 @@ class AttestationController extends AbstractController
             return $this->redirectToRoute('attestation_list');
         }
 
+        $valid_attestations = $this->getDoctrine()->getRepository(IndexRecherche::class)->getEntityIds('Attestation', !$this->isGranted('ROLE_CONTRIBUTOR'));
+
         return $this->render('attestation/show.html.twig', [
-            'controller_name' => 'AttestationController',
-            'attestation'    => $attestation,
-            'locale'          => $request->getLocale(),
-            'breadcrumbs'     => [
+            'controller_name'    => 'AttestationController',
+            'attestation'        => $attestation,
+            'valid_attestations' => $valid_attestations,
+            'locale'             => $request->getLocale(),
+            'breadcrumbs'        => [
                 ['label' => 'nav.home', 'url' => $this->generateUrl('home')],
                 ['label' => 'attestation.list', 'url' => $this->generateUrl('attestation_list')],
                 ['label' => $translator->trans('attestation.view', ['%id%' => $id])]

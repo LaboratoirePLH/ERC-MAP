@@ -148,12 +148,13 @@
             </td>
         </tr>
         <tr>
+            {% set contientElements = element.contientElements|filter(ce => ce.attestation.id in valid_attestations) %}
             <th scope="row">
                 {{ 'source.sections.attestations'|trans}}
-                ({{ element.contientElements|length }})
+                ({{ contientElements|length }})
             </th>
             <td>
-                {% if element.contientElements is not empty %}
+                {% if contientElements is not empty %}
                     <table class="table table-sm text-center mb-0">
                         <thead>
                             <tr>
@@ -164,7 +165,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {% for ce in element.contientElements %}
+                            {% for ce in contientElements %}
                                 <tr>
                                     <td>
                                         {% include "partials/_entitylink.html.twig" with {

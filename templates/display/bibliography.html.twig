@@ -25,86 +25,89 @@
             </td>
         </tr>
         {% if not bibliography.estCorpus %}
-        <tr>
-            <th scope="row">
-                {{ 'biblio.fields.auteur'|trans}}
-            </th>
-            <td>
-                {{ bibliography.auteurBiblio }}
-            </td>
-        </tr>
-        <tr>
-            <th scope="row">
-                {{ 'biblio.fields.annee'|trans}}
-            </th>
-            <td>
-                {{ bibliography.annee }}
-            </td>
-        </tr>
+            <tr>
+                <th scope="row">
+                    {{ 'biblio.fields.auteur'|trans}}
+                </th>
+                <td>
+                    {{ bibliography.auteurBiblio }}
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">
+                    {{ 'biblio.fields.annee'|trans}}
+                </th>
+                <td>
+                    {{ bibliography.annee }}
+                </td>
+            </tr>
         {% endif %}
         <tr>
+            {% set sourceBiblios = bibliography.sourceBiblios|filter(sb => sb.source.id in valid_sources) %}
             <th scope="row">
                 {{ 'biblio.fields.sources'|trans}}
+                ({{ sourceBiblios|length }})
             </th>
             <td class="p-0">
-                {% if bibliography.sourceBiblios is not empty %}
-                <table class="table table-sm text-center mb-0">
-                    <thead>
-                        <tr>
-                            <th scope="col">{{ 'source.name'|trans }}</th>
-                            <th scope="col">{{ 'source.fields.reference_source'|trans }}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for sourceBiblio in bibliography.sourceBiblios %}
-                        <tr>
-                            <td>
-                                {% include "partials/_entitylink.html.twig" with {
+                {% if sourceBiblios is not empty %}
+                    <table class="table table-sm text-center mb-0">
+                        <thead>
+                            <tr>
+                                <th scope="col">{{ 'source.name'|trans }}</th>
+                                <th scope="col">{{ 'source.fields.reference_source'|trans }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for sourceBiblio in sourceBiblios %}
+                                <tr>
+                                    <td>
+                                        {% include "partials/_entitylink.html.twig" with {
                                     'entity': 'source',
                                     'link': url('source_show', {'id': sourceBiblio.source.id}),
                                     'text': '#' ~ sourceBiblio.source.id ~ (sourceBiblio.source.titre is defined ? (" " ~ sourceBiblio.source.titre.getNom(locale)) : "")
                                 } %}
-                            </td>
-                            <td>
-                                {{ sourceBiblio.referencesource }}
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                                    </td>
+                                    <td>
+                                        {{ sourceBiblio.referencesource }}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 {% endif %}
             </td>
         </tr>
         <tr>
             <th scope="row">
                 {{ 'biblio.fields.elements'|trans}}
+                ({{ bibliography.elementBiblios|length }})
             </th>
             <td class="p-0">
                 {% if bibliography.elementBiblios is not empty %}
-                <table class="table table-sm text-center mb-0">
-                    <thead>
-                        <tr>
-                            <th scope="col">{{ 'element.name'|trans }}</th>
-                            <th scope="col">{{ 'element.fields.reference_element'|trans }}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for elementBiblio in bibliography.elementBiblios %}
-                        <tr>
-                            <td>
-                                {% include "partials/_entitylink.html.twig" with {
+                    <table class="table table-sm text-center mb-0">
+                        <thead>
+                            <tr>
+                                <th scope="col">{{ 'element.name'|trans }}</th>
+                                <th scope="col">{{ 'element.fields.reference_element'|trans }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for elementBiblio in bibliography.elementBiblios %}
+                                <tr>
+                                    <td>
+                                        {% include "partials/_entitylink.html.twig" with {
                                     'entity': 'element',
                                     'link': url('element_show', {'id': elementBiblio.element.id}),
                                     'text': '#' ~ elementBiblio.element.id ~ " " ~ (elementBiblio.element.etatAbsolu|raw|striptags('<span>'))
                                 } %}
-                            </td>
-                            <td>
-                                {{ elementBiblio.referenceElement }}
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                                    </td>
+                                    <td>
+                                        {{ elementBiblio.referenceElement }}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 {% endif %}
             </td>
         </tr>

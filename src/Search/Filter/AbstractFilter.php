@@ -147,7 +147,14 @@ abstract class AbstractFilter
     {
         $eData = $e->getData();
         if ($e->getEntite() === 'Element') {
-            return array_filter([$eData['localisation'] ?? null]);
+
+            return array_filter(array_reduce(
+                self::resolveAttestations($e, $sortedData),
+                function ($result, $attestation) use ($sortedData) {
+                    return array_merge($result, self::resolveLocalisations($attestation, $sortedData));
+                },
+                [$eData['localisation'] ?? null]
+            ));
         } else if ($e->getEntite() === 'Attestation') {
             // Get own localisation and the ones from the sources
             return array_filter(array_reduce(

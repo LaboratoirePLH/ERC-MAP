@@ -5,7 +5,9 @@
 {% block content %}
     <div class="row">
         <div class="col-12 table-buttons">
-            <a href=" {{ url('bibliography_create') }}" class="btn btn-primary">{{ 'biblio.create'|trans }}</a>
+            {% if is_granted('ROLE_CONTRIBUTOR') %}
+                <a href=" {{ url('bibliography_create') }}" class="btn btn-primary">{{ 'biblio.create'|trans }}</a>
+            {% endif %}
             <button type="button" class="btn btn-warning clear-filter-button">
                 {{ 'generic.clear_filters'|trans }}
             </button>
@@ -56,7 +58,9 @@
     </table>
     <div class="row">
         <div class="col-12 table-buttons">
-            <a href=" {{ url('bibliography_create') }}" class="btn btn-primary">{{ 'biblio.create'|trans }}</a>
+            {% if is_granted('ROLE_CONTRIBUTOR') %}
+                <a href=" {{ url('bibliography_create') }}" class="btn btn-primary">{{ 'biblio.create'|trans }}</a>
+            {% endif %}
             <button type="button" class="btn btn-warning clear-filter-button">
                 {{ 'generic.clear_filters'|trans }}
             </button>

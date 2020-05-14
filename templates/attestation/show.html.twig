@@ -6,17 +6,17 @@
     {{ ('attestation.view')|trans({'%id%': attestation.id}) }}
 {% endblock %}
 {% block content %}
-    {% if is_granted('ROLE_MODERATOR') or attestation.createur.id == app.user.id %}
-        <div class="text-center">
+    <div class="text-center">
+        {% if is_granted('ROLE_MODERATOR') or (is_granted('ROLE_CONTRIBUTOR') and attestation.createur.id == app.user.id) %}
             <a href="{{ url('attestation_edit', {'id': attestation.id}) }}" class="btn btn-sm my-1 btn-warning">
                 <i class="fas fa-fw fa-edit"></i>
                 {{ 'generic.edit'|trans }}
             </a>
             <br/>
-            <u>{{ 'generic.fields.lien_direct'|trans }}:</u>
-            <a href="{{ app.request.uri }}">{{ app.request.uri }}</a>
-        </div>
-    {% endif %}
+        {% endif %}
+        <u>{{ 'generic.fields.lien_direct'|trans }}:</u>
+        <a href="{{ app.request.uri }}">{{ app.request.uri }}</a>
+    </div>
     <hr/>
     {% include "display/attestation.html.twig" with {'attestation': attestation} %}
     <hr/>

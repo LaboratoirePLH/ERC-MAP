@@ -3,17 +3,17 @@
     {{ ('source.view')|trans({'%id%': source.id}) }}
 {% endblock %}
 {% block content %}
-    {% if is_granted('ROLE_MODERATOR') or source.createur.id == app.user.id %}
-        <div class="text-center">
+    <div class="text-center">
+        {% if is_granted('ROLE_MODERATOR') or (is_granted('ROLE_CONTRIBUTOR') and source.createur.id == app.user.id) %}
             <a href="{{ url('source_edit', {'id': source.id}) }}" class="btn btn-sm my-1 btn-warning">
                 <i class="fas fa-fw fa-edit"></i>
                 {{ 'generic.edit'|trans }}
             </a>
             <br/>
-            <u>{{ 'generic.fields.lien_direct'|trans }}:</u>
-            <a href="{{ app.request.uri }}">{{ app.request.uri }}</a>
-        </div>
-    {% endif %}
+        {% endif %}
+        <u>{{ 'generic.fields.lien_direct'|trans }}:</u>
+        <a href="{{ app.request.uri }}">{{ app.request.uri }}</a>
+    </div>
     <hr/>
     {% include "display/source.html.twig" with {'source': source} %}
     <hr/>

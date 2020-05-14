@@ -113,7 +113,7 @@ easy_admin:
                  - { property: 'mail', type: 'email', type_options: { required: true }}
                  - { property: 'newPassword', label: 'Nouveau mot de passe', type: 'text' }
                  - 'institution'
-                 - { property: 'role', type: 'choice', type_options: { choices: {Administrateur: 'admin', Modérateur: 'moderator', Utilisateur: 'user'}}}
+                 - { property: 'role', type: 'choice', type_options: { choices: {Administrateur: 'admin', Modérateur: 'moderator', Contributeur: 'contributor', Utilisateur: 'user'}}}
                  - { property: 'projets', type_options: { required: false, by_reference: false }}
                  - { property: 'actif'}
                  - { property: 'gestionnaireComptes'}
@@ -125,7 +125,7 @@ easy_admin:
                  - { property: 'mail', type: 'email', type_options: { required: true }}
                  - { property: 'newPassword', label: 'Nouveau mot de passe', type: 'text', type_options: { required: true }}
                  - 'institution'
-                 - { property: 'role', type: 'choice', type_options: { choices: {Administrateur: 'admin', Modérateur: 'moderator', Utilisateur: 'user'}}}
+                 - { property: 'role', type: 'choice', type_options: { choices: {Administrateur: 'admin', Modérateur: 'moderator', Contributeur: 'contributor', Utilisateur: 'user'}}}
                  - { property: 'projets', type_options: { required: false, by_reference: false }}
                  - { property: 'actif'}
         EntitePolitique:
@@ -255,7 +255,7 @@ easy_admin:
                  - { property: 'username', type_options: { required: true }}
                  - { property: 'mail', type: 'email', type_options: { required: true }}
                  - 'institution'
-                 - { property: 'role', type: 'choice', type_options: { choices: {Administrateur: 'admin', Modérateur: 'moderator', Utilisateur: 'user'}}}
+                 - { property: 'role', type: 'choice', type_options: { choices: {Administrateur: 'admin', Modérateur: 'moderator', Contributeur: 'contributor', Utilisateur: 'user'}}}
                  - { property: 'projets', type_options: { required: false, by_reference: false }}
                  - { property: 'actif'}
                  - { property: 'gestionnaireComptes'}

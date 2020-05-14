@@ -46,6 +46,8 @@ class BibliographyController extends AbstractController
      */
     public function create(Request $request, TranslatorInterface $translator)
     {
+        $this->denyAccessUnlessGranted("ROLE_CONTRIBUTOR");
+
         $biblio = new Biblio();
 
         $form   = $this->get('form.factory')->create(BiblioType::class, $biblio, [
@@ -116,6 +118,8 @@ class BibliographyController extends AbstractController
      */
     public function edit($id, Request $request, TranslatorInterface $translator)
     {
+        $this->denyAccessUnlessGranted("ROLE_CONTRIBUTOR");
+
         $user = $this->get('security.token_storage')->getToken()->getUser();
         $biblio = $this->getDoctrine()
             ->getRepository(Biblio::class)
@@ -186,6 +190,8 @@ class BibliographyController extends AbstractController
      */
     public function canceledit($id, Request $request)
     {
+        $this->denyAccessUnlessGranted("ROLE_CONTRIBUTOR");
+
         $user = $this->get('security.token_storage')->getToken()->getUser();
         $biblio = $this->getDoctrine()
             ->getRepository(Biblio::class)
@@ -202,6 +208,8 @@ class BibliographyController extends AbstractController
      */
     public function delete($id, Request $request)
     {
+        $this->denyAccessUnlessGranted("ROLE_CONTRIBUTOR");
+
         $submittedToken = $request->request->get('token');
         $user = $this->get('security.token_storage')->getToken()->getUser();
 

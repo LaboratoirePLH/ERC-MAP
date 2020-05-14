@@ -104,6 +104,8 @@ class AttestationController extends AbstractController
      */
     public function create(Request $request, TranslatorInterface $translator)
     {
+        $this->denyAccessUnlessGranted("ROLE_CONTRIBUTOR");
+
         $data = [
             'controller_name' => 'AttestationController',
             'action'          => 'select',
@@ -129,6 +131,8 @@ class AttestationController extends AbstractController
      */
     public function createForSource($source_id, Request $request, TranslatorInterface $translator)
     {
+        $this->denyAccessUnlessGranted("ROLE_CONTRIBUTOR");
+
         $user = $this->get('security.token_storage')->getToken()->getUser();
 
         $source = $this->getDoctrine()
@@ -273,6 +277,8 @@ class AttestationController extends AbstractController
      */
     public function cancelcreate($source_id, Request $request)
     {
+        $this->denyAccessUnlessGranted("ROLE_CONTRIBUTOR");
+
         $user = $this->get('security.token_storage')->getToken()->getUser();
         $source = $this->getDoctrine()
             ->getRepository(Source::class)
@@ -318,6 +324,8 @@ class AttestationController extends AbstractController
      */
     public function edit($id, Request $request, TranslatorInterface $translator)
     {
+        $this->denyAccessUnlessGranted("ROLE_CONTRIBUTOR");
+
         $user = $this->get('security.token_storage')->getToken()->getUser();
 
         $attestation = $this->getDoctrine()
@@ -472,6 +480,8 @@ class AttestationController extends AbstractController
      */
     public function canceledit($id, Request $request)
     {
+        $this->denyAccessUnlessGranted("ROLE_CONTRIBUTOR");
+
         $user = $this->get('security.token_storage')->getToken()->getUser();
         $attestation = $this->getDoctrine()
             ->getRepository(Attestation::class)
@@ -488,6 +498,8 @@ class AttestationController extends AbstractController
      */
     public function delete($id, Request $request, TranslatorInterface $translator)
     {
+        $this->denyAccessUnlessGranted("ROLE_CONTRIBUTOR");
+
         $submittedToken = $request->request->get('token');
         $user = $this->get('security.token_storage')->getToken()->getUser();
 

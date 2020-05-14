@@ -104,6 +104,8 @@ class SourceController extends AbstractController
      */
     public function create(Request $request, TranslatorInterface $translator)
     {
+        $this->denyAccessUnlessGranted("ROLE_CONTRIBUTOR");
+
         $user = $this->get('security.token_storage')->getToken()->getUser();
 
         if (($cloneId = $request->query->get('cloneFrom', null)) !== null) {
@@ -234,6 +236,8 @@ class SourceController extends AbstractController
      */
     public function edit($id, Request $request, TranslatorInterface $translator)
     {
+        $this->denyAccessUnlessGranted("ROLE_CONTRIBUTOR");
+
         $user = $this->get('security.token_storage')->getToken()->getUser();
 
         $source = $this->getDoctrine()
@@ -351,6 +355,8 @@ class SourceController extends AbstractController
      */
     public function canceledit($id, Request $request)
     {
+        $this->denyAccessUnlessGranted("ROLE_CONTRIBUTOR");
+
         $user = $this->get('security.token_storage')->getToken()->getUser();
         $source = $this->getDoctrine()
             ->getRepository(Source::class)
@@ -367,6 +373,8 @@ class SourceController extends AbstractController
      */
     public function delete($id, Request $request, TranslatorInterface $translator)
     {
+        $this->denyAccessUnlessGranted("ROLE_CONTRIBUTOR");
+
         $submittedToken = $request->request->get('token');
         $user = $this->get('security.token_storage')->getToken()->getUser();
 

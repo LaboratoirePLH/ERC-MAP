@@ -23,10 +23,15 @@ class RedirectUserListener
 
     public function onKernelRequest(RequestEvent $event)
     {
-        if (!is_null($this->tokenStorage->getToken()) && $this->isUserLogged() && !$this->isUserActive()) {
+        if (!is_null($this->tokenStorage->getToken()) && $this->isUserLogged()) {
             $currentRoute = $event->getRequest()->attributes->get('_route');
-            if ($this->isForbiddenRoute($currentRoute)) {
-                $response = new RedirectResponse($this->router->generate('inactive_account'));
+            if (!$this->isUserActive()) {
+                if ($this->isForbiddenRoute($currentRoute)) {
+                    $response = new RedirectResponse($this->router->generate('inactive_account'));
+                    $event->setResponse($response);
+                }
+            } else if ($currentRoute == 'inactive_account') {
+                $response = new RedirectResponse($this->router->generate('home'));
                 $event->setResponse($response);
             }
         }
@@ -48,7 +53,7 @@ class RedirectUserListener
     {
         return !in_array(
             $currentRoute,
-            ['contact', 'logout', 'inactive_account']
+            ['logout', 'inactive_account']
         );
     }
 }

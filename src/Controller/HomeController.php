@@ -6,6 +6,7 @@ use App\Entity\Chercheur;
 use App\Entity\Source;
 use App\Entity\Attestation;
 use App\Entity\Element;
+use App\Entity\IndexRecherche;
 use App\Form\ChercheurType;
 use App\Form\ChangePasswordType;
 
@@ -40,32 +41,13 @@ class HomeController extends AbstractController
     public function index()
     {
         $user = $this->get('security.token_storage')->getToken()->getUser();
-        $sourceCount = $this->getDoctrine()
-            ->getRepository(Source::class)
-            ->createQueryBuilder('s')
-            ->select('count(s.id)')
-            ->getQuery()
-            ->getSingleScalarResult();
-        $attestationCount = $this->getDoctrine()
-            ->getRepository(Attestation::class)
-            ->createQueryBuilder('a')
-            ->select('count(a.id)')
-            ->getQuery()
-            ->getSingleScalarResult();
-        $elementCount = $this->getDoctrine()
-            ->getRepository(Element::class)
-            ->createQueryBuilder('e')
-            ->select('count(e.id)')
-            ->getQuery()
-            ->getSingleScalarResult();
+
+        $counters = $this->getDoctrine()->getRepository(IndexRecherche::class)->getHomeCounters(!$this->isGranted('ROLE_CONTRIBUTOR'));
+
         return $this->render('home/index.html.twig', [
             'controller_name' => 'HomeController',
             'user_name' => $user->getPrenomNom(),
-            'counters' => [
-                'source'      => $sourceCount,
-                'attestation' => $attestationCount,
-                'element'     => $elementCount,
-            ]
+            'counters' => $counters
         ]);
     }
 

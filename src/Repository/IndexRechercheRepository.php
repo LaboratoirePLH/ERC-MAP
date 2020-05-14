@@ -125,11 +125,27 @@ class IndexRechercheRepository extends ServiceEntityRepository
             // Clean data to optimize it for indexation
             $entityData = $this->_cleanData($entityData);
 
+            // Check corpus state
+            if ($entityType == 'Source' || $entityType == 'Attestation') {
+                if ($entityType == 'Source') {
+                    $source = $entity;
+                } else {
+                    $source = $entity->getSource();
+                }
+                $states = $source->getAttestations()->map(function ($att) {
+                    return $att->getEtatFiche()->getId();
+                })->toArray();
+                $corpusReady = array_unique($states) === [3];
+            } else {
+                $corpusReady = true;
+            }
+
             // store given data
             $newEntry = new IndexRecherche;
             $newEntry->setEntite($entityType);
             $newEntry->setId($entity->getId());
             $newEntry->setData($entityData);
+            $newEntry->setCorpusReady($corpusReady);
             $this->getEntityManager()->persist($newEntry);
             $this->getEntityManager()->flush();
         }
@@ -172,6 +188,42 @@ class IndexRechercheRepository extends ServiceEntityRepository
             ->setParameter('entityId', $entityId)
             ->getQuery()
             ->execute();
+    }
+
+    public function getHomeCounters(bool $restrictToCorpusReady = false): array
+    {
+        $query = $this->createQueryBuilder('i')
+            ->select(['i.entite', 'count(i.id) as count']);
+
+        if ($restrictToCorpusReady) {
+            $query = $query->where("i.corpusReady = 't'");
+        }
+
+        $query = $query->groupBy('i.entite');
+
+        $result = $query->getQuery()->getResult();
+
+        $counters = array_combine(
+            array_map('strtolower', array_column($result, 'entite')),
+            array_column($result, 'count')
+        );
+
+        return $counters;
+    }
+
+    public function getEntityIds(string $entityType, bool $restrictToCorpusReady = false): array
+    {
+        $query = $this->createQueryBuilder('i')
+            ->select('i.id')
+            ->where("i.entite = :type")
+            ->setParameter('type', $entityType);
+
+        if ($restrictToCorpusReady) {
+            $query = $query->andWhere("i.corpusReady = 't'");
+        }
+
+        $result = $query->getQuery()->getScalarResult();
+        return array_column($result, 'id');
     }
 
     public function simpleSearch(string $search, string $locale): array

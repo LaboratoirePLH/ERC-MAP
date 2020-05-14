@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Attestation;
 use App\Entity\Biblio;
 use App\Entity\Element;
+use App\Entity\IndexRecherche;
 use App\Entity\Source;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -39,6 +40,14 @@ class ListController extends AbstractController
             }
         } else {
             $sources = $repository->findAll();
+        }
+
+        // If user is not a contributor, filter to keep only corpus ready entities
+        if (!$this->isGranted('ROLE_CONTRIBUTOR')) {
+            $valid_ids = $this->getDoctrine()->getRepository(IndexRecherche::class)->getEntityIds('Source', true);
+            $sources = array_values(array_filter($sources, function ($s) use ($valid_ids) {
+                return in_array($s->getId(), $valid_ids);
+            }));
         }
 
         $data = array_map(function ($source) use ($locale, $user, $translator) {
@@ -111,6 +120,14 @@ class ListController extends AbstractController
             }
         } else {
             $attestations = $repository->findAll();
+        }
+
+        // If user is not a contributor, filter to keep only corpus ready entities
+        if (!$this->isGranted('ROLE_CONTRIBUTOR')) {
+            $valid_ids = $this->getDoctrine()->getRepository(IndexRecherche::class)->getEntityIds('Attestation', true);
+            $attestations = array_values(array_filter($attestations, function ($a) use ($valid_ids) {
+                return in_array($a->getId(), $valid_ids);
+            }));
         }
 
         $data = array_map(function ($attestation) use ($locale, $user, $translator) {

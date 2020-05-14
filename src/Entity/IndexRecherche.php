@@ -44,7 +44,7 @@ class IndexRecherche
     }
 
     /**
-     * @ORM\Column(type="text", nullable=true, options={"collation":"utf8_bin"})
+     * @ORM\Column(type="text", nullable=false, options={"collation":"utf8_bin"})
      */
     private $data;
 
@@ -90,6 +90,24 @@ class IndexRecherche
     public function setTextData(array $textData): self
     {
         $this->textData = json_encode($textData, JSON_UNESCAPED_UNICODE);
+        return $this;
+    }
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="corpus_ready", type="boolean", nullable=false)
+     */
+    private $corpusReady = false;
+
+    public function getCorpusReady(): bool
+    {
+        return $this->corpusReady;
+    }
+
+    public function setCorpusReady(bool $corpusReady): self
+    {
+        $this->corpusReady = $corpusReady;
         return $this;
     }
 }

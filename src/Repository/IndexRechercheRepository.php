@@ -432,6 +432,7 @@ class IndexRechercheRepository extends ServiceEntityRepository
             'categorieSupport'       => 'source.fields.categorie_support',
             'lieuOrigine'            => 'source.fields.lieu_origine',
             'lieuDecouverte'         => 'source.fields.lieu_decouverte',
+            'titrePrincipal'         => 'source.fields.titre_principal',
             'entitePolitique'        => 'localisation.fields.entite_politique',
             'grandeRegion'           => 'localisation.fields.grande_region',
             'sousRegion'             => 'localisation.fields.sous_region',

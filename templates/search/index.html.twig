@@ -599,24 +599,10 @@
                                         }
                                         $('#elements').find('input[name="formule[]"]').last().val(f);
                                     });
-
-                                    // Extract elements
-                                    // var elementIds = value.reduce((total, f) => {
-                                    //     var regex = /\{(\d+)\}/;
-                                    //     var matches = f.match(/\{(\d+)\}/gi);
-                                    //     matches.forEach(m => {
-                                    //         m = m.replace('{', '').replace('}', '');
-                                    //         if (!total.includes(m)) {
-                                    //             total.push(m);
-                                    //         }
-                                    //     });
-                                    //     return total;
-                                    // }, []);
-                                    // elementIds.forEach(id => addElement(id, false));
-                                    setupFormulaEditors();
                                     break;
                             }
                         });
+                        setupFormulaEditors();
                         if (callback !== undefined) {
                             callback.apply(null);
                         }

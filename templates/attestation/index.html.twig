@@ -60,7 +60,7 @@
                 <th>{{ 'attestation.fields.passage'|trans }}</th>
                 <th>{{ 'attestation.fields.translitteration'|trans }}</th>
                 <th>{{ 'attestation.fields.etat_fiche'|trans }}</th>
-                <th data-value="{{ app.user.prenomNom }}">{{ 'generic.fields.cree'|trans }}</th>
+                <th data-value="{{ is_granted('ROLE_CONTRIBUTOR') ? app.user.prenomNom : '' }}">{{ 'generic.fields.cree'|trans }}</th>
                 <th>{{ 'generic.fields.modifie'|trans }}</th>
                 <th>{{ 'generic.fields.to_translate'|trans }}</th>
                 <th></th>
@@ -119,8 +119,9 @@
             var lockError = "{{ 'generic.messages.error_locked'|trans({'%type%': 'attestation.name'|trans}) }}";
 
             // Role management
-            var isAdmin = "{{ is_granted('ROLE_ADMIN') ? 1 : 0 }}" === "1";
+            var isContributor = "{{ is_granted('ROLE_CONTRIBUTOR') ? 1 : 0 }}" === "1";
             var isModerator = "{{ is_granted('ROLE_MODERATOR') ? 1 : 0 }}" === "1";
+            var isAdmin = "{{ is_granted('ROLE_ADMIN') ? 1 : 0 }}" === "1";
             var currentUser = parseInt("{{ app.user.id }}", 10);
 
             const tableOptions = {
@@ -161,6 +162,7 @@
                         }
                     }, {
                         data: 'etat_fiche',
+                        visible: isContributor,
                         render: function (data, type, row) {
                             if (type === 'sort') {
                                 return data.id;
@@ -169,6 +171,7 @@
                         }
                     }, {
                         data: 'date_creation',
+                        visible: isContributor,
                         render: function (data, type, row) {
                             if (type === 'display' || type === 'filter') {
                                 return data.display + '<br/><small>' + row.createur + '</small>';
@@ -177,6 +180,7 @@
                         }
                     }, {
                         data: 'date_modification',
+                        visible: isContributor,
                         render: function (data, type, row) {
                             if (type === 'display' || type === 'filter') {
                                 return data.display + '<br/><small>' + row.editeur + '</small>';
@@ -185,6 +189,7 @@
                         }
                     }, {
                         data: 'traduire',
+                        visible: isContributor,
                         render: function (data, type, row) {
                             return data.join('<br/>');
                         }
@@ -216,14 +221,19 @@
                                 buttons.push(verrou);
                             }
                             //
-                            buttons.push($.fn.createListButton('a', 'secondary', 'copy', "{{ 'generic.clone'|trans }}", cloneRoute.replace('__ID__', row.id)));
+                            if (isContributor) {
+                                buttons.push($.fn.createListButton('a', 'secondary', 'copy', "{{ 'generic.clone'|trans }}", cloneRoute.replace('__ID__', row.id)));
+                            }
 
                             return buttons.map(btn => btn[0].outerHTML).join("\n");
                         }
                     }
                 ],
                 order: [
-                    [0, 'desc']
+                    [
+                        isContributor ? 9 : 0,
+                        'desc'
+                    ]
                 ],
                 language: $.parseJSON('{{ "datatable.language"|trans|raw }}'),
                 pageLength: 10,

@@ -70,6 +70,14 @@ class HomeController extends AbstractController
     }
 
     /**
+     * @Route("/inactive_account", name="inactive_account")
+     */
+    public function inactiveAccount()
+    {
+        return $this->render('home/inactive_account.html.twig');
+    }
+
+    /**
      * @Route("/contact", name="contact")
      */
     public function contact(Request $request, \Swift_Mailer $mailer, TranslatorInterface $translator)

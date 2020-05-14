@@ -46,3 +46,10 @@ services:
     App\EventListener\DatabaseActivitySubscriber:
         tags:
             - { name: 'doctrine.event_subscriber' }
+    
+    App\EventListener\RedirectUserListener:
+        tags:
+            - { name: kernel.event_listener, event: kernel.request }
+        arguments:
+            - "@security.token_storage"
+            - "@router"

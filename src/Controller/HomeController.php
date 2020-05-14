@@ -4,8 +4,6 @@ namespace App\Controller;
 
 use App\Entity\Chercheur;
 use App\Entity\Source;
-use App\Entity\Attestation;
-use App\Entity\Element;
 use App\Entity\IndexRecherche;
 use App\Form\ChercheurType;
 use App\Form\ChangePasswordType;

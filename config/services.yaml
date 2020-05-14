@@ -10,6 +10,10 @@ parameters:
     from_name: "ERC-MAP-BD"
     google_recaptcha_site_key: '%env(GOOGLE_RECAPTCHA_SITE_KEY)%'
     open_access: false
+    geo.app_url_fr: "https://geoapps.huma-num.fr/adws/app/8cc4e1b9-3a92-11e9-8702-e571f836e404/"
+    geo.app_url_en: "https://geoapps.huma-num.fr/adws/app/8cc4e1b9-3a92-11e9-8702-e571f836e404/"
+    geo.function_id_fr: "MAP - Source - id"
+    geo.function_id_en: "MAP - Source - id"
 
 services:
     # default configuration for services in *this* file

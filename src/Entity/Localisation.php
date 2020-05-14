@@ -384,6 +384,7 @@ class Localisation extends AbstractEntity
     public function toArray(): array
     {
         return [
+            'id'              => $this->getId(),
             'entitePolitique' => $this->entitePolitique === null ? null : $this->entitePolitique->toArray(),
             'grandeRegion'    => $this->grandeRegion === null ? null : $this->grandeRegion->toArray(),
             'sousRegion'      => $this->sousRegion === null ? null : $this->sousRegion->toArray(),

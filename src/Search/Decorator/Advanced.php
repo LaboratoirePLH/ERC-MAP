@@ -185,12 +185,28 @@ class Advanced
                 return $a->getEntite() == "Attestation" && in_array($entity->getId(), $a->getData()['elementIds'] ?? []);
             }
         );
-        $sources = array_unique(array_map(function ($a) {
+        $sourcesIds = array_unique(array_map(function ($a) {
             return $a->getData()['source'];
         }, $attestations));
 
-        $result['sources'] = count($sources);
+        if (count($sourcesIds) > 0) {
+            $sources = array_filter(
+                $allData,
+                function ($a) use ($sourcesIds) {
+                    return $a->getEntite() == "Source" && in_array($a->getId(), $sourcesIds);
+                }
+            );
+        } else {
+            $sources = [];
+        }
+
+        $localisations = array_unique(array_filter(array_map(function ($s) {
+            return array_key_exists('lieuOrigine', $s->getData()) ? $s->getData()['lieuOrigine']['id'] : null;
+        }, $sources)));
+
+        $result['sources'] = count($sourcesIds);
         $result['attestations'] = count($attestations);
+        $result['localisations'] = count($localisations);
 
         // Add link data
         $result['link'] = ['type' => strtolower($entity->getEntite()), 'id' => $entity->getId()];

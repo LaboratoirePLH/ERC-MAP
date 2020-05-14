@@ -68,6 +68,38 @@ class SourceController extends AbstractController
     }
 
     /**
+     * @Route("/source/element/{element_id}/webmapping", name="source_element_webmapping")
+     */
+    public function indexForElementWebmapping($element_id, Request $request, TranslatorInterface $translator)
+    {
+        $element = $this->getDoctrine()
+            ->getRepository(Element::class)
+            ->find($element_id);
+        if (is_null($element)) {
+            $request->getSession()->getFlashBag()->add(
+                'error',
+                $translator->trans('element.messages.missing', ['%id%' => $element_id])
+            );
+            return $this->redirectToRoute('source_list');
+        }
+
+        return $this->render('source/webmapping.html.twig', [
+            'controller_name' => 'SourceController',
+            'element'         => $element_id,
+            'title'           => $translator->trans('source.webmapping_for_element', ['%id%' => $element_id]),
+            'webmapping'      => [
+                'app_url'     => $this->getParameter('geo.app_url_' . $request->getLocale()),
+                'function_id' => $this->getParameter('geo.function_id_' . $request->getLocale())
+            ],
+            'breadcrumbs'     => [
+                ['label' => 'nav.home', 'url' => $this->generateUrl('home')],
+                ['label' => $translator->trans('source.list_for_element', ['%id%' => $element_id]), 'url' => $this->generateUrl('source_element', ['element_id' => $element_id])],
+                ['label' => 'generic.webmapping']
+            ]
+        ]);
+    }
+
+    /**
      * @Route("/source/create", name="source_create")
      */
     public function create(Request $request, TranslatorInterface $translator)

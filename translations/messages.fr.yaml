@@ -76,6 +76,7 @@ generic:
     locked: "Verrouillé"
     link: "Lien"
     view_list: "Voir la liste"
+    webmapping: "Cartographie"
     fields:
         id: "ID"
         table: "Table"
@@ -106,6 +107,7 @@ generic:
         version: "Version"
         datation: "Datation"
         localisation: "Localisation"
+        localisations: "Localisations"
         localisation_reelle: "Réel(e) ?"
         quantite: "Quantité"
         est_datee: "Est Daté(e) ?"
@@ -151,6 +153,7 @@ source:
     name: "Source"
     list: "Liste des Sources"
     list_for_element: "Sources liées à l'Élément #%id%"
+    webmapping_for_element: "Cartographie des Sources liées à l'Élément #%id%"
     view: "Visualiser la Source #%id%"
     create: "Nouvelle Source"
     edit: "Modifier la Source #%id%"

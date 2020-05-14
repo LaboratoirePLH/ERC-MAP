@@ -1,0 +1,48 @@
+{% extends 'list_page.html.twig' %}
+
+{% set title = title|default('generic.webmapping') %}
+{% block title %}
+    {{ title|trans }}
+{% endblock %}
+{% block content %}
+    <div id="webmapping" style="height:800px;"></div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="https://geoapi.business-geografic.com/api/last/geo-api.min.js"></script>
+    {{ parent() }}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            //
+            // Store Element ID in variable
+            const elementId = "{{ element|default(0) }}";
+
+            var geoApp = geo.application("webmapping", "{{ webmapping.app_url }}");
+
+            geoApp.on('initialized', () => {
+                //
+                // Load data
+                $.get({
+                    url: "{{ url('json_source_list') }}",
+                    data: {
+                        filter: "element:" + elementId
+                    }
+                }).then(({data, success}) => {
+                    var fct = geoApp.getFunctionalityByName("MAP - Source - id")[0];
+                    // var fct = geoApp.getFunctionalityById("{{webmapping.function_id}}");
+                    fct.execute({
+                        select: true,
+                        filters: [
+                            {
+                                name: "source - id", // nom du filtre dans le géogénérateur
+                                values: data.map(d => d.id) // liste des identifiants
+                            }
+                        ]
+                    });
+                })
+
+            })
+
+        });
+    </script>
+{% endblock %}

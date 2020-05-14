@@ -582,7 +582,9 @@
                                 case 'languages_mode':
                                 case 'formules_mode':
                                     if (value === "all") {
-                                        $('#elements').find('input[name="' + criteria + '"]').attr('checked', true);
+                                        setTimeout(() => {
+                                            $('#elements').find('input[name="' + criteria + '"]').attr('checked', true);
+                                        }, 10);
                                     }
                                     break;
                                 case 'element_position':

@@ -114,7 +114,7 @@ easy_admin:
                  - { property: 'newPassword', label: 'Nouveau mot de passe', type: 'text' }
                  - 'institution'
                  - { property: 'role', type: 'choice', type_options: { choices: {Administrateur: 'admin', Modérateur: 'moderator', Utilisateur: 'user'}}}
-                 - { property: 'projets', type_options: { required: true, by_reference: false }}
+                 - { property: 'projets', type_options: { required: false, by_reference: false }}
                  - { property: 'actif'}
                  - { property: 'gestionnaireComptes'}
 
@@ -126,7 +126,7 @@ easy_admin:
                  - { property: 'newPassword', label: 'Nouveau mot de passe', type: 'text', type_options: { required: true }}
                  - 'institution'
                  - { property: 'role', type: 'choice', type_options: { choices: {Administrateur: 'admin', Modérateur: 'moderator', Utilisateur: 'user'}}}
-                 - { property: 'projets', type_options: { required: true, by_reference: false }}
+                 - { property: 'projets', type_options: { required: false, by_reference: false }}
                  - { property: 'actif'}
         EntitePolitique:
             class: App\Entity\EntitePolitique
@@ -256,6 +256,6 @@ easy_admin:
                  - { property: 'mail', type: 'email', type_options: { required: true }}
                  - 'institution'
                  - { property: 'role', type: 'choice', type_options: { choices: {Administrateur: 'admin', Modérateur: 'moderator', Utilisateur: 'user'}}}
-                 - { property: 'projets', type_options: { required: true, by_reference: false }}
+                 - { property: 'projets', type_options: { required: false, by_reference: false }}
                  - { property: 'actif'}
                  - { property: 'gestionnaireComptes'}

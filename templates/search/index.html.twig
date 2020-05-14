@@ -548,8 +548,10 @@
 
                     setTimeout(() => {
                         Object.entries(data).forEach(([criteriaName, values]) => {
-                            for (i = 1; i <= values.length; i ++) {
-                                addNewCriteria(criteriaName);
+                            if (criteriaName != 'resultsType') {
+                                for (i = 1; i <= values.length; i ++) {
+                                    addNewCriteria(criteriaName);
+                                }
                             }
                         });
 

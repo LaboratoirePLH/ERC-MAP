@@ -47,7 +47,7 @@ login_page:
         invalid_captcha: "Votre requête a été refusée par la protection anti-robot. Veuillez compléter le CAPTCHA et recommencer"
         account_created: "Votre compte a bien été créé. Vous pouvez dès à présent vous identifier pour accéder à la base de données."
         account_requested: "Votre demande de compte a été enregistrée et les administrateurs ont été informés. Vous recevrez prochainement un e-mail vous informant de l'activation de votre compte"
-        account_not_yet_active: "Votre demande de compte n'a pas encore été approuvée par les administrateurs"
+        account_not_yet_active: "Votre demande de compte n'a pas encore été approuvée par les administrateurs."
 generic:
     actions: "Actions"
     close: "Fermer"

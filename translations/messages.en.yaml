@@ -28,6 +28,7 @@ login_page:
     reset_password: "Reset your password"
     input_username: "Input your username or email address to receive a reset link"
     input_new_password: "Input your new password"
+    inactive_account: "Inactive account"
     form:
         username: "Username"
         username_email: "Username or Email Address"
@@ -46,6 +47,7 @@ login_page:
         invalid_captcha: "Your request was denied by the anti-robot protection. Please complete the CAPTCHA and retry"
         account_created: "Your account has been created. You can now log in to access the database."
         account_requested: "Your account request has been saved and administrators have been notified. You will soon receive an email informing you of you account's activation."
+        account_not_yet_active: "Your account request has not yet been approved by administrators."
 
 generic:
     actions: "Actions"

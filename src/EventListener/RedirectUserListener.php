@@ -53,7 +53,7 @@ class RedirectUserListener
     {
         return !in_array(
             $currentRoute,
-            ['logout', 'inactive_account']
+            ['logout', 'inactive_account', 'language']
         );
     }
 }

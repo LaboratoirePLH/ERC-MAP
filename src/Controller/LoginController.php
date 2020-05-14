@@ -9,11 +9,17 @@ use App\Form\RegisterType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class LoginController extends AbstractController
 {
+    /**
+     * @var UserPasswordEncoderInterface
+     */
+    private $passwordEncoder;
+
     /**
      * @var string
      */
@@ -29,8 +35,9 @@ class LoginController extends AbstractController
      */
     private $openAccess;
 
-    public function __construct(string $fromEmail, string $fromName, bool $openAccess)
+    public function __construct(UserPasswordEncoderInterface $passwordEncoder, string $fromEmail, string $fromName, bool $openAccess)
     {
+        $this->passwordEncoder = $passwordEncoder;
         $this->fromEmail = $fromEmail;
         $this->fromName = $fromName;
         $this->openAccess = $openAccess;
@@ -85,7 +92,9 @@ class LoginController extends AbstractController
         $form = $this->get('form.factory')->create(RegisterType::class, $user);
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+            $user->setPassword($this->passwordEncoder->encodePassword($user, $user->getPassword()));
             $em->persist($user);
+
             if ($this->openAccess) {
                 $user->setActif(true);
 

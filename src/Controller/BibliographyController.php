@@ -206,7 +206,7 @@ class BibliographyController extends AbstractController
     /**
      * @Route("/bibliography/{id}/delete", name="bibliography_delete")
      */
-    public function delete($id, Request $request)
+    public function delete($id, Request $request, TranslatorInterface $translator)
     {
         $this->denyAccessUnlessGranted("ROLE_CONTRIBUTOR");
 
@@ -229,7 +229,7 @@ class BibliographyController extends AbstractController
                             'error',
                             $translator->trans('generic.messages.error_locked', [
                                 '%type%' => $translator->trans('biblio.list'),
-                                '%id%' => $id,
+                                '%id%'   => $id,
                                 '%user%' => $verrou->getCreateur()->getPrenomNom(),
                                 '%time%' => $verrou->getDateFin()->format(
                                     $translator->trans('locale_datetime')

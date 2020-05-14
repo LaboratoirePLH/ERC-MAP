@@ -315,7 +315,7 @@ class ElementController extends AbstractController
     /**
      * @Route("/element/{id}/delete", name="element_delete")
      */
-    public function delete($id, Request $request)
+    public function delete($id, Request $request, TranslatorInterface $translator)
     {
         $this->denyAccessUnlessGranted("ROLE_CONTRIBUTOR");
 
@@ -338,7 +338,7 @@ class ElementController extends AbstractController
                             'error',
                             $translator->trans('generic.messages.error_locked', [
                                 '%type%' => $translator->trans('element.name'),
-                                '%id%' => $id,
+                                '%id%'   => $id,
                                 '%user%' => $verrou->getCreateur()->getPrenomNom(),
                                 '%time%' => $verrou->getDateFin()->format(
                                     $translator->trans('locale_datetime')

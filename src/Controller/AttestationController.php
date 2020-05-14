@@ -180,7 +180,7 @@ class AttestationController extends AbstractController
                 'error',
                 $translator->trans('generic.messages.error_locked', [
                     '%type%' => $translator->trans('source.name'),
-                    '%id%' => $id,
+                    '%id%'   => $source_id,
                     '%user%' => $source->getVerrou()->getCreateur()->getPrenomNom(),
                     '%time%' => $source->getVerrou()->getDateFin()->format(
                         $translator->trans('locale_datetime')

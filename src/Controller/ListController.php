@@ -249,7 +249,20 @@ class ListController extends AbstractController
             ->getRepository(Biblio::class)
             ->findAll();
 
-        $data = array_map(function ($bibliography) use ($locale, $user, $translator) {
+
+        $valid_ids = $this->getDoctrine()->getRepository(IndexRecherche::class)->getEntityIds('Source', true);
+
+
+        $data = array_map(function ($bibliography) use ($user, $translator, $valid_ids) {
+            $sourceBiblios = $bibliography->getSourceBiblios();
+
+            // If user is not a contributor, filter to keep only corpus ready sources
+            if (!$this->isGranted('ROLE_CONTRIBUTOR')) {
+                $sourceBiblios = $sourceBiblios->filter(function ($sb) use ($valid_ids) {
+                    return in_array($sb->getSource()->getId(), $valid_ids);
+                });
+            }
+
             return [
                 'id'            => $bibliography->getId(),
                 'type'          => $translator->trans($bibliography->getEstCorpus() ? 'biblio.fields.corpus' : 'biblio.fields.bibliographique'),
@@ -258,7 +271,7 @@ class ListController extends AbstractController
                 'titre_abrege'  => $bibliography->getTitreAbrege(),
                 'titre_complet' => $bibliography->getTitreComplet(),
                 'stats'         => [
-                    'sources'  => count($bibliography->getSourceBiblios()),
+                    'sources'  => count($sourceBiblios),
                     'elements' => count($bibliography->getElementBiblios()),
                 ],
                 'verrou' => ($bibliography->getVerrou() !== null && !$bibliography->getVerrou()->isWritable($user)) ? $bibliography->getVerrou()->toArray($translator->trans('locale_datetime')) : false

@@ -288,11 +288,9 @@ class Criteria
                         break;
                     case 'select':
                         $criteriaValues = array_map(function ($v) use ($key, $locale) {
-                            $values = $this->getDisplay($key, $v['values'], $locale);
-                            if ("all" === ($v['mode'] ?? null)) {
-                                array_unshift($values, 'all');
-                            }
-                            return $values;
+                            $v['values'] = $this->getDisplay($key, $v['values'], $locale);
+                            $v['mode'] = $v['mode'] ?? 'one';
+                            return $v;
                         }, $value);
                         break;
                     default:

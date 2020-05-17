@@ -41,34 +41,22 @@
                                     {{ key }}
                                 </li>
                                 {% for subvalue in value %}
-
                                     {% if subvalue is iterable and subvalue.values is defined %}
-
-                                        {% for subsubvalue in subvalue %}
-                                            {% if loop.first %}
-                                                <li class="list-group-item">
-                                                    <strong>
-                                                        <em>
-                                                            {{ loop.parent.loop.index }}
-                                                            {% if subsubvalue == "all" %}
-                                                                {{ 'search.criteria_labels.all'|trans }}
-                                                            {% endif %}
-                                                        </em>
-                                                    </strong>
-                                                </li>
-                                                {% if subsubvalue != 'all'  %}
-                                                    <li class="list-group-item">
-                                                        &rarr;
-                                                        {{ subsubvalue|raw }}
-                                                    </li>
-                                                {% endif %}
-                                            {% else %}
-                                                <li class="list-group-item">
-                                                    &rarr;
-                                                    {{ subsubvalue|raw }}
-                                                </li>
-                                            {% endif %}
-
+                                        <li class="list-group-item">
+                                            <strong>
+                                                <em>
+                                                    {{ loop.index }}
+                                                    {% if subvalue.mode == "all" %}
+                                                        {{ 'search.criteria_labels.all'|trans }}
+                                                    {% endif %}
+                                                </em>
+                                            </strong>
+                                        </li>
+                                        {% for subsubvalue in subvalue.values %}
+                                            <li class="list-group-item">
+                                                &rarr;
+                                                {{ subsubvalue|raw }}
+                                            </li>
                                         {% endfor %}
                                     {% elseif subvalue is iterable and subvalue.value is defined %}
                                         <li class="list-group-item">

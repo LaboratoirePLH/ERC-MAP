@@ -77,7 +77,7 @@
                 <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
                 <div class="form-group row">
                     <div class="col-12 text-center">
-                        <button type="submit" id="login" name="login" class="btn-primary btn">
+                        <button type="submit" id="login" name="login" class="btn-success btn">
                             {{ 'login_page.form.login'|trans }}
                         </button>
                     </div>
@@ -86,7 +86,7 @@
 
                 <div class="form-group row">
                     <div class="col-12 text-center">
-                        <a href="{{ url('register') }}" class="btn btn-success">
+                        <a href="{{ url('register') }}" class="btn btn-primary">
                             {{ (open_access ? 'login_page.register' : 'login_page.request_account')|trans }}
                         </a>
                         <a href="{{ url('forgotten_password') }}" class="btn btn-sm btn-secondary">

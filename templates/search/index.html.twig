@@ -507,7 +507,7 @@
                         Object.entries(data).forEach(([criteriaName, values]) => {
                             var criteria = searchCriteria(criteriaName);
 
-                            values.forEach((value, index) => {
+                            Object.values(values).forEach((value, index) => {
                                 switch (criteria.type) {
                                     case 'select':
                                         $('#advanced').find('select[name="' + criteriaName + '[' + index + '][values][]"]').val(value.values).trigger('chosen:updated');
@@ -516,7 +516,7 @@
                                         }
                                         break;
                                     case 'text':
-                                        $('#advanced').find('input[name="' + criteriaName + '[' + index + '][value]"]').eq(index).val(value.value).trigger('input');
+                                        $('#advanced').find('input[name="' + criteriaName + '[' + index + '][value]"]').val(value.value).trigger('input');
                                         if (value.hasOwnProperty('mode') && value.mode === "strict") {
                                             $('#advanced').find('input[name="' + criteriaName + '[' + index + '][mode]"]').attr('checked', true);
                                         }
@@ -549,7 +549,7 @@
                     setTimeout(() => {
                         Object.entries(data).forEach(([criteriaName, values]) => {
                             if (criteriaName != 'resultsType') {
-                                for (i = 1; i <= values.length; i ++) {
+                                for (i = 1; i <= Object.values(values).length; i ++) {
                                     addNewCriteria(criteriaName);
                                 }
                             }
@@ -751,7 +751,7 @@
                         loadCriteriaData(criteria.key, template.find('select'), null, criteria.semitic !== true);
                         break;
                     case 'text':
-                        var index = $("#advanced").find('input[name^="' + criteria.key + '"]').length;
+                        var index = $("#advanced").find('input[type=text][name^="' + criteria.key + '"]').length;
                         var inputId = 'input' + criteria.key.charAt(0).toUpperCase() + criteria.key.slice(1);
                         template.find('label').first().prop('for', inputId + index).text(criteria.label);
                         template.find('input').prop('id', inputId + index).prop('name', criteria.key + '[' + index + '][value]');

@@ -10,6 +10,11 @@ abstract class AbstractFilterSet
     public function __construct(array $data, bool $restrictToCorpusReady = false)
     {
         $this->data       = $data;
+        if ($restrictToCorpusReady === true) {
+            $this->data = array_filter($this->data, function ($d) {
+                return $d->getCorpusReady();
+            });
+        }
         $this->sortedData = [
             'sources'      => [],
             'attestations' => [],
@@ -19,9 +24,6 @@ abstract class AbstractFilterSet
         $attestations = [];
         $elements = [];
         foreach ($data as $e) {
-            if ($restrictToCorpusReady === true && $e->getCorpusReady() !== true) {
-                continue;
-            }
             $targetArray = strtolower($e->getEntite()) . 's';
             $this->sortedData[$targetArray][$e->getId()] = $e;
         }

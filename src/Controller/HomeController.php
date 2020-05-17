@@ -36,16 +36,18 @@ class HomeController extends AbstractController
     /**
      * @Route("/", name="home")
      */
-    public function index()
+    public function index(Request $request)
     {
         $user = $this->get('security.token_storage')->getToken()->getUser();
+        $locale = $request->getLocale();
 
         $counters = $this->getDoctrine()->getRepository(IndexRecherche::class)->getHomeCounters(!$this->isGranted('ROLE_CONTRIBUTOR'));
 
         return $this->render('home/index.html.twig', [
             'controller_name' => 'HomeController',
-            'user_name' => $user->getPrenomNom(),
-            'counters' => $counters
+            'user_name'       => $user->getPrenomNom(),
+            'webmapping_url'  => $this->getParameter('geo.app_url_' . $locale),
+            'counters'        => $counters
         ]);
     }
 

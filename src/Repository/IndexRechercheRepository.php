@@ -274,7 +274,7 @@ class IndexRechercheRepository extends ServiceEntityRepository
 
         $response = [];
         foreach ($results as $entity) {
-            $prepared = $this->_prepareResult($entity, $locale, $search);
+            $prepared = $this->_prepareResult($entity, $locale, $normalized_search);
             if ($prepared !== false) {
                 $response[] = $prepared;
             }
@@ -321,8 +321,7 @@ class IndexRechercheRepository extends ServiceEntityRepository
         $entityData = $entity->getData();
 
         if ($search !== null) {
-            $normalized_search = strtolower(\App\Utils\StringHelper::removeAccents($search));
-            $fieldName = $this->_cleanFieldName($this->_array_search($entityData, $normalized_search));
+            $fieldName = $this->_cleanFieldName($this->_array_search($entityData, $search));
             // If field name is empty, it means it is not a real match (for exemple a partial match on a numeric value)
             if (empty($fieldName)) {
                 return false;
@@ -426,7 +425,7 @@ class IndexRechercheRepository extends ServiceEntityRepository
     private function _array_search(array $data, string $search)
     {
         foreach ($data as $key => $value) {
-            if ((is_string($value) && \stripos(strtolower(\App\Utils\StringHelper::removeAccents($value)), strval($search)) !== false)
+            if ((is_string($value) && (\stripos($value, strval($search)) !== false || \stripos(\App\Utils\StringHelper::removeAccents($value), strval($search)) !== false))
                 || (is_numeric($value) && is_numeric($search) && $value == $search)
             ) {
                 return [$key];

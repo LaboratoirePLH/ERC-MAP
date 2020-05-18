@@ -44,6 +44,11 @@ class EntitePolitique extends AbstractEntity
         return \sprintf("%s (IACP: %s)", $this->getNomEn(), $this->getNumeroIacp() ?? "?");
     }
 
+    public function getAffichage($lang)
+    {
+        return $lang == 'fr' ? $this->getAffichageFr() : $this->getAffichageEn();
+    }
+
     public function toArray(): array
     {
         return array_merge(['id' => $this->id], $this->getTranslatedName(), ['numeroIacp' => $this->numeroIacp]);

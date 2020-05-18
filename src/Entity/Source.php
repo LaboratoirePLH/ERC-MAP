@@ -674,6 +674,17 @@ class Source extends AbstractEntity
         $this->setFiabiliteLocalisation($fiabLocalisation);
     }
 
+    /**
+     * @ORM\PrePersist
+     * @ORM\PreUpdate
+     */
+    public function _updateInSituLocalisation()
+    {
+        if ($this->getInSitu() === true) {
+            $this->setLieuOrigine($this->getLieuDecouverte());
+        }
+    }
+
     public function getVerrou(): ?VerrouEntite
     {
         return $this->verrou;

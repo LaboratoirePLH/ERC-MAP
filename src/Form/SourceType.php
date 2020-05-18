@@ -7,6 +7,7 @@ use App\Entity\CategorieMateriau;
 use App\Entity\CategorieSource;
 use App\Entity\CategorieSupport;
 use App\Entity\Langue;
+use App\Entity\Localisation;
 use App\Entity\Materiau;
 use App\Entity\Projet;
 use App\Entity\Source;
@@ -55,13 +56,6 @@ class SourceType extends AbstractType
                 'label'      => 'source.fields.url_image',
                 'label_attr' => [
                     'class' => 'dependent_field_iconography'
-                ],
-                'required' => false
-            ])
-            ->add('inSitu', CheckboxType::class, [
-                'label'      => 'source.fields.in_situ',
-                'label_attr' => [
-                    'class' => 'dependent_field_insitu_main'
                 ],
                 'required' => false
             ])
@@ -249,7 +243,7 @@ class SourceType extends AbstractType
                 'selection_choice_label'  => 'affichage' . ucfirst($locale),
                 'allow_none'              => true,
                 'default_decision'        => 'select',
-                'formAction'                  => $options['formAction'],
+                'formAction'              => $options['formAction'],
                 'isClone'                 => $options['isClone'],
                 'selection_query_builder' => function (EntityRepository $er) use ($locale) {
                     return $er->createQueryBuilder('e')
@@ -257,22 +251,56 @@ class SourceType extends AbstractType
                 }
             ])
             ->add('datation', DatationType::class)
-            ->add('lieuDecouverte', LocalisationType::class, [
-                'label'           => 'source.fields.lieu_decouverte',
-                'required'        => false,
-                'attr'            => ['class' => 'localisation_form'],
-                'locale'          => $options['locale'],
-                'translations'    => $options['translations'],
+            ->add('lieuDecouverte', SelectOrCreateType::class, [
+                'label'                   => 'source.fields.lieu_decouverte',
+                'required'                => false,
+                'locale'                  => $options['locale'],
+                'translations'            => $options['translations'],
+                'field_name'              => 'lieuDecouverte',
+                'object_class'            => Localisation::class,
+                'creation_form_class'     => LocalisationType::class,
+                'creation_form_css_class' => 'localisation_form',
+                'selection_choice_label'  => 'affichage' . ucfirst($locale),
+                'allow_none'              => false,
+                'default_decision'        => 'select',
+                'formAction'              => $options['formAction'],
+                'isClone'                 => $options['isClone'],
+                'selection_query_builder' => function (EntityRepository $er) use ($locale) {
+                    return $er->createQueryBuilder('e')
+                        ->leftJoin('e.grandeRegion', 'gr')
+                        ->orderBy('unaccent(gr.nom' . ucfirst($locale) . ')', 'ASC');
+                }
             ])
-            ->add('lieuOrigine', LocalisationType::class, [
-                'label'      => 'source.fields.lieu_origine',
-                'required'     => false,
-                'attr'       => ['class' => 'localisation_form'],
+            ->add('lieuOrigine', SelectOrCreateType::class, [
+                'label'      => 'source.fields.lieu_decouverte',
                 'label_attr' => [
                     'class' => 'dependent_field_insitu dependent_field_inverse'
                 ],
-                'locale'       => $options['locale'],
-                'translations' => $options['translations'],
+                'required'                => false,
+                'locale'                  => $options['locale'],
+                'translations'            => $options['translations'],
+                'field_name'              => 'lieuDecouverte',
+                'object_class'            => Localisation::class,
+                'creation_form_class'     => LocalisationType::class,
+                'creation_form_css_class' => 'localisation_form',
+                'selection_choice_label'  => 'affichage' . ucfirst($locale),
+                'allow_none'              => true,
+                'none_label'              => 'generic.fields.indetermine',
+                'default_decision'        => 'select',
+                'formAction'              => $options['formAction'],
+                'isClone'                 => $options['isClone'],
+                'selection_query_builder' => function (EntityRepository $er) use ($locale) {
+                    return $er->createQueryBuilder('e')
+                        ->leftJoin('e.grandeRegion', 'gr')
+                        ->orderBy('unaccent(gr.nom' . ucfirst($locale) . ')', 'ASC');
+                }
+            ])
+            ->add('inSitu', CheckboxType::class, [
+                'label'      => 'source.fields.in_situ',
+                'label_attr' => [
+                    'class' => 'dependent_field_insitu_main'
+                ],
+                'required' => false
             ])
             ->add('sourceBiblios', CollectionType::class, [
                 'label'         => false,

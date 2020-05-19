@@ -1,3 +1,85 @@
+--Edges
+CREATE
+OR REPLACE VIEW public.edges AS
+SELECT
+    deux.poids AS weight,
+    row_number() OVER () AS id,
+    deux.idele1 AS source,
+    deux.idele2 AS target,
+    deux.started AS START,
+    deux.ended AS "end",
+    deux.gr AS gde_reg,
+    deux.sr AS ss_reg
+FROM
+    (
+        SELECT
+            r.id_element AS idele1,
+            s.id_element AS idele2,
+            count(*) AS poids,
+            d.post_quem AS started,
+            d.ante_quem AS ended,
+            grande_region.nom_fr AS gr,
+            sous_region.nom_fr AS sr
+        FROM
+            contient_element r,
+            contient_element s
+            LEFT JOIN attestation ON attestation.id = s.id_attestation
+            LEFT JOIN source ON source.id = attestation.id_source
+            LEFT JOIN localisation ON localisation.id = source.localisation_decouverte_id
+            LEFT JOIN grande_region ON grande_region.id = localisation.grande_region_id
+            LEFT JOIN sous_region ON sous_region.id = localisation.sous_region_id
+            LEFT JOIN datation d ON d.id = source.datation_id
+        WHERE
+            r.id_element < s.id_element
+            AND r.id_attestation = s.id_attestation
+        GROUP BY
+            r.id_element,
+            s.id_element,
+            d.post_quem,
+            d.ante_quem,
+            grande_region.id,
+            sous_region.id
+        ORDER BY
+            r.id_element,
+            s.id_element
+    ) deux
+WHERE
+    deux.started IS NOT NULL
+    AND deux.ended IS NOT NULL;
+
+-- ALTER TABLE public.edges OWNER TO polytheisms;
+-- Nodes
+CREATE
+OR REPLACE VIEW public.nodes AS
+SELECT
+    contient_element.id_element AS nodes,
+    contient_element.id_element AS id,
+    element.etat_absolu AS label,
+    count(*) AS weight
+FROM
+    contient_element,
+    element
+WHERE
+    contient_element.id_element = element.id
+GROUP BY
+    contient_element.id_element,
+    element.etat_absolu
+ORDER BY
+    contient_element.id_element;
+
+-- ALTER TABLE public.nodes OWNER TO polytheisms;
+CREATE
+OR REPLACE VIEW public.vue_agent_activite AS
+SELECT
+    agent_activite.id_agent AS "Id Agent",
+    activite_agent.nom_fr AS "Activité",
+    activite_agent.nom_en AS "Activity"
+FROM
+    agent_activite
+    LEFT JOIN activite_agent ON activite_agent.id = agent_activite.id_activite;
+
+-- ALTER TABLE public.vue_agent_activite OWNER TO polytheisms;
+-- Agent En
 CREATE
 OR REPLACE VIEW public.vue_agent_en AS
 SELECT
@@ -38,6 +120,8 @@ GROUP BY
     agent.designation,
     agent.commentaire_en;
 
+-- ALTER TABLE public.vue_agent_en OWNER TO polytheisms;
+-- Agent FR
 CREATE
 OR REPLACE VIEW public.vue_agent_fr AS
 SELECT
@@ -47,11 +131,17 @@ SELECT
     agent.localisation_id AS "Id Localisation",
     agent.designation AS "Désignation",
     agent.commentaire_fr AS "Commentaire",
-    string_agg(DISTINCT agentivite.nom_fr, ', ') AS "Agentivité",
-    string_agg(DISTINCT nature.nom_fr, ', ') AS "Nature",
-    string_agg(DISTINCT genre.nom_fr, ', ') AS "Genre",
-    string_agg(DISTINCT statut_affiche.nom_fr, ', ') AS "Statut affiché",
-    string_agg(DISTINCT activite_agent.nom_fr, ', ') AS "Activité"
+    string_agg(DISTINCT agentivite.nom_fr :: text, ', ' :: text) AS "Agentivité",
+    string_agg(DISTINCT nature.nom_fr :: text, ', ' :: text) AS "Nature",
+    string_agg(DISTINCT genre.nom_fr :: text, ', ' :: text) AS "Genre",
+    string_agg(
+        DISTINCT statut_affiche.nom_fr :: text,
+        ', ' :: text
+    ) AS "Statut affiché",
+    string_agg(
+        DISTINCT activite_agent.nom_fr :: text,
+        ', ' :: text
+    ) AS "Activité"
 FROM
     agent
     LEFT JOIN agent_agentivite ON agent_agentivite.id_agent = agent.id
@@ -72,6 +162,44 @@ GROUP BY
     agent.designation,
     agent.commentaire_fr;
 
+-- ALTER TABLE public.vue_agent_fr OWNER TO polytheisms;
+-- Agent Genre
+CREATE
+OR REPLACE VIEW public.vue_agent_genre AS
+SELECT
+    agent_genre.id_agent AS "Id Agent",
+    genre.nom_fr AS genre_fr,
+    genre.nom_en AS genre_en
+FROM
+    agent_genre
+    LEFT JOIN genre ON genre.id = agent_genre.id_genre;
+
+-- ALTER TABLE public.vue_agent_genre OWNER TO polytheisms;
+-- Agent Nature
+CREATE
+OR REPLACE VIEW public.vue_agent_nature AS
+SELECT
+    agent_nature.id_agent AS "Id Agent",
+    nature.nom_fr AS "Nature_fr",
+    nature.nom_en AS "Naure_en"
+FROM
+    agent_nature
+    LEFT JOIN nature ON nature.id = agent_nature.id_nature;
+
+-- ALTER TABLE public.vue_agent_nature OWNER TO polytheisms;
+-- Agent Statut
+CREATE
+OR REPLACE VIEW public.vue_agent_statut AS
+SELECT
+    agent_statut.id_agent AS "Id Agent",
+    statut_affiche.nom_fr AS statut_fr,
+    statut_affiche.nom_en AS statut_en
+FROM
+    agent_statut
+    LEFT JOIN statut_affiche ON statut_affiche.id = agent_statut.id_statut;
+
+-- ALTER TABLE public.vue_agent_statut OWNER TO polytheisms;
+-- Attestation EN
 CREATE
 OR REPLACE VIEW public.vue_attestation_en AS
 SELECT
@@ -83,7 +211,7 @@ SELECT
     datation.ante_quem AS "Ante Quem",
     datation.commentaire_en AS "Datation commentary",
     attestation.extrait_avec_restitution AS "With rendition",
-    attestation.translitteration "Transliteration",
+    attestation.translitteration AS "Transliteration",
     attestation.est_localisee AS "Located",
     (
         SELECT
@@ -117,8 +245,7 @@ SELECT
     attestation.fiabilite_attestation AS "Reliability of the reading",
     attestation.prose AS "Prose",
     attestation.poesie AS "Poetry",
-    attestation.est_datee AS "Dated",
-    formule.puissances_divines AS "Divine powers"
+    attestation.est_datee AS "Dated"
 FROM
     attestation
     LEFT JOIN etat_fiche ON etat_fiche.id = attestation.id_etat_fiche
@@ -134,13 +261,14 @@ GROUP BY
     attestation.localisation_id,
     datation.post_quem,
     datation.ante_quem,
-    datation.commentaire_en,
-    formule.puissances_divines;
+    datation.commentaire_en;
 
+-- ALTER TABLE public.vue_attestation_en OWNER TO polytheisms;
+-- Attestation FR
 CREATE
 OR REPLACE VIEW public.vue_attestation_fr AS
 SELECT
-    attestation.id AS "Id de l'attestation",
+    DISTINCT attestation.id AS "Id de l'attestation",
     attestation.id_source AS "Id de la source",
     etat_fiche.nom_fr AS "Validation de la fiche",
     attestation.localisation_id,
@@ -149,10 +277,10 @@ SELECT
     datation.commentaire_fr AS "Commentaire Datation",
     attestation.extrait_avec_restitution,
     attestation.translitteration,
-    est_localisee AS "Est localisée",
+    attestation.est_localisee AS "Est localisée",
     (
         SELECT
-            count(*)
+            count(*) AS count
         FROM
             contient_element
         WHERE
@@ -160,7 +288,7 @@ SELECT
     ) AS "Nombre élément",
     (
         SELECT
-            count(*)
+            count(*) AS count
         FROM
             agent
         WHERE
@@ -170,19 +298,21 @@ SELECT
         'https://base-map-polytheisms.huma-num.fr/attestation/',
         attestation.id
     ) AS "Lien_BD",
-    String_AGG(DISTINCT traduction_attestation.nom_fr, ' / ') AS "Traduction(s) de l'attestation",
-    string_agg(DISTINCT formule.formule, '<br>') AS "Formule(s)",
-    String_AGG(DISTINCT pratique.nom_fr, ', ') AS "Pratique(s)",
-    Attestation.commentaire_fr AS "Commentaire",
-    Attestation.date_modification AS "Dernière modification",
-    Attestation.passage AS "Passage",
-    Attestation.fiabilite_attestation AS "Qualité de lecture",
-    Attestation.prose AS "Prose",
-    Attestation.poesie AS "Poésie",
-    Attestation.est_datee AS "Est datée",
-    formule.puissances_divines AS "Puissances divines"
+    string_agg(
+        DISTINCT traduction_attestation.nom_fr :: text,
+        ' / ' :: text
+    ) AS "Traduction(s) de l'attestation",
+    string_agg(DISTINCT formule.formule, '<br>' :: text) AS "Formule(s)",
+    string_agg(DISTINCT pratique.nom_fr :: text, ', ' :: text) AS "Pratique(s)",
+    attestation.commentaire_fr AS "Commentaire",
+    attestation.date_modification AS "Dernière modification",
+    attestation.passage AS "Passage",
+    attestation.fiabilite_attestation AS "Qualité de lecture",
+    attestation.prose AS "Prose",
+    attestation.poesie AS "Poésie",
+    attestation.est_datee AS "Est datée"
 FROM
-    Attestation
+    attestation
     LEFT JOIN etat_fiche ON etat_fiche.id = attestation.id_etat_fiche
     LEFT JOIN datation ON datation.id = attestation.datation_id
     LEFT JOIN traduction_attestation ON traduction_attestation.id_attestation = attestation.id
@@ -196,13 +326,52 @@ GROUP BY
     attestation.localisation_id,
     datation.post_quem,
     datation.ante_quem,
-    datation.commentaire_fr,
-    formule.puissances_divines;
+    datation.commentaire_fr;
 
+-- ALTER TABLE public.vue_attestation_fr OWNER TO polytheisms;
+-- Contient élément EN
 CREATE
-OR REPLACE VIEW vue_contient_element_fr AS
+OR REPLACE VIEW public.vue_contient_element_en AS
 SELECT
-    row_number() over () AS "Id contient élément",
+    row_number() OVER () AS "Id Element in testimony",
+    contient_element.id_attestation AS "Id testimony",
+    contient_element.id_element AS "Id element",
+    contient_element.position_element AS "Position of the element",
+    element.etat_absolu AS "Absolute form",
+    element.beta_code AS "Beta Code",
+    contient_element.suffixe AS "Suffixe",
+    contient_element.etat_morphologique AS "Morphological form",
+    contient_element.en_contexte AS "Context element",
+    genre_element.nom_en AS "Gender",
+    nombre_element.nom_en AS "Number",
+    categorie_element.nom_en AS "Contextual category",
+    concat(
+        'https://base-map-polytheisms.huma-num.fr/attestation/',
+        contient_element.id_attestation
+    ) AS "BD Link testimony",
+    concat(
+        'https://base-map-polytheisms.huma-num.fr/element/',
+        contient_element.id_element
+    ) AS "BD Link element",
+    attestation.extrait_avec_restitution AS "Testimony with rendition",
+    attestation.translitteration AS "Transliteration",
+    attestation.passage AS "Reference to the source"
+FROM
+    contient_element
+    LEFT JOIN attestation ON attestation.id = contient_element.id_attestation
+    LEFT JOIN element ON element.id = contient_element.id_element
+    LEFT JOIN genre_element ON genre_element.id = contient_element.id_genre_element
+    LEFT JOIN nombre_element ON nombre_element.id = contient_element.id_nombre_element
+    LEFT JOIN categorie_element ON categorie_element.id = contient_element.id_categorie_element
+ORDER BY
+    (row_number() OVER ());
+
+-- ALTER TABLE public.vue_contient_element_en OWNER TO polytheisms;
+-- Contient élément FR
+CREATE
+OR REPLACE VIEW public.vue_contient_element_fr AS
+SELECT
+    row_number() OVER () AS "Id contient élément",
     contient_element.id_attestation AS "Id attestation",
     contient_element.id_element AS "Id élément",
     contient_element.position_element AS "Position élément",
@@ -233,94 +402,12 @@ FROM
     LEFT JOIN nombre_element ON nombre_element.id = contient_element.id_nombre_element
     LEFT JOIN categorie_element ON categorie_element.id = contient_element.id_categorie_element
 ORDER BY
-    "Id contient élément";
-
-CREATE
-OR REPLACE VIEW public.vue_contient_element_en AS
-SELECT
-    row_number() OVER () AS "Id Element in testimony",
-    contient_element.id_attestation AS "Id testimony",
-    contient_element.id_element AS "Id element",
-    contient_element.position_element AS "Position of the element",
-    element.etat_absolu AS "Absolute form",
-    element.beta_code AS "Beta Code",
-    contient_element.suffixe AS "Suffixe",
-    contient_element.etat_morphologique AS "Morphological form",
-    contient_element.en_contexte AS "Context element",
-    genre_element.nom_fr AS "Gender",
-    nombre_element.nom_fr AS "Number",
-    categorie_element.nom_fr AS "Contextual category",
-    concat(
-        'https://base-map-polytheisms.huma-num.fr/attestation/',
-        contient_element.id_attestation
-    ) AS "BD Link testimony",
-    concat(
-        'https://base-map-polytheisms.huma-num.fr/element/',
-        contient_element.id_element
-    ) AS "BD Link element",
-    attestation.extrait_avec_restitution AS "Testimony with rendition",
-    attestation.translitteration AS "Transliteration",
-    attestation.passage AS "Reference to the source"
-FROM
-    contient_element
-    LEFT JOIN attestation ON attestation.id = contient_element.id_attestation
-    LEFT JOIN element ON element.id = contient_element.id_element
-    LEFT JOIN genre_element ON genre_element.id = contient_element.id_genre_element
-    LEFT JOIN nombre_element ON nombre_element.id = contient_element.id_nombre_element
-    LEFT JOIN categorie_element ON categorie_element.id = contient_element.id_categorie_element
-ORDER BY
     (row_number() OVER ());
 
+-- ALTER TABLE public.vue_contient_element_fr OWNER TO polytheisms;
+-- Elément catégorie
 CREATE
-OR REPLACE VIEW edges AS
-SELECT
-    poids "weight",
-    row_number() OVER () AS "id",
-    idele1 "source",
-    idele2 "target",
-    started "start",
-    ended "end",
-    gr "gde_reg",
-    sr "ss_reg" --, concat('<[',started,', ',ended,']>') as"Interval"
-FROM
-    (
-        SELECT
-            r.id_element idele1,
-            s.id_element idele2,
-            count(*) poids,
-            d.post_quem started,
-            d.ante_quem ended,
-            grande_region.nom_fr gr,
-            sous_region.nom_fr sr
-        FROM
-            contient_element r,
-            contient_element s
-            LEFT JOIN attestation ON attestation.id = s.id_attestation
-            LEFT JOIN source ON source.id = attestation.id_source
-            LEFT JOIN localisation ON localisation.id = source.localisation_decouverte_id
-            LEFT JOIN grande_region ON grande_region.id = localisation.grande_region_id
-            LEFT JOIN sous_region ON sous_region.id = localisation.sous_region_id
-            LEFT JOIN datation d ON d.id = source.datation_id
-        WHERE
-            r.id_element < s.id_element
-            AND r.id_attestation = s.id_attestation
-        GROUP BY
-            r.id_element,
-            s.id_element,
-            d.post_quem,
-            d.ante_quem,
-            grande_region.id,
-            sous_region.id
-        ORDER BY
-            1,
-            2
-    ) AS deux
-WHERE
-    started IS NOT NULL
-    AND ended IS NOT NULL;
-
-CREATE
-OR REPLACE VIEW vue_element_categorie AS
+OR REPLACE VIEW public.vue_element_categorie AS
 SELECT
     element_categorie.id_element,
     categorie_element.nom_fr AS "Catégorie",
@@ -332,6 +419,8 @@ FROM
     LEFT JOIN categorie_element ON categorie_element.id = element_categorie.id_categorie_element
     LEFT JOIN element e ON e.id = element_categorie.id_element;
 
+-- ALTER TABLE public.vue_element_categorie OWNER TO polytheisms;
+-- Elément EN
 CREATE
 OR REPLACE VIEW public.vue_element_en AS
 SELECT
@@ -340,7 +429,7 @@ SELECT
     element.etat_absolu AS "Absolute form",
     element.beta_code AS "Beta Code",
     element.est_localisee AS "Located",
-    element.commentaire_fr AS "Commentary",
+    element.commentaire_en AS "Commentary",
     nature_element.nom_en AS "Nature",
     string_agg(
         DISTINCT traduction_element.nom_en :: text,
@@ -383,8 +472,10 @@ GROUP BY
 ORDER BY
     element.id;
 
+-- ALTER TABLE public.vue_element_en OWNER TO polytheisms;
+-- Elément FR
 CREATE
-OR REPLACE VIEW vue_element_fr AS
+OR REPLACE VIEW public.vue_element_fr AS
 SELECT
     element.id AS "Id élément",
     element.localisation_id AS "Id Localisation",
@@ -393,9 +484,15 @@ SELECT
     element.est_localisee AS "Est localisé",
     element.commentaire_fr AS "Commentaire",
     nature_element.nom_fr AS "Nature",
-    STRING_AGG(DISTINCT traduction_element.nom_fr, ', ') AS "Traduction",
-    STRING_AGG(DISTINCT categorie_element.nom_fr, ', ') AS "Catégorie(s)",
-    STRING_AGG(DISTINCT biblio.titre_complet, '/ ') AS "Bibliographie",
+    string_agg(
+        DISTINCT traduction_element.nom_fr :: text,
+        ', ' :: text
+    ) AS "Traduction",
+    string_agg(
+        DISTINCT categorie_element.nom_fr :: text,
+        ', ' :: text
+    ) AS "Catégorie(s)",
+    string_agg(DISTINCT biblio.titre_complet, '/ ' :: text) AS "Bibliographie",
     element.date_modification AS "Dernière modification",
     (
         SELECT
@@ -428,6 +525,8 @@ GROUP BY
 ORDER BY
     element.id;
 
+-- ALTER TABLE public.vue_element_fr OWNER TO polytheisms;
+-- Localisation EN
 CREATE
 OR REPLACE VIEW public.vue_loc_en AS
 SELECT
@@ -469,6 +568,8 @@ GROUP BY
     entite_politique.nom_en,
     entite_politique.numero_iacp;
 
+-- ALTER TABLE public.vue_loc_en OWNER TO polytheisms;
+-- Localisation FR
 CREATE
 OR REPLACE VIEW public.vue_loc_fr AS
 SELECT
@@ -481,13 +582,16 @@ SELECT
     entite_politique.nom_fr AS "Entité politique",
     entite_politique.numero_iacp AS "Numéro IACP",
     localisation.nom_ville AS "Nom de la ville",
-    Localisation.latitude,
-    Localisation.longitude,
+    localisation.latitude,
+    localisation.longitude,
     localisation.nom_site AS "Nom du site",
     localisation.commentaire_fr AS "Commentaire",
     localisation.geom,
-    String_AGG (DISTINCT q_fonction.nom_fr, ', ') AS "Qualification fonctionnelle",
-    String_AGG (DISTINCT q_topographie.nom_fr, ', ') AS "Qualification topographique",
+    string_agg(DISTINCT q_fonction.nom_fr :: text, ', ' :: text) AS "Qualification fonctionnelle",
+    string_agg(
+        DISTINCT q_topographie.nom_fr :: text,
+        ', ' :: text
+    ) AS "Qualification topographique",
     1 AS "Densité"
 FROM
     localisation
@@ -507,6 +611,8 @@ GROUP BY
     entite_politique.nom_fr,
     entite_politique.numero_iacp;
 
+-- ALTER TABLE public.vue_loc_fr OWNER TO polytheisms;
+-- Attestation Matériel
 CREATE
 OR REPLACE VIEW public.vue_materiel_attestation_fr AS
 SELECT
@@ -524,23 +630,8 @@ FROM
 ORDER BY
     attestation_materiel.id;
 
-CREATE VIEW nodes AS
-SELECT
-    contient_element.id_element "nodes",
-    contient_element.id_element "id",
-    element.etat_absolu "label",
-    count(*) "weight"
-FROM
-    contient_element,
-    element
-WHERE
-    contient_element.id_element = element.id
-GROUP BY
-    contient_element.id_element,
-    element.etat_absolu
-ORDER BY
-    contient_element.id_element;
-
+-- ALTER TABLE public.vue_materiel_attestation_fr OWNER TO polytheisms;
+-- Attestation Occasion
 CREATE
 OR REPLACE VIEW public.vue_occasion_attestation_fr AS
 SELECT
@@ -557,6 +648,8 @@ FROM
 ORDER BY
     attestation_occasion.id;
 
+-- ALTER TABLE public.vue_occasion_attestation_fr OWNER TO polytheisms;
+-- Attestation Pratique
 CREATE
 OR REPLACE VIEW public.vue_pratique_attestation_fr AS
 SELECT
@@ -567,6 +660,8 @@ FROM
     attestation_pratique
     LEFT JOIN pratique ON pratique.id = attestation_pratique.id_pratique;
 
+-- ALTER TABLE public.vue_pratique_attestation_fr OWNER TO polytheisms;
+-- Source EN
 CREATE
 OR REPLACE VIEW public.vue_source_en AS
 SELECT
@@ -652,11 +747,13 @@ GROUP BY
     sb.reference_source,
     b.titre_abrege;
 
+-- ALTER TABLE public.vue_source_en OWNER TO polytheisms;
+-- Source FR
 CREATE
 OR REPLACE VIEW public.vue_source_fr AS
 SELECT
     source.id,
-    titre.nom_fr AS "titre_principal_id",
+    titre.nom_fr AS titre_principal_id,
     type_support.nom_fr AS "Type de support",
     categorie_support.nom_fr AS "Catégorie de support",
     materiau.nom_fr AS "Matériau",
@@ -679,7 +776,7 @@ SELECT
     datation.commentaire_fr AS "Commentaire Datation",
     (
         SELECT
-            count(*)
+            count(*) AS count
         FROM
             attestation
         WHERE
@@ -688,10 +785,10 @@ SELECT
     concat(
         'https://base-map-polytheisms.huma-num.fr/source/',
         source.id
-    ),
-    String_AGG(DISTINCT l.nom_fr, ', ') AS "Langue",
-    String_AGG(DISTINCT a.nom_fr, ', ') AS "Auteur",
-    String_AGG(DISTINCT ts.nom_fr, ', ') AS "Type de source",
+    ) AS concat,
+    string_agg(DISTINCT l.nom_fr :: text, ', ' :: text) AS "Langue",
+    string_agg(DISTINCT a.nom_fr :: text, ', ' :: text) AS "Auteur",
+    string_agg(DISTINCT ts.nom_fr :: text, ', ' :: text) AS "Type de source",
     b.titre_complet AS "Source principale",
     sb.reference_source AS "Référence",
     concat(
@@ -716,7 +813,7 @@ FROM
     LEFT JOIN auteur a ON a.id = sa.id_auteur
     LEFT JOIN source_type_source sts ON sts.id_source = source.id
     LEFT JOIN type_source ts ON ts.id = sts.id_type_source
-    INNER JOIN source_biblio sb ON sb.id_source = source.id
+    JOIN source_biblio sb ON sb.id_source = source.id
     LEFT JOIN biblio b ON b.id = sb.id_biblio
 WHERE
     sb.edition_principale IS TRUE
@@ -737,8 +834,10 @@ GROUP BY
     sb.reference_source,
     b.titre_abrege;
 
+-- ALTER TABLE public.vue_source_fr OWNER TO polytheisms;
+-- Source Langue
 CREATE
-OR REPLACE VIEW vue_source_langue AS
+OR REPLACE VIEW public.vue_source_langue AS
 SELECT
     source_langue.id_source AS "Id Source",
     langue.nom_fr AS "Langue",
@@ -747,8 +846,10 @@ FROM
     source_langue
     LEFT JOIN langue ON langue.id = source_langue.id_langue;
 
+-- ALTER TABLE public.vue_source_langue OWNER TO polytheisms;
+-- Source Typologie
 CREATE
-OR REPLACE VIEW vue_source_typologie AS
+OR REPLACE VIEW public.vue_source_typologie AS
 SELECT
     source.id AS "Id source",
     type_source.nom_fr AS "Type de source",
@@ -760,3 +861,5 @@ FROM
     LEFT JOIN source_type_source ON source_type_source.id_source = source.id
     LEFT JOIN type_source ON source_type_source.id_type_source = type_source.id
     LEFT JOIN categorie_source ON categorie_source.id = source.categorie_source_id;
+
+-- ALTER TABLE public.vue_source_typologie OWNER TO polytheisms;

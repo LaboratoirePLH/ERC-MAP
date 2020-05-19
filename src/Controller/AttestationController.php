@@ -192,6 +192,7 @@ class AttestationController extends AbstractController
         }
 
         $form   = $this->get('form.factory')->create(AttestationType::class, $attestation, [
+            'formAction'   => 'create',
             'source'       => $source,
             'attestation'  => $attestation,
             'isClone'      => $clone,
@@ -372,6 +373,7 @@ class AttestationController extends AbstractController
         }
 
         $form   = $this->get('form.factory')->create(AttestationType::class, $attestation, [
+            'formAction'   => 'edit',
             'source'       => $attestation->getSource(),
             'attestation'  => $attestation,
             'locale'       => $request->getLocale(),

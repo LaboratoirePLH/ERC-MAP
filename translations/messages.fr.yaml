@@ -191,7 +191,7 @@ source:
         fiability: "Score de fiabilité"
         url_image: "URL de l'image"
         url_texte: "URL du texte"
-        in_situ: "Même Localisation ?"
+        in_situ: "Même Localisation d'Origine ?"
         origine: "Origine"
         region_origine: "Région d'Origine"
         lieu_origine: "Lieu d'Origine"

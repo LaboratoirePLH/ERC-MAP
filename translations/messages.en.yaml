@@ -192,7 +192,7 @@ source:
         fiability_score: "Reliability score"
         url_image: "Image URL"
         url_texte: "Text URL"
-        in_situ: "Same Location ?"
+        in_situ: "Same Original Location ?"
         origine: "Origin"
         region_origine: "Original Region"
         lieu_origine: "Original Location"

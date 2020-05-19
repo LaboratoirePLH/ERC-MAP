@@ -50,20 +50,15 @@ class ElementPosition extends AbstractFilter
                                 $elementPositionMatches = true;
                                 break;
                         }
-                        // We have found the element at a correct position, no need to go further
+                        // We have found the element at a correct position, we have 1 matching criteria, no need to go further
                         if ($elementPositionMatches) {
-                            break;
+                            return true;
                         }
                     }
                 }
-
-                if (!$elementFound || !$elementPositionMatches) {
-                    // No need to go further, we have a criteria not met
-                    return false;
-                }
             }
-            // If we get here, all criteria have been met
-            return true;
+            // If we get here, no criteria have been met
+            return false;
         }, $attestations)));
     }
 }

@@ -2,30 +2,52 @@
 
 namespace App\Controller;
 
+use App\Entity\RechercheEnregistree;
+use App\Search\Criteria;
+
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Cache\TagAwareCacheInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class RechercheController extends AbstractController
 {
     /**
      * @Route("/search", name="search")
      */
-    public function index(Request $request, TranslatorInterface $translator)
+    public function index(Request $request, TranslatorInterface $translator, Criteria $searchCriteria)
     {
+        $locale = $request->getLocale();
+
+        // Compute index status
+        $indexStatus = $this->getDoctrine()
+            ->getRepository(\App\Entity\IndexRecherche::class)
+            ->getStatus();
+
         $populate_mode = $request->request->get('populate_mode', '');
         $populate_criteria = urldecode($request->request->get('populate_criteria', ''));
 
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        $queries = $this->getDoctrine()
+            ->getRepository(RechercheEnregistree::class)
+            ->findAllByChercheur($user);
+
         return $this->render('search/index.html.twig', [
             'controller_name' => 'RechercheController',
-            'locale'          => $request->getLocale(),
-            'data'            => $this->_prepareFormData($request->getLocale()),
+            'locale'          => $locale,
+            'indexStatus'     => $indexStatus,
             'populate'        => [
                 'mode'     => $populate_mode,
                 'criteria' => $populate_criteria,
             ],
-            'breadcrumbs'     => [
+            'saved_queries' => $queries,
+            'criteria_list' => \App\Search\CriteriaList::get($translator),
+            'breadcrumbs'   => [
                 ['label' => 'nav.home', 'url' => $this->generateUrl('home')],
                 ['label' => 'search.title']
             ]
@@ -33,31 +55,48 @@ class RechercheController extends AbstractController
     }
 
     /**
+     * @Route("/search/criteria/{criteriaName}", name="search_criteria")
+     */
+    public function criteria($criteriaName, Request $request, Criteria $searchCriteria)
+    {
+        $locale = $request->getLocale();
+
+        $data = $searchCriteria->getData($criteriaName, $locale);
+
+        return new JsonResponse([
+            'success' => true,
+            'data' => $data
+        ], 200);
+    }
+
+    /**
      * @Route("/search/simple", name="search_simple")
      */
-    public function simpleSearch(Request $request, TranslatorInterface $translator)
+    public function simpleSearch(Request $request, Criteria $searchCriteria)
     {
-        $search = $request->request->get('search_value', '');
-        if(!strlen($search)){
-            $request->getSession()->getFlashBag()->add(
-                'error',
-                'search.messages.no_empty_search'
-            );
-            return $this->redirect(
-                $this->get('router')->generate('search', ['_fragment' => 'simple'])
-            );
+        $searchMode = 'simple';
+        $queryName  = $request->request->get('queryName', '');
+        $search     = $request->request->get('search_value', '');
+        if (!strlen($search)) {
+            return $this->_emptySearchResponse($request, $searchMode);
         }
-        $results = $this->getDoctrine()
-                        ->getRepository(\App\Entity\IndexRecherche::class)
-                        ->simpleSearch($search, $request->getLocale());
 
-        return $this->render('search/results.html.twig', [
+        $results = $this->getDoctrine()
+            ->getRepository(\App\Entity\IndexRecherche::class)
+            ->simpleSearch($search, $request->getLocale(), !$this->isGranted('ROLE_CONTRIBUTOR'));
+
+        if (count($results)) {
+            $cacheKey = $this->_cacheSearchResults($searchMode, $results);
+        }
+
+        return $this->render('search/results_mixed.html.twig', [
             'controller_name' => 'RechercheController',
             'locale'          => $request->getLocale(),
-            'results'         => $results,
-            'mode'            => 'simple',
+            'cacheKey'        => $cacheKey ?? false,
+            'mode'            => $searchMode,
             'criteria'        => [$search],
-            'criteriaDisplay' => $this->_prepareCriteriaDisplay('simple', [$search], $request->getLocale(), $translator),
+            'criteriaDisplay' => $searchCriteria->getCriteriaDisplay($searchMode, [$search], $request->getLocale()),
+            'queryName'       => $queryName,
             'breadcrumbs'     => [
                 ['label' => 'nav.home', 'url' => $this->generateUrl('home')],
                 ['label' => 'search.title', 'url' => $this->generateUrl('search')],
@@ -69,50 +108,33 @@ class RechercheController extends AbstractController
     /**
      * @Route("/search/guided", name="search_guided")
      */
-    public function guidedSearch(Request $request, TranslatorInterface $translator)
+    public function guidedSearch(Request $request, Criteria $searchCriteria)
     {
-        $criteria = array_filter(
-            $request->request->all(),
-            function($value, $key){
-                return in_array(
-                    $key,
-                    [
-                        'names', 'names_mode',
-                        'languages', 'languages_mode',
-                        'datation', 'locations',
-                        'sourceTypes', 'agents'
-                    ]
-                    ) && !empty($value);
-            },
-            ARRAY_FILTER_USE_BOTH
-        );
-        if(array_key_exists('datation', $criteria)
-            && $criteria['datation']['post_quem'] == ''
-            && $criteria['datation']['ante_quem'] == '')
-        {
-            unset($criteria['datation']);
-        }
-        if(!count(array_keys($criteria))){
-            $request->getSession()->getFlashBag()->add(
-                'error',
-                'search.messages.no_empty_search'
-            );
-            return $this->redirect(
-                $this->get('router')->generate('search', ['_fragment' => 'guided'])
-            );
+        $searchMode  = 'guided';
+        $queryName   = $request->request->get('queryName', '');
+        $criteriaRaw = $request->request->all();
+        $criteria    = $searchCriteria->validateGuidedCriteria($criteriaRaw);
+
+        if ($criteria === false) {
+            return $this->_emptySearchResponse($request, $searchMode);
         }
 
         $results = $this->getDoctrine()
-                        ->getRepository(\App\Entity\IndexRecherche::class)
-                        ->guidedSearch($criteria, $request->getLocale());
+            ->getRepository(\App\Entity\IndexRecherche::class)
+            ->search($searchMode, $criteria, $request->getLocale(), !$this->isGranted('ROLE_CONTRIBUTOR'));
 
-        return $this->render('search/results.html.twig', [
+        if (count($results)) {
+            $cacheKey = $this->_cacheSearchResults($searchMode, $results);
+        }
+
+        return $this->render('search/results_mixed.html.twig', [
             'controller_name' => 'RechercheController',
             'locale'          => $request->getLocale(),
-            'results'         => $results,
-            'mode'            => 'guided',
+            'cacheKey'        => $cacheKey ?? false,
+            'mode'            => $searchMode,
             'criteria'        => $criteria,
-            'criteriaDisplay' => $this->_prepareCriteriaDisplay('guided', $criteria, $request->getLocale(), $translator),
+            'criteriaDisplay' => $searchCriteria->getCriteriaDisplay($searchMode, $criteria, $request->getLocale()),
+            'queryName'       => $queryName,
             'breadcrumbs'     => [
                 ['label' => 'nav.home', 'url' => $this->generateUrl('home')],
                 ['label' => 'search.title', 'url' => $this->generateUrl('search')],
@@ -122,19 +144,229 @@ class RechercheController extends AbstractController
     }
 
     /**
-     * @Route("/search/rebuild_index", name="search_reindex")
+     * @Route("/search/advanced", name="search_advanced")
      */
-    public function rebuild(Request $request, TranslatorInterface $translator)
+    public function advancedSearch(Request $request, Criteria $searchCriteria)
+    {
+        $searchMode  = 'advanced';
+        $queryName   = $request->request->get('queryName', '');
+        $criteriaRaw = $request->request->all();
+        $criteria    = $searchCriteria->validateAdvancedCriteria($criteriaRaw);
+
+        if ($criteria === false) {
+            return $this->_emptySearchResponse($request, $searchMode);
+        }
+
+        $resultsType = $criteria['resultsType'];
+
+        $results = $this->getDoctrine()
+            ->getRepository(\App\Entity\IndexRecherche::class)
+            ->search($searchMode, $criteria, $request->getLocale(), !$this->isGranted('ROLE_CONTRIBUTOR'));
+
+        if (count($results)) {
+            $cacheKey = $this->_cacheSearchResults($searchMode, $results);
+        }
+
+        return $this->render("search/results_{$resultsType}.html.twig", [
+            'controller_name' => 'RechercheController',
+            'locale'          => $request->getLocale(),
+            'cacheKey'        => $cacheKey ?? false,
+            'mode'            => $searchMode,
+            'resultsType'     => $resultsType,
+            'criteria'        => $criteria,
+            'criteriaDisplay' => $searchCriteria->getCriteriaDisplay($searchMode, $criteria, $request->getLocale()),
+            'queryName'       => $queryName,
+            'breadcrumbs'     => [
+                ['label' => 'nav.home', 'url' => $this->generateUrl('home')],
+                ['label' => 'search.title', 'url' => $this->generateUrl('search')],
+                ['label' => 'search.results']
+            ]
+        ]);
+    }
+
+    /**
+     * @Route("/search/elements", name="search_elements")
+     */
+    public function elementsSearch(Request $request, Criteria $searchCriteria)
+    {
+        $searchMode  = 'elements';
+        $queryName   = $request->request->get('queryName', '');
+        $criteriaRaw = $request->request->all();
+        $criteria    = $searchCriteria->validateElementsCriteria($criteriaRaw);
+
+        if ($criteria === false) {
+            return $this->_emptySearchResponse($request, $searchMode);
+        }
+
+        $resultsType = "attestation";
+
+        $results = $this->getDoctrine()
+            ->getRepository(\App\Entity\IndexRecherche::class)
+            ->search($searchMode, $criteria, $request->getLocale(), !$this->isGranted('ROLE_CONTRIBUTOR'));
+
+        if (count($results)) {
+            $cacheKey = $this->_cacheSearchResults($searchMode, $results);
+        }
+
+        return $this->render("search/results_{$resultsType}.html.twig", [
+            'controller_name' => 'RechercheController',
+            'locale'          => $request->getLocale(),
+            'cacheKey'        => $cacheKey ?? false,
+            'mode'            => $searchMode,
+            'resultsType'     => $resultsType,
+            'criteria'        => $criteria,
+            'criteriaDisplay' => $searchCriteria->getCriteriaDisplay($searchMode, $criteria, $request->getLocale()),
+            'queryName'       => $queryName,
+            'breadcrumbs'     => [
+                ['label' => 'nav.home', 'url' => $this->generateUrl('home')],
+                ['label' => 'search.title', 'url' => $this->generateUrl('search')],
+                ['label' => 'search.results']
+            ]
+        ]);
+    }
+
+    /**
+     * @Route("/search/results", name="json_search_results")
+     */
+    public function searchResults(Request $request, TranslatorInterface $translator)
+    {
+        // Cache adapter
+        $cache = new FilesystemAdapter('search_results', 3600);
+
+        // Check if we have a key in parameter
+        $cacheKey = $request->query->get('cacheKey', null);
+
+        $success = false;
+        $data = [];
+        if ($cacheKey != null) {
+            // If we have a key check that it exists in the cache
+            $cacheItem = $cache->getItem($cacheKey);
+            if ($cacheItem->isHit()) {
+                // If if exists, checkes that the TTL has not expired
+                $data = $cacheItem->get();
+                $success = true;
+            }
+        }
+
+        $result = [
+            'success' => $success,
+            'data' => $data
+        ];
+
+        $response = new Response(json_encode($result, JSON_INVALID_UTF8_IGNORE));
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
+    }
+
+    /**
+     * @Route("/search/save", name="search_save")
+     */
+    public function searchSave(Request $request, TranslatorInterface $translator)
+    {
+        $submittedToken = $request->request->get('token');
+        $query_name = $request->request->get('query_name', '');
+        $query_mode = $request->request->get('query_mode', '');
+        $query_criteria = urldecode($request->request->get('query_criteria', '{}'));
+
+        if (!$this->isCsrfTokenValid('query_save', $submittedToken)) {
+            return new JsonResponse([
+                'success' => false,
+                'message' => $translator->trans('generic.messages.failed_csrf')
+            ], 400);
+        }
+        if (!strlen($query_name)) {
+            return new JsonResponse([
+                'success' => false,
+                'message' => $translator->trans('search.messages.invalid_empty_name')
+            ], 400);
+        }
+        if (!in_array($query_mode, ['simple', 'guided', 'advanced', 'elements'])) {
+            return new JsonResponse([
+                'success' => false,
+                'message' => $translator->trans('search.messages.invalid_query_mode', [
+                    '%mode%' => $query_mode
+                ])
+            ], 400);
+        }
+        if (empty(json_decode($query_criteria, true))) {
+            return new JsonResponse([
+                'success' => false,
+                'message' => $translator->trans('search.messages.invalid_empty_criteria')
+            ], 400);
+        }
+
+        $query = new RechercheEnregistree;
+        $query->setNom($query_name);
+        $query->setMode($query_mode);
+        $query->setCriteria($query_criteria);
+        $query->setCreateur(
+            $this->get('security.token_storage')->getToken()->getUser()
+        );
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($query);
+        $em->flush();
+
+        return new JsonResponse([
+            'success' => true,
+            'message' => $translator->trans('search.messages.query_saved')
+        ], 201);
+    }
+
+    /**
+     * @Route("/search/{id}/delete", name="search_delete")
+     */
+    public function searchDelete($id, Request $request)
+    {
+        $submittedToken = $request->request->get('token');
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        if ($this->isCsrfTokenValid('delete_query_' . $id, $submittedToken)) {
+            $repository = $this->getDoctrine()->getRepository(RechercheEnregistree::class);
+            $query = $repository->find($id);
+            if ($query instanceof RechercheEnregistree) {
+                if ($query->getCreateur()->getId() === $user->getId()) {
+                    $em = $this->getDoctrine()->getManager();
+                    $em->remove($query);
+                    $em->flush();
+                    $request->getSession()->getFlashBag()->add('success', 'search.messages.query_deleted');
+                } else {
+                    $request->getSession()->getFlashBag()->add('error', 'generic.messages.error_unauthorized');
+                }
+            } else {
+                $request->getSession()->getFlashBag()->add('error', 'generic.messages.deletion_failed_missing');
+            }
+        } else {
+            $request->getSession()->getFlashBag()->add('error', 'generic.messages.deletion_failed_csrf');
+        }
+        return $this->redirectToRoute('search');
+    }
+
+    /**
+     * @Route("/search/clear_cache", name="search_clear_cache")
+     */
+    public function clearCache(Request $request, TranslatorInterface $translator, TagAwareCacheInterface $mapCache)
+    {
+        $mapCache->invalidateTags(['Recherche']);
+        // Message de confirmation
+        $request->getSession()->getFlashBag()->add(
+            'success',
+            $translator->trans('search.messages.cache_cleared')
+        );
+        return $this->redirectToRoute('search');
+    }
+
+    public function rebuildIndexSync(Request $request, TranslatorInterface $translator, TagAwareCacheInterface $mapCache)
     {
         set_time_limit(3600);
         $start = microtime(true);
 
         $records = $this->getDoctrine()
-                        ->getRepository(\App\Entity\IndexRecherche::class)
-                        ->fullRebuild();
+            ->getRepository(\App\Entity\IndexRecherche::class)
+            ->fullRebuild();
 
         $end = microtime(true);
-        $totalTime = round($end-$start);
+        $totalTime = round($end - $start);
         // Message de confirmation
         $request->getSession()->getFlashBag()->add(
             'success',
@@ -146,198 +378,106 @@ class RechercheController extends AbstractController
         return $this->redirectToRoute('search');
     }
 
-    private function _prepareCriteriaDisplay($mode, $criteria, $locale, TranslatorInterface $translator) {
-        $em = $this->getDoctrine()->getEntityManager();
-        $nameField = "nom" . ucfirst(strtolower($locale));
+    /**
+     * @Route("/search/rebuild_index", name="search_reindex")
+     */
+    public function rebuildIndex(Request $request, TranslatorInterface $translator)
+    {
+        // Store request start time, to prevent time_limit being reached
+        $start_request = time();
+        $MAX_REQUEST_TIME = 5;
 
-        if($mode == "simple"){
-            return $criteria;
-        }
-        if($mode == "guided"){
-            $formData = $this->_prepareFormData($locale);
-            $response = [];
-            foreach($criteria as $key => $value){
-                switch($key){
-                    case 'names':
-                    case 'languages':
-                    case 'locations':
-                    case 'sourceTypes':
-                        $response['search.criteria_labels.'.$key] = array_values(array_filter(
-                            $formData[$key],
-                            function($id) use ($value) {
-                                return in_array($id, $value);
-                            },
-                            ARRAY_FILTER_USE_KEY
-                        ));
-                        break;
-                    case 'datation':
-                        $v = array_filter([
-                            ((!is_null($value['post_quem']) && $value['post_quem'] !== "")
-                                ? ($translator->trans('datation.fields.post_quem') . ' : ' . $value['post_quem'])
-                                : null
-                            ),
-                            ((!is_null($value['ante_quem']) && $value['ante_quem'] !== "")
-                                ? ($translator->trans('datation.fields.ante_quem') . ' : ' . $value['ante_quem'])
-                                : null
-                            ),
-                            ((($value['exact'] ?? null) === 'datation_exact')
-                                ? $translator->trans('generic.fields.strict')
-                                : null
-                            )
-                        ]);
-                        if(!empty($v)){
-                            $response['search.criteria_labels.'.$key] = implode(' ; ', $v);
-                        }
-                    break;
-                    case 'agents':
-                        $response['search.criteria_labels.'.$key] = array_values(array_filter(
-                            array_merge($formData[$key]['activites'], $formData[$key]['agentivites']),
-                            function($id) use ($value) {
-                                return in_array($id, $value);
-                            },
-                            ARRAY_FILTER_USE_KEY
-                        ));
-                        break;
-                    default:
-                        break;
+        // Cache adapter
+        $cache = new FilesystemAdapter('search_index_rebuild', 3600);
+
+        // Repository
+        $repo = $this->getDoctrine()->getRepository(\App\Entity\IndexRecherche::class);
+
+        // Check if we have a key in parameter
+        $rebuildKey = $request->query->get('rebuildKey', null);
+
+        $rebuildData = [];
+        if ($rebuildKey != null) {
+            // If we have a key check that it exists in the cache
+            $cacheItem = $cache->getItem($rebuildKey);
+            if ($cacheItem->isHit()) {
+                // If if exists, checkes that the TTL has not expired
+                $rebuildData = $cacheItem->get();
+                if (time() - $rebuildData['startTime'] > 3600) {
+                    // If TTL has expired, remove item from cache
+                    $cache->deleteItem($rebuildKey);
+                    $rebuildData = [];
                 }
             }
-            if(($criteria['names_mode'] ?? 'one') === 'all'
-                && array_key_exists('names', $criteria)){
-                $response['search.criteria_labels.names_all'] = $response['search.criteria_labels.names'];
-                unset($response['search.criteria_labels.names']);
-            }
-            if(($criteria['languages_mode'] ?? 'one') === 'all'
-                && array_key_exists('languages', $criteria)){
-                $response['search.criteria_labels.languages_all'] = $response['search.criteria_labels.languages'];
-                unset($response['search.criteria_labels.languages']);
-            }
-            return $response;
         }
+
+
+        // If we have no rebuild data, we start a new session
+        if (empty($rebuildData)) {
+            // List all the records to reindex
+            $allRecords = $repo->buildReindexList();
+
+            // Delete existing entries
+            $repo->deleteAll();
+
+            // Generate a key
+            $rebuildKey = uniqid('rebuild_');
+
+            // Generate data array
+            $rebuildData = [
+                'startTime' => $start_request,
+                'rebuildKey' => $rebuildKey,
+                'remaining' => $allRecords,
+                'totalCount' => count($allRecords),
+                'doneCount' => 0,
+            ];
+        }
+        // If we have data, we process as many entries as we cas
+        else {
+            do {
+                // Unstack an entry
+                list($entityType, $entityId) = array_shift($rebuildData['remaining']);
+
+                // Rebuild the entry
+                $repo->rebuildEntry($entityType, $entityId, true);
+
+                // Update rebuild data array
+                $rebuildData['doneCount']++;
+            } while (count($rebuildData['remaining']) > 0 && (time() - $start_request) <= $MAX_REQUEST_TIME);
+        }
+
+        // Save data array in cache
+        $cacheItem = $cache->getItem($rebuildKey);
+        $cacheItem->set($rebuildData);
+        $cache->save($cacheItem);
+
+        // Respond with current data
+        return new JsonResponse($rebuildData);
     }
 
-    private function _prepareFormData($locale){
-        $em = $this->getDoctrine()->getEntityManager();
-        $nameField = "nom" . ucfirst(strtolower($locale));
-
-        // Get Names
-        $query = $em->createQuery("SELECT partial e.{id, etatAbsolu, betaCode}, partial t.{id, {$nameField}}
-                                   FROM \App\Entity\Element e LEFT JOIN e.traductions t");
-        $els = $query->getArrayResult();
-        $elements = [];
-        foreach($els as $el){
-            $trads = array_column($el['traductions'], $nameField);
-            if(!empty($trads)){
-                $trads = '(' . implode(' ; ', $trads) . ')';
-            } else {
-                $trads = '';
-            }
-            $elements[$el['id']] = implode(' ', array_filter([
-                $el['etatAbsolu'],
-                $el['betaCode'] ? '['.$el['betaCode'].']' : null,
-                $trads
-            ]));
-        }
-        uasort($elements, function($a, $b){
-            return \App\Utils\StringHelper::removeAccents(strip_tags($a))
-                <=> \App\Utils\StringHelper::removeAccents(strip_tags($b));
-        });
-
-        // Get Languages
-        $query = $em->createQuery("SELECT partial l.{id, {$nameField}} FROM \App\Entity\Langue l");
-        $languages = array_combine(
-            array_column($query->getArrayResult(), 'id'),
-            array_column($query->getArrayResult(), $nameField)
+    private function _emptySearchResponse(Request $request, string $mode)
+    {
+        $request->getSession()->getFlashBag()->add(
+            'error',
+            'search.messages.no_empty_search'
         );
-        uasort($languages, function($a, $b){
-            return \App\Utils\StringHelper::removeAccents($a)
-                <=> \App\Utils\StringHelper::removeAccents($b);
-        });
-
-        // Get Locations
-        $query = $em->createQuery("SELECT partial r.{id, {$nameField}} FROM \App\Entity\GrandeRegion r");
-        $grandeRegions = $query->getArrayResult();
-        $query = $em->createQuery("SELECT partial r.{id, {$nameField}}, partial gr.{id, {$nameField}} FROM \App\Entity\SousRegion r LEFT JOIN r.grandeRegion gr");
-        $sousRegions = $query->getArrayResult();
-        $query = $em->createQuery("SELECT partial l.{id, pleiadesVille, nomVille}, partial sr.{id, {$nameField}}, partial gr.{id, {$nameField}}
-                                    FROM \App\Entity\Localisation l LEFT JOIN l.sousRegion sr LEFT JOIN l.grandeRegion gr
-                                    WHERE l.nomVille IS NOT NULL");
-        $lieux = $query->getArrayResult();
-        $locations = [];
-        foreach($grandeRegions as $gr){
-            $id = json_encode([$gr['id']]);
-            $locations[$id] = $gr[$nameField];
-        }
-        foreach($sousRegions as $sr){
-            $id = json_encode([$sr['grandeRegion']['id'], $sr['id']]);
-            $locations[$id] = $sr['grandeRegion'][$nameField].' > '.$sr[$nameField];
-        }
-        foreach($lieux as $l){
-            // TODO : Manage case where we have 2 nomVille with identical grandeRegion & sousRegion, but no pleiades ID
-            $id = json_encode([
-                $l['grandeRegion']['id'] ?? 0,
-                $l['sousRegion']['id'] ?? 0,
-                $l['pleiadesVille']
-            ]);
-            $value = ($l['grandeRegion'][$nameField] ?? '').' > '.($l['sousRegion'][$nameField] ?? '').' > '.$l['nomVille'];
-            $value = str_replace('>  >', '>>', $value);
-            $locations[$id] = $value;
-        }
-        uasort($locations, function($a, $b){
-            return \App\Utils\StringHelper::removeAccents($a)
-                <=> \App\Utils\StringHelper::removeAccents($b);
-        });
-
-        // Get Source Types
-        $query = $em->createQuery("SELECT partial c.{id, {$nameField}} FROM \App\Entity\CategorieSource c");
-        $categorieSource = $query->getArrayResult();
-        $query = $em->createQuery("SELECT partial t.{id, {$nameField}}, partial c.{id, {$nameField}} FROM \App\Entity\TypeSource t LEFT JOIN t.categorieSource c");
-        $typeSource = $query->getArrayResult();
-        $sourceTypes = [];
-        foreach($categorieSource as $cs){
-            $id = json_encode([$cs['id']]);
-            $sourceTypes[$id] = $cs[$nameField];
-        }
-        foreach($typeSource as $ts){
-            $id = json_encode([$ts['categorieSource']['id'], $ts['id']]);
-            $sourceTypes[$id] = $ts['categorieSource'][$nameField].' > '.$ts[$nameField];
-        }
-        uasort($sourceTypes, function($a, $b){
-            return \App\Utils\StringHelper::removeAccents($a)
-                <=> \App\Utils\StringHelper::removeAccents($b);
-        });
-
-        // Get Agents
-        $query = $em->createQuery("SELECT partial aa.{id, {$nameField}} FROM \App\Entity\ActiviteAgent aa");
-        $activites = array_combine(
-            array_map(function($a){ return json_encode(['activite', $a]); }, array_column($query->getArrayResult(), 'id')),
-            array_column($query->getArrayResult(), $nameField)
+        return $this->redirect(
+            $this->get('router')->generate('search', ['_fragment' => $mode])
         );
-        uasort($activites, function($a, $b){
-            return \App\Utils\StringHelper::removeAccents($a)
-                <=> \App\Utils\StringHelper::removeAccents($b);
-        });
-
-        $query = $em->createQuery("SELECT partial ag.{id, {$nameField}} FROM \App\Entity\Agentivite ag");
-        $agentivites = array_combine(
-            array_map(function($a){ return json_encode(['agentivite', $a]); }, array_column($query->getArrayResult(), 'id')),
-            array_column($query->getArrayResult(), $nameField)
-        );
-        uasort($agentivites, function($a, $b){
-            return \App\Utils\StringHelper::removeAccents($a)
-                <=> \App\Utils\StringHelper::removeAccents($b);
-        });
-
-        return [
-            'names'       => $elements,
-            'languages'   => $languages,
-            'locations'   => $locations,
-            'sourceTypes' => $sourceTypes,
-            'agents'      => [
-                'activites' => $activites,
-                'agentivites' => $agentivites
-            ]
-        ];
     }
 
+    private function _cacheSearchResults(string $mode, array $results): string
+    {
+        // Cache adapter
+        $cache = new FilesystemAdapter("search_results", 1800);
+        // Generate a key
+        $cacheKey = uniqid("search_results_{$mode}_");
+
+        // Save data array in cache
+        $cacheItem = $cache->getItem($cacheKey);
+        $cacheItem->set($results);
+        $cache->save($cacheItem);
+
+        return $cacheKey;
+    }
 }

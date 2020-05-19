@@ -1,48 +1,28 @@
-FROM alpine:3.8
+FROM php:7.2-fpm-alpine
 
-RUN apk add --update --no-cache \
-    coreutils \
-    php7-fpm \
-    php7-apcu \
-    php7-ctype \
-    php7-curl \
-    php7-dom \
-    php7-gd \
-    php7-iconv \
-    php7-imagick \
-    php7-json \
-    php7-intl \
-    php7-mcrypt \
-    php7-fileinfo\
-    php7-mbstring \
-    php7-opcache \
-    php7-openssl \
-    php7-pdo \
-    php7-pdo_pgsql \
-    php7-xml \
-    php7-zlib \
-    php7-phar \
-    php7-tokenizer \
-    php7-session \
-    php7-simplexml \
-    php7-xdebug \
-    php7-zip \
-    php7-xmlwriter \
-    make \
-    curl
+RUN apk --update --no-cache add git
 
-RUN echo "$(curl -sS https://composer.github.io/installer.sig) -" > composer-setup.php.sig \
-    && curl -sS https://getcomposer.org/installer | tee composer-setup.php | sha384sum -c composer-setup.php.sig \
-    && php composer-setup.php && rm composer-setup.php* \
-    && chmod +x composer.phar && mv composer.phar /usr/bin/composer
+COPY --from=composer /usr/bin/composer /usr/bin/composer
 
-COPY symfony.ini /etc/php7/conf.d/
-COPY symfony.ini /etc/php7/cli/conf.d/
-# COPY xdebug.ini  /etc/php7/conf.d/
+COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin/
 
-COPY symfony.pool.conf /etc/php7/php-fpm.d/
+RUN install-php-extensions pdo_pgsql intl
 
-CMD ["php-fpm7", "-F"]
+RUN mv /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini
+
+# tweak php-fpm config
+RUN sed -i -e "s/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g" /usr/local/etc/php/php.ini && \
+    sed -i -e "s/upload_max_filesize\s*=\s*2M/upload_max_filesize = 100M/g" /usr/local/etc/php/php.ini && \
+    sed -i -e "s/memory_limit = .*/memory_limit = 1024M/g" /usr/local/etc/php/php.ini && \
+    sed -i -e "s/max_execution_time = .*/max_execution_time = 60/g" /usr/local/etc/php/php.ini && \
+    sed -i -e "s/post_max_size\s*=\s*8M/post_max_size = 100M/g" /usr/local/etc/php/php.ini && \
+    sed -i -e "s/pm = dynamic/pm = ondemand/g" /usr/local/etc/php-fpm.d/www.conf.default && \
+    sed -i -e "s/pm.max_children = 5/pm.max_children = 10/g" /usr/local/etc/php-fpm.d/www.conf.default && \
+    sed -i -e "s/;pm.status_path = .*/pm.status_path = \/fpm-status/g" /usr/local/etc/php-fpm.d/www.conf.default && \
+    echo "date.timezone = \"Europe/Paris\"" >> /usr/local/etc/php/php.ini
 
 WORKDIR /var/www/html
-EXPOSE 900
+
+CMD php-fpm
+
+EXPOSE 9000

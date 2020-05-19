@@ -11,13 +11,14 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Attestation
  *
  * @ORM\Table(name="attestation")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\AttestationRepository")
  * @ORM\HasLifecycleCallbacks()
  */
 class Attestation extends AbstractEntity
 {
     use Traits\Dated;
     use Traits\EntityId;
+    use Traits\Indexed;
     use Traits\Located;
     use Traits\Tracked;
     use Traits\Translatable;
@@ -63,6 +64,7 @@ class Attestation extends AbstractEntity
      * @var \Doctrine\Common\Collections\Collection
      *
      * @ORM\OneToMany(targetEntity="TraductionAttestation", mappedBy="attestation", cascade={"persist", "remove"})
+     * @ORM\OrderBy({"id" = "ASC"})
      */
     private $traductions;
 
@@ -193,7 +195,7 @@ class Attestation extends AbstractEntity
      */
     public function __clone()
     {
-        if($this->id) {
+        if ($this->id) {
             $this->id = null;
 
             // Reset tracking fields
@@ -208,16 +210,16 @@ class Attestation extends AbstractEntity
             $this->passage = "";
 
             // Clone datation and localization
-            if($this->datation !== null){
+            if ($this->datation !== null) {
                 $this->datation = clone $this->datation;
             }
-            if($this->localisation !== null){
+            if ($this->localisation !== null) {
                 $this->localisation = clone $this->localisation;
             }
 
             // Clone agents
             $cloneAgents = new ArrayCollection();
-            foreach($this->agents as $a){
+            foreach ($this->agents as $a) {
                 $cloneA = clone $a;
                 $cloneA->setAttestation($this);
                 $cloneAgents->add($cloneA);
@@ -226,7 +228,7 @@ class Attestation extends AbstractEntity
 
             // Clone Occasions
             $cloneOccasions = new ArrayCollection();
-            foreach($this->attestationOccasions as $ao){
+            foreach ($this->attestationOccasions as $ao) {
                 $cloneAo = clone $ao;
                 $cloneAo->setAttestation($this);
                 $cloneOccasions->add($cloneAo);
@@ -235,7 +237,7 @@ class Attestation extends AbstractEntity
 
             // Clone Matériels
             $cloneMateriels = new ArrayCollection();
-            foreach($this->attestationMateriels as $am){
+            foreach ($this->attestationMateriels as $am) {
                 $cloneAm = clone $am;
                 $cloneAm->setAttestation($this);
                 $cloneMateriels->add($cloneAm);
@@ -244,7 +246,7 @@ class Attestation extends AbstractEntity
 
             // Clone Traductions
             $cloneTraductions = new ArrayCollection();
-            foreach($this->traductions as $t){
+            foreach ($this->traductions as $t) {
                 $cloneT = clone $t;
                 $cloneT->setAttestation($this);
                 $cloneTraductions->add($cloneT);
@@ -253,7 +255,7 @@ class Attestation extends AbstractEntity
 
             // Clone contextual elements
             $cloneElements = new ArrayCollection();
-            foreach($this->contientElements as $ce){
+            foreach ($this->contientElements as $ce) {
                 $cloneCe = clone $ce;
                 $cloneCe->setAttestation($this);
                 $cloneElements->add($cloneCe);
@@ -287,7 +289,8 @@ class Attestation extends AbstractEntity
     {
         $source = $this->getSource();
         $editionPrincipale = $source->getEditionPrincipaleBiblio();
-        return sprintf('#%d : %s %s, %s',
+        return sprintf(
+            '#%d : %s %s, %s',
             $this->getId(),
             $editionPrincipale->getBiblio()->getTitreAbrege(),
             $editionPrincipale->getReferenceSource(),
@@ -297,23 +300,23 @@ class Attestation extends AbstractEntity
 
     public function getExtraitAvecRestitution(): ?string
     {
-        return $this->sanitizeWysiwygString($this->sanitizeOpenXMLString($this->extraitAvecRestitution));
+        return $this->sanitizeHtml($this->extraitAvecRestitution);
     }
 
     public function setExtraitAvecRestitution(?string $extraitAvecRestitution): self
     {
-        $this->extraitAvecRestitution = $this->sanitizeWysiwygString($this->sanitizeOpenXMLString($extraitAvecRestitution));
+        $this->extraitAvecRestitution = $this->sanitizeHtml($extraitAvecRestitution);
         return $this;
     }
 
     public function getTranslitteration(): ?string
     {
-        return $this->sanitizeWysiwygString($this->sanitizeOpenXMLString($this->translitteration));
+        return $this->sanitizeHtml($this->translitteration);
     }
 
     public function setTranslitteration(?string $translitteration): self
     {
-        $this->translitteration = $this->sanitizeWysiwygString($this->sanitizeOpenXMLString($translitteration));
+        $this->translitteration = $this->sanitizeHtml($translitteration);
         return $this;
     }
 
@@ -593,33 +596,48 @@ class Attestation extends AbstractEntity
 
     public function toArray(): array
     {
-        $getTranslatedName = function($entry){ return $entry->getTranslatedName(); };
+        $toArray = function ($entry) {
+            return $entry->toArray();
+        };
+
+        $formule1 = $this->formules->filter(function ($f) {
+            return $f->getPositionFormule() === 1;
+        })->first();
 
         return [
+            'id'                     => $this->getId(),
             'source'                 => $this->source->getId(),
+            'prose'                  => $this->prose,
+            'poesie'                 => $this->poesie,
             'passage'                => $this->passage,
             'extraitAvecRestitution' => $this->extraitAvecRestitution,
             'translitteration'       => $this->translitteration,
-            'traductions'            => $this->traductions->map($getTranslatedName)->getValues(),
-            'pratiques'              => $this->pratiques->map($getTranslatedName)->getValues(),
-            'materiels'              => $this->attestationMateriels->map(function($am){
+            'fiabilite'              => $this->fiabiliteAttestation,
+            'traductions'            => $this->traductions->map($toArray)->getValues(),
+            'pratiques'              => $this->pratiques->map($toArray)->getValues(),
+            'materiels'              => $this->attestationMateriels->map(function ($am) {
                 return [
-                    'categorieMateriel' => $am->getCategorieMateriel() === null ? null : $am->getCategorieMateriel()->getTranslatedName(),
-                    'materiel'          => $am->getMateriel() === null ? null : $am->getMateriel()->getTranslatedName(),
+                    'categorieMateriel' => $am->getCategorieMateriel() === null ? null : $am->getCategorieMateriel()->toArray(),
+                    'materiel'          => $am->getMateriel() === null ? null : $am->getMateriel()->toArray(),
                     'quantite'          => $am->getQuantite()
                 ];
             })->getValues(),
-            'occasions' => $this->attestationOccasions->map(function($ao){
+            'occasions' => $this->attestationOccasions->map(function ($ao) {
                 return [
-                    'categorieOccasion' => $ao->getCategorieOccasion() === null ? null : $ao->getCategorieOccasion()->getTranslatedName(),
-                    'occasion'          => $ao->getOccasion() === null ? null : $ao->getOccasion()->getTranslatedName()
+                    'categorieOccasion' => $ao->getCategorieOccasion() === null ? null : $ao->getCategorieOccasion()->toArray(),
+                    'occasion'          => $ao->getOccasion() === null ? null : $ao->getOccasion()->toArray()
                 ];
             })->getValues(),
-            'agents'        => $this->agents->map(function($a){ return $a->toArray(); })->getValues(),
+            'agents'        => $this->agents->map($toArray)->getValues(),
             'datation'      => $this->datation === null ? null : $this->datation->toArray(),
             'localisation'  => $this->localisation === null ? null : $this->localisation->toArray(),
-            'elements'      => $this->contientElements->map(function($e){ return $e->toArray(); })->getValues(),
-            'elementIds'    => $this->contientElements->map(function($e){ return $e->getElement()->getId(); })->getValues(),
+            'elements'      => $this->contientElements->map(function ($e) {
+                return $e->toArray();
+            })->getValues(),
+            'elementIds'    => $this->contientElements->map(function ($e) {
+                return $e->getElement()->getId();
+            })->getValues(),
+            'formule1'      => $formule1 instanceof Formule ? $formule1->toArray() : null,
             'commentaireFr' => $this->commentaireFr,
             'commentaireEn' => $this->commentaireEn
         ];

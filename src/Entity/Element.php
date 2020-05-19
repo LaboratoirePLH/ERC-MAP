@@ -11,12 +11,13 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Element
  *
  * @ORM\Table(name="element")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\ElementRepository")
  * @ORM\HasLifecycleCallbacks()
  */
 class Element extends AbstractEntity
 {
     use Traits\EntityId;
+    use Traits\Indexed;
     use Traits\Located;
     use Traits\Tracked;
     use Traits\Translatable;
@@ -69,6 +70,7 @@ class Element extends AbstractEntity
      * @var \Doctrine\Common\Collections\Collection
      *
      * @ORM\OneToMany(targetEntity="TraductionElement", mappedBy="element", cascade={"persist", "remove"})
+     * @ORM\OrderBy({"id" = "ASC"})
      */
     private $traductions;
 
@@ -142,7 +144,7 @@ class Element extends AbstractEntity
      */
     public function __clone()
     {
-        if($this->id) {
+        if ($this->id) {
             $this->id = null;
 
             // Reset tracking fields
@@ -154,13 +156,13 @@ class Element extends AbstractEntity
             $this->verrou           = null;
 
             // Clone localisation
-            if($this->localisation !== null){
+            if ($this->localisation !== null) {
                 $this->localisation = clone $this->localisation;
             }
 
             // Clone Traductions
             $cloneTraductions = new ArrayCollection();
-            foreach($this->traductions as $t){
+            foreach ($this->traductions as $t) {
                 $cloneT = clone $t;
                 $cloneT->setElement($this);
                 $cloneTraductions->add($cloneT);
@@ -169,7 +171,7 @@ class Element extends AbstractEntity
 
             // Clone elementBiblios
             $cloneElementBiblios = new ArrayCollection();
-            foreach($this->elementBiblios as $eb){
+            foreach ($this->elementBiblios as $eb) {
                 $cloneEb = clone $eb;
                 $cloneEb->setElement($this);
                 $cloneElementBiblios->add($cloneEb);
@@ -196,12 +198,12 @@ class Element extends AbstractEntity
 
     public function getEtatAbsolu(): ?string
     {
-        return $this->sanitizeWysiwygString($this->sanitizeOpenXMLString($this->etatAbsolu));
+        return $this->sanitizeHtml($this->etatAbsolu);
     }
 
     public function setEtatAbsolu(?string $etatAbsolu): self
     {
-        $this->etatAbsolu = $this->sanitizeWysiwygString($this->sanitizeOpenXMLString($etatAbsolu));
+        $this->etatAbsolu = $this->sanitizeHtml($etatAbsolu);
         return $this;
     }
 
@@ -237,8 +239,10 @@ class Element extends AbstractEntity
 
     public function concatCategories($lang): string
     {
-        if(empty($this->getCategories())){ return ""; }
-        $names = $this->getCategories()->map(function($cat) use ($lang) {
+        if (empty($this->getCategories())) {
+            return "";
+        }
+        $names = $this->getCategories()->map(function ($cat) use ($lang) {
             return $cat->getNom($lang);
         });
         $names = $names->toArray();
@@ -331,8 +335,10 @@ class Element extends AbstractEntity
 
     public function concatTraductions($lang): string
     {
-        if(empty($this->getTraductions())){ return ""; }
-        $names = $this->getTraductions()->map(function($trad) use ($lang) {
+        if (empty($this->getTraductions())) {
+            return "";
+        }
+        $names = $this->getTraductions()->map(function ($trad) use ($lang) {
             return $trad->getNom($lang) ?? "?";
         });
         $names = $names->toArray();
@@ -377,8 +383,9 @@ class Element extends AbstractEntity
      * @ORM\PrePersist
      * @ORM\PreUpdate
      */
-    public function _clearTheonymes(){
-        if(!$this->getAReference()){
+    public function _clearTheonymes()
+    {
+        if (!$this->getAReference()) {
             $this->getTheonymesConstruits()->clear();
             $this->getTheonymesImplicites()->clear();
         }
@@ -454,11 +461,15 @@ class Element extends AbstractEntity
             'id'             => $this->id,
             'etatAbsolu'     => $this->etatAbsolu,
             'betaCode'       => $this->betaCode,
-            'traductions'    => $this->traductions->map(function($entry){ return $entry->getTranslatedName(); })->getValues(),
-            'natureElement'  => $this->natureElement === null ? null : $this->natureElement->getTranslatedName(),
-            'categories'     => $this->categories->map(function($entry){ return $entry->getTranslatedName(); })->getValues(),
+            'traductions'    => $this->traductions->map(function ($entry) {
+                return $entry->getTranslatedName();
+            })->getValues(),
+            'natureElement'  => $this->natureElement === null ? null : $this->natureElement->toArray(),
+            'categories'     => $this->categories->map(function ($entry) {
+                return $entry->toArray();
+            })->getValues(),
             'localisation'   => $this->localisation === null ? null : $this->localisation->toArray(),
-            'elementBiblios' => $this->elementBiblios->map(function($eb){
+            'elementBiblios' => $this->elementBiblios->map(function ($eb) {
                 return array_merge($eb->getBiblio()->toArray(), [
                     'reference'         => $eb->getReferenceElement()
                 ]);

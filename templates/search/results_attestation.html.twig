@@ -1,0 +1,59 @@
+{% extends 'list_page.html.twig' %}
+{% set columns = {
+    'source': [
+        {'field': 'reference','label': 'source.fields.source_biblio', 'visible': true},
+        {'field': 'titrePrincipal','label': 'source.fields.titre_principal', 'visible': true},
+        {'field': 'auteurs','label': 'source.fields.auteurs', 'visible': true},
+        {'field': 'categorieSource','label': 'source.fields.categorie_source', 'visible': true},
+        {'field': 'typeSource','label': 'source.fields.types_source', 'visible': true},
+        {'field': 'categorieSupport','label': 'source.fields.categorie_support', 'visible': true},
+        {'field': 'typeSupport','label': 'source.fields.support', 'visible': true},
+        {'field': 'categorieMateriau','label': 'source.fields.categorie_materiau', 'visible': true},
+        {'field': 'typeMateriau','label': 'source.fields.materiau', 'visible': true},
+        {'field': 'langues','label': 'source.fields.langues', 'visible': true},
+        {'field': 'postQuem','label': 'datation.fields.post_quem', 'visible': true},
+        {'field': 'anteQuem','label': 'datation.fields.ante_quem', 'visible': true},
+        {'field': 'grandeRegion','label': 'localisation.fields.grande_region', 'visible': true},
+        {'field': 'sousRegion','label': 'localisation.fields.sous_region', 'visible': true},
+        {'field': 'ville','label': 'localisation.fields.ville', 'visible': true},
+        {'field': 'site','label': 'localisation.fields.site', 'visible': true},
+        {'field': 'latitude','label': 'localisation.fields.latitude', 'visible': true},
+        {'field': 'longitude','label': 'localisation.fields.longitude', 'visible': true},
+        {'field': 'link', 'label': 'generic.view', 'visible': true, 'link': true},
+    ],
+    'attestation': [
+        {'field': 'passage', 'label': 'attestation.fields.passage', 'visible': true},
+        {'field': 'extraitAvecRestitution', 'label': 'attestation.fields.extrait_avec_restitution', 'visible': true, 'extraEncode': true},
+        {'field': 'translitteration', 'label': 'attestation.fields.translitteration', 'visible': true, 'extraEncode': true},
+        {'field': 'traductions', 'label': 'generic.fields.translations', 'visible': true},
+        {'field': 'fiabilite', 'label': 'search.criteria_labels.fiabilite_lecture', 'visible': true},
+        {'field': 'pratiques', 'label': 'attestation.fields.pratiques', 'visible': true},
+        {'field': 'occasions', 'label': 'attestation.fields.occasions', 'visible': true},
+        {'field': 'materiels', 'label': 'attestation.fields.materiel', 'visible': true},
+        {'field': 'agents', 'label': 'attestation.sections.agents', 'visible': true},
+        {'field': 'postQuem','label': 'datation.fields.post_quem', 'visible': true},
+        {'field': 'anteQuem','label': 'datation.fields.ante_quem', 'visible': true},
+        {'field': 'grandeRegion','label': 'localisation.fields.grande_region', 'visible': true},
+        {'field': 'sousRegion','label': 'localisation.fields.sous_region', 'visible': true},
+        {'field': 'ville','label': 'localisation.fields.ville', 'visible': true},
+        {'field': 'site','label': 'localisation.fields.site', 'visible': true},
+        {'field': 'latitude','label': 'localisation.fields.latitude', 'visible': true},
+        {'field': 'longitude','label': 'localisation.fields.longitude', 'visible': true},
+        {'field': 'compteElement', 'label': 'attestation.fields.compte_element', 'visible': true},
+        {'field': 'formule', 'label': 'formule.fields.formule', 'visible': true},
+        {'field': 'puissancesDivines', 'label': 'formule.fields.compte_puissances_divines', 'visible': true},
+        {'field': 'link', 'label': 'generic.view', 'visible': true, 'link': true},
+    ]
+} %}
+
+{% block title %}
+    {{ ('search.results')|trans }}
+{% endblock %}
+{% block content %}
+    {% include "search/_results_advanced.html.twig" %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% include "search/_results_advanced.js.twig" %}
+{% endblock %}

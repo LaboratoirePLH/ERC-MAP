@@ -1,6 +1,7 @@
 @import "app.scss";
 
 @import "./component-chosen.css";
+@import "~virtual-keyboard/dist/css/keyboard.min.css";
 
 /* Texte par défaut du choix multiple */
 .chosen-container-multi .chosen-choices .search-field input[type="text"] {
@@ -35,4 +36,28 @@ select:invalid {
 
 select:invalid[multiple] {
    margin-top: 15px !important;
+}
+
+.chosen-spinner {
+    position: absolute;
+    top: 4px;
+    left: 20px;
+}
+
+.chosen-container ul.chosen-results li.group-result {
+    font-weight: bold;
+    color: $map-grey;
+}
+
+.input-group .chosen-container.chosen-container-single .chosen-single {
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+    min-width: 200px;
+
+    &.chosen-single-with-deselect {
+        min-width: 150px;
+    }
+
 }

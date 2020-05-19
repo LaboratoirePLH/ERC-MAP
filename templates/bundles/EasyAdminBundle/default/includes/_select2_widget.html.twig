@@ -1,0 +1,60 @@
+{% set _select2_locales = ['ar', 'az', 'bg', 'ca', 'cs', 'da', 'de', 'el', 'en', 'es', 'et', 'eu', 'fa', 'fi', 'fr', 'gl', 'he', 'hi', 'hr', 'hu', 'id', 'is', 'it', 'ja', 'km', 'ko', 'lt', 'lv', 'mk', 'ms', 'nb', 'nl', 'pl', 'pt-BR', 'pt', 'ro', 'ru', 'sk', 'sr-Cyrl', 'sr', 'sv', 'th', 'tr', 'uk', 'vi', 'zh-CN', 'zh-TW'] %}
+{% set _app_language = app.request.locale|split('-')|first|split('_')|first %}
+{% set _select2_locale = app.request.locale in _select2_locales
+    ? app.request.locale
+    : _app_language in _select2_locales ? _app_language : 'en'
+%}
+
+<script src="{{ asset('bundles/easyadmin/select2/i18n/' ~ _select2_locale ~ '.js') }}"></script>
+<script type="text/javascript">
+    $(function () {
+        // Select2 widget is only enabled for the <select> elements which
+        // explicitly ask for it
+        function init() {
+            $('form select[data-widget="select2"]').select2({theme: 'bootstrap', language: '{{ _select2_locale }}'});
+            $('.grandeSousRegion').each(function () {
+                var selectFirst = $(this).find('select').first(),
+                    selectLast = $(this).find('select').last();
+
+                selectFirst.on('change', function () {
+                    var me = $(this);
+
+                    if (me.val() == "" || me.val() == null) {
+                        selectLast.empty();
+                        selectLast.attr('disabled', true);
+                        return;
+                    }
+                    $.getJSON({
+                        url: "{{ url('data_sous_region') }}",
+                        data: {
+                            parentId: me.val()
+                        },
+                        success: function (rows) {
+                            selectLast.empty();
+                            selectLast.append('<option value=""></option>');
+                            $.each(rows, function (key, row) {
+                                selectLast.append('<option value="' + row.id + '">' + row.name + '</option>');
+                            });
+                            selectLast.attr('disabled', rows.length == 0);
+                        },
+                        error: function (err) {
+                            alert("An error ocurred while loading data ...");
+                        }
+                    });
+                });
+                // If a value is select in the first list at render time,
+                // Load the second list if and only if it doesn't already have values
+                if (selectFirst.val() != "") {
+                    if (selectLast.find('option').length === 0 || (selectLast.find('option').length === 1 && selectLast.find('option').first().text() === '')) {
+                        selectFirst.trigger('change');
+                    } else {
+                        selectLast.prepend('<option value=""></option>');
+                    }
+                }
+            });
+        }
+
+        $(document).on('easyadmin.collection.item-added', init);
+        init();
+    });
+</script>

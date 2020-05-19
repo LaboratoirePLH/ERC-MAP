@@ -4,7 +4,6 @@ require('./base.js');
 
 require('./plugins/chosen.jquery.js');
 
-require('form-serializer');
 require('./plugins/collection.js');
 require('./plugins/dependent_fields.js');
 require('./plugins/dependent_selects.js');
@@ -15,3 +14,10 @@ require('./plugins/precision_indicator.js');
 require('./plugins/watch_form_dirty.js');
 
 require('./plugins/wysiwyg_editor.js');
+
+(function ($) {
+    $('form').on('input', 'textarea.no-return-textarea', function (e) {
+        $(this).val($(this).val().replace(/\r?\n|\r/g, ''));
+    });
+
+})(jQuery);

@@ -1,0 +1,39 @@
+{% extends 'list_page.html.twig' %}
+{% set columns = {
+    'element': [
+        {'field': 'etatAbsolu','label': 'element.fields.etat_absolu', 'visible': true},
+        {'field': 'betaCode','label': 'element.fields.beta_code', 'visible': true},
+        {'field': 'natureElement','label': 'element.fields.nature', 'visible': true},
+        {'field': 'traductions','label': 'generic.fields.translations', 'visible': true},
+        {'field': 'categories','label': 'element.fields.categories_invariantes', 'visible': true},
+        {'field': 'grandeRegion','label': 'localisation.fields.grande_region', 'visible': true},
+        {'field': 'sousRegion','label': 'localisation.fields.sous_region', 'visible': true},
+        {'field': 'ville','label': 'localisation.fields.ville', 'visible': true},
+        {'field': 'site','label': 'localisation.fields.site', 'visible': true},
+        {'field': 'latitude','label': 'localisation.fields.latitude', 'visible': true},
+        {'field': 'longitude','label': 'localisation.fields.longitude', 'visible': true},
+        {'field': 'sources','label': 'biblio.fields.sources', 'link': {
+            'text': 'generic.view_list'|trans, 'url': url('source_element', {'element_id': '__ID__'})
+        }, 'visible': true, 'disableFilter': true},
+        {'field': 'attestations','label': 'source.sections.attestations', 'link': {
+            'text': 'generic.view_list'|trans, 'url': url('attestation_element', {'element_id': '__ID__'})
+        }, 'visible': true, 'disableFilter': true},
+        {'field': 'localisations','label': 'generic.fields.localisations', 'link': {
+            'text': 'generic.webmapping'|trans, 'url': url('source_element_webmapping', {'element_id': '__ID__'})
+        }, 'visible': true, 'disableFilter': true},
+        {'field': 'link', 'label': 'generic.view', 'visible': true, 'link': true},
+    ]
+} %}
+
+
+{% block title %}
+    {{ ('search.results')|trans }}
+{% endblock %}
+{% block content %}
+    {% include "search/_results_advanced.html.twig" %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% include "search/_results_advanced.js.twig" %}
+{% endblock %}

@@ -147,7 +147,7 @@ class Localisation extends AbstractEntity
      */
     public function __clone()
     {
-        if($this->id !== null){
+        if ($this->id !== null) {
             $this->id = null;
         }
     }
@@ -359,14 +359,32 @@ class Localisation extends AbstractEntity
      */
     public function _updateGeometry()
     {
-        if(($lon = $this->getLongitude()) !== null && ($lat = $this->getLatitude()) !== null){
+        if (($lon = $this->getLongitude()) !== null && ($lat = $this->getLatitude()) !== null) {
             $this->setGeom("SRID=4326;POINT({$lon} {$lat})");
         }
+    }
+
+    public function isBlank(): bool
+    {
+        return !(!is_null($this->entitePolitique)
+            || !is_null($this->grandeRegion)
+            || !is_null($this->sousRegion)
+            || !is_null($this->pleiadesVille)
+            || (!is_null($this->nomVille) && strlen($this->nomVille) > 0)
+            || !is_null($this->pleiadesSite)
+            || (!is_null($this->nomSite) && strlen($this->nomSite) > 0)
+            || !is_null($this->latitude)
+            || !is_null($this->longitude)
+            || !$this->topographies->isEmpty()
+            || !$this->fonctions->isEmpty()
+            || strlen($this->commentaireFr) > 0
+            || strlen($this->commentaireEn) > 0);
     }
 
     public function toArray(): array
     {
         return [
+            'id'              => $this->getId(),
             'entitePolitique' => $this->entitePolitique === null ? null : $this->entitePolitique->toArray(),
             'grandeRegion'    => $this->grandeRegion === null ? null : $this->grandeRegion->toArray(),
             'sousRegion'      => $this->sousRegion === null ? null : $this->sousRegion->toArray(),
@@ -374,10 +392,16 @@ class Localisation extends AbstractEntity
             'nomVille'        => $this->nomVille,
             'pleiadesSite'    => $this->pleiadesSite,
             'nomSite'         => $this->nomSite,
-            'topographies'    => $this->topographies->map(function($entry){ return $entry->getTranslatedName(); })->getValues(),
-            'fonctions'       => $this->fonctions->map(function($entry){ return $entry->getTranslatedName(); })->getValues(),
-            'commentaireFr'   => $this->commentaireFr,
-            'commentaireEn'   => $this->commentaireEn
+            'topographies'    => $this->topographies->map(function ($entry) {
+                return $entry->toArray();
+            })->getValues(),
+            'fonctions'       => $this->fonctions->map(function ($entry) {
+                return $entry->toArray();
+            })->getValues(),
+            'longitude'     => $this->longitude,
+            'latitude'      => $this->latitude,
+            'commentaireFr' => $this->commentaireFr,
+            'commentaireEn' => $this->commentaireEn
         ];
     }
 }

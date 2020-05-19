@@ -1,25 +1,96 @@
-<strong>{{ ('search.mode')|trans }}</strong> : {{ ('search.'~mode)|trans }}
-<br />
-<strong>{{ ('search.criteria')|trans }}</strong> :
-{% if mode == 'simple' %}
-{{ criteria|join(' ') }}
-<br />
-{% elseif mode == 'guided' %}
-<ul class="mb-0">
-    {% for key, value in criteria %}
-    <li>
-        <u>{{ key|trans }}</u> :
-        {% if value is iterable %}
-        <ul>
-            {% for subvalue in value %}
-            <li>{{ subvalue|raw }}</li>
-            {% endfor %}
-        </ul>
-        {% else %}
-        {{ value|raw }}
-        {% endif %}
-    </li>
-    {% endfor %}
-</ul>
-{% endif %}
-<strong>{{ ('search.results')|trans }}</strong> : <span id="search-results-count"></span>
+<div class="col-{{width}}" id="search-criteria">
+    <div class="card border-color-map-yellow">
+        <div class="card-header border-color-map-yellow text-center">
+            <strong>{{ ('search.mode')|trans }}</strong>
+            :
+            {{ ('search.'~mode)|trans }}
+            {% if resultsType is defined and resultsType is not null %}
+                ({{ (resultsType ~ '.name')|trans }})
+            {% endif %}
+        </div>
+        <div class="card-body p-1">
+            {% if mode == 'simple' %}
+                <blockquote class="blockquote text-center font-weight-bolder mb-0" style="letter-spacing: 0.1em;">
+                    {{ criteria|join('')|replace({' ': '_'}) }}
+                </blockquote>
+            {% elseif mode == 'guided' or mode == 'elements' %}
+                <div class="d-flex flex-sm-wrap justify-content-around">
+                    {% for key, value in criteria %}
+                        <div class="card">
+                            {% if value is not iterable %}
+                                {% set value = [value] %}
+                            {% endif %}
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item background-map-yellow font-weight-bolder text-uppercase">
+                                    {{ key }}</li>
+                                {% for subvalue in value %}
+                                    <li class="list-group-item">
+                                        {{ subvalue|raw }}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% elseif mode == 'advanced' %}
+                <div class="d-flex flex-sm-wrap justify-content-around">
+                    {% for key, value in criteria %}
+                        <div class="card">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item background-map-yellow font-weight-bolder text-uppercase">
+                                    {{ key }}
+                                </li>
+                                {% for subvalue in value %}
+                                    {% if subvalue is iterable and subvalue.values is defined %}
+                                        <li class="list-group-item">
+                                            <strong>
+                                                <em>
+                                                    {{ loop.index }}
+                                                    {% if subvalue.mode == "all" %}
+                                                        {{ 'search.criteria_labels.all'|trans }}
+                                                    {% endif %}
+                                                </em>
+                                            </strong>
+                                        </li>
+                                        {% for subsubvalue in subvalue.values %}
+                                            <li class="list-group-item">
+                                                &rarr;
+                                                {{ subsubvalue|raw }}
+                                            </li>
+                                        {% endfor %}
+                                    {% elseif subvalue is iterable and subvalue.value is defined %}
+                                        <li class="list-group-item">
+                                            {{ subvalue.value|raw }}
+                                            {% if subvalue.mode|default('') == 'strict' %}
+                                                <strong>
+                                                    ({{ 'generic.fields.strict'|trans }})
+                                                </strong>
+                                            {% endif %}
+                                        </li>
+                                    {% elseif subvalue is iterable %}
+                                        {% for subsubvalue in subvalue %}
+                                            <li class="list-group-item">
+                                                {{ subsubvalue|raw }}
+                                            </li>
+                                        {% endfor %}
+                                    {% else %}
+                                        {# If subvalue is not iterable #}
+                                        <li class="list-group-item">
+                                            {{ subvalue|raw }}
+                                        </li>
+                                    {% endif %}
+
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+        <div class="card-footer border-color-map-yellow text-center">
+            <strong>{{ ('search.results')|trans }}</strong>
+            :
+            <span id="search-results-count"></span>
+        </div>
+    </div>
+</div>

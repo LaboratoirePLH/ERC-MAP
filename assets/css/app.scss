@@ -149,6 +149,10 @@ body {
     }
 }
 
+.cursor-pointer {
+    cursor: pointer;
+}
+
 #back-to-top {
     position: fixed;
     bottom: 40px;
@@ -229,7 +233,7 @@ body {
     }
 }
 
-#search-results {
+.dataTable {
     border-collapse: collapse !important;
 
     tbody {
@@ -250,7 +254,28 @@ body {
     border: 1px solid $map-yellow;
 }
 
+.border-color-map-yellow {
+    border-color: $map-yellow !important;
+}
+
+.border-color-map-grey {
+    border-color: $map-grey !important;
+}
+
+.background-map-yellow {
+    background-color: $map-yellow !important;
+}
+
+.background-map-grey {
+    background-color: $map-grey !important;
+}
+
 table { page-break-inside:auto }
 tr    { page-break-inside:avoid; page-break-after:auto }
 thead { display:table-header-group }
 tfoot { display:table-footer-group }
+
+#total-checked-wrapper {
+    bottom: 5px;
+    left: 25%;
+}

@@ -1,5 +1,6 @@
 app_name: "ERC MAP"
 locale: "fr"
+locale_date: "d/m/Y"
 locale_datetime: "d/m/Y H:i:s (e)"
 languages:
     fr: "Français"
@@ -14,21 +15,25 @@ nav:
     home: "Accueil"
     source_list: "Sources"
     attestation: "Attestations"
-    element: "Élements"
+    element: "Éléments"
     bibliography: "Bibliographie"
-    requete: "Requêtes"
+    requete: "Recherche"
     contact: "Contact"
 
 login_page:
     login_required: "Identification requise"
     access_database: "Accès à la base de données"
+    request_account: "Demander un compte d'accès"
+    register: "Créer un compte"
     reset_password: "Réinitialiser votre mot de passe"
     input_username: "Saisissez votre nom d'utilisateur ou adresse e-mail pour recevoir un lien de réinitialisation"
     input_new_password: "Saisissez votre nouveau mot de passe"
+    inactive_account: "Compte inactif"
     form:
         username: "Nom d'utilisateur"
         username_email: "Nom d'utilisateur ou Adresse e-mail"
         password: "Mot de passe"
+        password_confirmation: "Confirmation du mot de passe"
         remember_me: "Se souvenir de moi ?"
         login: "Connexion"
         reset_password: "Réinitialiser le mot de passe"
@@ -40,6 +45,9 @@ login_page:
         password_reset: "Mot de passe réinitialisé"
         message_sent: "Votre message a bien été envoyé aux administrateurs du site"
         invalid_captcha: "Votre requête a été refusée par la protection anti-robot. Veuillez compléter le CAPTCHA et recommencer"
+        account_created: "Votre compte a bien été créé. Vous pouvez dès à présent vous identifier pour accéder à la base de données."
+        account_requested: "Votre demande de compte a été enregistrée et les administrateurs ont été informés. Vous recevrez prochainement un e-mail vous informant de l'activation de votre compte"
+        account_not_yet_active: "Votre demande de compte n'a pas encore été approuvée par les administrateurs."
 generic:
     actions: "Actions"
     close: "Fermer"
@@ -54,6 +62,7 @@ generic:
     add: "Ajouter"
     clone: "Dupliquer"
     clear: "Effacer"
+    load: "Charger"
     clear_filters: "Réinitialiser les filtres"
     send: "Envoyer"
     exit: "Quitter"
@@ -61,16 +70,24 @@ generic:
     stay: "Rester"
     choose: "Choisir"
     confirm: "Confirmer"
+    start: "Démarrer"
     toggle_section: "Afficher/Cacher la section"
     export_csv: "Exporter en CSV"
     locked: "Verrouillé"
     link: "Lien"
+    view_list: "Voir la liste"
+    webmapping: "Cartographie"
     fields:
         id: "ID"
+        table: "Table"
+        avant: "Avant"
+        apres: "Après"
         createur: "Créateur"
         date: "Date"
         date_creation: "Création"
+        cree: "Créé"
         date_modification: "Dernière Modification"
+        modifie: "Modifié"
         by: "par"
         type: "Type"
         commentaire: "Commentaire"
@@ -82,23 +99,30 @@ generic:
         commentaire_fr: "Commentaires (FR)"
         commentaire_en: "Commentaires (EN)"
         langue: "Langue"
-        to_translate: "À traduire en"
+        to_translate: "Traduire en"
+        translation: "Traduction"
         translations: "Traductions"
         precision: "Précision"
         fiabilite: "Fiabilité"
         version: "Version"
         datation: "Datation"
         localisation: "Localisation"
+        localisations: "Localisations"
         localisation_reelle: "Réel(e) ?"
         quantite: "Quantité"
         est_datee: "Est Daté(e) ?"
         est_localisee: "Localisation ?"
         position: "Position"
+        coordonnees: "Coordonnées"
         lieu: "Lieu"
         categorie: "Catégorie"
         champ: "Champ"
         strict: "Strict"
         require_all: "Tous requis"
+        reason: "Raison"
+        divers: "Divers"
+        indetermine: "Indéterminé"
+        lien_direct: "Lien direct"
     choices :
         new: "Nouveau"
         existing: "Existant"
@@ -106,6 +130,7 @@ generic:
         oui: "Oui"
         non: "Non"
     messages:
+        failed_csrf: "Echec, token CSRF invalide"
         deletion_failed_csrf: "Echec de la suppression, token CSRF invalide"
         deletion_failed_missing: "Echec de la suppression, entité non trouvée"
         unknown_user: "Nom d'utilisateur inconnu"
@@ -127,6 +152,8 @@ generic:
 source:
     name: "Source"
     list: "Liste des Sources"
+    list_for_element: "Sources liées à l'Élément #%id%"
+    webmapping_for_element: "Cartographie des Sources liées à l'Élément #%id%"
     view: "Visualiser la Source #%id%"
     create: "Nouvelle Source"
     edit: "Modifier la Source #%id%"
@@ -147,6 +174,7 @@ source:
         titre_principal: "Titre Principal"
         auteurs: "Auteurs"
         types_source: "Types de Source"
+        type_source: "Type de Source"
         categorie_source: "Catégorie de Source"
         materiau: "Matériau"
         categorie_materiau: "Catégorie de Matériau"
@@ -157,12 +185,14 @@ source:
         dernier_editeur: "Dernier Éditeur"
         reference_bibliographique: "Référence Bibliographique"
         reference_source: "Référence à la source"
+        edition: "Édition"
         to_translate_fr: "À traduire en Français"
         to_translate_en: "À traduire en Anglais"
         fiability: "Score de fiabilité"
         url_image: "URL de l'image"
         url_texte: "URL du texte"
         in_situ: "Même Localisation ?"
+        origine: "Origine"
         region_origine: "Région d'Origine"
         lieu_origine: "Lieu d'Origine"
         lieu_decouverte: "Lieu de Découverte"
@@ -199,7 +229,7 @@ biblio:
         deleted: "La Bibliographie a été supprimée"
         missing: "La Bibliographie #%id% n'existe pas"
     fields:
-        titre_abrege: "Mots du titre/Titre Abrégé"
+        titre_abrege: "Titre Abrégé"
         titre_complet: "Titre Complet"
         annee: "Année"
         auteur: "Auteur"
@@ -216,6 +246,7 @@ attestation:
         passage: "Passage"
         prose: "Prose"
         poesie: "Poésie"
+        prose_poesie: "Prose / Poésie"
         extrait_sans_restitution: "Extrait sans restitution"
         extrait_avec_restitution: "Extrait avec restitution"
         translitteration: "Translittération"
@@ -231,6 +262,7 @@ attestation:
         element_n : "Élément #"
         element_invariant: "Élément (Invariant)"
         attestations_liees: "Attestations Liées"
+        compte_element: "Nombre d'éléments"
     fiabilite:
         niveau_0: "Indéterminé"
         niveau_1: "(1) Lecture Assurée"
@@ -238,6 +270,7 @@ attestation:
         niveau_3: "(3) Lecture Incertaine"
     list: "Liste des Attestations"
     list_for_source: "Attestations de la Source #%id%"
+    list_for_element: "Attestations liées à l'Élément #%id%"
     view: "Visualiser l'Attestation #%id%"
     create: "Créer une Attestation"
     create_for_source: "Créer une Attestation pour la Source #%id%"
@@ -274,7 +307,8 @@ element:
         etat_morphologique: "Etat Morphologique"
         beta_code: "Beta Code"
         nature: "Nature"
-        categories_invariantes: "Categories invariantes"
+        categories_invariantes: "Catégories invariantes"
+        domaine: "Domaine"
         suffixe: "Suffixe ?"
         genre: "Genre"
         nombre: "Nombre"
@@ -331,6 +365,14 @@ datation:
     fields:
         post_quem: "Post Quem"
         ante_quem: "Ante Quem"
+        precision: "Précision de la Datation"
+        commentaires: "Commentaires de la datation"
+    precision:
+        niveau_1: "(1) Date &le; 5 ans"
+        niveau_2: "(2) 5 &lt; Date &le; 50 ans"
+        niveau_3: "(3) 50 &lt; Date &le; 100 ans"
+        niveau_4: "(4) 100 &lt; Date &le; 200 ans"
+        niveau_5: "(5) Date &gt; 200 ans"
 
 localisation:
     search_pleiades: "Chercher sur Pleiades"
@@ -339,6 +381,7 @@ localisation:
     fields:
         grande_region: "Région"
         sous_region: "Sous-région"
+        region: "Région / Sous-région"
         entite_politique: "Entité Politique"
         pleiades_ville: "Numéro Pléiades (Lieu)"
         ville: "Lieu"
@@ -350,6 +393,12 @@ localisation:
         nom_site : "Nom (Site)"
         topographie : "Topographie"
         fonction: "Fonction"
+        precision: "Précision de la Localisation"
+    precision:
+        niveau_1: "(1) Site"
+        niveau_2: "(2) Lieu"
+        niveau_3: "(3) Sous-région"
+        niveau_4: "(4) Région"
 
 chercheur:
     profile: "Modifier le profil"
@@ -363,7 +412,7 @@ chercheur:
         username: "Nom d'utilisateur"
         nom: "Nom complet"
         institution: "Institution"
-        mail: "Addresse e-mail"
+        mail: "Adresse e-mail"
         langue: "Préférence de langue"
         old_password: "Ancien mot de passe"
         new_password: "Nouveau mot de passe"
@@ -374,6 +423,7 @@ formule:
         formule: "Formule"
         operateurs: "Opérateurs"
         puissances_divines: "Puissances Divines"
+        compte_puissances_divines: "Nombre de puissances divines"
     help: >
         Glissez-déplacez les éléments et opérateurs
         <ul>
@@ -381,13 +431,21 @@ formule:
             <li>au sein de la zone de formule pour les réordonner</li>
             <li>depuis la zone de formule vers l'une des zones d'origine pour les supprimer</li>
         </ul>
+    messages:
+        undetermined: "Laisser la valeur vide pour un nombre indéterminé"
     errors:
         valid: "La Formule est valide"
         unknown_element: "Élément inconnu"
         no_element: "Aucun élément dans la formule"
+        not_all_elements: "Tous les éléments doivent apparaître dans la formule"
+        element_twice: "Un élément ne peut pas être suivi directement par un autre element"
         brackets: "Erreur d'ordre de crochets"
         parenthesis: "Erreur d'ordre de parenthèses"
-        operator: "Erreur d'opérateur"
+        brackets_parenthesis_imbrication: "Erreur d'imbrication de parenthèses et de crochets"
+        operator_start: "La Formule ne peut pas commencer par un opérateur"
+        operator_end: "La Formule ne peut pas finir par un opérateur"
+        operator_twice: "Un opérateur ne peut pas être suivi directement par un autre opérateur"
+        operator_imbrication: "Les parenthèses et crochets ne peuvent pas commencer ou finir par un opérateur"
 
 modals:
     confirm_deletion:
@@ -399,16 +457,22 @@ modals:
     confirm_exit_dirty:
         title: "Confirmer la sortie"
         body: "Vous avez des modifications non sauvegardées. Êtes-vous sûr de vouloir quitter ?"
-    confirm_search_reindex:
-        title: "Confirmer la réindexation"
-        body: "Êtes-vous sûr de vouloir reconstruire l'index de recherche ? Cette action peut durer plusieurs minutes et ne pourra pas être interrompue."
+    search_reindex:
+        title: "Reconstruction de l'index de recherche"
+        body: "Êtes-vous sûr de vouloir reconstruire l'index de recherche ? Cette action peut durer plusieurs minutes."
+        progress: "Réindexation en cours. Merci de ne pas fermer cette page."
+        done: "Réindexation terminée. Vous pouvez fermer cette fenêtre."
+    query_save:
+        title: "Enregistrement de la requête"
+        body: "Veuillez saisir un nom pour votre requête"
 
 
 datatable:
     all: "Tous"
-    language: '{"emptyTable":"Aucun enregistrement disponible","info":"Page _PAGE_ sur _PAGES_","infoEmpty":"Aucun enregistrement disponible","infoFiltered":"(filtré à partir de _MAX_ résultats totaux)","lengthMenu":"Afficher _MENU_ éléments par page","search":"Recherche :","zeroRecords":"Aucun résultat","paginate":{"first":"Première","last":"Dernière","next":"Suivante","previous":"Précédente"},"aria":{"sortAscending":"Activer pour classer la colonne de façon croissante","sortDescending":"Activer pour classer la colonne de façon décroissante"}}'
+    language: '{"emptyTable":"Aucun enregistrement disponible","info":"Page _PAGE_ sur _PAGES_","infoEmpty":"Aucun enregistrement disponible","infoFiltered":"(filtré à partir de _MAX_ résultats totaux)","lengthMenu":"Afficher _MENU_ éléments par page","search":"Recherche :","zeroRecords":"Aucun résultat","paginate":{"first":"Première","last":"Dernière","next":"Suivante","previous":"Précédente"},"aria":{"sortAscending":"Activer pour classer la colonne de façon croissante","sortDescending":"Activer pour classer la colonne de façon décroissante"},"processing":"<div class=\\"spinner-border spinner-border-sm\\" role=\\"status\\"><span class=\\"sr-only\\">Chargement en cours...</span></div> Chargement en cours..."}'
 
 autocomplete:
+    select_single: "Sélectionner une valeur"
     select_element: "Sélectionner une valeur (tapez du texte pour filtrer)"
     select_multiple: "Sélectionner des valeurs (tapez du texte pour filtrer)"
     no_matches: "Aucune correspondance trouvée pour : "
@@ -416,6 +480,7 @@ autocomplete:
 misc:
     back_to_top: "Retour en haut de la page"
     copyright: "ERC-MAP - Laboratoire PLH - Université Toulouse - Jean Jaurès"
+    export_copyright: "Bonnet C. (dir.), ERC Mapping Ancient Polytheisms 741182 (DB MAP), Toulouse 2017-2022 : https://base-map-polytheisms.huma-num.fr/ (%date%)."
 
 pages:
     home:
@@ -428,7 +493,20 @@ pages:
         display: "Afficher"
         network_analysis: "Analyse de Réseaux"
         webmapping: "Webmapping"
-
+        corpus_state: "Etat de dépouillement des corpus"
+        corpus_state_filter: "Tapez du texte pour filtrer les Références Bibliographiques"
+    messages:
+        subject_mandatory: "Merci de saisir l'objet de votre message"
+        message_mandatory: "Merci de saisir votre message"
+    error:
+        404:
+            title: "Page introuvable"
+            body: "La page que vous avez demandé n'existe pas"
+            link: "Retour à l'accueil"
+        other:
+            title: "Erreur inconnue"
+            body: "Une erreur inconnue s'est produite. Veuillez réessayer, et contactez l'administrateur si elle persiste"
+            link: "Retour à l'accueil"
 mails:
     password_reset:
         title: "ERC-MAP - Réinitialisation du mot de passe"
@@ -438,34 +516,76 @@ mails:
     contact:
         title: "ERC-MAP - Contact"
         text: "Un utilisateur vous a envoyé un message via le formulaire de contact :"
+        subject: "Objet"
+        message: "Message"
+    new_account:
+        title: "ERC-MAP - Demande de compte"
+        text: "Un visiteur vient d'effectuer une demande de compte sur la base de données ERC-MAP avec les informations suivantes :"
+        link: "Liste des comptes à activer"
+    account_activated:
+        title: "ERC-MAP - Compte activé"
+        text: "Votre compte '%username%' sur la base de données ERC-MAP vient d'être activé par les administrateurs. Vous pouvez maintenant vous y connecter et parcourir la base de données."
 
 search:
-    title: "Interface de Requêtes"
+    title: "Interface de Recherche"
     simple: "Simple"
     guided: "Guidée"
     advanced: "Avancée"
-    elements: "Éléments"
-    mode: "Type de Requête"
-    criteria: "Critères de la Requête"
-    results: "Résultats de la requête"
+    elements: "Formules"
+    mode: "Type de Recherche"
+    criteria: "Critères de la Recherche"
+    results: "Résultats de la Recherche"
     results_count: "%records% enregistrement%plural%"
     results_count_filtered: "%records% enregistrement%plural% affiché%plural% (sur un total de %total%)"
-    coverage: "Etat de dépouillement du corpus"
     reindex: "Reconstruire l'Index de Recherche"
-    new_query: "Nouvelle Requête"
-    edit_query: "Modifier la Requête"
+    clear_cache: "Effacer le cache"
+    new_query: "Nouvelle Recherche"
+    edit_query: "Modifier la Recherche"
+    saved_queries: "Recherches enregistrées"
+    add_criteria: "Ajouter un critère"
+    remove_criteria: "Retirer le critère"
+    choose_criteria: "Choisir le critère"
+    results_type: "Type de résultats"
+    found_in: "Trouvé dans"
+    choose_columns: "Choisir les colonnes"
     criteria_labels:
-        names: "Nom"
-        names_all: "Nom (Tous)"
-        languages: "Langue"
-        languages_all: "Langue (Tous)"
+        names: "Nom(s)"
+        names_all: "Nom(s) (Tous)"
+        languages: "Langue(s)"
+        languages_all: "Langue(s) (Tous)"
         datation: "Datation"
-        locations: "Lieu"
-        sourceTypes: "Source"
-        agents: "Agent"
+        locations: "Lieu(x)"
+        sourceTypes: "Source(s)"
+        agents: "Agent(s)"
+        contexte_attestation: "Contexte de l'Attestation"
+        all: " (Tous)"
+        formule: "Formule(s)"
+        formules_all: "Formules (Toutes)"
+        element_en_contexte: "Nom(s) en contexte"
+        fiabilite_lecture: "Qualité de lecture du nom"
+    element_labels:
+        added: "Éléments ajoutés"
+        add_new: "Ajouter un nouvel élément"
+        remove_element: "Retirer l'élément"
+        formula: "Recherche de formule"
+        position: "Position de l'élément"
+        position_values:
+            any: "Indifférent"
+            start: "Début"
+            end: "Fin"
+            other: "Autre"
     messages:
+        not_up_to_date: "Attention : l'Index de Recherche n'est pas à jour, les résultats peuvent être incomplets."
         reindex_done: "L'Index de Recherche a bien été reconstruit (%records% enregistrements, %time% secondes)"
+        cache_cleared: "Le cache de Recherche a bien été effacé"
         no_empty_search: "Vous devez saisir une valeur dans le champ de recherche"
+        invalid_empty_name: "Le nom de la requête ne peut pas être vide"
+        invalid_query_mode: "Type de requête invalide : '%mode%'"
+        invalid_empty_criteria: "Les critères de requête ne peuvent pas être vides"
+        query_saved: "La requête a bien été enregistrée. Cette fenêtre va se fermer automatiquement"
+        query_deleted: "La requête a bien été supprimée"
+        no_criteria: "Aucun critère choisi. Ajoutez en avec le bouton ci-dessous"
+        no_elements: "Aucun élément choisi. Ajoutez en avec la liste ci-dessus"
 
 requetes:
     title: "Interface de requête"
@@ -509,3 +629,24 @@ requetes:
     erreur_champ_affiche: "Vous devez compléter les champs à afficher."
     erreur_ordre: "Vous avez deux ou plusieurs ordres identiques."
     erreur_nom_requete: "Vous devez donner un nom à la requête."
+
+maintenance:
+    title: "Maintenance de la Base de Données"
+    beta_codes: "Liste des Beta Codes hors format"
+    formula_numbers: "Liste des formules mal numérotées"
+    html_cleanup: "Nettoyage du HTML"
+    html_cleanup_selection: " ligne(s) sélectionnée(s)"
+    html_cleanup_help: "Un retour à la ligne est ajouté après chaque balise <br/> afin d'améliorer l'affichage de ce tableau. Ces retours à la ligne n'existent pas dans le HTML stocké en base de données"
+    html_cleanup_updated: "%updated% ligne(s) mise(s) à jour"
+    html_cleanup_updated_incomplete: "%updated% ligne(s) mise(s) à jour (sur %selected% sélectionnée(s))"
+    messages:
+        invalid_char: "Caractère(s) invalide(s)"
+        invalid_length: "Différence de longueur"
+        missing_position: "Position(s) manquante(s)"
+        duplicate_position: "Positions en double"
+        openxml: "Mise en forme Microsoft Word"
+        bad_encoding: "Caractères HTML encodés"
+        too_many_new_lines: "Trop de sauts de lignes"
+        forbidden_tags: "Balises HTML non autorisées"
+        forbidden_attributes: "Style non autorisé"
+        bad_diacritics: "Signes diacritiques anormaux"

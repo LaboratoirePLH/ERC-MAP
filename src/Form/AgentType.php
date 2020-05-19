@@ -34,14 +34,14 @@ class AgentType extends AbstractType
                 'multiple'     => true,
                 'expanded'     => false,
                 'class'        => Agentivite::class,
-                'choice_label' => 'nom'.ucfirst($locale),
+                'choice_label' => 'nom' . ucfirst($locale),
                 'attr'         => [
                     'class' => 'autocomplete',
                     'data-placeholder' => $options['translations']['autocomplete.select_multiple']
                 ],
                 'query_builder' => function (EntityRepository $er) use ($locale) {
                     return $er->createQueryBuilder('e')
-                        ->orderBy('e.nom'.ucfirst($locale), 'ASC');
+                        ->orderBy('e.nom' . ucfirst($locale), 'ASC');
                 }
             ])
             ->add('natures', EntityType::class, [
@@ -50,14 +50,14 @@ class AgentType extends AbstractType
                 'multiple'     => true,
                 'expanded'     => false,
                 'class'        => Nature::class,
-                'choice_label' => 'nom'.ucfirst($locale),
+                'choice_label' => 'nom' . ucfirst($locale),
                 'attr'         => [
                     'class' => 'autocomplete',
                     'data-placeholder' => $options['translations']['autocomplete.select_multiple']
                 ],
                 'query_builder' => function (EntityRepository $er) use ($locale) {
                     return $er->createQueryBuilder('e')
-                        ->orderBy('e.nom'.ucfirst($locale), 'ASC');
+                        ->orderBy('e.nom' . ucfirst($locale), 'ASC');
                 }
             ])
             ->add('genres', EntityType::class, [
@@ -66,14 +66,14 @@ class AgentType extends AbstractType
                 'multiple'     => true,
                 'expanded'     => false,
                 'class'        => Genre::class,
-                'choice_label' => 'nom'.ucfirst($locale),
+                'choice_label' => 'nom' . ucfirst($locale),
                 'attr'         => [
                     'class' => 'autocomplete',
                     'data-placeholder' => $options['translations']['autocomplete.select_multiple']
                 ],
                 'query_builder' => function (EntityRepository $er) use ($locale) {
                     return $er->createQueryBuilder('e')
-                        ->orderBy('e.nom'.ucfirst($locale), 'ASC');
+                        ->orderBy('e.nom' . ucfirst($locale), 'ASC');
                 }
             ])
             ->add('statutAffiches', EntityType::class, [
@@ -82,14 +82,14 @@ class AgentType extends AbstractType
                 'multiple'     => true,
                 'expanded'     => false,
                 'class'        => StatutAffiche::class,
-                'choice_label' => 'nom'.ucfirst($locale),
+                'choice_label' => 'nom' . ucfirst($locale),
                 'attr'         => [
                     'class' => 'autocomplete',
                     'data-placeholder' => $options['translations']['autocomplete.select_multiple']
                 ],
                 'query_builder' => function (EntityRepository $er) use ($locale) {
                     return $er->createQueryBuilder('e')
-                        ->orderBy('e.nom'.ucfirst($locale), 'ASC');
+                        ->orderBy('e.nom' . ucfirst($locale), 'ASC');
                 }
             ])
             ->add('activites', EntityType::class, [
@@ -98,14 +98,14 @@ class AgentType extends AbstractType
                 'multiple'     => true,
                 'expanded'     => false,
                 'class'        => ActiviteAgent::class,
-                'choice_label' => 'nom'.ucfirst($locale),
+                'choice_label' => 'nom' . ucfirst($locale),
                 'attr'         => [
                     'class' => 'autocomplete',
                     'data-placeholder' => $options['translations']['autocomplete.select_multiple']
                 ],
                 'query_builder' => function (EntityRepository $er) use ($locale) {
                     return $er->createQueryBuilder('e')
-                        ->orderBy('e.nom'.ucfirst($locale), 'ASC');
+                        ->orderBy('e.nom' . ucfirst($locale), 'ASC');
                 }
             ])
             ->add('estLocalisee', CheckboxType::class, [
@@ -118,7 +118,6 @@ class AgentType extends AbstractType
             ->add('localisation', LocalisationType::class, [
                 'label'           => 'generic.fields.localisation',
                 'required'        => false,
-                'region_required' => false,
                 'attr'            => ['class' => 'localisation_form dependent_field_estlocalisee'],
                 'locale'          => $options['locale'],
                 'translations'    => $options['translations'],
@@ -132,8 +131,7 @@ class AgentType extends AbstractType
                 'attr'        => ['class' => 'wysiwyg-editor', 'rows' => 2],
                 'label'       => 'generic.fields.commentaire_en',
                 'required'    => false
-            ))
-        ;
+            ));
     }
 
     public function configureOptions(OptionsResolver $resolver)

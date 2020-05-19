@@ -12,6 +12,7 @@ easy_admin:
         menu:
          - label: 'Gestion'
          - { entity: 'Chercheur', default: true }
+         - NewAccounts
          - Projet
          - Suivi
          - VerrouEntite
@@ -26,6 +27,7 @@ easy_admin:
          - TypeSource
          - TypeSupport
          - { label: 'Attestation' }
+         - Agent
          - CategorieMateriel
          - CategorieOccasion
          - EtatFiche
@@ -46,6 +48,7 @@ easy_admin:
          - NombreElement
          - TraductionElement
          - { label: 'Localisation'}
+         - Localisation
          - EntitePolitique
          - GrandeRegion
          - QFonction
@@ -53,6 +56,16 @@ easy_admin:
          - SousRegion
 
     entities:
+        Agent:
+            class: App\Entity\Agent
+            label: Agent
+            list:
+                sort: ['attestation', 'DESC']
+                filters:
+                - property: 'id_attestation'
+                  label: 'ID Attestation'
+                  type: 'App\EasyAdmin\Filter\IdAttestation'
+                  mapped: false
         ActiviteAgent:
             class: App\Entity\ActiviteAgent
             label: Activité (Agent)
@@ -84,6 +97,7 @@ easy_admin:
             class: App\Entity\Chercheur
             label: Chercheur
             list:
+                dql_filter: 'entity.actif = true'
                 fields:
                  - 'id'
                  - 'prenomNom'
@@ -99,8 +113,11 @@ easy_admin:
                  - { property: 'mail', type: 'email', type_options: { required: true }}
                  - { property: 'newPassword', label: 'Nouveau mot de passe', type: 'text' }
                  - 'institution'
-                 - { property: 'role', type: 'choice', type_options: { choices: {Administrateur: 'admin', Modérateur: 'moderator', Utilisateur: 'user'}}}
-                 - { property: 'projets', type_options: { required: true, by_reference: false }}
+                 - { property: 'role', type: 'choice', type_options: { choices: {Administrateur: 'admin', Modérateur: 'moderator', Contributeur: 'contributor', Utilisateur: 'user'}}}
+                 - { property: 'projets', type_options: { required: false, by_reference: false }}
+                 - { property: 'actif'}
+                 - { property: 'gestionnaireComptes'}
+
             new:
                 fields:
                  - { property: 'prenomNom', type_options: { required: true }}
@@ -108,8 +125,9 @@ easy_admin:
                  - { property: 'mail', type: 'email', type_options: { required: true }}
                  - { property: 'newPassword', label: 'Nouveau mot de passe', type: 'text', type_options: { required: true }}
                  - 'institution'
-                 - { property: 'role', type: 'choice', type_options: { choices: {Administrateur: 'admin', Modérateur: 'moderator', Utilisateur: 'user'}}}
-                 - { property: 'projets', type_options: { required: true, by_reference: false }}
+                 - { property: 'role', type: 'choice', type_options: { choices: {Administrateur: 'admin', Modérateur: 'moderator', Contributeur: 'contributor', Utilisateur: 'user'}}}
+                 - { property: 'projets', type_options: { required: false, by_reference: false }}
+                 - { property: 'actif'}
         EntitePolitique:
             class: App\Entity\EntitePolitique
             label: Entité Politique
@@ -119,6 +137,19 @@ easy_admin:
         Formule:
             class: App\Entity\Formule
             label: Formule
+            list:
+                sort: ['attestation', 'DESC']
+                fields:
+                 - 'id'
+                 - 'formule'
+                 - 'attestation'
+                 - 'positionFormule'
+                 - 'puissancesDivines'
+                filters:
+                - property: 'id_attestation'
+                  label: 'ID Attestation'
+                  type: 'App\EasyAdmin\Filter\IdAttestation'
+                  mapped: false
         Genre:
             class: App\Entity\Genre
             label: Genre
@@ -131,6 +162,24 @@ easy_admin:
         Langue:
             class: App\Entity\Langue
             label: Langue
+        Localisation:
+            class: App\Entity\Localisation
+            label: Localisation
+            list:
+                sort: ['id', 'DESC']
+                fields:
+                 - 'id'
+                 - 'grandeRegion'
+                 - 'sousRegion'
+                 - { property: 'pleiadesVille', format: '%d'}
+                 - 'nomVille'
+                 - { property: 'pleiadesSite', format: '%d'}
+                 - 'nomSite'
+                filters:
+                - property: 'grandeSousRegion'
+                  label: ''
+                  type: 'App\EasyAdmin\Filter\GrandeSousRegion'
+                  mapped: false
         Materiau:
             class: App\Entity\Materiau
             label: Matériau
@@ -192,3 +241,26 @@ easy_admin:
         VerrouEntite:
             class: App\Entity\VerrouEntite
             label: Verrou Entité
+        NewAccounts:
+            class: App\Entity\Chercheur
+            label: Nouveaux utilisateurs
+            list:
+                dql_filter: 'entity.actif = false'
+                fields:
+                 - 'id'
+                 - 'prenomNom'
+                 - 'username'
+                 - { property: 'mail', type: 'email' }
+                 - 'institution'
+                 - 'dateAjout'
+                actions: ['-search', '-new', {name: 'validateUser', label: 'Activer le compte'}]
+            edit:
+                fields:
+                 - { property: 'prenomNom', type_options: { required: true }}
+                 - { property: 'username', type_options: { required: true }}
+                 - { property: 'mail', type: 'email', type_options: { required: true }}
+                 - 'institution'
+                 - { property: 'role', type: 'choice', type_options: { choices: {Administrateur: 'admin', Modérateur: 'moderator', Contributeur: 'contributor', Utilisateur: 'user'}}}
+                 - { property: 'projets', type_options: { required: false, by_reference: false }}
+                 - { property: 'actif'}
+                 - { property: 'gestionnaireComptes'}

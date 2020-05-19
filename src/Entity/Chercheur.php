@@ -5,14 +5,23 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoder;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Chercheur
  *
  * @ORM\Table(name="chercheur")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\ChercheurRepository")
+ * @UniqueEntity(
+ *     fields={"mail"},
+ *     message="email_duplicate"
+ * )
+ * @UniqueEntity(
+ *     fields={"username"},
+ *     message="username_duplicate"
+ * )
  */
 class Chercheur extends AbstractEntity implements UserInterface
 {
@@ -43,6 +52,7 @@ class Chercheur extends AbstractEntity implements UserInterface
      * @var string|null
      *
      * @ORM\Column(name="mail", type="string", length=250, nullable=true)
+     * @Assert\Email(message="invalid_email_format")
      */
     private $mail;
 
@@ -97,6 +107,20 @@ class Chercheur extends AbstractEntity implements UserInterface
      * @ORM\OneToMany(targetEntity="App\Entity\Requetes", mappedBy="id_chercheur", orphanRemoval=true)
      */
     private $requetes; //Ici ça va être un tableau de requêtes en fait
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="actif", type="boolean", nullable=false)
+     */
+    private $actif = false;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="gestionnaire_comptes", type="boolean", nullable=false)
+     */
+    private $gestionnaireComptes = false;
 
     /**
      * Constructor
@@ -213,13 +237,21 @@ class Chercheur extends AbstractEntity implements UserInterface
 
     public function getRoles(): array
     {
+        if (!$this->getActif()) {
+            return ['ROLE_UNVERIFIED_USER'];
+        }
         $roles = ['ROLE_USER'];
-        if(strtolower($this->getRole()) === "admin"){
+        if (strtolower($this->getRole()) === "admin") {
             $roles[] = 'ROLE_ADMIN';
             $roles[] = 'ROLE_MODERATOR';
+            $roles[] = 'ROLE_CONTRIBUTOR';
         }
-        if(strtolower($this->getRole()) === "moderator"){
+        if (strtolower($this->getRole()) === "moderator") {
             $roles[] = 'ROLE_MODERATOR';
+            $roles[] = 'ROLE_CONTRIBUTOR';
+        }
+        if (strtolower($this->getRole()) === "contributor") {
+            $roles[] = 'ROLE_CONTRIBUTOR';
         }
         return $roles;
     }
@@ -255,7 +287,7 @@ class Chercheur extends AbstractEntity implements UserInterface
     public function getNomsProjets(): string
     {
         $projets = [];
-        foreach($this->getProjets() as $p){
+        foreach ($this->getProjets() as $p) {
             $projets[] = $p->getNomFr();
         }
         return implode(', ', $projets);
@@ -346,6 +378,28 @@ class Chercheur extends AbstractEntity implements UserInterface
             }
         }
 
+        return $this;
+    }
+
+    public function getActif(): bool
+    {
+        return $this->actif;
+    }
+
+    public function setActif(bool $actif): self
+    {
+        $this->actif = $actif;
+        return $this;
+    }
+
+    public function getGestionnaireComptes(): bool
+    {
+        return $this->gestionnaireComptes;
+    }
+
+    public function setGestionnaireComptes(bool $gestionnaireComptes): self
+    {
+        $this->gestionnaireComptes = $gestionnaireComptes;
         return $this;
     }
 }

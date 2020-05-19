@@ -22,22 +22,22 @@
             </th>
             <td class="p-0">
                 {% if element.traductions is not empty %}
-                <table class="table table-sm text-center mb-0">
-                    <thead>
-                        <tr>
-                            <th scope="col">{{ 'languages.fr'|trans }}</th>
-                            <th scope="col">{{ 'languages.en'|trans }}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for traduction in element.traductions %}
-                        <tr>
-                            <td>{{ traduction.nomFr }}</td>
-                            <td>{{ traduction.nomEn }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                    <table class="table table-sm text-center mb-0">
+                        <thead>
+                            <tr>
+                                <th scope="col">{{ 'languages.fr'|trans }}</th>
+                                <th scope="col">{{ 'languages.en'|trans }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for traduction in element.traductions %}
+                                <tr>
+                                    <td>{{ traduction.nomFr }}</td>
+                                    <td>{{ traduction.nomEn }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 {% endif %}
             </td>
         </tr>
@@ -55,54 +55,54 @@
             </th>
             <td>
                 {% for c in element.categories %}
-                {{ c.getNom(locale) }}
-                {% if not loop.last %}
-                {{", "}}
-                {% endif %}
+                    {{ c.getNom(locale) }}
+                    {% if not loop.last %}
+                        {{", "}}
+                    {% endif %}
                 {% endfor %}
             </td>
         </tr>
         {% if element.aReference %}
-        <tr>
-            <th scope="row">
-                {{ 'element.fields.theonymes_implicites'|trans}}
-            </th>
-            <td>
-                {% for e in element.theonymesImplicites %}
-                {% include "partials/_entitylink.html.twig" with {
+            <tr>
+                <th scope="row">
+                    {{ 'element.fields.theonymes_implicites'|trans}}
+                </th>
+                <td>
+                    {% for e in element.theonymesImplicites %}
+                        {% include "partials/_entitylink.html.twig" with {
                     'entity': 'element',
                     'link': url('element_show', {'id': e.id}),
                     'text': '#' ~ e.id ~ " " ~ (e.etatAbsolu|raw|striptags)
                 } %}
-                {% endfor %}
-            </td>
-        </tr>
-        <tr>
-            <th scope="row">
-                {{ 'element.fields.theonymes_construits'|trans}}
-            </th>
-            <td>
-                {% for e in element.theonymesConstruits %}
-                {% include "partials/_entitylink.html.twig" with {
+                    {% endfor %}
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">
+                    {{ 'element.fields.theonymes_construits'|trans}}
+                </th>
+                <td>
+                    {% for e in element.theonymesConstruits %}
+                        {% include "partials/_entitylink.html.twig" with {
                     'entity': 'element',
                     'link': url('element_show', {'id': e.id}),
                     'text': '#' ~ e.id ~ " " ~ (e.etatAbsolu|raw|striptags)
                 } %}
-                {% endfor %}
-            </td>
-        </tr>
+                    {% endfor %}
+                </td>
+            </tr>
         {% endif %}
         {% if element.estLocalisee %}
-        <tr>
-            <th scope="row">
-                {{ 'generic.fields.localisation'|trans}}
-            </th>
-            <td class="p-0">
-                {% include "display/localisation.html.twig" with {
+            <tr>
+                <th scope="row">
+                    {{ 'generic.fields.localisation'|trans}}
+                </th>
+                <td class="p-0">
+                    {% include "display/localisation.html.twig" with {
                     'localisation': element.localisation
                 } %}
-            </td>
-        </tr>
+                </td>
+            </tr>
         {% endif %}
         <tr>
             <th scope="row">
@@ -110,30 +110,30 @@
             </th>
             <td class="p-0">
                 {% if element.elementBiblios is not empty %}
-                <table class="table table-sm text-center mb-0">
-                    <thead>
-                        <tr>
-                            <th scope="col">{{ 'source.fields.reference_bibliographique'|trans }}</th>
-                            <th scope="col">{{ 'element.fields.reference_element'|trans }}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for elementBiblio in element.elementBiblios %}
-                        <tr>
-                            <td>
-                                {% include "partials/_entitylink.html.twig" with {
+                    <table class="table table-sm text-center mb-0">
+                        <thead>
+                            <tr>
+                                <th scope="col">{{ 'source.fields.reference_bibliographique'|trans }}</th>
+                                <th scope="col">{{ 'element.fields.reference_element'|trans }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for elementBiblio in element.elementBiblios %}
+                                <tr>
+                                    <td>
+                                        {% include "partials/_entitylink.html.twig" with {
                                     'entity': 'biblio',
                                     'link': url('bibliography_show', {'id': elementBiblio.biblio.id}),
                                     'text': '#' ~ elementBiblio.biblio.id ~ " " ~ (elementBiblio.biblio.titreAbrege|raw|striptags)
                                 } %}
-                            </td>
-                            <td>
-                                {{ elementBiblio.referenceElement }}
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                                    </td>
+                                    <td>
+                                        {{ elementBiblio.referenceElement }}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 {% endif %}
             </td>
         </tr>
@@ -143,8 +143,51 @@
             </th>
             <td>
                 {{ element.getCommentaire(locale)|raw }}
-                <br />
+                <br/>
                 <small>{{ element.getCommentaire(locale == "fr" ? "en" : "fr")|raw }}</small>
+            </td>
+        </tr>
+        <tr>
+            {% set contientElements = element.contientElements|filter(ce => ce.attestation.id in valid_attestations) %}
+            <th scope="row">
+                {{ 'source.sections.attestations'|trans}}
+                ({{ contientElements|length }})
+            </th>
+            <td>
+                {% if contientElements is not empty %}
+                    <table class="table table-sm text-center mb-0">
+                        <thead>
+                            <tr>
+                                <th scope="col">{{ 'attestation.name'|trans }}</th>
+                                <th scope="col">{{ 'attestation.fields.extrait_avec_restitution'|trans }}</th>
+                                <th scope="col">{{ 'element.fields.position'|trans }}</th>
+                                <th scope="col">{{ 'element.fields.en_contexte'|trans }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for ce in contientElements %}
+                                <tr>
+                                    <td>
+                                        {% include "partials/_entitylink.html.twig" with {
+                                            'entity': 'attestation',
+                                            'link': url('attestation_show', {'id': ce.attestation.id}),
+                                            'text': '#' ~ ce.attestation.id ~ (ce.attestation.passage is not empty ? (" " ~ ce.attestation.passage) : "")
+                                        } %}
+                                    </td>
+                                    <td>
+                                        {{ ce.attestation.extraitAvecRestitution|raw }}
+                                    </td>
+                                    <td>
+                                        {{ ce.positionElement }}
+                                    </td>
+                                    <td>
+                                        {{ ce.enContexte|raw }}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% endif %}
             </td>
         </tr>
     </tbody>

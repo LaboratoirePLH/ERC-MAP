@@ -59,14 +59,14 @@ class ElementType extends AbstractType
                 'multiple'     => false,
                 'expanded'     => false,
                 'class'        => NatureElement::class,
-                'choice_label' => 'nom'.ucfirst($locale),
+                'choice_label' => 'nom' . ucfirst($locale),
                 'attr'         => [
                     'class' => 'autocomplete',
                     'data-placeholder' => $options['translations']['autocomplete.select_element']
                 ],
                 'query_builder' => function (EntityRepository $er) use ($locale) {
                     return $er->createQueryBuilder('e')
-                        ->orderBy('e.nom'.ucfirst($locale), 'ASC');
+                        ->orderBy('e.nom' . ucfirst($locale), 'ASC');
                 }
             ])
             ->add('categories', EntityType::class, [
@@ -75,14 +75,14 @@ class ElementType extends AbstractType
                 'multiple'     => true,
                 'expanded'     => false,
                 'class'        => CategorieElement::class,
-                'choice_label' => 'nom'.ucfirst($locale),
+                'choice_label' => 'nom' . ucfirst($locale),
                 'attr'         => [
                     'class' => 'autocomplete autocomplete-max-3',
                     'data-placeholder' => $options['translations']['autocomplete.select_multiple']
                 ],
                 'query_builder' => function (EntityRepository $er) use ($locale) {
                     return $er->createQueryBuilder('e')
-                        ->orderBy('e.nom'.ucfirst($locale), 'ASC');
+                        ->orderBy('e.nom' . ucfirst($locale), 'ASC');
                 }
             ])
             ->add('aReference', CheckboxType::class, [
@@ -104,7 +104,7 @@ class ElementType extends AbstractType
                     'selection_choice_label'  => 'affichage',
                     'selection_query_builder' => function (EntityRepository $er) use ($options) {
                         $qb = $er->createQueryBuilder('e');
-                        if($options['element']->getId() !== null){
+                        if ($options['element']->getId() !== null) {
                             $qb = $qb->where($qb->expr()->neq('e.id', $options['element']->getId()));
                         }
                         return $qb->orderBy('e.id', 'DESC');
@@ -126,7 +126,7 @@ class ElementType extends AbstractType
                     'selection_choice_label'  => 'affichage',
                     'selection_query_builder' => function (EntityRepository $er) use ($options) {
                         $qb = $er->createQueryBuilder('e');
-                        if($options['element']->getId() !== null){
+                        if ($options['element']->getId() !== null) {
                             $qb = $qb->where($qb->expr()->neq('e.id', $options['element']->getId()));
                         }
                         return $qb->orderBy('e.id', 'DESC');
@@ -146,7 +146,6 @@ class ElementType extends AbstractType
             ->add('localisation', LocalisationType::class, [
                 'label'           => 'generic.fields.localisation',
                 'required'        => false,
-                'region_required' => false,
                 'attr'            => ['class' => 'localisation_form'],
                 'locale'          => $options['locale'],
                 'translations'    => $options['translations'],
@@ -154,7 +153,7 @@ class ElementType extends AbstractType
             ->add('elementBiblios', CollectionType::class, [
                 'label'         => false,
                 'entry_type'    => ElementBiblioType::class,
-                'entry_options' => array_intersect_key($options, array_flip(["translations","locale"])),
+                'entry_options' => array_intersect_key($options, array_flip(["translations", "locale"])),
                 'allow_add'     => true,
                 'allow_delete'  => true,
                 'required'      => false,
@@ -168,8 +167,7 @@ class ElementType extends AbstractType
                 'attr'     => ['class' => 'wysiwyg-editor', 'rows' => 2],
                 'label'    => 'generic.fields.commentaire_en',
                 'required' => false
-            ))
-        ;
+            ));
     }
 
     public function configureOptions(OptionsResolver $resolver)

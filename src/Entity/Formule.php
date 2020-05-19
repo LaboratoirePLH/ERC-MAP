@@ -32,7 +32,7 @@ class Formule extends AbstractEntity
     /**
      * @var int
      *
-     * @ORM\Column(name="puissances_divines", type="smallint", nullable=false, options={"unsigned": true, "default":1})
+     * @ORM\Column(name="puissances_divines", type="smallint", nullable=true, options={"unsigned": true, "default":1})
      */
     private $puissancesDivines = 1;
 
@@ -81,8 +81,11 @@ class Formule extends AbstractEntity
         return $this->puissancesDivines;
     }
 
-    public function setPuissancesDivines(int $puissancesDivines): self
+    public function setPuissancesDivines($puissancesDivines): self
     {
+        if (!is_numeric($puissancesDivines)) {
+            $puissancesDivines = null;
+        }
         $this->puissancesDivines = $puissancesDivines;
 
         return $this;
@@ -110,10 +113,18 @@ class Formule extends AbstractEntity
      */
     public function __clone()
     {
-        if($this->id !== null){
+        if ($this->id !== null) {
             $this->id = null;
             $this->createur = null;
             $this->createurId = null;
         }
+    }
+
+    public function toArray()
+    {
+        return [
+            'formule'           => $this->formule,
+            'puissancesDivines' => $this->puissancesDivines
+        ];
     }
 }

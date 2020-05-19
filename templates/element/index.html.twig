@@ -3,250 +3,258 @@
 {% set action = action|default('list') %}
 {% set title = title|default('element.'~action) %}
 {% block title %}
-{{ title|trans }}
+    {{ title|trans }}
 {% endblock %}
 {% block content %}
-{% if action == 'list' %}
-<div class="row">
-    <div class="col-12 table-buttons">
-        <a href=" {{ url('element_create') }}" class="btn btn-primary">{{ 'element.create'|trans }}</a>
-        <button type="button" class="btn btn-warning clear-filter-button">
-            {{ 'generic.clear_filters'|trans }}
-        </button>
-    </div>
-</div>
-{% endif %}
-<table class="table table-striped table-hover table-bordered w-100 text-center list_table" id="element_list">
-    <thead>
-        <tr>
-            <th scope="col">
-                {{ 'generic.fields.id'|trans }}
-            </th>
-            <th scope="col">
-                {{ 'element.fields.etat_absolu'|trans }}
-            </th>
-            <th scope="col">
-                {{ 'element.fields.nature'|trans }}
-            </th>
-            <th scope="col">
-                {{ 'generic.fields.translations'|trans }}
-            </th>
-            <th scope="col">
-                {{ 'element.fields.categories_invariantes'|trans }}
-            </th>
-            <th scope="col">
-                {{ 'generic.fields.date_creation'|trans }}
-            </th>
-            <th scope="col">
-                {{ 'generic.fields.date_modification'|trans }}
-            </th>
-            <th scope="col">
-                {{ 'generic.fields.to_translate'|trans }}
-            </th>
-            <th scope="col">
-                {{ 'generic.actions'|trans }}
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for element in elements %}
-        <tr>
-            <th scope="row" class="px-0" data-order="{{ element.id }}">
-                <a href="{{ url('element_show', {'id': element.id}) }}">
-                    #{{ element.id }}
-                </a>
-                <br />
-                <small>{{ 'generic.fields.version'|trans }}&nbsp;{{ element.version|default("?") }}</small>
-            </th>
-            <td>
-                {{ element.etatAbsolu|raw }}
-            </td>
-            <td>
-                {{ element.natureElement is not null ? element.natureElement.nom(locale) : "" }}
-            </td>
-            <td>
-                {{ element.concatTraductions(locale)|raw }}
-            </td>
-            <td>
-                {{ element.concatCategories(locale)|raw }}
-            </td>
-            <td data-order="{{ element.dateCreation|date('U') }}">
-                {{ element.dateCreation|date(('locale_datetime'|trans), "Europe/Paris") }}
-                <br />
-                <small>
-                    {{ element.createur.prenomNom }}<br />
-                </small>
-            </td>
-            <td data-order="{{ element.dateModification|date('U') }}">
-                {{ element.dateModification|date(('locale_datetime'|trans), "Europe/Paris") }}
-                <br />
-                <small>
-                    {{ element.dernierEditeur.prenomNom }}<br />
-                </small>
-            </td>
-            <td>
-                {{ element.traduireFr ? "languages.fr"|trans : "" }}
-                {% if element.traduireFr and element.traduireEn %}
-                <br />
+    {% if action == 'list' %}
+        <div class="row">
+            <div class="col-12 table-buttons">
+                {% if is_granted('ROLE_CONTRIBUTOR') %}
+                    <a href=" {{ url('element_create') }}" class="btn btn-primary">{{ 'element.create'|trans }}</a>
                 {% endif %}
-                {{ element.traduireEn ? "languages.en"|trans : "" }}
-            </td>
-            <td class="py-0 px-1">
-                <a href="{{ url('element_show', {'id': element.id}) }}" class="btn btn-sm btn-block my-1 btn-primary">
-                    <i class="fas fa-fw fa-eye"></i>
-                    {{ 'generic.view'|trans }}
-                </a>
-                {% if element.verrou != null and not element.verrou.isWritable(app.user) %}
-                {% set error = "generic.messages.error_locked"|trans({
-                                        '%type%': 'element.name'|trans,
-                                        '%id%' : element.id,
-                                        '%user%': element.verrou.createur.prenomNom,
-                                        '%time%': element.verrou.dateFin|date(('locale_datetime'|trans), "Europe/Paris")
-                                    }) %}
-                <button type="button" class="btn btn-sm btn-block my-1 btn-danger disabled" data-toggle="tooltip"
-                    data-placement="left" title="{{ error }}">
-                    <i class="fas fa-fw fa-lock"></i>
-                    {{ 'generic.locked'|trans }}
+                <button type="button" class="btn btn-warning clear-filter-button">
+                    {{ 'generic.clear_filters'|trans }}
                 </button>
-                {% else %}
-                {% if is_granted('ROLE_MODERATOR') or element.createur.id == app.user.id %}
-                <a href="{{ url('element_edit', {'id': element.id}) }}" class="btn btn-sm btn-block my-1 btn-warning">
-                    <i class="fas fa-fw fa-edit"></i>
-                    {{ 'generic.edit'|trans }}
-                </a>
+            </div>
+        </div>
+    {% endif %}
+    <table class="table table-striped table-hover table-bordered w-100 text-center list_table" id="element_list">
+        <thead>
+            <tr>
+                <th scope="col">
+                    {{ 'generic.fields.id'|trans }}
+                </th>
+                <th scope="col">
+                    {{ 'element.fields.etat_absolu'|trans }}
+                </th>
+                <th scope="col">
+                    {{ 'element.fields.nature'|trans }}
+                </th>
+                <th scope="col">
+                    {{ 'generic.fields.translations'|trans }}
+                </th>
+                <th scope="col">
+                    {{ 'generic.fields.categorie'|trans }}
+                </th>
+                <th scope="col">
+                    {{ 'generic.fields.cree'|trans }}
+                </th>
+                <th scope="col">
+                    {{ 'generic.fields.modifie'|trans }}
+                </th>
+                <th scope="col">
+                    {{ 'generic.fields.to_translate'|trans }}
+                </th>
+                <th scope="col">
+                    {{ 'generic.actions'|trans }}
+                </th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+        <tfoot>
+            <tr>
+                <th>{{ 'generic.fields.id'|trans }}</th>
+                <th>{{ 'element.fields.etat_absolu'|trans }}</th>
+                <th>{{ 'element.fields.nature'|trans }}</th>
+                <th>{{ 'generic.fields.translations'|trans }}</th>
+                <th>{{ 'generic.fields.categorie'|trans }}</th>
+                <th data-value="{{ is_granted('ROLE_CONTRIBUTOR') ? app.user.prenomNom : '' }}">{{ 'generic.fields.cree'|trans }}</th>
+                <th>{{ 'generic.fields.modifie'|trans }}</th>
+                <th>{{ 'generic.fields.to_translate'|trans }}</th>
+                <th></th>
+            </tr>
+        </tfoot>
+    </table>
+    {% if action == 'list' %}
+        <div class="row">
+            <div class="col-12 table-buttons">
+                {% if is_granted('ROLE_CONTRIBUTOR') %}
+                    <a href=" {{ url('element_create') }}" class="btn btn-primary">{{ 'element.create'|trans }}</a>
                 {% endif %}
-                {% if is_granted('ROLE_ADMIN') or element.createur.id == app.user.id %}
-                {% set uuid = 'confirm_deletion_' ~ element.id ~ '_' ~ random() %}
-                <button type="button" class="btn btn-sm btn-block my-1 btn-danger" id="delete-link-{{element.id}}"
-                    data-toggle="modal" data-target="#{{ uuid }}">
-                    <i class="fas fa-fw fa-trash"></i>
-                    {{ 'generic.delete'|trans }}
+                <button type="button" class="btn btn-warning clear-filter-button">
+                    {{ 'generic.clear_filters'|trans }}
                 </button>
-                {% include "modals/confirmation.html.twig" with {
-                            'modalName': 'confirm_deletion',
-                            'uuid': uuid,
-                            'targetUrl': url('element_delete', {'id' : element.id}),
-                            'confirmationLabel': 'generic.delete',
-                            'csrfToken': 'delete_element_' ~ element.id,
-                        } %}
-                {% endif %}
-                {% endif %}
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-    <tfoot>
-        <tr>
-            <th>{{ 'generic.fields.id'|trans }}</th>
-            <th>{{ 'element.fields.etat_absolu'|trans }}</th>
-            <th>{{ 'element.fields.nature'|trans }}</th>
-            <th>{{ 'generic.fields.translations'|trans }}</th>
-            <th>{{ 'element.fields.categories_invariantes'|trans }}</th>
-            <th data-value="{{ app.user.prenomNom }}">{{ 'generic.fields.date_creation'|trans }}</th>
-            <th>{{ 'generic.fields.date_modification'|trans }}</th>
-            <th>{{ 'generic.fields.to_translate'|trans }}</th>
-            <th></th>
-        </tr>
-    </tfoot>
-</table>
-{% if action == 'list' %}
-<div class="row">
-    <div class="col-12 table-buttons">
-        <a href=" {{ url('element_create') }}" class="btn btn-primary">{{ 'element.create'|trans }}</a>
-        <button type="button" class="btn btn-warning clear-filter-button">
-            {{ 'generic.clear_filters'|trans }}
-        </button>
-    </div>
-</div>
-{% endif %}
+            </div>
+        </div>
+    {% endif %}
+    {% include "modals/confirmation.html.twig" with {
+        'modalName': 'confirm_deletion',
+        'uuid': 'confirm-deletion-modal',
+        'targetUrl': url('element_delete', {'id' : '__ID__'}),
+        'confirmationLabel': 'generic.delete',
+        'csrfToken': 'delete_element',
+    } %}
 {% endblock %}
 
 {% block javascripts %}
-{{ parent() }}
-<script type="text/javascript">
-    $(document).ready(function () {
-        $('#element_list tfoot th').each(function () {
-            var title = $(this).text();
-            var value = $(this).data('value');
-            if (title != "") {
-                $(this).html(
-                    '<input type="text" class="w-100 form-control form-control-sm" placeholder="{{"generic.search"|trans}}' +
-                    ' ' + title + '" />'
-                );
-                if (value != null) {
-                    $(this).children('input').val(value);
-                }
+    {{ parent() }}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            //
+            // Store Source ID in variable
+            const attestationId = "{{ attestation is defined ? attestation : '' }}";
+
+            // Prepare AJAX URL depending on filters
+            var ajax = {
+                url: "{{ url('json_element_list') }}",
+                type: "GET"
+            };
+            if (attestationId !== "") {
+                ajax.data = {
+                    filter: "attestation:" + attestationId
+                };
             }
-        });
-        var dt = $('#element_list').DataTable({
-            responsive: true,
-            autoWidth: true,
-            lengthChange: true,
-            scrollX: false,
-            searching: true,
-            ordering: true,
-            columns: [{ responsivePriority: 1 }, null, null, null, null, null, null, null, {
-                searchable: false,
-                orderable: false,
-                width: 110,
-                responsivePriority: 1
-            }],
-            order: [
-                [6, 'desc']
-            ],
-            language: $.parseJSON('{{ "datatable.language"|trans|raw }}'),
-            pageLength: 10,
-            lengthMenu: [
-                [
-                    10, 25, 50, -1
+
+            // Routes
+            var showRoute = "{{ url('element_show', {'id': '__ID__'}) }}";
+            var editRoute = "{{ url('element_edit', {'id': '__ID__'}) }}";
+            var deleteRoute = "{{ url('element_delete', {'id': '__ID__'}) }}";
+
+            // Error message for locks
+            var lockError = "{{ 'generic.messages.error_locked'|trans({'%type%': 'element.name'|trans}) }}";
+
+            // Role management
+            var isContributor = "{{ is_granted('ROLE_CONTRIBUTOR') ? 1 : 0 }}" === "1";
+            var isModerator = "{{ is_granted('ROLE_MODERATOR') ? 1 : 0 }}" === "1";
+            var isAdmin = "{{ is_granted('ROLE_ADMIN') ? 1 : 0 }}" === "1";
+            var currentUser = parseInt("{{ app.user.id }}", 10);
+
+            const tableOptions = {
+                ajax: ajax,
+                columns: [
+                    {
+                        responsivePriority: 1,
+                        data: 'id',
+                        render: function (data, type, row) {
+                            if (type === 'filter') {
+                                return '#' + data;
+                            }
+                            if (type === 'sort' || type === 'type') {
+                                return data;
+                            }
+                            const versionLabel = "{{ 'generic.fields.version'|trans }}";
+                            return '#' + data + '<br/><small>' + versionLabel + ' ' + (
+                                row.version || '?'
+                            ) + "</small>";
+                        }
+                    },
+                    {
+                        data: 'etat_absolu'
+                    },
+                    {
+                        data: 'nature'
+                    },
+                    {
+                        data: 'traductions',
+                        render: function (data, type, row) {
+                            if (type === 'display') {
+                                return data.join('<br/>');
+                            }
+                            return data.join(' ; ');
+                        }
+                    }, {
+                        data: 'categories',
+                        render: function (data, type, row) {
+                            if (type === 'display') {
+                                return data.join('<br/>');
+                            }
+                            return data.join(' ; ');
+                        }
+                    }, {
+                        data: 'date_creation',
+                        visible: isContributor,
+                        render: function (data, type, row) {
+                            if (type === 'display' || type === 'filter') {
+                                return data.display + '<br/><small>' + row.createur + '</small>';
+                            }
+                            return data.timestamp;
+                        }
+                    }, {
+                        data: 'date_modification',
+                        visible: isContributor,
+                        render: function (data, type, row) {
+                            if (type === 'display' || type === 'filter') {
+                                return data.display + '<br/><small>' + row.editeur + '</small>';
+                            }
+                            return data.timestamp;
+                        }
+                    }, {
+                        data: 'traduire',
+                        visible: isContributor,
+                        render: function (data, type, row) {
+                            return data.join('<br/>');
+                        }
+                    }, {
+                        data: null,
+                        searchable: false,
+                        orderable: false,
+                        width: 110,
+                        responsivePriority: 1,
+                        render: function (data, type, row) {
+                            var verrou = false;
+                            var buttons = [];
+                            if (row.verrou !== false) {
+                                let texteVerrou = lockError.replace('%id%', row.id).replace('%user%', row.verrou.createur).replace('%time%', row.verrou.date_fin);
+                                texteVerrou = $('<div>').html(texteVerrou).text();
+                                verrou = $.fn.createListButton('button', 'danger', 'lock', "{{ 'generic.locked'|trans }}");
+                                verrou.attr('data-toggle', 'tooltip').attr('data-placement', 'left').attr('title', texteVerrou).addClass('disabled');
+                            }
+                            buttons.push($.fn.createListButton('a', 'primary', 'eye', "{{ 'generic.view'|trans }}", showRoute.replace('__ID__', row.id)));
+                            if (verrou === false) {
+                                if (isModerator || row.createur_id === currentUser) {
+                                    buttons.push($.fn.createListButton('a', 'warning', 'edit', "{{ 'generic.edit'|trans }}", editRoute.replace('__ID__', row.id)));
+                                }
+                                if (isAdmin || row.createur_id === currentUser) {
+                                    buttons.push($.fn.createDeleteButton("{{ 'generic.delete'|trans }}", row.id));
+                                }
+                            } else {
+                                buttons.push(verrou);
+                            }
+
+                            return buttons.map(btn => btn[0].outerHTML).join("\n");
+                        }
+                    }
                 ],
-                [
-                    10, 25, 50, "{{'datatable.all'|trans}}"
+                order: [
+                    [
+                        isContributor ? 6 : 0,
+                        'desc'
+                    ]
+                ],
+                language: $.parseJSON('{{ "datatable.language"|trans|raw }}'),
+                pageLength: 10,
+                lengthMenu: [
+                    [
+                        10, 25, 50, -1
+                    ],
+                    [
+                        10, 25, 50, "{{ 'datatable.all'|trans }}"
+                    ]
+                ],
+                buttons: [
+                    {
+                        extend: 'csv',
+                        filename: "{{ 'app_name'|trans }}-{{ 'element.list'|trans }}",
+                        text: "{{ 'generic.export_csv'|trans }}",
+                        customize: function (document) {
+                            return document.replace(/(\s)\s+/g, "$1");
+                        },
+                        exportOptions: {
+                            columns: [
+                                0,
+                                1,
+                                2,
+                                3,
+                                4,
+                                5,
+                                6,
+                                7
+                            ]
+                        }
+                    }
                 ]
-            ],
-            buttons: [{
-                extend: 'csv',
-                filename: "{{ 'app_name'|trans }}-{{ 'element.list'|trans }}",
-                text: "{{'generic.export_csv'|trans}}",
-                customize: function (document) {
-                    return document.replace(/(\s)\s+/g, "$1");
-                },
-                exportOptions: {
-                    columns: [0, 1, 2, 3, 4, 5, 6, 7]
-                }
-            }]
+            };
+            $.fn.setupList('element_list', tableOptions, "{{ 'generic.search'|trans }}");
         });
-        $('#element_list_wrapper select').removeClass('custom-select');
-        dt.columns().every(function () {
-            var me = this;
-            $('input', this.footer()).on('keyup change', function () {
-                if (me.search() !== this.value) {
-                    me.search(
-                        // Remove accented characters from search string
-                        jQuery.fn.DataTable.ext.type.search.string(this.value)
-                    ).draw();
-                }
-            })
-            $('input', this.footer()).each(function () {
-                if ($(this).val() != "") {
-                    console.log('test');
-                    $(this).trigger('change');
-                }
-            })
-        });
-        $('input[type=search]').on('keyup change', function () {
-            dt.search(
-                // Remove accented characters from search string
-                jQuery.fn.DataTable.ext.type.search.string(this.value)
-            ).draw();
-        })
-        dt.buttons().container().appendTo('.table-buttons');
-        $('.clear-filter-button').on('click', function (e) {
-            e.preventDefault();
-            dt.columns().every(function () {
-                $('input', this.footer()).val("").trigger('change');
-            });
-        })
-    });
-</script>
+    </script>
 {% endblock %}

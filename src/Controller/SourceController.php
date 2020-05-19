@@ -3,16 +3,16 @@
 namespace App\Controller;
 
 use App\Entity\CategorieSource;
+use App\Entity\Element;
 use App\Entity\EtatFiche;
 use App\Entity\Source;
-use App\Entity\SourceBiblio;
 use App\Entity\VerrouEntite;
 use App\Form\SourceType;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class SourceController extends AbstractController
 {
@@ -31,13 +31,8 @@ class SourceController extends AbstractController
      */
     public function index()
     {
-        $sources = $this->getDoctrine()
-                        ->getRepository(Source::class)
-                        ->findAll();
-
         return $this->render('source/index.html.twig', [
             'controller_name' => 'SourceController',
-            'sources'         => $sources,
             'breadcrumbs'     => [
                 ['label' => 'nav.home', 'url' => $this->generateUrl('home')],
                 ['label' => 'source.list']
@@ -45,20 +40,80 @@ class SourceController extends AbstractController
         ]);
     }
 
+    /**
+     * @Route("/source/element/{element_id}", name="source_element")
+     */
+    public function indexForElement($element_id, Request $request, TranslatorInterface $translator)
+    {
+        $element = $this->getDoctrine()
+            ->getRepository(Element::class)
+            ->find($element_id);
+        if (is_null($element)) {
+            $request->getSession()->getFlashBag()->add(
+                'error',
+                $translator->trans('element.messages.missing', ['%id%' => $element_id])
+            );
+            return $this->redirectToRoute('source_list');
+        }
+
+        return $this->render('source/index.html.twig', [
+            'controller_name' => 'SourceController',
+            'element'         => $element_id,
+            'title'           => $translator->trans('source.list_for_element', ['%id%' => $element_id]),
+            'breadcrumbs'     => [
+                ['label' => 'nav.home', 'url' => $this->generateUrl('home')],
+                ['label' => $translator->trans('source.list_for_element', ['%id%' => $element_id])]
+            ]
+        ]);
+    }
+
+    /**
+     * @Route("/source/element/{element_id}/webmapping", name="source_element_webmapping")
+     */
+    public function indexForElementWebmapping($element_id, Request $request, TranslatorInterface $translator)
+    {
+        $element = $this->getDoctrine()
+            ->getRepository(Element::class)
+            ->find($element_id);
+        if (is_null($element)) {
+            $request->getSession()->getFlashBag()->add(
+                'error',
+                $translator->trans('element.messages.missing', ['%id%' => $element_id])
+            );
+            return $this->redirectToRoute('source_list');
+        }
+
+        return $this->render('source/webmapping.html.twig', [
+            'controller_name' => 'SourceController',
+            'element'         => $element_id,
+            'title'           => $translator->trans('source.webmapping_for_element', ['%id%' => $element_id]),
+            'webmapping'      => [
+                'app_url'     => $this->getParameter('geo.app_url_' . $request->getLocale()),
+                'function_id' => $this->getParameter('geo.function_id_' . $request->getLocale())
+            ],
+            'breadcrumbs'     => [
+                ['label' => 'nav.home', 'url' => $this->generateUrl('home')],
+                ['label' => $translator->trans('source.list_for_element', ['%id%' => $element_id]), 'url' => $this->generateUrl('source_element', ['element_id' => $element_id])],
+                ['label' => 'generic.webmapping']
+            ]
+        ]);
+    }
 
     /**
      * @Route("/source/create", name="source_create")
      */
-    public function create(Request $request, TranslatorInterface $translator){
+    public function create(Request $request, TranslatorInterface $translator)
+    {
+        $this->denyAccessUnlessGranted("ROLE_CONTRIBUTOR");
+
         $user = $this->get('security.token_storage')->getToken()->getUser();
 
-        if(($cloneId = $request->query->get('cloneFrom', null)) !== null)
-        {
+        if (($cloneId = $request->query->get('cloneFrom', null)) !== null) {
             $source = $this->getDoctrine()
-                       ->getRepository(Source::class)
-                       ->find($cloneId);
+                ->getRepository(Source::class)
+                ->find($cloneId);
 
-            if(is_null($source)){
+            if (is_null($source)) {
                 $request->getSession()->getFlashBag()->add(
                     'error',
                     $translator->trans('source.messages.missing', ['%id%' => $cloneId])
@@ -67,19 +122,17 @@ class SourceController extends AbstractController
             }
             $source = clone $source;
             $clone = true;
-        }
-        else
-        {
+        } else {
             $source = new Source();
             $catSource = $this->getDoctrine()
-                           ->getRepository(CategorieSource::class)
-                           ->findOneBy(['nomEn' => 'Epigraphy']);
+                ->getRepository(CategorieSource::class)
+                ->findOneBy(['nomEn' => 'Epigraphy']);
             $source->setCategorieSource($catSource);
             $clone = false;
         }
 
         $form   = $this->get('form.factory')->create(SourceType::class, $source, [
-            'action'       => 'create',
+            'formAction'   => 'create',
             'isClone'      => $clone,
             'user'         => $user,
             'locale'       => $request->getLocale(),
@@ -89,14 +142,14 @@ class SourceController extends AbstractController
             ]
         ]);
 
-        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()){
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $source->setCreateur($user);
             $source->setDernierEditeur($user);
             // Sauvegarde
             $em = $this->getDoctrine()->getManager();
             $em->persist($source);
-            foreach($source->getSourceBiblios() as $sb){
-                if($sb->getBiblio() !== null){
+            foreach ($source->getSourceBiblios() as $sb) {
+                if ($sb->getBiblio() !== null) {
                     $em->persist($sb->getBiblio());
                     $sb->setSource($source);
                     $em->persist($sb);
@@ -104,9 +157,9 @@ class SourceController extends AbstractController
                     $source->removeSourceBiblio($sb);
                 }
             }
-            if(!empty($source->getAttestations())) {
-                foreach($source->getAttestations() as $a){
-                    if(!empty($a->getPassage())){
+            if (!empty($source->getAttestations())) {
+                foreach ($source->getAttestations() as $a) {
+                    if (!empty($a->getPassage())) {
                         // Persist only valid data
                         $a->setSource($source);
                         $a->setCreateur($user);
@@ -121,10 +174,10 @@ class SourceController extends AbstractController
                     }
                 }
             }
-            if($source->getInSitu() === true){
+            if ($source->getInSitu() === true) {
                 $source->setLieuOrigine(null);
             }
-            if($source->getEstDatee() !== true){
+            if ($source->getEstDatee() !== true) {
                 $source->setDatation(null);
             }
             $em->flush();
@@ -153,11 +206,12 @@ class SourceController extends AbstractController
     /**
      * @Route("/source/{id}", name="source_show")
      */
-    public function show($id, Request $request, TranslatorInterface $translator){
+    public function show($id, Request $request, TranslatorInterface $translator)
+    {
         $source = $this->getDoctrine()
-                       ->getRepository(Source::class)
-                       ->find($id);
-        if(is_null($source)){
+            ->getRepository(Source::class)
+            ->find($id);
+        if (is_null($source)) {
             $request->getSession()->getFlashBag()->add(
                 'error',
                 $translator->trans('source.messages.missing', ['%id%' => $id])
@@ -180,29 +234,30 @@ class SourceController extends AbstractController
     /**
      * @Route("/source/{id}/edit", name="source_edit")
      */
-    public function edit($id, Request $request, TranslatorInterface $translator){
+    public function edit($id, Request $request, TranslatorInterface $translator)
+    {
+        $this->denyAccessUnlessGranted("ROLE_CONTRIBUTOR");
+
         $user = $this->get('security.token_storage')->getToken()->getUser();
 
         $source = $this->getDoctrine()
-                       ->getRepository(Source::class)
-                       ->find($id);
+            ->getRepository(Source::class)
+            ->find($id);
 
-        if(is_null($source)){
+        if (is_null($source)) {
             $request->getSession()->getFlashBag()->add(
                 'error',
                 $translator->trans('source.messages.missing', ['%id%' => $id])
             );
             return $this->redirectToRoute('source_list');
         }
-        if(!$this->isGranted('ROLE_MODERATOR') && $source->getCreateur()->getId() !== $user->getId()){
+        if (!$this->isGranted('ROLE_MODERATOR') && $source->getCreateur()->getId() !== $user->getId()) {
             $request->getSession()->getFlashBag()->add('error', 'generic.messages.error_unauthorized');
             return $this->redirectToRoute('source_list');
         }
-        if($source->getVerrou() === null){
+        if ($source->getVerrou() === null) {
             $verrou = $this->getDoctrine()->getRepository(VerrouEntite::class)->create($source, $user, $this->dureeVerrou);
-        }
-        else if(!$source->getVerrou()->isWritable($user))
-        {
+        } else if (!$source->getVerrou()->isWritable($user)) {
             $request->getSession()->getFlashBag()->add(
                 'error',
                 $translator->trans('generic.messages.error_locked', [
@@ -218,7 +273,7 @@ class SourceController extends AbstractController
         }
 
         $form   = $this->get('form.factory')->create(SourceType::class, $source, [
-            'action'       => 'edit',
+            'formAction'   => 'edit',
             'user'         => $user,
             'locale'       => $request->getLocale(),
             'translations' => [
@@ -227,31 +282,30 @@ class SourceController extends AbstractController
             ]
         ]);
 
-        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()){
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $source->setDernierEditeur($user);
             // Sauvegarde
             $em = $this->getDoctrine()->getManager();
-            foreach($source->getSourceBiblios() as $sb){
-                if($sb->getBiblio() !== null){
-                    if(!$em->contains($sb->getBiblio())){
+            foreach ($source->getSourceBiblios() as $sb) {
+                if ($sb->getBiblio() !== null) {
+                    if (!$em->contains($sb->getBiblio())) {
                         $em->persist($sb->getBiblio());
                     }
                     $sb->setSource($source);
-                    if(!$em->contains($sb)){
+                    if (!$em->contains($sb)) {
                         $em->persist($sb);
                     }
-                }
-                else {
+                } else {
                     $source->removeSourceBiblio($sb);
                 }
             }
-            if(!empty($source->getAttestations())) {
-                foreach($source->getAttestations() as $a){
+            if (!empty($source->getAttestations())) {
+                foreach ($source->getAttestations() as $a) {
                     // Don't persist/remove already persisted entities
-                    if(!$em->contains($a)){
+                    if (!$em->contains($a)) {
                         // If it's not persisted, we check the contents of the "passage" field
                         // to determine if it's valid or not
-                        if(!empty($a->getPassage())){
+                        if (!empty($a->getPassage())) {
                             $a->setSource($source);
                             $a->setCreateur($user);
                             $a->setDernierEditeur($user);
@@ -260,17 +314,15 @@ class SourceController extends AbstractController
                                 ->find(1);
                             $a->setEtatFiche($etatFiche);
                             $em->persist($a);
-                        }
-                        else {
-
+                        } else {
                         }
                     }
                 }
             }
-            if($source->getInSitu() === true){
+            if ($source->getInSitu() === true) {
                 $source->setLieuOrigine(null);
             }
-            if($source->getEstDatee() !== true){
+            if ($source->getEstDatee() !== true) {
                 $source->setDatation(null);
             }
             $this->getDoctrine()->getRepository(VerrouEntite::class)->remove($source->getVerrou());
@@ -301,13 +353,16 @@ class SourceController extends AbstractController
     /**
      * @Route("/source/{id}/canceledit", name="source_canceledit")
      */
-    public function canceledit($id, Request $request){
+    public function canceledit($id, Request $request)
+    {
+        $this->denyAccessUnlessGranted("ROLE_CONTRIBUTOR");
+
         $user = $this->get('security.token_storage')->getToken()->getUser();
         $source = $this->getDoctrine()
-                       ->getRepository(Source::class)
-                       ->find($id);
+            ->getRepository(Source::class)
+            ->find($id);
         $verrou = $this->getDoctrine()->getRepository(VerrouEntite::class)->fetch($source);
-        if($verrou !== null && $verrou->isWritable($user)){
+        if ($verrou !== null && $verrou->isWritable($user)) {
             $this->getDoctrine()->getRepository(VerrouEntite::class)->remove($verrou);
         }
         return $this->redirectToRoute('source_list');
@@ -316,18 +371,21 @@ class SourceController extends AbstractController
     /**
      * @Route("/source/{id}/delete", name="source_delete")
      */
-    public function delete($id, Request $request, TranslatorInterface $translator){
+    public function delete($id, Request $request, TranslatorInterface $translator)
+    {
+        $this->denyAccessUnlessGranted("ROLE_CONTRIBUTOR");
+
         $submittedToken = $request->request->get('token');
         $user = $this->get('security.token_storage')->getToken()->getUser();
 
-        if ($this->isCsrfTokenValid('delete_source_'.$id, $submittedToken)) {
+        if ($this->isCsrfTokenValid('delete_source', $submittedToken)) {
             $user = $this->get('security.token_storage')->getToken()->getUser();
             $repository = $this->getDoctrine()->getRepository(Source::class);
             $source = $repository->find($id);
-            if($source instanceof Source){
-                if($this->isGranted('ROLE_ADMIN')){
+            if ($source instanceof Source) {
+                if ($this->isGranted('ROLE_ADMIN')) {
                     $verrou = $source->getVerrou();
-                    if(!$verrou || $verrou->isWritable($user)) {
+                    if (!$verrou || $verrou->isWritable($user)) {
                         $em = $this->getDoctrine()->getManager();
                         $em->remove($source);
                         $em->flush();

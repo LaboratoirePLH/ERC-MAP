@@ -5,6 +5,7 @@ twig:
     form_themes: ['form/custom.html.twig']
     globals:
         showcase_website_url: '%showcase_website_url%'
+        open_access: '%open_access%'
         env: '%env(APP_ENV)%'
         icons:
             home: 'fa-place-of-worship'

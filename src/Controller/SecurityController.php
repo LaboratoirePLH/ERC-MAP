@@ -3,16 +3,16 @@
 namespace App\Controller;
 
 use App\Entity\Chercheur;
-
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use App\Form\RegisterType;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
-class SecurityController extends Controller
+class SecurityController extends AbstractController
 {
     /**
      * @var string
@@ -24,10 +24,16 @@ class SecurityController extends Controller
      */
     private $fromName;
 
-    public function __construct(string $fromEmail, string $fromName)
+    /**
+     * @var bool
+     */
+    private $openAccess;
+
+    public function __construct(string $fromEmail, string $fromName, bool $openAccess)
     {
         $this->fromEmail = $fromEmail;
         $this->fromName = $fromName;
+        $this->openAccess = $openAccess;
     }
 
     /**
@@ -35,8 +41,7 @@ class SecurityController extends Controller
      */
     public function forgotten_password(Request $request, \Swift_Mailer $mailer, TokenGeneratorInterface $tokenGenerator, TranslatorInterface $translator)
     {
-        if ($request->isMethod('POST'))
-        {
+        if ($request->isMethod('POST')) {
             $username = $request->request->get('username');
 
             $em = $this->getDoctrine()->getManager();
@@ -54,7 +59,7 @@ class SecurityController extends Controller
             }
             $token = $tokenGenerator->generateToken();
 
-            try{
+            try {
                 $user->setResetToken($token);
                 $em->flush();
             } catch (\Exception $e) {
@@ -68,7 +73,7 @@ class SecurityController extends Controller
                 ->setFrom([$this->fromEmail => $this->fromName])
                 ->setTo($user->getMail())
                 ->setBody(
-                     $this->renderView(
+                    $this->renderView(
                         'email/password_reset.html.twig',
                         ['reset_link' => $url]
                     ),
@@ -89,8 +94,7 @@ class SecurityController extends Controller
      */
     public function reset_password($token, Request $request, UserPasswordEncoderInterface $encoder)
     {
-        if ($request->isMethod('POST'))
-        {
+        if ($request->isMethod('POST')) {
             $em = $this->getDoctrine()->getManager();
 
             $user = $em->getRepository(Chercheur::class)->findOneByResetToken($token);
@@ -110,6 +114,66 @@ class SecurityController extends Controller
         }
         return $this->render('login/reset_password.html.twig', [
             'token' => $token
+        ]);
+    }
+
+    /**
+     * @Route("/register", name="register")
+     */
+    public function register(Request $request, \Swift_Mailer $mailer, TranslatorInterface $translator, UserPasswordEncoderInterface $encoder)
+    {
+        if ($this->isGranted('ROLE_USER')) {
+            return $this->redirectToRoute('home');
+        }
+
+        $em   = $this->getDoctrine()->getManager();
+        $user = new Chercheur;
+        $form = $this->get('form.factory')->create(RegisterType::class, $user);
+
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+            $user->setPassword($encoder->encodePassword($user, $user->getPassword()));
+            $em->persist($user);
+
+            if ($this->openAccess) {
+                $user->setActif(true);
+
+                $request->getSession()->getFlashBag()->add('success', 'login_page.message.account_created');
+            } else {
+                $admins = $this->getDoctrine()
+                    ->getRepository(Chercheur::class)
+                    ->findBy(["role" => "admin", "gestionnaireComptes" => true]);
+
+                if (!count($admins)) {
+                    throw new \Exception("No designated account managers");
+                }
+
+                $emails = array_map(function ($u) {
+                    return $u->getMail();
+                }, $admins);
+
+                $mail = (new \Swift_Message($translator->trans('mails.new_account.title')))
+                    ->setFrom([$this->fromEmail => $this->fromName])
+                    ->setTo($emails)
+                    ->setReplyTo($user->getMail())
+                    ->setBody(
+                        $this->renderView(
+                            'email/new_account.html.twig',
+                            compact('user')
+                        ),
+                        'text/html'
+                    );
+
+                $mailer->send($mail);
+
+                $request->getSession()->getFlashBag()->add('success', 'login_page.message.account_requested');
+            }
+            $em->flush();
+
+            return $this->redirectToRoute('login');
+        }
+
+        return $this->render('login/register.html.twig', [
+            'form' => $form->createView()
         ]);
     }
 }

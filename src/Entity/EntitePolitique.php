@@ -34,15 +34,18 @@ class EntitePolitique extends AbstractEntity
         return $this;
     }
 
-    public function getAffichageFr(){
+    public function getAffichageFr()
+    {
         return \sprintf("%s (IACP: %s)", $this->getNomFr(), $this->getNumeroIacp() ?? "?");
     }
 
-    public function getAffichageEn(){
+    public function getAffichageEn()
+    {
         return \sprintf("%s (IACP: %s)", $this->getNomEn(), $this->getNumeroIacp() ?? "?");
     }
 
-    public function toArray(): array {
-        return array_merge($this->getTranslatedName(), ['numeroIacp' => $this->numeroIacp]);
+    public function toArray(): array
+    {
+        return array_merge(['id' => $this->id], $this->getTranslatedName(), ['numeroIacp' => $this->numeroIacp]);
     }
 }

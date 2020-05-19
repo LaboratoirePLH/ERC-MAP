@@ -1,0 +1,102 @@
+<div class="row my-3">
+    <div class="col-2 table-buttons d-flex flex-column justify-content-end align-items-stretch" id="search-results-actions">
+        <a class="btn btn-primary mb-1" href="{{ url('search') }}#{{mode}}" role="button">
+            {{ 'search.new_query'|trans }}
+        </a>
+        <div class="d-block mb-1">
+            <form action="{{ url('search') }}#{{mode}}" method="post">
+                <input type="hidden" name="populate_mode" value="{{mode}}">
+                <input type="hidden" name="populate_criteria" value="{{criteria|json_encode|url_encode|raw}}">
+                <button class="btn btn-secondary btn-block" type="submit">
+                    {{ 'search.edit_query'|trans }}
+                </button>
+            </form>
+        </div>
+        <button type="button" class="btn btn-warning mb-1" id="query-save-button" data-toggle="modal" data-target="#query-save-modal">
+            <i class="fas fa-save fa-fw"></i>
+            {{ 'generic.save'|trans }}
+        </button>
+        {% include "modals/query_save.html.twig" with {
+            'targetUrl'    : url('search_save'),
+            'queryMode'    : mode,
+            'queryCriteria': criteria
+        } %}
+        <div class="dropright d-block">
+            <button type="button" class="btn btn-secondary mb-1 btn-block" id="toggle-columns-button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{ 'search.choose_columns'|trans }}
+                <i class="fas fa-caret-right fa-fw"></i>
+            </button>
+            <div class="dropdown-menu" aria-labelledby="toggle-columns-button">
+                <div class="px-4 py-3">
+                    <div class="row flex-nowrap">
+                        {% set colIndex = 0 %}
+                        {% for group, cols in columns %}
+                            <div class="col">
+                                <div class="dropdown-header text-capitalize cursor-pointer">
+                                    <input type="checkbox" class="form-check-input cursor-pointer toggle-group-column" id="checkboxGroup{{ group }}" data-group="{{group}}" checked>
+                                    <label for="checkboxGroup{{ group }}" class="form-check-label cursor-pointer">
+                                        {{ (group~'.name')|trans }}
+                                    </label>
+                                </div>
+                                <div class="dropdown-divider"></div>
+                                {% for col in cols %}
+                                    <div class="dropdown-item cursor-pointer">
+                                        <input type="checkbox" class="form-check-input cursor-pointer toggle-column checkbox-{{group}}-item" id="checkboxColumn{{ colIndex }}" data-column="{{ colIndex }}" checked>
+                                        <label for="checkboxColumn{{ colIndex }}" class="form-check-label cursor-pointer">
+                                            <small>
+                                                {{ col.label|trans }}
+                                            </small>
+                                        </label>
+                                    </div>
+                                    {% set colIndex = colIndex + 1 %}
+                                {% endfor %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% include "search/_criteria.html.twig" with {
+        'mode'       : mode,
+        'resultsType': resultsType|default(null),
+        'criteria'   : criteriaDisplay,
+        'width'      : 10
+    } %}
+</div>
+<table class="table table-striped table-hover table-bordered text-center list_table" id="search-results">
+    <thead>
+        {% if columns|keys|length > 1 %}
+            <tr>
+                {% for group, cols in columns %}
+                    <th colspan="{{ cols|length }}">
+                        {{ (group~'.name')|trans }}
+                    </th>
+                {% endfor %}
+            </tr>
+        {% endif %}
+        <tr>
+            {% for group, cols in columns %}
+                {% for col in cols %}
+                    <th scope="col">
+                        {{ col.label|trans }}
+                    </th>
+                {% endfor %}
+            {% endfor %}
+        </tr>
+        <tr id="filterRow">
+            {% for group, cols in columns %}
+                {% for col in cols %}
+                    <th>
+                        {% if col.disableFilter is not defined or col.disableFilter != true %}
+                            {{ col.label|trans }}
+                        {% endif %}
+                    </th>
+                {% endfor %}
+            {% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+        {# set value = value|replace({'<<': '&lt;&lt;', '>>': '&gt;&gt;'}) #}
+    </tbody>
+</table>

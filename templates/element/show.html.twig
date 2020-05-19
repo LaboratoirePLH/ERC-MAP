@@ -1,22 +1,25 @@
 {% extends 'page.html.twig' %}
 {% block title %}
-{{ ('element.view')|trans({'%id%': element.id}) }}
+    {{ ('element.view')|trans({'%id%': element.id}) }}
 {% endblock %}
 {% block content %}
-{% if is_granted('ROLE_MODERATOR') or element.createur.id == app.user.id %}
-<div class="text-center">
-    <a href="{{ url('element_edit', {'id': element.id}) }}" class="btn btn-sm my-1 btn-warning">
-        <i class="fas fa-fw fa-edit"></i>
-        {{ 'generic.edit'|trans }}
-    </a>
-</div>
-{% endif %}
-<hr />
-{% include "display/element.html.twig" with {'element': element} %}
-<hr />
-<div class="row">
-    <div class="col-12 text-center">
-        <a href=" {{ url('element_list') }}" class="btn btn-secondary">{{ 'generic.back'|trans }}</a>
+    <div class="text-center">
+        {% if is_granted('ROLE_MODERATOR') or (is_granted('ROLE_CONTRIBUTOR') and element.createur.id == app.user.id) %}
+            <a href="{{ url('element_edit', {'id': element.id}) }}" class="btn btn-sm my-1 btn-warning">
+                <i class="fas fa-fw fa-edit"></i>
+                {{ 'generic.edit'|trans }}
+            </a>
+            <br/>
+        {% endif %}
+        <u>{{ 'generic.fields.lien_direct'|trans }}:</u>
+        <a href="{{ app.request.uri }}">{{ app.request.uri }}</a>
     </div>
-</div>
+    <hr/>
+    {% include "display/element.html.twig" with {'element': element, 'valid_attestations': valid_attestations} %}
+    <hr/>
+    <div class="row">
+        <div class="col-12 text-center">
+            <a href=" {{ url('element_list') }}" class="btn btn-secondary">{{ 'generic.back'|trans }}</a>
+        </div>
+    </div>
 {% endblock %}

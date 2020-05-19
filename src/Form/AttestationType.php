@@ -44,14 +44,14 @@ class AttestationType extends AbstractType
                 'label'         => 'attestation.fields.etat_fiche',
                 'required'      => true,
                 'class'         => EtatFiche::class,
-                'choice_label'  => 'nom'.ucfirst($locale),
+                'choice_label'  => 'nom' . ucfirst($locale),
                 'attr'          => [
                     'class' => 'autocomplete',
                     'data-placeholder' => $options['translations']['autocomplete.select_element']
                 ],
                 'query_builder' => function (EntityRepository $er) use ($locale) {
                     return $er->createQueryBuilder('e')
-                        ->orderBy('e.nom'.ucfirst($locale), 'ASC');
+                        ->orderBy('e.nom' . ucfirst($locale), 'ASC');
                 }
             ])
             ->add('sourceId', IntegerType::class, [
@@ -123,14 +123,14 @@ class AttestationType extends AbstractType
                 'multiple'     => true,
                 'expanded'     => false,
                 'class'        => Pratique::class,
-                'choice_label' => 'nom'.ucfirst($locale),
+                'choice_label' => 'nom' . ucfirst($locale),
                 'attr'         => [
                     'class' => 'autocomplete',
                     'data-placeholder' => $options['translations']['autocomplete.select_multiple']
                 ],
                 'query_builder' => function (EntityRepository $er) use ($locale) {
                     return $er->createQueryBuilder('e')
-                        ->orderBy('e.nom'.ucfirst($locale), 'ASC');
+                        ->orderBy('e.nom' . ucfirst($locale), 'ASC');
                 }
             ])
             ->add('attestationOccasions', CollectionType::class, [
@@ -144,7 +144,7 @@ class AttestationType extends AbstractType
             ->add('attestationMateriels', CollectionType::class, [
                 'label'         => false,
                 'entry_type'    => AttestationMaterielType::class,
-                'entry_options' => array_intersect_key($options, array_flip(["translations","locale"])),
+                'entry_options' => array_intersect_key($options, array_flip(["translations", "locale"])),
                 'allow_add'     => true,
                 'allow_delete'  => true,
                 'required'      => false,
@@ -152,7 +152,7 @@ class AttestationType extends AbstractType
             ->add('agents', CollectionType::class, [
                 'label'         => false,
                 'entry_type'    => AgentType::class,
-                'entry_options' => array_intersect_key($options, array_flip(["translations","locale"])),
+                'entry_options' => array_intersect_key($options, array_flip(["translations", "locale"])),
                 'allow_add'     => true,
                 'allow_delete'  => true,
                 'required'      => false,
@@ -175,7 +175,6 @@ class AttestationType extends AbstractType
             ->add('localisation', LocalisationType::class, [
                 'label'           => 'generic.fields.localisation',
                 'required'        => false,
-                'region_required' => false,
                 'attr'            => ['class' => 'localisation_form'],
                 'locale'          => $options['locale'],
                 'translations'    => $options['translations'],
@@ -187,14 +186,16 @@ class AttestationType extends AbstractType
                 'expanded'     => false,
                 'class'        => Attestation::class,
                 'by_reference' => false,
-                'choice_label' => function($attestation){ return $attestation->getAffichage(); },
+                'choice_label' => function ($attestation) {
+                    return $attestation->getAffichage();
+                },
                 'attr'         => [
                     'class' => 'autocomplete',
                     'data-placeholder' => $options['translations']['autocomplete.select_multiple']
                 ],
                 'query_builder' => function (EntityRepository $er) use ($options) {
                     $qb = $er->createQueryBuilder('e');
-                    if($options['attestation']->getId() !== null){
+                    if ($options['attestation']->getId() !== null) {
                         $qb = $qb->where($qb->expr()->neq('e.id', $options['attestation']->getId()));
                     }
                     return $qb->orderBy('e.id', 'ASC');
@@ -213,7 +214,7 @@ class AttestationType extends AbstractType
             ->add('contientElements', CollectionType::class, [
                 'label'         => false,
                 'entry_type'    => ContientElementType::class,
-                'entry_options' => array_intersect_key($options, array_flip(["translations","locale"])),
+                'entry_options' => array_intersect_key($options, array_flip(["translations", "locale"])),
                 'allow_add'     => true,
                 'allow_delete'  => true,
                 'required'      => false,
@@ -224,8 +225,10 @@ class AttestationType extends AbstractType
                 'allow_add'     => true,
                 'allow_delete'  => true,
                 'required'      => false,
-            ])
-        ;
+                'entry_options' => [
+                    'undeterminedPlaceholder' => $options['translations']['formule.undetermined']
+                ]
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)

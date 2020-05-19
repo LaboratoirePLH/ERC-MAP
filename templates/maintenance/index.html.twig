@@ -1,0 +1,103 @@
+{% extends 'page.html.twig' %}
+{% block title %}
+    {{ 'maintenance.title'|trans }}
+{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-12 d-flex justify-content-around">
+            <a href="{{ url('maintenance_beta_codes') }}" class="btn btn-warning">
+                <i class="fas fa-fw fa-language"></i>
+                {{ 'maintenance.beta_codes'|trans }}
+            </a>
+            <a href="{{ url('maintenance_formula_numbers') }}" class="btn btn-warning">
+                <i class="fas fa-fw fa-sort-numeric-down"></i>
+                {{ 'maintenance.formula_numbers'|trans }}
+            </a>
+            <a href="{{ url('maintenance_html_cleanup') }}" class="btn btn-danger">
+                <i class="fas fa-fw fa-code"></i>
+                {{ 'maintenance.html_cleanup'|trans }}
+            </a>
+        </div>
+    </div>
+    <hr/>
+    {% if beta_codes is defined %}
+        <h4 class="text-center">
+            {{ 'maintenance.beta_codes'|trans }}
+            ({{ beta_codes|length }})
+        </h4>
+        <div class="row">
+            <div class="col-12">
+                <table class="table table-bordered table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">{{'element.fields.etat_absolu'|trans}}</th>
+                            <th scope="col">{{'element.fields.beta_code'|trans}}</th>
+                            <th scope="col">{{'generic.fields.reason'|trans}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for element in beta_codes %}
+                            <tr>
+                                <th scope="row">
+                                    {% include "partials/_entitylink.html.twig" with {
+                                'entity': 'element',
+                                'link': url('element_show', {'id': element.id}),
+                                'text': '#' ~ element.id
+                            } %}
+                                </th>
+                                <td>
+                                    {{ element.etatAbsolu|raw }}
+                                </td>
+                                <td>
+                                    {{ element.betaCode|raw }}
+                                </td>
+                                <td>
+                                    {{ element.reason|trans }}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% endif %}
+    {% if formula_numbers is defined %}
+        <h4 class="text-center">
+            {{ 'maintenance.formula_numbers'|trans }}
+            ({{ formula_numbers|length }})
+        </h4>
+        <div class="row">
+            <div class="col-12">
+                <table class="table table-bordered table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">{{'generic.fields.position'|trans ~ 's'}}</th>
+                            <th scope="col">{{'generic.fields.reason'|trans}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for attestation in formula_numbers %}
+                            <tr>
+                                <th scope="row">
+                                    {% include "partials/_entitylink.html.twig" with {
+                                'entity': 'attestation',
+                                'link': url('attestation_show', {'id': attestation.id}),
+                                'text': '#' ~ attestation.id
+                            } %}
+                                </th>
+                                <td>
+                                    {{ attestation.positions|join(', ') }}
+                                </td>
+                                <td>
+                                    {{ attestation.reason|trans }}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

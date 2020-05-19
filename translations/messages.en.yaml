@@ -1,5 +1,6 @@
 app_name: "ERC MAP"
 locale: "en"
+locale_date: "Y-m-d"
 locale_datetime: "Y-m-d H:i:s (e)"
 languages:
     fr: "French"
@@ -16,19 +17,23 @@ nav:
     attestation: "Testimonies"
     element: "Elements"
     bibliography: "Bibliography"
-    requete: "Queries"
+    requete: "Search"
     contact: "Contact"
 
 login_page:
     login_required: "Login required"
     access_database: "Access the database"
+    request_account: "Request an account"
+    register: "Register"
     reset_password: "Reset your password"
     input_username: "Input your username or email address to receive a reset link"
     input_new_password: "Input your new password"
+    inactive_account: "Inactive account"
     form:
         username: "Username"
         username_email: "Username or Email Address"
         password: "Password"
+        password_confirmation: "Password Confirmation"
         remember_me: "Remember me ?"
         login: "Login"
         reset_password: "Reset password"
@@ -40,6 +45,9 @@ login_page:
         password_reset: "Password has been updated"
         message_sent: "Your message was sent to the website's administrators"
         invalid_captcha: "Your request was denied by the anti-robot protection. Please complete the CAPTCHA and retry"
+        account_created: "Your account has been created. You can now log in to access the database."
+        account_requested: "Your account request has been saved and administrators have been notified. You will soon receive an email informing you of you account's activation."
+        account_not_yet_active: "Your account request has not yet been approved by administrators."
 
 generic:
     actions: "Actions"
@@ -55,6 +63,7 @@ generic:
     delete: "Delete"
     add: "Add"
     clear: "Clear"
+    load: "Load"
     clear_filters: "Clear filters"
     send: "Send"
     exit: "Exit"
@@ -62,16 +71,24 @@ generic:
     stay: "Stay"
     choose: "Choose"
     confirm: "Confirm"
+    start: "Start"
     toggle_section: "Show/Hide section"
     export_csv: "Export as CSV file"
     locked: "Locked"
     link: "Link"
+    view_list: "View list"
+    webmapping: "Cartography"
     fields:
         id: "ID"
+        table: "Table"
+        avant: "Avant"
+        apres: "Après"
         createur: "Creator"
         date: "Date"
         date_creation: "Creation"
+        cree: "Created"
         date_modification: "Latest Edition"
+        modifie: "Edited"
         by: "by"
         type: "Type"
         commentaire: "Commentary"
@@ -83,23 +100,30 @@ generic:
         commentaire_fr: "Commentary (FR)"
         commentaire_en: "Commentary (EN)"
         langue: "Language"
-        to_translate: "To translate in"
+        to_translate: "Translate in"
+        translation: "Translation"
         translations: "Translations"
         precision: "Precision"
         fiabilite: "Reliability"
         version: "Version"
-        datation: "Datation"
+        datation: "Dating"
         localisation: "Location"
+        localisations: "Locations"
         localisation_reelle: "Real ?"
         quantite: "Quantity"
         est_datee: "Is Dated ?"
         est_localisee: "Location ?"
         position: "Position"
+        coordonnees: "Coordinates"
         lieu: "Location"
         categorie: "Category"
         champ: "Field"
         strict: "Strict"
         require_all: "Require all"
+        reason: "Reason"
+        divers: "Miscellaneous"
+        indetermine: "Undetermined"
+        lien_direct: "Direct link"
     choices :
         new: "New"
         existing: "Existing"
@@ -107,6 +131,7 @@ generic:
         oui: "Yes"
         non: "No"
     messages:
+        failed_csrf: "Failure, invalid CSRF Token"
         deletion_failed_csrf: "Deletion failed, invalid CSRF Token"
         deletion_failed_missing: "Deletion failed, record not found"
         unknown_user: "Unknown username"
@@ -128,6 +153,8 @@ generic:
 source:
     name: "Source"
     list: "Sources List"
+    list_for_element: "Sources linked to Element #%id%"
+    webmapping_for_element: "Cartography of Sources linked to Element #%id%"
     view: "View Source #%id%"
     create: "Create Source"
     edit: "Edit Source #%id%"
@@ -147,8 +174,9 @@ source:
         titre_en:  "Title (EN)"
         titre_principal: "Main Title"
         auteurs: "Authors"
-        types_source: "Types"
-        categorie_source: "Category"
+        types_source: "Source Types"
+        type_source: "Source Type"
+        categorie_source: "Source Category"
         materiau: "Material"
         categorie_materiau: "Material Category"
         support: "Medium"
@@ -158,12 +186,14 @@ source:
         dernier_editeur: "Latest Editor"
         reference_bibliographique: "Bibliographic Reference"
         reference_source: "Source Reference"
+        edition: "Edition"
         to_translate_fr: "To translate in French"
         to_translate_en: "To translate in English"
         fiability_score: "Reliability score"
         url_image: "Image URL"
         url_texte: "Text URL"
         in_situ: "Same Location ?"
+        origine: "Origin"
         region_origine: "Original Region"
         lieu_origine: "Original Location"
         lieu_decouverte: "Discovery Location"
@@ -177,7 +207,7 @@ source:
     sections:
         informations_source: "Source information"
         bibliographie: "Bibliography"
-        datation: "Source Datation"
+        datation: "Source Dating"
         localisation: "Source Location"
         commentaires: "Comments"
         attestations: "Testimonies"
@@ -200,7 +230,7 @@ biblio:
         deleted: "Bibliography deleted"
         missing: "Bibliography #%id% does not exists"
     fields:
-        titre_abrege: "Short Title / Title Words"
+        titre_abrege: "Short Title"
         titre_complet: "Full Title"
         annee: "Year"
         auteur: "Author"
@@ -217,6 +247,7 @@ attestation:
         passage: "Passage"
         prose: "Prose"
         poesie: "Poetry"
+        prose_poesie: "Prose / Poetry"
         extrait_sans_restitution: "Without restitution"
         extrait_avec_restitution: "With restitution"
         translitteration: "Transliteration"
@@ -232,6 +263,7 @@ attestation:
         element_n : "Element #"
         element_invariant: "Element (Invariant)"
         attestations_liees: "Linked Testimonies"
+        compte_element: "Element count"
     fiabilite:
         niveau_0: "Undetermined"
         niveau_1: "(1) Confident reading"
@@ -239,6 +271,7 @@ attestation:
         niveau_3: "(3) Uncertain reading"
     list: "Testimonies List"
     list_for_source: "Testimonies of Source #%id%"
+    list_for_element: "Testimonies linked to Element #%id%"
     view: "View Testimony #%id%"
     create: "Create Testimony"
     create_for_source: "Create Testimony for Source #%id%"
@@ -260,7 +293,7 @@ attestation:
         texte_attestation: "Testimony Text"
         contexte: "Context"
         agents: "Agents"
-        datation: "Testimony Datation"
+        datation: "Testimony Dating"
         localisation: "Testimony Location"
         commentaires: "Comments"
         elements: "Elements"
@@ -276,6 +309,7 @@ element:
         beta_code: "Beta Code"
         nature: "Nature"
         categories_invariantes: "Out of Context Categories"
+        domaine: "Domain"
         suffixe: "Suffix ?"
         genre: "Gender"
         nombre: "Number"
@@ -331,6 +365,14 @@ datation:
     fields:
         post_quem: "Post Quem"
         ante_quem: "Ante Quem"
+        precision: "Dating precision"
+        commentaires: "Dating comments"
+    precision:
+        niveau_1: "(1) Dating &le; 5 years"
+        niveau_2: "(2) 5 &lt; Dating &le; 50 years"
+        niveau_3: "(3) 50 &lt; Dating &le; 100 years"
+        niveau_4: "(4) 100 &lt; Dating &le; 200 years"
+        niveau_5: "(5) Dating &gt; 200 years"
 
 localisation:
     search_pleiades: "Search on Pleiades"
@@ -339,6 +381,7 @@ localisation:
     fields:
         grande_region: "Region"
         sous_region: "Sub-region"
+        region: "Region / Sub-region"
         entite_politique: "Political Entity"
         pleiades_ville: "Pleiades Number (Place)"
         ville: "Place"
@@ -350,6 +393,12 @@ localisation:
         nom_site : "Name (Site)"
         topographie : "Topography"
         fonction: "Function"
+        precision: "Location precision"
+    precision:
+        niveau_1: "(1) Site"
+        niveau_2: "(2) Place"
+        niveau_3: "(3) Sub-region"
+        niveau_4: "(4) Region"
 
 chercheur:
     profile: "Update profile"
@@ -374,6 +423,7 @@ formule:
         formule: "Formula"
         operateurs: "Operators"
         puissances_divines: "Divine Powers"
+        compte_puissances_divines: "Divine powers count"
     help: >
         Drag and drop the elements and operators
         <ul>
@@ -381,13 +431,21 @@ formule:
             <li>inside the formula zone to reorder them</li>
             <li>from the formula zone to their original zone to remove them</li>
         </ul>
+    messages:
+        undetermined: "Leave value empty for undetermined number"
     errors:
         valid: "Formula is valid"
         unknown_element: "Unknown element"
         no_element: "No element in the formula"
+        not_all_elements: "All elements must appear in the formula"
+        element_twice: "Elements cannot be directly followed by another element"
         brackets: "Brackets order error"
         parenthesis: "Parenthesis order error"
-        operator: "Operator error"
+        brackets_parenthesis_imbrication: "Brackets and parenthesis imbrication error"
+        operator_start: "Formula cannot start with an operator"
+        operator_end: "Formula cannot end with an operator"
+        operator_twice: "Operator cannot be directly followed by another operator"
+        operator_imbrication: "Brackets and parentheses cannot start or end with an operator"
 
 modals:
     confirm_deletion:
@@ -399,16 +457,22 @@ modals:
     confirm_exit_dirty:
         title: "Confirm exit"
         body: "You have unsaved changes. Are you sure you want to exit ?"
-    confirm_search_reindex:
-        title: "Confirm search index rebuild"
-        body: "Are you sure you want to rebuild the search index ? This action will take several minutes and cannot be interrupted."
+    search_reindex:
+        title: "Search index rebuild"
+        body: "Are you sure you want to rebuild the search index ? This action will take several minutes."
+        progress: "Reindexation in progress. Please do not close this page."
+        done: "Reindexation done. You can close this window."
+    query_save:
+        title: "Query save"
+        body: "Please enter a name for your query"
 
 datatable:
     all: "All"
     language: '{"emptyTable":"No data available","info":"Page _PAGE_ of _PAGES_ (_TOTAL_ records)",
-    "infoEmpty":"No data available","infoFiltered":"(filtered from _MAX_ total records)","lengthMenu":"Display _MENU_ items per page","search":"Search :","zeroRecords":"No result","paginate":{"first":"First","last":"Last","next":"Next","previous":"Previous"},"aria":{"sortAscending":"Activate to sort column ascending","sortDescending":"Activate to sort column descending"}}'
+    "infoEmpty":"No data available","infoFiltered":"(filtered from _MAX_ total records)","lengthMenu":"Display _MENU_ items per page","search":"Search :","zeroRecords":"No result","paginate":{"first":"First","last":"Last","next":"Next","previous":"Previous"},"aria":{"sortAscending":"Activate to sort column ascending","sortDescending":"Activate to sort column descending"},"processing":"<div class=\\"spinner-border spinner-border-sm\\" role=\\"status\\"><span class=\\"sr-only\\">Loading data...</span></div> Loading data..."}'
 
 autocomplete:
+    select_single: "Select a value"
     select_element: "Select a value (type text to filter)"
     select_multiple: "Select values (type text to filter)"
     no_matches: "No matches found for : "
@@ -416,6 +480,7 @@ autocomplete:
 misc:
     back_to_top: "Back to top"
     copyright: "ERC-MAP - Laboratoire PLH - Université Toulouse - Jean Jaurès"
+    export_copyright: "Bonnet C. (dir.), ERC Mapping Ancient Polytheisms 741182 (DB MAP), Toulouse 2017-2022 : https://base-map-polytheisms.huma-num.fr/ (%date%)."
 
 pages:
     home:
@@ -428,6 +493,20 @@ pages:
         display: "Display"
         network_analysis: "Network Analysis"
         webmapping: "Webmapping"
+        corpus_state: "Corpus counting state"
+        corpus_state_filter: "Type text to filter bibliographic references"
+    messages:
+        subject_mandatory: "Please enter the subject of your message"
+        message_mandatory: "Please enter your message"
+    error:
+        404:
+            title: "Page not found"
+            body: "The page you requested does not exist"
+            link: "Back to home"
+        other:
+            title: "Erreur inconnue"
+            body: "An unknown error happened. Please try again, and contact the administrator if the problem persists"
+            link: "Back to home"
 
 mails:
     password_reset:
@@ -438,34 +517,76 @@ mails:
     contact:
         title: "ERC-MAP - Contact"
         text: "A user sent you a message through the contact form : "
+        subject: "Subject"
+        message: "Message"
+    new_account:
+        title: "ERC-MAP - Account request"
+        text: "A visitor just requested an account on the ERC-MAP database with the following information :"
+        link: "List of accounts to activate"
+    account_activated:
+        title: "ERC-MAP - Account activated"
+        text: "Your account '%username%' on the ERC-MAP database has been activated by administrators. You can now connect to it and browse the database."
 
 search:
-    title: "Query Interface"
+    title: "Search Interface"
     simple: "Simple"
     guided: "Guided"
     advanced: "Advanced"
-    elements: "Elements"
-    mode: "Query Type"
-    criteria: "Query Criteria"
-    results: "Query Results"
+    elements: "Formulae"
+    mode: "Search Type"
+    criteria: "Search Criteria"
+    results: "Search Results"
     results_count: "%records% record%plural%"
     results_count_filtered: "%records% record%plural% displayed (out of %total% total)"
-    coverage: "Corpus Coverage"
     reindex: "Rebuild Search Index"
-    new_query: "New Query"
-    edit_query: "Edit Query"
+    clear_cache: "Clear Cache"
+    new_query: "New Search"
+    edit_query: "Edit Search"
+    saved_queries: "Saved Searches"
+    add_criteria: "Add a criteria"
+    remove_criteria: "Remove criteria"
+    choose_criteria: "Choose the criteria"
+    results_type: "Results type"
+    found_in: "Found in"
+    choose_columns: "Choose columns"
     criteria_labels:
-        names: "Name"
-        names_all: "Name (All)"
-        languages: "Language"
-        languages_all: "Language (All)"
-        datation: "Datation"
-        locations: "Location"
-        sourceTypes: "Source"
-        agents: "Agent"
+        names: "Name(s)"
+        names_all: "Name(s) (All)"
+        languages: "Language(s)"
+        languages_all: "Language(s) (All)"
+        datation: "Dating"
+        locations: "Location(s)"
+        sourceTypes: "Source(s)"
+        agents: "Agent(s)"
+        contexte_attestation: "Testimony context"
+        all: " (All)"
+        formule: "Formula(e)"
+        formules_all: "Formulae (All)"
+        element_en_contexte: "Name(s) in context"
+        fiabilite_lecture: "Name quality of reading"
+    element_labels:
+        added: "Added elements"
+        add_new: "Add a new element"
+        remove_element: "Remove element"
+        formula: "Formula search"
+        position: "Element position"
+        position_values:
+            any: "Any"
+            start: "Start"
+            end: "End"
+            other: "Other"
     messages:
+        not_up_to_date: "Warning : the Search Index is not up to date, the results can be incomplete."
         reindex_done: "The Search Index has been rebuilt (%records% records, %time% seconds)"
+        cache_cleared: "The Search cache has been cleared"
         no_empty_search: "You must input a value in the search field"
+        invalid_empty_name: "Query name cannot be empty"
+        invalid_query_mode: "Invalid query type : '%mode%'"
+        invalid_empty_criteria: "Query criteria cannot be empty"
+        query_saved: "Query was successfully saved. This window will close automatically"
+        query_deleted: "Query was successfully deleted"
+        no_criteria: "No criteria added. Add some using the button below"
+        no_elements: "No elements selected. Add some using the list above"
 
 requetes:
     title: "Query interface"
@@ -509,3 +630,24 @@ requetes:
     erreur_champ_affiche: "Please fill out the fields to display."
     erreur_ordre: "One or more fields to display have the same order."
     erreur_nom_requete: "Please name your query."
+
+maintenance:
+    title: "Database Maintenance"
+    beta_codes: "List of out of format Beta Codes"
+    formula_numbers: "List of misnumbered formulae"
+    html_cleanup: "HTML Cleanup"
+    html_cleanup_help: "A newline is added after each <br/> tag to improve this table's display. These newlines do not exist in the HTML stored in the database"
+    html_cleanup_selection: " line(s) selected"
+    html_cleanup_updated: "%updated% ligne(s) updated"
+    html_cleanup_updated_incomplete: "%updated% ligne(s) updated (out of %selected% selected)"
+    messages:
+        invalid_char: "Invalid character(s)"
+        invalid_length: "Length difference"
+        missing_position: "Missing position(s)"
+        duplicate_position: "Duplicate positions"
+        openxml: "Microsoft Word formatting"
+        bad_encoding: "Encoded HTML characters"
+        too_many_new_lines: "Too many newlines"
+        forbidden_tags: "Unauthorized HTML tags"
+        forbidden_attributes: "Unauthorized styling"
+        bad_diacritics: "Abnormal diacritics"

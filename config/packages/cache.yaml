@@ -1,5 +1,13 @@
 framework:
     cache:
+        app: cache.adapter.filesystem
+        directory: '%kernel.cache_dir%/pools' # Only used with cache.adapter.filesystem
+
+        pools:
+            map.cache:
+                adapter: cache.app
+                tags: true
+
         # Put the unique name of your app here: the prefix seed
         # is used to compute stable namespaces for cache keys.
         #prefix_seed: your_vendor_name/app_name

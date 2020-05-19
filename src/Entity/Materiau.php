@@ -35,4 +35,9 @@ class Materiau extends AbstractEntity
         $this->categorieMateriau = $categorieMateriau;
         return $this;
     }
+
+    public function toArray(): array
+    {
+        return array_merge(['id' => $this->id], $this->getTranslatedName());
+    }
 }

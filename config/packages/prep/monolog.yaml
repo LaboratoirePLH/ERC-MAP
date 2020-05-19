@@ -1,0 +1,22 @@
+monolog:
+    handlers:
+        main_critical:
+            type:         fingers_crossed
+            # 500 errors are logged at the critical level
+            action_level: critical
+            # to also log 400 level errors (but not 404's):
+            # action_level: error
+            # excluded_404s:
+            #     - ^/
+            handler:      deduplicated
+        deduplicated:
+            type:    deduplication
+            handler: swift
+        swift:
+            type:       swift_mailer
+            from_email: "%from_email%"
+            to_email:   'romain@3rgo.tech'
+            subject:    'ERC-MAP error report (%env(APP_ENV)%) %%message%%'
+            level:      debug
+            formatter:  monolog.formatter.html
+            content_type: text/html

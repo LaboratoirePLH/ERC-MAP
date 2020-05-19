@@ -45,12 +45,14 @@
             </td>
         </tr>
         <tr>
+            {% set attestationsLiees = attestation.attestationsLiees|filter(a => a.id in valid_attestations) %}
             <th scope="row">
                 {{ 'attestation.fields.attestations_liees'|trans}}
+                ({{ attestationsLiees|length }})
             </th>
             <td>
-                {% for al in attestation.attestationsLiees %}
-                {% include "partials/_entitylink.html.twig" with {
+                {% for al in attestationsLiees %}
+                    {% include "partials/_entitylink.html.twig" with {
                                     'entity': 'attestation',
                                     'link': url('attestation_show', {'id': al.id}),
                                     'text': al.affichage
@@ -64,7 +66,7 @@
             </th>
             <td>
                 {% if attestation.prose %}
-                <i class="fas fa-check fa-fw"></i>
+                    <i class="fas fa-check fa-fw"></i>
                 {% endif %}
             </td>
         </tr>
@@ -74,7 +76,7 @@
             </th>
             <td>
                 {% if attestation.poesie %}
-                <i class="fas fa-check fa-fw"></i>
+                    <i class="fas fa-check fa-fw"></i>
                 {% endif %}
             </td>
         </tr>
@@ -100,22 +102,22 @@
             </th>
             <td class="p-0">
                 {% if attestation.traductions is not empty %}
-                <table class="table table-sm text-center mb-0">
-                    <thead>
-                        <tr>
-                            <th scope="col">{{ 'languages.fr'|trans }}</th>
-                            <th scope="col">{{ 'languages.en'|trans }}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for traduction in attestation.traductions %}
-                        <tr>
-                            <td>{{ traduction.nomFr }}</td>
-                            <td>{{ traduction.nomEn }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                    <table class="table table-sm text-center mb-0">
+                        <thead>
+                            <tr>
+                                <th scope="col">{{ 'languages.fr'|trans }}</th>
+                                <th scope="col">{{ 'languages.en'|trans }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for traduction in attestation.traductions %}
+                                <tr>
+                                    <td>{{ traduction.nomFr }}</td>
+                                    <td>{{ traduction.nomEn }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 {% endif %}
             </td>
         </tr>
@@ -133,10 +135,10 @@
             </th>
             <td>
                 {% for pratique in attestation.pratiques %}
-                {{ pratique.getNom(locale) }}
-                {% if not loop.last %}
-                {{", "}}
-                {% endif %}
+                    {{ pratique.getNom(locale) }}
+                    {% if not loop.last %}
+                        {{", "}}
+                    {% endif %}
                 {% endfor %}
             </td>
         </tr>
@@ -146,26 +148,26 @@
             </th>
             <td class="p-0">
                 {% if attestation.attestationOccasions is not empty %}
-                <table class="table table-sm text-center mb-0">
-                    <thead>
-                        <tr>
-                            <th scope="col">{{ 'attestation.fields.categorie_occasion'|trans }}</th>
-                            <th scope="col">{{ 'attestation.fields.occasion'|trans }}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for ao in attestation.attestationOccasions %}
-                        <tr>
-                            <td>
-                                {{ ao.categorieOccasion is not empty ? ao.categorieOccasion.getNom(locale) : "" }}
-                            </td>
-                            <td>
-                                {{ ao.occasion is not empty ? ao.occasion.getNom(locale) : "" }}
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                    <table class="table table-sm text-center mb-0">
+                        <thead>
+                            <tr>
+                                <th scope="col">{{ 'attestation.fields.categorie_occasion'|trans }}</th>
+                                <th scope="col">{{ 'attestation.fields.occasion'|trans }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for ao in attestation.attestationOccasions %}
+                                <tr>
+                                    <td>
+                                        {{ ao.categorieOccasion is not empty ? ao.categorieOccasion.getNom(locale) : "" }}
+                                    </td>
+                                    <td>
+                                        {{ ao.occasion is not empty ? ao.occasion.getNom(locale) : "" }}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 {% endif %}
             </td>
         </tr>
@@ -175,30 +177,30 @@
             </th>
             <td class="p-0">
                 {% if attestation.attestationMateriels is not empty %}
-                <table class="table table-sm text-center mb-0">
-                    <thead>
-                        <tr>
-                            <th scope="col">{{ 'attestation.fields.categorie_materiel'|trans }}</th>
-                            <th scope="col">{{ 'attestation.fields.materiel'|trans }}</th>
-                            <th scope="col">{{ 'generic.fields.quantite'|trans }}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for am in attestation.attestationMateriels %}
-                        <tr>
-                            <td>
-                                {{ am.categorieMateriel is not empty ? am.categorieMateriel.getNom(locale) : "" }}
-                            </td>
-                            <td>
-                                {{ am.materiel is not empty ? am.materiel.getNom(locale) : "" }}
-                            </td>
-                            <td>
-                                {{ am.quantite }}
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                    <table class="table table-sm text-center mb-0">
+                        <thead>
+                            <tr>
+                                <th scope="col">{{ 'attestation.fields.categorie_materiel'|trans }}</th>
+                                <th scope="col">{{ 'attestation.fields.materiel'|trans }}</th>
+                                <th scope="col">{{ 'generic.fields.quantite'|trans }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for am in attestation.attestationMateriels %}
+                                <tr>
+                                    <td>
+                                        {{ am.categorieMateriel is not empty ? am.categorieMateriel.getNom(locale) : "" }}
+                                    </td>
+                                    <td>
+                                        {{ am.materiel is not empty ? am.materiel.getNom(locale) : "" }}
+                                    </td>
+                                    <td>
+                                        {{ am.quantite }}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 {% endif %}
             </td>
         </tr>
@@ -208,118 +210,118 @@
             </th>
             <td class="p-0">
                 {% if attestation.agents is not empty %}
-                <table class="table table-sm text-center mb-0">
-                    <tbody>
-                        {% for agent in attestation.agents %}
-                        <tr>
-                            <th scope="row" rowspan="{{ agent.estLocalisee ? 8 : 7}}">#{{ loop.index }}</th>
-                            <th scope="row">{{ 'agent.fields.designation'|trans }}</th>
-                            <td>{{ agent.designation|raw }}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">{{ 'agent.fields.agentivite'|trans }}</th>
-                            <td>
-                                {% for agentivite in agent.agentivites %}
-                                {{ agentivite.getNom(locale) }}
-                                {% if not loop.last %}
-                                {{", "}}
-                                {% endif %}
-                                {% endfor %}
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row">{{ 'agent.fields.nature'|trans }}</th>
-                            <td>
-                                {% for nature in agent.natures %}
-                                {{ nature.getNom(locale) }}
-                                {% if not loop.last %}
-                                {{", "}}
-                                {% endif %}
-                                {% endfor %}
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row">{{ 'agent.fields.genre'|trans }}</th>
-                            <td>
-                                {% for genre in agent.genres %}
-                                {{ genre.getNom(locale) }}
-                                {% if not loop.last %}
-                                {{", "}}
-                                {% endif %}
-                                {% endfor %}
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row">{{ 'agent.fields.statut_affiche'|trans }}</th>
-                            <td>
-                                {% for statut in agent.statutAffiches %}
-                                {{ statut.getNom(locale) }}
-                                {% if not loop.last %}
-                                {{", "}}
-                                {% endif %}
-                                {% endfor %}
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row">{{ 'agent.fields.activite'|trans }}</th>
-                            <td>
-                                {% for activite in agent.activites %}
-                                {{ activite.getNom(locale) }}
-                                {% if not loop.last %}
-                                {{", "}}
-                                {% endif %}
-                                {% endfor %}
-                            </td>
-                        </tr>
-                        {% if agent.estLocalisee %}
-                        <tr>
-                            <th scope="row">
-                                {{ 'generic.fields.localisation'|trans}}
-                            </th>
-                            <td class="p-0">
-                                {% include "display/localisation.html.twig" with {
+                    <table class="table table-sm text-center mb-0">
+                        <tbody>
+                            {% for agent in attestation.agents %}
+                                <tr>
+                                    <th scope="row" rowspan="{{ agent.estLocalisee ? 8 : 7}}">#{{ loop.index }}</th>
+                                    <th scope="row">{{ 'agent.fields.designation'|trans }}</th>
+                                    <td>{{ agent.designation|raw }}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">{{ 'agent.fields.agentivite'|trans }}</th>
+                                    <td>
+                                        {% for agentivite in agent.agentivites %}
+                                            {{ agentivite.getNom(locale) }}
+                                            {% if not loop.last %}
+                                                {{", "}}
+                                            {% endif %}
+                                        {% endfor %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">{{ 'agent.fields.nature'|trans }}</th>
+                                    <td>
+                                        {% for nature in agent.natures %}
+                                            {{ nature.getNom(locale) }}
+                                            {% if not loop.last %}
+                                                {{", "}}
+                                            {% endif %}
+                                        {% endfor %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">{{ 'agent.fields.genre'|trans }}</th>
+                                    <td>
+                                        {% for genre in agent.genres %}
+                                            {{ genre.getNom(locale) }}
+                                            {% if not loop.last %}
+                                                {{", "}}
+                                            {% endif %}
+                                        {% endfor %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">{{ 'agent.fields.statut_affiche'|trans }}</th>
+                                    <td>
+                                        {% for statut in agent.statutAffiches %}
+                                            {{ statut.getNom(locale) }}
+                                            {% if not loop.last %}
+                                                {{", "}}
+                                            {% endif %}
+                                        {% endfor %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">{{ 'agent.fields.activite'|trans }}</th>
+                                    <td>
+                                        {% for activite in agent.activites %}
+                                            {{ activite.getNom(locale) }}
+                                            {% if not loop.last %}
+                                                {{", "}}
+                                            {% endif %}
+                                        {% endfor %}
+                                    </td>
+                                </tr>
+                                {% if agent.estLocalisee %}
+                                    <tr>
+                                        <th scope="row">
+                                            {{ 'generic.fields.localisation'|trans}}
+                                        </th>
+                                        <td class="p-0">
+                                            {% include "display/localisation.html.twig" with {
                                     'localisation': agent.localisation
                                 } %}
-                            </td>
-                        </tr>
-                        {% endif %}
-                        <tr>
-                            <th scope="row">{{ 'generic.fields.commentaire'|trans }}</th>
-                            <td>
-                                {{ agent.getCommentaire(locale)|raw }}
-                                <br />
-                                <small>{{ agent.getCommentaire(locale == "fr" ? "en" : "fr")|raw }}</small>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                                <tr>
+                                    <th scope="row">{{ 'generic.fields.commentaire'|trans }}</th>
+                                    <td>
+                                        {{ agent.getCommentaire(locale)|raw }}
+                                        <br/>
+                                        <small>{{ agent.getCommentaire(locale == "fr" ? "en" : "fr")|raw }}</small>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 {% endif %}
             </td>
         </tr>
         {% if attestation.estDatee %}
-        <tr>
-            <th scope="row">
-                {{ 'generic.fields.datation'|trans}}
-            </th>
-            <td class="p-0">
-                {% include "display/datation.html.twig" with {
+            <tr>
+                <th scope="row">
+                    {{ 'generic.fields.datation'|trans}}
+                </th>
+                <td class="p-0">
+                    {% include "display/datation.html.twig" with {
                     'datation': attestation.datation
                 } %}
-            </td>
-        </tr>
+                </td>
+            </tr>
         {% endif %}
         {% if attestation.estLocalisee %}
-        <tr>
-            <th scope="row">
-                {{ 'generic.fields.localisation'|trans}}
-            </th>
-            <td class="p-0">
-                {% include "display/localisation.html.twig" with {
+            <tr>
+                <th scope="row">
+                    {{ 'generic.fields.localisation'|trans}}
+                </th>
+                <td class="p-0">
+                    {% include "display/localisation.html.twig" with {
                     'localisation': attestation.localisation
                 } %}
-            </td>
-        </tr>
+                </td>
+            </tr>
         {% endif %}
         <tr>
             <th scope="row">
@@ -327,7 +329,7 @@
             </th>
             <td>
                 {{ attestation.getCommentaire(locale)|raw }}
-                <br />
+                <br/>
                 <small>{{ attestation.getCommentaire(locale == "fr" ? "en" : "fr")|raw }}</small>
             </td>
         </tr>
@@ -337,54 +339,54 @@
             </th>
             <td class="p-0">
                 {% if attestation.contientElements is not empty %}
-                <table class="table table-sm text-center mb-0">
-                    <tbody>
-                        {% for ce in attestation.contientElements %}
-                        <tr>
-                            <th scope="row" rowspan="7">#{{ ce.positionElement }}</th>
-                            <th scope="row">{{ 'element.name'|trans }}</th>
-                            <td>
-                                {% include "partials/_entitylink.html.twig" with {
+                    <table class="table table-sm text-center mb-0">
+                        <tbody>
+                            {% for ce in attestation.contientElements %}
+                                <tr>
+                                    <th scope="row" rowspan="7">#{{ ce.positionElement }}</th>
+                                    <th scope="row">{{ 'element.name'|trans }}</th>
+                                    <td>
+                                        {% include "partials/_entitylink.html.twig" with {
                                         'entity': 'element',
                                         'link': url('element_show', {'id': ce.element.id}),
                                         'text': '#' ~ ce.element.id ~ " " ~ (ce.element.etatAbsolu|raw|striptags('<span>'))
                                     } %}
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row">{{ 'element.fields.en_contexte'|trans }}</th>
-                            <td>{{ ce.enContexte|raw }}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">{{ 'element.fields.suffixe'|trans }}</th>
-                            <td>
-                                {% if ce.suffixe %}
-                                <i class="fas fa-check fa-fw"></i>
-                                {% endif %}
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row">{{ 'element.fields.etat_morphologique'|trans }}</th>
-                            <td>{{ ce.etatMorphologique }}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">{{ 'element.fields.genre'|trans }}</th>
-                            <td>{{ ce.genreElement is not empty ? ce.genreElement.getNom(locale) : '' }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row">{{ 'element.fields.nombre'|trans }}</th>
-                            <td>{{ ce.nombreElement is not empty ? ce.nombreElement.getNom(locale) : '' }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row">{{ 'element.fields.categorie_contextuelle'|trans }}</th>
-                            <td>{{ ce.categorieElement is not empty ? ce.categorieElement.getNom(locale) : '' }}
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">{{ 'element.fields.en_contexte'|trans }}</th>
+                                    <td>{{ ce.enContexte|raw }}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">{{ 'element.fields.suffixe'|trans }}</th>
+                                    <td>
+                                        {% if ce.suffixe %}
+                                            <i class="fas fa-check fa-fw"></i>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">{{ 'element.fields.etat_morphologique'|trans }}</th>
+                                    <td>{{ ce.etatMorphologique }}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">{{ 'element.fields.genre'|trans }}</th>
+                                    <td>{{ ce.genreElement is not empty ? ce.genreElement.getNom(locale) : '' }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">{{ 'element.fields.nombre'|trans }}</th>
+                                    <td>{{ ce.nombreElement is not empty ? ce.nombreElement.getNom(locale) : '' }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">{{ 'element.fields.categorie_contextuelle'|trans }}</th>
+                                    <td>{{ ce.categorieElement is not empty ? ce.categorieElement.getNom(locale) : '' }}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 {% endif %}
             </td>
         </tr>
@@ -394,26 +396,28 @@
             </th>
             <td class="p-0">
                 {% if attestation.formules is not empty %}
-                <table class="table table-sm text-center mb-0">
-                    <thead>
-                        <tr>
-                            <th scope="col">{{ 'generic.fields.position'|trans }}</th>
-                            <th scope="col">{{ 'formule.fields.formule'|trans }}</th>
-                            <th scope="col">{{ 'formule.fields.puissances_divines'|trans }}</th>
-                            <th scope="col">{{ 'generic.fields.createur'|trans }}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for formule in attestation.formules %}
-                        <tr>
-                            <td>#{{ formule.positionFormule }}</td>
-                            <td class="formula-cell">{{ formule.formule }}</td>
-                            <td>{{ formule.puissancesDivines }}</td>
-                            <td>{{ formule.createur.prenomNom }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                    <table class="table table-sm text-center mb-0">
+                        <thead>
+                            <tr>
+                                <th scope="col">{{ 'generic.fields.position'|trans }}</th>
+                                <th scope="col">{{ 'formule.fields.formule'|trans }}</th>
+                                <th scope="col">{{ 'formule.fields.puissances_divines'|trans }}</th>
+                                <th scope="col">{{ 'generic.fields.createur'|trans }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for formule in attestation.formules %}
+                                <tr>
+                                    <td class="align-middle">#{{ formule.positionFormule }}</td>
+                                    <td class="formula-cell">{{ formule.formule }}</td>
+                                    <td class="align-middle">
+                                        {{ formule.puissancesDivines|default('element.etat_morphologique.indetermine'|trans) }}
+                                    </td>
+                                    <td class="align-middle">{{ formule.createur.prenomNom }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 {% endif %}
             </td>
         </tr>

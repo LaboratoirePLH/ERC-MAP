@@ -48,14 +48,66 @@ class IndexRecherche
      */
     private $data;
 
+    private $decodedData = null;
+
     public function getData(): array
     {
-        return json_decode($this->data, true);
+        if (!$this->decodedData) {
+            $this->decodedData = json_decode($this->data, true);
+        }
+        return $this->decodedData;
     }
 
     public function setData(array $data): self
     {
         $this->data = json_encode($data, JSON_UNESCAPED_UNICODE);
+
+        $textData = [];
+        array_walk_recursive($data, function ($i) use (&$textData) {
+            if (!is_numeric($i)) {
+                // First replace <br/> tags by newliens to keep the word boundaries
+                $i = preg_replace('/\<br(\s*)?\/?\>/i', "\n", $i);
+                // Remove tags and accents and convert to lower case
+                $i = strtolower(\App\Utils\StringHelper::removeAccents(strip_tags($i)));
+            }
+            $textData[] = $i;
+        });
+        $this->setTextData($textData);
+
+        return $this;
+    }
+
+    /**
+     * @ORM\Column(name="text_data", type="text", nullable=false, options={"collation":"utf8_bin"})
+     */
+    private $textData;
+
+    public function getTextData(): array
+    {
+        return json_decode($this->textData);
+    }
+
+    public function setTextData(array $textData): self
+    {
+        $this->textData = json_encode($textData, JSON_UNESCAPED_UNICODE);
+        return $this;
+    }
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="corpus_ready", type="boolean", nullable=false)
+     */
+    private $corpusReady = false;
+
+    public function getCorpusReady(): bool
+    {
+        return $this->corpusReady;
+    }
+
+    public function setCorpusReady(bool $corpusReady): self
+    {
+        $this->corpusReady = $corpusReady;
         return $this;
     }
 }

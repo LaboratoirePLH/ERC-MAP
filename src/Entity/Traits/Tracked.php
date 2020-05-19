@@ -3,7 +3,7 @@
 namespace App\Entity\Traits;
 
 use App\Entity\Chercheur;
-
+use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Mapping as ORM;
 
 trait Tracked
@@ -108,7 +108,8 @@ trait Tracked
     /**
      * @ORM\PrePersist
      */
-    public function _setupTracking(){
+    public function _setupTracking($event)
+    {
         $now = new \DateTime();
         $this->setDateCreation($now);
         $this->setDateModification($now);
@@ -118,7 +119,12 @@ trait Tracked
     /**
      * @ORM\PreUpdate
      */
-    public function _updateTracking(){
+    public function _updateTracking(PreUpdateEventArgs $event)
+    {
+        $changeset = $event->getEntityChangeSet();
+        if (array_keys($changeset) === ["verrou"] || empty($changeset)) {
+            return;
+        }
         $now = new \DateTime();
         $this->setDateModification($now);
         $this->setVersion($this->getVersion() + 1);

@@ -123,11 +123,11 @@
 {%- endblock choice_widget_options -%}
 
 {% block quill_widget %}
-{% spaceless %}
+{% apply spaceless %}
 <div class="quill" id="quill_{{ id }}" data-id="{{ id }}" style="height: {{(rows|default(5))*1.5}}rem;"
     spellcheck="false">
     {{ value|raw }}
 </div>
 <input type="hidden" {{ block('widget_attributes') }} value="{{ value }}" />
-{% endspaceless %}
+{% endapply %}
 {% endblock %}

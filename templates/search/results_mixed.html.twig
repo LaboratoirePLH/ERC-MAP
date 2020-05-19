@@ -1,0 +1,362 @@
+{% extends 'list_page.html.twig' %}
+{% block title %}
+    {{ ('search.results')|trans }}
+{% endblock %}
+{% block content %}
+    <div class="row my-3">
+        <div class="col-2 table-buttons d-flex flex-column justify-content-end align-items-stretch" id="search-results-actions">
+            <a class="btn btn-primary mb-1" href="{{ url('search') }}#{{mode}}" role="button">
+                {{ 'search.new_query'|trans }}
+            </a>
+            <div class="d-block mb-1">
+                <form action="{{ url('search') }}#{{mode}}" method="post">
+                    <input type="hidden" name="populate_mode" value="{{mode}}">
+                    <input type="hidden" name="populate_criteria" value="{{criteria|json_encode|url_encode|raw}}">
+                    <button class="btn btn-secondary btn-block" type="submit">
+                        {{ 'search.edit_query'|trans }}
+                    </button>
+                </form>
+            </div>
+            <button type="button" class="btn btn-warning mb-1" id="query-save-button" data-toggle="modal" data-target="#query-save-modal">
+                <i class="fas fa-save fa-fw"></i>
+                {{ 'generic.save'|trans }}
+            </button>
+            {% include "modals/query_save.html.twig" with {
+            'targetUrl': url('search_save'),
+            'queryMode': mode,
+            'queryCriteria': criteria
+        } %}
+        </div>
+        {% include "search/_criteria.html.twig" with {
+        'mode' : mode,
+        'criteria' : criteriaDisplay,
+        'width': 10
+    } %}
+    </div>
+    <table class="table table-striped table-hover table-bordered w-100 text-center list_table" id="search-results">
+        <thead>
+            <tr>
+                <th scope="col">
+                    {{ 'source.fields.source_biblio'|trans }}
+                </th>
+                <th scope="col">
+                    {{ 'generic.fields.lieu'|trans }}
+                </th>
+                <th scope="col">
+                    {{ 'datation.fields.post_quem'|trans }}
+                </th>
+                <th scope="col">
+                    {{ 'datation.fields.ante_quem'|trans }}
+                </th>
+                <th scope="col">
+                    {{ 'attestation.sections.texte_attestation'|trans }}
+                </th>
+                <th scope="col">
+                    {{ 'generic.fields.categorie'|trans }}
+                </th>
+                <th scope="col">
+                    {{ 'search.found_in'|trans }}
+                </th>
+                <th scope="col">
+                    {{ 'generic.view'|trans }}
+                </th>
+            </tr>
+            <tr id="filterRow">
+                <th>{{ 'source.fields.source_biblio'|trans }}</th>
+                <th>{{ 'generic.fields.lieu'|trans }}</th>
+                <th>{{ 'datation.fields.post_quem'|trans }}</th>
+                <th>{{ 'datation.fields.ante_quem'|trans }}</th>
+                <th>{{ 'attestation.sections.texte_attestation'|trans }}</th>
+                <th>{{ 'generic.fields.categorie'|trans }}</th>
+                <th>{{ 'search.found_in'|trans }}</th>
+                <th>{{ 'generic.fields.id'|trans }}</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <div id="template-link-source" class="d-none">
+        {% include "partials/_entitylink.html.twig" with {
+            'entity': 'source',
+            'link': url('source_show', {'id': '__ID__'}),
+            'text': '#__ID__'
+        } %}
+    </div>
+    <div id="template-link-attestation" class="d-none">
+        {% include "partials/_entitylink.html.twig" with {
+            'entity': 'attestation',
+            'link': url('attestation_show', {'id': '__ID__'}),
+            'text': '#__ID__'
+        } %}
+    </div>
+    <div id="template-link-element" class="d-none">
+        {% include "partials/_entitylink.html.twig" with {
+            'entity': 'element',
+            'link': url('element_show', {'id': '__ID__'}),
+            'text': '#__ID__'
+        } %}
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {% set exportName = ('app_name'|trans) ~ ' - ' ~ (queryName != "" ? queryName : (('search.results'|trans) ~ ' ' ~ ('search.'~mode)|trans)) %}
+    {{ parent() }}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var mode = "{{ mode }}";
+            var exportName = "{{ exportName }}";
+            var cacheKey = "{{ cacheKey }}";
+            var searchPlaceholder = '{{ "generic.search"|trans }}';
+
+            var ajax = {};
+            if (cacheKey !== "false") {
+                ajax = {
+                    url: "{{ url('json_search_results') }}",
+                    mode: "GET",
+                    data: {
+                        cacheKey: cacheKey
+                    }
+                };
+            }
+
+            $('#search-results thead tr#filterRow th').each(function () {
+                var title = $(this).text();
+                var value = $(this).data('value');
+                if (title != "") {
+                    $(this).html('<input type="text" class="w-100 form-control form-control-sm" placeholder="' + searchPlaceholder + ' ' + title + '" />');
+                    if (value != null) {
+                        $(this).children('input').val(value);
+                    }
+                }
+            });
+            var dt = $('#search-results').DataTable({
+                processing: true, // Displays loader when table is processing
+                serverSide: false, // Do local filtering/sorting
+                ajax: ajax,
+                responsive: true,
+                autoWidth: true,
+                lengthChange: true,
+                scrollX: false,
+                searching: true,
+                ordering: true,
+                columns: [
+                    {
+                        responsivePriority: 1,
+                        data: 'reference'
+                    },
+                    {
+                        data: 'localisation'
+                    },
+                    {
+                        data: 'postQuem',
+                        // Column "date" is fixed width
+                        width: '110px'
+                    },
+                    {
+                        data: 'anteQuem',
+                        // Column "date" is fixed width
+                        width: '110px'
+                    }, {
+                        data: 'text',
+                        render: function (data, row, type) {
+                            if (type === 'display') {
+                                return data.join('<hr/>');
+                            }
+                            return data.join(' ; ');
+                        },
+                        width: '40%'
+                    }, {
+                        data: 'type',
+                        // Column "catégorie" is fixed width
+                        width: '110px'
+                    }, {
+                        data: 'field',
+                        render: function (data, type, row) {
+                            return data.join(' > ');
+                        },
+                        // Column "champ" is shown only on simple search
+                        visible: mode == "simple"
+                    }, {
+                        width: 110,
+                        type: 'id',
+                        responsivePriority: 1,
+                        data: null,
+                        render: function (data, type, row) {
+                            if (type == 'display') {
+                                const html = $('#template-link-' + row.linkType).html();
+                                return html.replace(/__ID__/g, row.linkId);
+                            }
+                            return row.linkType + '#' + row.linkId;
+                        }
+                    }
+                ],
+                order: [
+                    [0, 'asc']
+                ],
+                language: $.parseJSON('{{ "datatable.language"|trans|raw }}'),
+                pageLength: 10,
+                lengthMenu: [
+                    [
+                        10, 25, 50, -1
+                    ],
+                    [
+                        10, 25, 50, "{{ 'datatable.all'|trans }}"
+                    ]
+                ],
+                buttons: [
+                    {
+                        extend: 'csv',
+                        filename: (() => exportName),
+                        text: "{{ 'generic.export_csv'|trans }}",
+                        customize: function (document) {
+                            var papadata = Papa.parse(document);
+                            var data = papadata.data;
+                            data[0] = [
+                                "ID",
+                                "{{ 'source.fields.source_biblio'|trans|raw }}",
+                                "{{ 'generic.fields.lieu'|trans|raw }}",
+                                "{{ 'datation.fields.post_quem'|trans|raw }}",
+                                "{{ 'datation.fields.ante_quem'|trans|raw }}",
+                                "{{ 'attestation.sections.texte_attestation'|trans|raw }}",
+                                "{{ 'generic.fields.categorie'|trans|raw }}",
+                            ];
+                            if (mode === 'simple') {
+                                data[0].push("{{ 'search.found_in'|trans|raw }}");
+                            }
+                            data[0].push("{{ 'generic.link'|trans|raw }}");
+
+                            data = data.map((row, index) => {
+                                if (index > 0) { // Prepare ID Column
+                                    var id = $("<div/>").html(row[0]).text().trim();
+                                    var link = $("<div />").html(row[0]).find("a").attr("href");
+                                    row[0] = row[row.length - 1] + ' ' + id;
+                                    row.push(link);
+
+                                    // Keep newlines in "Texte de l'Attestation" column
+                                    row[4] = row[4].replace(/<(br)[\s]*[\/]?>/gi, "\n").replace(/<(hr)[\s]*[\/]?>/gi, "\n-----\n");
+                                }
+                                return row.map(col => $("<div/>").html(col).text());
+                            });
+
+                            // Adds copyright on the first row
+                            var copyright_row = new Array(data[0].length).fill('');
+                            copyright_row[0] = "{{ 'misc.export_copyright'|trans({'%date%': 'now'|date('Y/m/d')}) }}";
+                            data.unshift(copyright_row);
+
+                            return Papa.unparse(data, {quotes: true});
+                        },
+                        exportOptions: {
+                            columns: mode == "simple" ? [
+                                7,
+                                0,
+                                1,
+                                2,
+                                3,
+                                4,
+                                6,
+                                5
+                            ] : [
+                                7,
+                                0,
+                                1,
+                                2,
+                                3,
+                                4,
+                                5,
+                            ],
+                            stripHtml: false,
+                            stripNewlines: false
+                        }
+                    }
+                ]
+            });
+
+            var updateCounter = function (data) {
+                var total = data.recordsTotal,
+                    displayed = data.recordsDisplay,
+                    labelAll = "{{ 'search.results_count'|trans }}",
+                    labelFiltered = "{{ 'search.results_count_filtered'|trans }}",
+                    counter = $('#search-results-count'),
+                    str;
+
+                if (total === displayed) {
+                    str = labelAll.replace(/%records%/g, total).replace(/%plural%/g, (total === 1 ? '' : 's'));
+                } else {
+                    str = labelFiltered.replace(/%records%/g, displayed).replace(/%plural%/g, (displayed === 1 ? '' : 's')).replace(/%total%/g, total);
+                } counter.text(str);
+            };
+
+            $('#search-results_wrapper select').removeClass('custom-select');
+            dt.columns().every(function () {
+                var me = this;
+                $('input', this.header()).on('keyup change', function () {
+                    if (me.search() !== this.value) {
+                        me.search(
+                            // Remove accented characters from search string
+                                jQuery.fn.DataTable.ext.type.search.string(removeAccents(this.value))
+                        ).draw();
+                        updateCounter(dt.page.info());
+                    }
+                })
+                $('input', this.header()).on('click', function (e) {
+                    e.stopPropagation();
+                })
+            });
+            $('input[type=search]').on('keyup change', function () {
+                dt.search(
+                    // Remove accented characters from search string
+                        jQuery.fn.DataTable.ext.type.search.string(removeAccents(this.value))
+                ).draw();
+                updateCounter(dt.page.info());
+            });
+            dt.buttons().container().appendTo('.table-buttons');
+            $('.clear-filter-button').on('click', function (e) {
+                e.preventDefault();
+                dt.columns().every(function () {
+                    $('input', this.footer()).val("").trigger('change');
+                });
+            });
+
+            // Wait for data being loaded before adding table buttons and setting the counter
+            dt.on('init', () => {
+                dt.buttons().container().appendTo('.table-buttons');
+                updateCounter(dt.page.info());
+            })
+
+            // Enable tooltips on table redraw
+            dt.on('draw', () => {
+                $('#search-results [data-toggle="tooltip"]').tooltip();
+            })
+
+            // Manage query save
+            $('#query-save-modal form').on('submit', function (e) {
+                e.preventDefault();
+                var formData = $(this).serializeObject();
+                var spinner = $(this).find('#submit-spinner');
+                var results = $(this).find('#save-query-result');
+
+                spinner.removeClass('d-none');
+
+                results.removeClass('alert-success alert-danger');
+                results.addClass('d-none');
+                results.text('');
+
+                $.post($(this).get(0).action, formData).done(function (response) {
+                    results.addClass('alert-success');
+                    results.text(response.message);
+
+                    exportName = "{{ ('app_name'|trans) ~ ' - ' }}" + formData.query_name;
+
+                    setTimeout(() => {
+                        $('#query-save-modal').modal('hide')
+                    }, 2000);
+                }).fail(function (response) {
+                    results.addClass('alert-danger');
+                    results.text(response.responseJSON.message);
+                }).always(function () {
+                    results.removeClass('d-none');
+                    spinner.addClass('d-none');
+                });
+            })
+        });
+    </script>
+{% endblock %}

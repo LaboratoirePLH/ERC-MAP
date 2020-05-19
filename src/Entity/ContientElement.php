@@ -65,7 +65,7 @@ class ContientElement extends AbstractEntity
      *
      * @ORM\Column(name="en_contexte", type="text", nullable=true)
      */
-    private $enContexte;
+    protected $enContexte;
 
     /**
      * @var \CategorieElement
@@ -192,12 +192,12 @@ class ContientElement extends AbstractEntity
 
     public function getEnContexte(): ?string
     {
-        return $this->sanitizeWysiwygString($this->sanitizeOpenXMLString($this->enContexte));
+        return $this->sanitizeHtml($this->enContexte);
     }
 
     public function setEnContexte(?string $enContexte): self
     {
-        $this->enContexte = $this->sanitizeWysiwygString($this->sanitizeOpenXMLString($enContexte));
+        $this->enContexte = $this->sanitizeHtml($enContexte);
 
         return $this;
     }
@@ -206,10 +206,11 @@ class ContientElement extends AbstractEntity
     {
         return [
             'element'           => $this->element->toArray(),
+            'positionElement'   => $this->getPositionElement(),
             'enContexte'        => $this->enContexte,
             'etatMorphologique' => $this->etatMorphologique,
-            'genreElement'      => $this->genreElement === null ? null : $this->genreElement->getTranslatedName(),
-            'nombreElement'     => $this->nombreElement === null ? null : $this->nombreElement->getTranslatedName(),
+            'genreElement'      => $this->genreElement === null ? null : $this->genreElement->toArray(),
+            'nombreElement'     => $this->nombreElement === null ? null : $this->nombreElement->toArray(),
             'categorieElement'  => $this->categorieElement === null ? null : $this->categorieElement->getTranslatedName()
         ];
     }

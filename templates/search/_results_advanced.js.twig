@@ -1,0 +1,357 @@
+{% set headers = [] %}
+{% set groups = {} %}
+{% set hiddenCols = [] %}
+{% set colIndex = 0 %}
+{% for group, cols in columns %}
+    {% set groups = groups|merge({((group~'.name')|trans): (cols|length)}) %}
+    {% for col in cols %}
+        {% set headers = headers|merge([col.label|trans]) %}
+        {% if not col.visible %}
+            {% set hiddenCols = hiddenCols|merge([colIndex]) %}
+        {% endif %}
+        {% set colIndex = colIndex + 1 %}
+    {% endfor %}
+{% endfor %}
+{% set exportName = ('app_name'|trans) ~ ' - ' ~ (queryName != "" ? queryName : (('search.results'|trans) ~ ' ' ~ ('search.'~mode)|trans)) %}
+
+<div id="template-link-source" class="d-none">
+    {% include "partials/_entitylink.html.twig" with {
+        'entity': 'source',
+        'link': url('source_show', {'id': '__ID__'}),
+        'text': '#__ID__'
+    } %}
+</div>
+<div id="template-link-attestation" class="d-none">
+    {% include "partials/_entitylink.html.twig" with {
+        'entity': 'attestation',
+        'link': url('attestation_show', {'id': '__ID__'}),
+        'text': '#__ID__'
+    } %}
+</div>
+<div id="template-link-element" class="d-none">
+    {% include "partials/_entitylink.html.twig" with {
+        'entity': 'element',
+        'link': url('element_show', {'id': '__ID__'}),
+        'text': '#__ID__'
+    } %}
+</div>
+<div id="template-link-usage" class="d-none">
+    <span class="badge badge-light">__DATA__</span>
+    <a href="__LINK__" class="btn btn-sm btn-block btn-light" target="_blank" rel="noopener">__TEXT__</a>
+</div>
+
+<script type="text/javascript">
+    var mode = "{{ mode }}";
+    var columns = $.parseJSON("{{ columns|json_encode|e('js')|raw }}")
+    var headers = $.parseJSON("{{ headers|json_encode|e('js')|raw }}")
+    var groups = $.parseJSON("{{ groups|json_encode|e('js')|raw }}")
+    var hiddenCols = $.parseJSON("{{ hiddenCols|json_encode|e('js')|raw }}");
+    var exportName = "{{ exportName }}";
+    var cacheKey = "{{ cacheKey }}";
+    var searchPlaceholder = '{{ "generic.search"|trans }}';
+
+    $(document).ready(function () {
+
+        $('#search-results thead tr#filterRow th').each(function () {
+            var title = $(this).text().trim();
+            var value = $(this).data('value');
+            if (title != "") {
+                $(this).html('<input type="text" class="w-100 form-control form-control-sm" placeholder="' + searchPlaceholder + ' ' + title + '" />');
+                if (value != null) {
+                    $(this).children('input').val(value);
+                }
+            }
+        });
+
+        var ajax = {};
+        if (cacheKey !== "false") {
+            ajax = {
+                url: "{{ url('json_search_results') }}",
+                mode: "GET",
+                data: {
+                    cacheKey: cacheKey
+                }
+            };
+        }
+
+        // Setup columns based on twig data
+        var dtCols = [];
+        Object.entries(columns).forEach(([group_name, group_columns]) => {
+            group_columns.forEach(col => {
+                dtCols.push({
+                    data: [group_name, col.field].join('.'),
+                    visible: col.visible,
+                    render: function (data, type, row) {
+                        if (col.link === true) {
+                            if (type === 'display') {
+                                const html = $('#template-link-' + data.type).html();
+                                return html.replace(/__ID__/g, data.id);
+                            }
+                            return data.id;
+                        } else if (typeof col.link === 'object' && col.link !== null) {
+                            if (type === 'display') {
+                                const html = $('#template-link-usage').html();
+                                const link = col.link.url.replace(/__ID__/g, row[group_name].link.id);
+                                return html.replace(/__LINK__/g, link).replace(/__TEXT__/g, col.link.text).replace(/__DATA__/g, data);
+                            }
+                            return data;
+                        }
+                        var ret;
+                        if (Array.isArray(data)) {
+                            if (type === 'display') {
+                                ret = data.join('<hr/>');
+                            }
+                            ret = data.join(' ; ');
+                        }
+                        ret = data;
+                        if (col.extraEncode === true) {
+                            ret = ret.replace('<<', '&lt;&lt;').replace('>>', '&gt;&gt;');
+                        }
+                        return ret;
+                    }
+                })
+            })
+        })
+
+        var dt = $('#search-results').DataTable({
+            processing: true, // Displays loader when table is processing
+            serverSide: false, // Do local filtering/sorting
+            ajax: ajax,
+            lengthChange: true,
+            scrollX: true,
+            searching: true,
+            ordering: true,
+            columns: dtCols,
+            order: [
+                [
+                    headers.length - 1,
+                    'asc'
+                ] // Order by the last column of the table (ID column)
+            ],
+            language: $.parseJSON('{{ "datatable.language"|trans|raw }}'),
+            pageLength: 10,
+            lengthMenu: [
+                [
+                    10, 25, 50, -1
+                ],
+                [
+                    10, 25, 50, "{{ 'datatable.all'|trans }}"
+                ]
+            ],
+            buttons: [
+                {
+                    extend: 'csv',
+                    filename: (() => exportName),
+                    text: "{{ 'generic.export_csv'|trans }}",
+                    customize: function (document, button, table) {
+                        var papadata = Papa.parse(document);
+                        var data = papadata.data;
+
+                        // Set headers (default first line contains the search input)
+                        data[0] = headers;
+
+                        // Set Link header
+                        const linkIndexes = headers.reduce((indexes, item, index) => {
+                            if (item == "{{ 'generic.view'|trans }}") {
+                                indexes.push(index);
+                            }
+                            return indexes;
+                        }, []);
+
+                        linkIndexes.forEach((idx) => {
+                            data[0][idx] = "{{ 'generic.link'|trans|raw }}";
+                        });
+
+                        // If we have more than one groupe, insert a new first row containing group names
+                        var hasGroups = false;
+                        if (Object.keys(groups).length > 1) {
+                            const groupHeaders = Object.entries(groups).map(([label, size]) => Array(size).fill(label)).flat();
+                            data.unshift(groupHeaders);
+                            hasGroups = true;
+                        }
+                        data = data.map((row, index) => {
+                            if (index > (hasGroups ? 1 : 0)) { // Prepare Links
+                                linkIndexes.forEach((linkIdx) => {
+                                    row[linkIdx] = $("<div />").html(row[linkIdx]).find("a").attr("href");
+                                });
+
+                                // Replace <br> and <hr> with CSV accepted fallback
+                                row = row.map(v => v.replace(/<(br)[\s]*[\/]?>/gi, "\n").replace(/<(hr)[\s]*[\/]?>/gi, "\n-----\n"));
+                            }
+                            return row.map(col => $("<div/>").html(col).text());
+                        });
+
+                        // Now remove all hidden columns
+                        data = data.map(row => row.filter((v, i) => table.column(i).visible()));
+
+                        // Adds copyright on the first row
+                        var copyright_row = new Array(data[0].length).fill('');
+                        copyright_row[0] = "{{ 'misc.export_copyright'|trans({'%date%': 'now'|date('Y/m/d')}) }}";
+                        data.unshift(copyright_row);
+
+                        return Papa.unparse(data, {quotes: true});
+                    },
+                    exportOptions: {
+                        stripHtml: false,
+                        stripNewlines: false
+                    }
+                }
+            ]
+        });
+
+        function updateCounter(data) {
+            var total = data.recordsTotal,
+                displayed = data.recordsDisplay,
+                labelAll = "{{ 'search.results_count'|trans }}",
+                labelFiltered = "{{ 'search.results_count_filtered'|trans }}",
+                counter = $('#search-results-count'),
+                str;
+
+            if (total === displayed) {
+                str = labelAll.replace(/%records%/g, total).replace(/%plural%/g, (total === 1 ? '' : 's'));
+            } else {
+                str = labelFiltered.replace(/%records%/g, displayed).replace(/%plural%/g, (displayed === 1 ? '' : 's')).replace(/%total%/g, total);
+            } counter.text(str);
+        };
+
+        function storeVisibleColumns() {
+            var cols = Array.from(dt.columns().visible());
+            Cookie.set('search_' + mode + '_columns_' + '{{ resultsType }}', JSON.stringify(cols), {expires: 365});
+        };
+
+        function loadVisibleColumns() { // Get cookie (if missing will return undefined)
+            var cols = Cookie.get('search_' + mode + '_columns_' + '{{ resultsType }}');
+            if (cols !== undefined) { // Try to parse JSON form Cookie (throws Exception if failed)
+                try {
+                    cols = JSON.parse(cols);
+                } catch (e) {
+                    cols = null;
+                }
+            }
+            // If we found valid data, display columns from user setting
+            if (cols !== null && cols !== undefined) {
+                cols.forEach((visible, colIndex) => {
+                    dt.column(colIndex).visible(visible);
+                    $('input.toggle-column#checkboxColumn' + colIndex).prop('checked', visible);
+                })
+            } else { // Else display default settings
+                hiddenCols.forEach(colIndex => {
+                    dt.column(colIndex).visible(false)
+                })
+            }
+
+            $('input.toggle-group-column').each(function () {
+                var group = $(this).attr('data-group');
+                // Get checked status of all checkboxes of this group
+                var checkStatus = $('input.toggle-column.checkbox-' + group + '-item').map((i, el) => el.checked).get();
+                if (! checkStatus.includes(true)) {
+                    this.checked = false;
+                }
+            })
+        };
+
+        $('#search-results_wrapper select').removeClass('custom-select');
+        dt.columns().every(function () {
+            var me = this;
+            $('input', this.header()).on('keyup change', function () {
+                if (me.search() !== this.value) {
+                    me.search(
+                        // Remove accented characters from search string
+                            jQuery.fn.DataTable.ext.type.search.string(removeAccents(this.value))
+                    ).draw();
+                    updateCounter(dt.page.info());
+                }
+            })
+            $('input', this.header()).on('click', function (e) {
+                e.stopPropagation();
+            })
+        });
+
+        // Toggle column visibility
+        $('input.toggle-column').on('change', function () { // Get the column API object
+            var column = dt.column($(this).attr('data-column'));
+            // Toggle the visibility
+            column.visible(this.checked);
+            // Update setting in cookie
+            storeVisibleColumns();
+        });
+        // Toggle column group visibility
+        $('input.toggle-group-column').on('change', function () { // Get the group identifier
+            var group = $(this).attr('data-group');
+            // Change all checkboxes of this group
+            $('input.toggle-column.checkbox-' + group + '-item').prop('checked', this.checked).trigger('change');
+        });
+
+        // Prevent click on checkbox to propagate to dropdown-item (causing double change)
+        $('input.toggle-column, input.toggle-group-column').on('click', function (e) {
+            e.stopImmediatePropagation();
+        });
+        // Prevent checkboxes parent click to close the dropdown
+        $('input.toggle-column, input.toggle-group-column').parent('.dropdown-item, .dropdown-header').on('click', function (e) {
+            e.preventDefault();
+            var cb = $(this).find('input').first();
+            cb.get(0).checked = ! cb.get(0).checked;
+            cb.trigger('change');
+            return false;
+        });
+
+        $('input[type=search]').on('keyup change', function () {
+            dt.search(
+                // Remove accented characters from search string
+                    jQuery.fn.DataTable.ext.type.search.string(removeAccents(this.value))
+            ).draw();
+            updateCounter(dt.page.info());
+        });
+        $('.clear-filter-button').on('click', function (e) {
+            e.preventDefault();
+            dt.columns().every(function () {
+                $('input', this.footer()).val("").trigger('change');
+            });
+        });
+
+
+        // Wait for data being loaded before adding table buttons, setting the counter and toggling columns based on cookie
+        dt.on('init', () => {
+            dt.buttons().container().appendTo('.table-buttons');
+            updateCounter(dt.page.info());
+            loadVisibleColumns();
+        })
+
+        // Enable tooltips on table redraw
+        dt.on('draw', () => {
+            $('#search-results [data-toggle="tooltip"]').tooltip();
+        })
+
+
+        // Manage query save
+        $('#query-save-modal form').on('submit', function (e) {
+            e.preventDefault();
+            var formData = $(this).serializeObject();
+            var spinner = $(this).find('#submit-spinner');
+            var results = $(this).find('#save-query-result');
+
+            spinner.removeClass('d-none');
+
+            results.removeClass('alert-success alert-danger');
+            results.addClass('d-none');
+            results.text('');
+
+            $.post($(this).get(0).action, formData).done(function (response) {
+                results.addClass('alert-success');
+                results.text(response.message);
+
+                exportName = "{{ ('app_name'|trans) ~ ' - ' }}" + formData.query_name;
+
+                setTimeout(() => {
+                    $('#query-save-modal').modal('hide')
+                }, 2000);
+            }).fail(function (response) {
+                results.addClass('alert-danger');
+                results.text(response.responseJSON.message);
+            }).always(function () {
+                results.removeClass('d-none');
+                spinner.addClass('d-none');
+            });
+        })
+    });
+</script>

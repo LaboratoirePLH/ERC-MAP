@@ -36,3 +36,126 @@ jQuery.fn.DataTable.ext.type.search['string'] = function (data) {
 jQuery.fn.DataTable.ext.type.search['html'] = function (data) {
     return accents_supr(data);
 };
+
+jQuery.fn.dataTable.ext.type.order['id-pre'] = function (d) {
+    const [type, id] = d.split('#');
+    var typeNumber;
+    switch (type) {
+        case 'source':
+            typeNumber = 1;
+            break;
+        case 'attestation':
+            typeNumber = 2;
+            break;
+        default:
+            typeNumber = 3;
+            break;
+    }
+    return (typeNumber * 1e10) + parseInt(id, 10);
+};
+
+(function ($) {
+    $.fn.setupList = function (listId, tableOptions, searchPlaceholder) {
+
+        // Replace tfoot cell values by search fields
+        $('#' + listId + ' tfoot th').each(function () {
+            var title = $(this).text();
+            var value = $(this).data('value');
+            if (title != "") {
+                $(this).html('<input type="text" class="w-100 form-control form-control-sm" placeholder="' + searchPlaceholder + ' ' + title + '" />');
+                if (value != null) {
+                    $(this).children('input').val(value);
+                }
+            }
+        });
+
+        // Setup datatable
+        var options = $.extend({
+            processing: true, // Displays loader when table is processing
+            serverSide: false, // Do local filtering/sorting
+            responsive: true,
+            autoWidth: true,
+            lengthChange: true,
+            scrollX: false,
+            searching: true,
+            ordering: true,
+        }, tableOptions);
+        var tableRef = $('#' + listId).DataTable(options);
+
+        // Remove class from page length selector
+        $('#' + listId + '_wrapper select').removeClass('custom-select');
+
+        // Setup events on column filters
+        tableRef.columns().every(function () {
+            var me = this;
+            $('input', this.footer()).on('keyup change', function () {
+                if (me.search() !== this.value) {
+                    me.search(
+                        // Remove accented characters from search string
+                        jQuery.fn.DataTable.ext.type.search.string(this.value)
+                    ).draw();
+                }
+            })
+            $('input', this.footer()).each(function () {
+                if ($(this).val() != "") {
+                    $(this).trigger('change');
+                }
+            })
+        });
+
+        // Setup event for global search
+        $('input[type=search]').on('keyup change', function () {
+            tableRef.search(
+                // Remove accented characters from search string
+                jQuery.fn.DataTable.ext.type.search.string(this.value)
+            ).draw();
+        })
+
+        // Wait for data being laoded before adding table buttons
+        tableRef.on('init', () => {
+            tableRef.buttons().container().appendTo('.table-buttons');
+        })
+
+        // Setup event for clear filter button
+        $('.clear-filter-button').on('click', function (e) {
+            e.preventDefault();
+            tableRef.columns().every(function () {
+                $('input', this.footer()).val("").trigger('change');
+            });
+        })
+
+        // Setup event for delete buttons
+        $('#' + listId).on('click', 'button.delete-button', function () {
+            var modal = $($(this).attr('data-target'));
+            var rowId = $(this).attr('data-id');
+            if (modal) {
+                modal.find('form').attr('action', modal.find('form').attr('action').replace('__ID__', rowId));
+            }
+        })
+
+        // Enable tooltips on table redraw
+        tableRef.on('draw', () => {
+            $('#' + listId + ' [data-toggle="tooltip"]').tooltip();
+        })
+    };
+
+    $.fn.createListButton = function (tag, color, icon, text, href) {
+        var btn = $(document.createElement(tag))
+            .addClass('btn btn-sm btn-block my-1 btn-' + color)
+            .text(text)
+            .prepend($(document.createElement('i')).addClass("fas fa-fw fa-" + icon));
+
+        if (tag === 'a') {
+            btn.attr('href', href);
+        } else {
+            btn.attr('type', 'button')
+        }
+        return btn;
+    }
+
+    $.fn.createDeleteButton = function (text, rowId) {
+        var btn = $.fn.createListButton('button', 'danger', 'trash', text);
+        btn.addClass('delete-button').attr('data-id', rowId).attr('data-toggle', 'modal').attr('data-target', '#confirm-deletion-modal');
+        return btn;
+    }
+})(jQuery);

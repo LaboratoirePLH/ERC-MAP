@@ -128,11 +128,11 @@ class Agent extends AbstractEntity
      */
     public function __clone()
     {
-        if($this->id !== null){
+        if ($this->id !== null) {
             $this->id = null;
 
             // Clone localisation
-            if($this->localisation !== null){
+            if ($this->localisation !== null) {
                 $this->localisation = clone $this->localisation;
             }
         }
@@ -140,12 +140,12 @@ class Agent extends AbstractEntity
 
     public function getDesignation(): ?string
     {
-        return $this->sanitizeWysiwygString($this->sanitizeOpenXMLString($this->designation));
+        return $this->sanitizeHtml($this->designation);
     }
 
     public function setDesignation(?string $designation): self
     {
-        $this->designation = $this->sanitizeWysiwygString($this->sanitizeOpenXMLString($designation));
+        $this->designation = $this->sanitizeHtml($designation);
         return $this;
     }
 
@@ -281,32 +281,32 @@ class Agent extends AbstractEntity
         return $this;
     }
 
-    public function isBlank() :bool
+    public function isBlank(): bool
     {
-        return !(
-               strlen($this->designation) > 0
+        return !(strlen($this->designation) > 0
             || !$this->agentivites->isEmpty()
             || !$this->statutAffiches->isEmpty()
             || !$this->natures->isEmpty()
             || !$this->genres->isEmpty()
             || !$this->activites->isEmpty()
-            || !is_null($this->localisation)
+            || (!is_null($this->localisation) && !$this->localisation->isBlank())
             || strlen($this->commentaireFr) > 0
-            || strlen($this->commentaireEn) > 0
-        );
+            || strlen($this->commentaireEn) > 0);
     }
 
     public function toArray(): array
     {
-        $getTranslatedName = function($entry){ return $entry->getTranslatedName(); };
+        $toArray = function ($entry) {
+            return $entry->toArray();
+        };
 
         return [
             'designation'    => $this->designation,
-            'agentivites'    => $this->agentivites->map(function($a) { return $a->toArray(); })->getValues(),
-            'natures'        => $this->natures->map($getTranslatedName)->getValues(),
-            'genres'         => $this->genres->map($getTranslatedName)->getValues(),
-            'statutAffiches' => $this->statutAffiches->map($getTranslatedName)->getValues(),
-            'activites'      => $this->activites->map(function($a) { return $a->toArray(); })->getValues(),
+            'agentivites'    => $this->agentivites->map($toArray)->getValues(),
+            'natures'        => $this->natures->map($toArray)->getValues(),
+            'genres'         => $this->genres->map($toArray)->getValues(),
+            'statutAffiches' => $this->statutAffiches->map($toArray)->getValues(),
+            'activites'      => $this->activites->map($toArray)->getValues(),
             'localisation'   => $this->localisation === null ? null : $this->localisation->toArray(),
             'commentaireFr'  => $this->commentaireFr,
             'commentaireEn'  => $this->commentaireEn

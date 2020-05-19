@@ -1,4 +1,6 @@
 swiftmailer:
-    transport: sendmail
+    #transport: sendmail
+    url: null
+    command: '/usr/bin/sendmail -t'
     spool:
         type: 'memory'

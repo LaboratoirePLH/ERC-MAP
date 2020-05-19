@@ -1,25 +1,27 @@
 {% set entity = entity|default(null) %}
+{% set small = small is defined ? small : true %}
 {% if entity == "source" %}
-{% set color = "btn-primary" %}
-{% set icon = icons.source %}
+    {% set color = "btn-primary" %}
+    {% set icon = icons.source %}
 {% elseif entity == "attestation" %}
-{% set color = "btn-success" %}
-{% set icon = icons.attestation %}
+    {% set color = "btn-success" %}
+    {% set icon = icons.attestation %}
 {% elseif entity == "element" %}
-{% set color = "btn-warning" %}
-{% set icon = icons.element %}
+    {% set color = "btn-warning" %}
+    {% set icon = icons.element %}
 {% elseif entity == "biblio" %}
-{% set color = "btn-danger" %}
-{% set icon = icons.bibliography %}
+    {% set color = "btn-danger" %}
+    {% set icon = icons.bibliography %}
 {% else %}
-{% set color = "btn-outline-secondary" %}
-{% set icon = icon|default(false) %}
+    {% set color = "btn-outline-secondary" %}
+    {% set icon = icon|default(false) %}
 {% endif %}
 {% if color is defined and icon is defined and link is defined and text is defined %}
-<a href="{{ link }}" class="btn btn-sm {{color}}" target="_blank" rel="noopener noreferrer">
-    {% if icon != false %}
-    <i class="fas fa-fw {{ icon }}"></i>
-    {% endif %}
-    {{ text|raw }}
-</a>
+    <a href="{{ link }}" class="btn {{ small ? 'btn-sm' : ''}} btn-block {{color}}" role="button" target="_blank" rel="noopener noreferrer">
+        {% if icon != false %}
+            {{ ('<i class="fas fa-fw ' ~ icon ~ '"></i>' ~ text|raw)|spaceless }}
+        {% else %}
+            {{ text|raw }}
+        {% endif %}
+    </a>
 {% endif %}

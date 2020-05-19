@@ -135,7 +135,7 @@ class Source extends AbstractEntity
     /**
      * @var \Localisation|null
      *
-     * @ORM\OneToOne(targetEntity="Localisation", cascade={"persist"}, fetch="EAGER", orphanRemoval=true)
+     * @ORM\ManyToOne(targetEntity="Localisation", cascade={"persist"}, fetch="EAGER")
      * @ORM\JoinColumn(name="localisation_decouverte_id", referencedColumnName="id", nullable=true)
      */
     private $lieuDecouverte;
@@ -143,7 +143,7 @@ class Source extends AbstractEntity
     /**
      * @var \Localisation|null
      *
-     * @ORM\OneToOne(targetEntity="Localisation", cascade={"persist"}, fetch="EAGER", orphanRemoval=true)
+     * @ORM\ManyToOne(targetEntity="Localisation", cascade={"persist"}, fetch="EAGER")
      * @ORM\JoinColumn(name="localisation_origine_id", referencedColumnName="id", nullable=true)
      */
     private $lieuOrigine;

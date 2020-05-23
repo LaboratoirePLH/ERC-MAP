@@ -152,7 +152,7 @@ class AttestationType extends AbstractType
             ->add('agents', CollectionType::class, [
                 'label'         => false,
                 'entry_type'    => AgentType::class,
-                'entry_options' => array_intersect_key($options, array_flip(["translations", "locale"])),
+                'entry_options' => array_intersect_key($options, array_flip(["translations", "locale", "formAction"])),
                 'allow_add'     => true,
                 'allow_delete'  => true,
                 'required'      => false,

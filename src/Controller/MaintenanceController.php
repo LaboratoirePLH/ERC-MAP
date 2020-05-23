@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Localisation;
 use App\Utils\StringHelper;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -238,6 +239,153 @@ class MaintenanceController extends AbstractController
             'html_cleanup'    => $html_cleanup,
             'count_messages'  => $count_messages,
             'count_tables'    => $count_tables,
+        ]);
+    }
+
+    /**
+     * @Route("/maintenance/locations_cleanup", name="maintenance_locations_cleanup")
+     */
+    public function locationsCleanup(Request $request)
+    {
+        // We are looking for 2 problems :
+        //    - Locations that are empty and should be deleted
+        //    - Locations that have duplicates (same greaterRegion, subRegion, pleiadesVille, pleiadesSite) and should be merged
+        //        WARNING : Merging locations can only be done when fields "Political Entity", "Latitude" and "Longitude" are identical in all duplicates.
+        //                  If this is not the case, the script won't allow the merge and will instead ask the user correct those fields (in easyadmin) so the merge can be done automatically
+        // For any of those 2 operations to be performed, we need to keep the following informations :
+        //    - Operation (merge, delete)
+        //    - Localisation ID(s) (1 ID for deletion, 2+ IDs for merge)
+        //    - Links :
+        //         - Entity Type (Source, Attestation, Agent, Element)
+        //         - Entity ID
+        //         - Foreign Key field (because Source has 2 location foreign keys)
+        // Operations inner workings :
+        //    Delete : - Unlink the given location from every entity to which is was linked (set the foreign key to null). 
+        //             - Lifecycle events will then automatically remove the orphan location
+        //    Merge : - Keep the location with the lowest ID as the master location (could be any other)
+        //            - Merge the following fields if they differ between duplicates : 
+        //                - Commentaire FR & Commentaire EN : Join all unique variants separated by 2 newlines
+        //                - Topographies & Fonctions : Merge collections
+        //            - Update the foreign key for all entities linked to duplicates other than the master location
+        //            - Lifecycle events will then automatically remove the orphan locations
+
+        $em = $this->getDoctrine()->getManager();
+
+        // Select all locations
+        $allLocations = $em->createQuery("SELECT e FROM App\Entity\Localisation e ORDER BY e.id ASC")->getResult();
+
+        // Get all the entities-locations links
+        $allLinks = array_merge(
+            $em->createQuery("SELECT 'Source' as entity, e.id as id, 'lieuDecouverte' as field, IDENTITY(e.lieuDecouverte) as location_id FROM App\Entity\Source e WHERE e.lieuDecouverte IS NOT NULL")->getScalarResult(),
+            $em->createQuery("SELECT 'Source' as entity, e.id as id, 'lieuOrigine' as field, IDENTITY(e.lieuOrigine) as location_id FROM App\Entity\Source e WHERE e.lieuOrigine IS NOT NULL")->getScalarResult(),
+            $em->createQuery("SELECT 'Attestation' as entity, e.id as id, 'localisation' as field, IDENTITY(e.localisation) as location_id FROM App\Entity\Attestation e WHERE e.localisation IS NOT NULL")->getScalarResult(),
+            $em->createQuery("SELECT 'Agent' as entity, e.id as id, 'localisation' as field, IDENTITY(e.localisation) as location_id FROM App\Entity\Agent e WHERE e.localisation IS NOT NULL")->getScalarResult(),
+            $em->createQuery("SELECT 'Element' as entity, e.id as id, 'localisation' as field, IDENTITY(e.localisation) as location_id FROM App\Entity\Element e WHERE e.localisation IS NOT NULL")->getScalarResult()
+        );
+
+        // Separate empty and non-empty locations
+        $emptyLocations = array_values(array_filter($allLocations, function ($l) {
+            return $l->isBlank();
+        }));
+        $nonEmptyLocations = array_values(array_diff($allLocations, $emptyLocations));
+
+        // Simplify empty locations to ID and links
+        $emptyLocations = array_map(function ($l) use ($allLinks) {
+            return [
+                'id'    => $l->getId(),
+                'links' => array_values(array_filter($allLinks, function ($link) use ($l) {
+                    return $link['location_id'] === $l->getId();
+                }))
+            ];
+        }, $emptyLocations);
+
+        // Identify duplicates
+        //   - $uniqueLocations is a numeric array containing the "master locations"
+        //   - $duplicates is an associative array containing duplicates able to be merged automatically (master location ID as key ; array of locations as value)
+        //   - $manualDuplicates is an associative array contaning duplicates requiring manual action (master location ID as key ; array of locations as value)
+        $uniqueLocations = [];
+        $duplicates = [];
+        $manualDuplicates = [];
+
+        function isDuplicate(Localisation $a, Localisation $b): ?bool
+        {
+            $arr_a = $a->toArray();
+            $arr_b = $b->toArray();
+
+            $identicalFields = array_flip(['grandeRegion', 'sousRegion', 'pleiadesVille', 'nomVille', 'pleiadesSite', 'nomSite']);
+
+            $crit_a = array_intersect_key($arr_a, $identicalFields);
+            $crit_b = array_intersect_key($arr_b, $identicalFields);
+            if ($crit_a === $crit_b) {
+                if (
+                    $arr_a['entitePolitique'] === $arr_b['entitePolitique']
+                    && $arr_a['latitude'] === $arr_b['latitude']
+                    && $arr_a['longitude'] === $arr_b['longitude']
+                ) {
+                    return true;
+                } else {
+                    return null;
+                }
+            } else {
+                return false;
+            }
+        }
+
+        foreach ($nonEmptyLocations as $l) {
+            $isUnique = true;
+
+            foreach ($uniqueLocations as $ul) {
+                // Check if $ul is a duplicate of $l
+                $dupe = isDuplicate($l, $ul);
+                if ($dupe === false) {
+                    continue;
+                }
+                $targetArray = $dupe ? 'duplicates' : 'manualDuplicates';
+                $ul_id = $ul->getId();
+                if (!array_key_exists($ul_id, $$targetArray)) {
+                    $$targetArray[$ul_id] = [$ul];
+                }
+                $$targetArray[$ul_id][] = $l;
+                $isUnique = false;
+                break;
+            }
+            if ($isUnique) {
+                $uniqueLocations[] = $l;
+            }
+        }
+        ksort($duplicates);
+        ksort($manualDuplicates);
+        // Remove keys, we don't need them anymore
+        $duplicates = array_values($duplicates);
+        $manualDuplicates = array_values($manualDuplicates);
+        // Delete nonEmptyLocations and uniqueLocations, we don't need them anymore
+        unset($nonEmptyLocations);
+        unset($uniqueLocations);
+
+        // Loop on both arrays (duplicates and manualDuplicates), and prepare view data
+        foreach (['duplicates', 'manualDuplicates'] as $arr_name) {
+            foreach ($$arr_name as &$values) {
+                $first = reset($values);
+                $newValues = $first->toArray();
+                // Keep only the necessary fields for view display
+                $newValues = array_intersect_key($newValues, array_flip(['grandeRegion', 'sousRegion', 'pleiadesVille', 'nomVille', 'pleiadesSite', 'nomSite']));
+                // Put locations ID and links in a sub array
+                $newValues['links'] = array_reduce($values, function ($links, $value) use ($allLinks) {
+                    return array_merge($links, array_values(array_filter($allLinks, function ($link) use ($value) {
+                        return $link['location_id'] === $value->getId();
+                    })));
+                }, []);
+
+                $values = $newValues;
+            }
+        }
+
+        return $this->render('maintenance/locations_cleanup.html.twig', [
+            'controller_name'  => 'MaintenanceController',
+            'locale'           => $request->getLocale(),
+            'emptyLocations'   => $emptyLocations,
+            'duplicates'       => $duplicates,
+            'manualDuplicates' => $manualDuplicates
         ]);
     }
 }

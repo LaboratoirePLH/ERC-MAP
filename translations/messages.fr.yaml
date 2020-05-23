@@ -71,6 +71,7 @@ generic:
     choose: "Choisir"
     confirm: "Confirmer"
     start: "Démarrer"
+    merge: "Fusionner"
     toggle_section: "Afficher/Cacher la section"
     export_csv: "Exporter en CSV"
     locked: "Verrouillé"
@@ -639,6 +640,10 @@ maintenance:
     html_cleanup_help: "Un retour à la ligne est ajouté après chaque balise <br/> afin d'améliorer l'affichage de ce tableau. Ces retours à la ligne n'existent pas dans le HTML stocké en base de données"
     html_cleanup_updated: "%updated% ligne(s) mise(s) à jour"
     html_cleanup_updated_incomplete: "%updated% ligne(s) mise(s) à jour (sur %selected% sélectionnée(s))"
+    locations_cleanup: "Nettoyage des Localisations"
+    locations_cleanup_empty: "Localisations Vides"
+    locations_cleanup_duplicate: "Localisation Dupliquées"
+    locations_cleanup_manual_duplicate: "Localisation Dupliquées (action manuelle)"
     messages:
         invalid_char: "Caractère(s) invalide(s)"
         invalid_length: "Différence de longueur"

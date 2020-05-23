@@ -72,6 +72,7 @@ generic:
     choose: "Choose"
     confirm: "Confirm"
     start: "Start"
+    merge: "Merge"
     toggle_section: "Show/Hide section"
     export_csv: "Export as CSV file"
     locked: "Locked"
@@ -640,6 +641,10 @@ maintenance:
     html_cleanup_selection: " line(s) selected"
     html_cleanup_updated: "%updated% ligne(s) updated"
     html_cleanup_updated_incomplete: "%updated% ligne(s) updated (out of %selected% selected)"
+    locations_cleanup: "Locations Cleanup"
+    locations_cleanup_empty: "Empty Locations"
+    locations_cleanup_duplicate: "Duplicate Locations"
+    locations_cleanup_manual_duplicate: "Duplicate Locations (manual action)"
     messages:
         invalid_char: "Invalid character(s)"
         invalid_length: "Length difference"

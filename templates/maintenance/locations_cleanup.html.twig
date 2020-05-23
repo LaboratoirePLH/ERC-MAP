@@ -1,0 +1,220 @@
+{% extends 'page.html.twig' %}
+
+{% set nameField = "nom" ~ locale|capitalize %}
+
+{% block title %}
+    {{ 'maintenance.title'|trans }}
+{% endblock %}
+{% block content %}
+    <h4 class="text-center">
+        {{ 'maintenance.locations_cleanup'|trans }}
+    </h4>
+    <hr/>
+    <div class="row justify-content-center">
+        <div class="col-sm-auto">
+            <table class="table-sm table-bordered">
+                <thead class="thead-light">
+                    <tr>
+                        <th scope="col">
+                            <a href="#empty">{{'maintenance.locations_cleanup_empty'|trans}}</a>
+                        </th>
+                        <th scope="col">
+                            <a href="#duplicates">{{'maintenance.locations_cleanup_duplicate'|trans}}</a>
+                        </th>
+                        <th scope="col">
+                            <a href="#manual-duplicates">{{'maintenance.locations_cleanup_manual_duplicate'|trans}}</a>
+                        </th>
+                        <th scope="col">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{emptyLocations|length}}</td>
+                        <td>{{duplicates|length}}</td>
+                        <td>{{manualDuplicates|length}}</td>
+                        <td>{{emptyLocations|length + duplicates|length + manualDuplicates|length}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <hr/>
+    <form action="">
+        <div class="row">
+            <div class="col-12">
+                <h5 class="text-center" id="empty">
+                    {{ 'maintenance.locations_cleanup_empty'|trans }}
+                </h5>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-sm-auto">
+                <table class="table-sm table-bordered align-self-center">
+                    <thead>
+                        <tr>
+                            <th scope="col">{{'generic.fields.id'|trans}}</th>
+                            <th scope="col">{{'generic.fields.utilisation'|trans}}</th>
+                            <th scope="col">{{'generic.delete'|trans}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for l in emptyLocations %}
+                            <tr>
+                                <td>{{l.id}}</td>
+                                <td>
+                                    {% for u in l.links %}
+                                        {{ u.entity ~ ' #' ~ u.id ~ (u.field != 'localisation' ? ' (' ~ u.field ~ ')' : '')}}
+                                        {% if not loop.last %}
+                                            <br/>
+                                        {% endif %}
+                                    {% endfor %}
+                                </td>
+                                <td class="text-center">
+                                    <input type="checkbox" name="deleteEmpty[]" class="change-checkbox" value="{{ l.links|json_encode }}"/>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <hr/>
+        <div class="row">
+            <div class="col-12">
+                <h5 class="text-center" id="duplicates">
+                    {{ 'maintenance.locations_cleanup_duplicate'|trans }}
+                </h5>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-sm-auto">
+                <table class="table-sm table-bordered align-self-center">
+                    <thead>
+                        <tr>
+                            <th scope="col">{{'localisation.fields.grande_region'|trans}}</th>
+                            <th scope="col">{{'localisation.fields.sous_region'|trans}}</th>
+                            <th scope="col">{{'localisation.fields.ville'|trans}}</th>
+                            <th scope="col">{{'localisation.fields.site'|trans}}</th>
+                            <th scope="col">{{'generic.fields.utilisation'|trans}}</th>
+                            <th scope="col">{{'generic.merge'|trans}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for l in duplicates %}
+                            <tr>
+                                <td>{{ (l.grandeRegion is defined and l.grandeRegion != null) ? l.grandeRegion[nameField] : '' }}</td>
+                                <td>{{ (l.sousRegion is defined and l.sousRegion != null) ? l.sousRegion[nameField] : '' }}</td>
+                                <td>
+                                    {{ (l.nomVille is defined and l.nomVille != null) ? l.nomVille : ''}}
+                                    {{ (l.pleiadesVille is defined and l.pleiadesVille != null) ? ' (#' ~ l.pleiadesVille ~ ')' : ''}}
+                                </td>
+                                <td>
+                                    {{ (l.nomSite is defined and l.nomSite != null) ? l.nomSite : ''}}
+                                    {{ (l.pleiadesSite is defined and l.pleiadesSite != null) ? ' (#' ~ l.pleiadesSite ~ ')' : ''}}
+                                </td>
+                                <td class="px-1">
+                                    {% for u in l.links %}
+                                        {{ u.entity ~ ' #' ~ u.id ~ (u.field != 'localisation' ? ' (' ~ u.field ~ ')' : '')}}
+                                        &nbsp;&rarr;&nbsp;
+                                        <a href="{{ url('easyadmin', {'action':'edit', 'entity':'Localisation', 'id':u.location_id}) }}" target="_blank" rel="noopener noreferrer">
+                                            #{{u.location_id}}
+                                        </a>
+                                        {% if not loop.last %}
+                                            <br/>
+                                        {% endif %}
+                                    {% endfor %}
+                                </td>
+                                <td class="text-center">
+                                    <input type="checkbox" name="merge[]" class="change-checkbox" value="{{ l.links|json_encode }}"/>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <hr/>
+        <div class="row">
+            <div class="col-12">
+                <h5 class="text-center" id="manual-duplicates">
+                    {{ 'maintenance.locations_cleanup_manual_duplicate'|trans }}
+                </h5>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-sm-auto">
+                <table class="table-sm table-bordered align-self-center">
+                    <thead>
+                        <tr>
+                            <th scope="col">{{'localisation.fields.grande_region'|trans}}</th>
+                            <th scope="col">{{'localisation.fields.sous_region'|trans}}</th>
+                            <th scope="col">{{'localisation.fields.ville'|trans}}</th>
+                            <th scope="col">{{'localisation.fields.site'|trans}}</th>
+                            <th scope="col">{{'generic.fields.utilisation'|trans}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for l in manualDuplicates %}
+                            <tr>
+                                <td>{{ (l.grandeRegion is defined and l.grandeRegion != null) ? l.grandeRegion[nameField] : '' }}</td>
+                                <td>{{ (l.sousRegion is defined and l.sousRegion != null) ? l.sousRegion[nameField] : '' }}</td>
+                                <td>
+                                    {{ (l.nomVille is defined and l.nomVille != null) ? l.nomVille : ''}}
+                                    {{ (l.pleiadesVille is defined and l.pleiadesVille != null) ? ' (#' ~ l.pleiadesVille ~ ')' : ''}}
+                                </td>
+                                <td>
+                                    {{ (l.nomSite is defined and l.nomSite != null) ? l.nomSite : ''}}
+                                    {{ (l.pleiadesSite is defined and l.pleiadesSite != null) ? ' (#' ~ l.pleiadesSite ~ ')' : ''}}
+                                </td>
+                                <td class="px-1">
+                                    {% for u in l.links %}
+                                        {{ u.entity ~ ' #' ~ u.id ~ (u.field != 'localisation' ? ' (' ~ u.field ~ ')' : '')}}
+                                        &nbsp;&rarr;&nbsp;
+                                        <a href="{{ url('easyadmin', {'action':'edit', 'entity':'Localisation', 'id':u.location_id}) }}" target="_blank" rel="noopener noreferrer">
+                                            #{{u.location_id}}
+                                        </a>
+                                        {% if not loop.last %}
+                                            <br/>
+                                        {% endif %}
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="alert alert-info w-50 fixed-bottom text-center" role="alert" id="total-checked-wrapper" style="display:none;">
+            <span id="total-checked">XX</span>
+            {{ 'maintenance.html_cleanup_selection'|trans }}
+            <button class="btn btn-danger ml-4" type="submit">
+                {{ 'generic.edit'|trans }}
+            </button>
+            <button class="btn btn-sm btn-secondary" type="reset">
+                {{ 'generic.cancel'|trans }}
+            </button>
+        </div>
+    </form>
+    {{ include('partials/_backtotop.html.twig') }}
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            function toggleSubmitButton() {
+                const totalChecked = $('.change-checkbox:checked').length;
+                if (totalChecked > 0) {
+                    $('#total-checked-wrapper').find('#total-checked').text(totalChecked);
+                    $('#total-checked-wrapper').show();
+                } else {
+                    $('#total-checked-wrapper').hide();
+                }
+            };
+            $('.change-checkbox').on('change', toggleSubmitButton);
+            $('form').on('reset', function () {
+                setTimeout(() => toggleSubmitButton(), 100);
+            });
+        });
+    </script>
+{% endblock %}

@@ -91,6 +91,8 @@ class SelectOrCreateType extends AbstractType implements DataMapperInterface
             $data = $forms['creation']->getData();
         } else if ($decision === "select") {
             $data = $forms['selection']->getData();
+        } else if ($decision === null && $forms['decision']->getParent()->getConfig()->getOption('allow_none') === true) {
+            $data = null;
         }
         if (empty($data)) {
             $data = null;

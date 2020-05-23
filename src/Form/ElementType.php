@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\CategorieElement;
 use App\Entity\Element;
+use App\Entity\Localisation;
 use App\Entity\NatureElement;
 
 use App\Form\Type\SelectOrCreateType;
@@ -136,19 +137,24 @@ class ElementType extends AbstractType
                 'allow_delete'  => true,
                 'required'      => false,
             ])
-            ->add('estLocalisee', CheckboxType::class, [
-                'label'      => 'generic.fields.est_localisee',
-                'label_attr' => [
-                    'class' => 'dependent_field_estlocalisee_main'
-                ],
-                'required' => false,
-            ])
-            ->add('localisation', LocalisationType::class, [
-                'label'           => 'generic.fields.localisation',
-                'required'        => false,
-                'attr'            => ['class' => 'localisation_form'],
-                'locale'          => $options['locale'],
-                'translations'    => $options['translations'],
+            ->add('localisation', SelectOrCreateType::class, [
+                'label'                   => false,
+                'required'                => false,
+                'locale'                  => $options['locale'],
+                'translations'            => $options['translations'],
+                'field_name'              => 'localisation',
+                'object_class'            => Localisation::class,
+                'creation_form_class'     => LocalisationType::class,
+                'creation_form_css_class' => 'localisation_form',
+                'selection_choice_label'  => 'affichage' . ucfirst($locale),
+                'allow_none'              => true,
+                'formAction'              => $options['formAction'],
+                'isClone'                 => false,
+                'selection_query_builder' => function (EntityRepository $er) use ($locale) {
+                    return $er->createQueryBuilder('e')
+                        ->leftJoin('e.grandeRegion', 'gr')
+                        ->orderBy('unaccent(gr.nom' . ucfirst($locale) . ')', 'ASC');
+                }
             ])
             ->add('elementBiblios', CollectionType::class, [
                 'label'         => false,
@@ -178,5 +184,6 @@ class ElementType extends AbstractType
         $resolver->setRequired('locale');
         $resolver->setRequired('translations');
         $resolver->setRequired('element');
+        $resolver->setRequired('formAction');
     }
 }

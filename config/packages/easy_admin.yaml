@@ -185,7 +185,7 @@ easy_admin:
             edit:
                 fields:
                  - { property: 'entitePolitique', type_options: { required: false }}
-                 - { property: 'grandeRegion', type_options: { required: true }}
+                 - { property: 'grandeRegion', type_options: { required: false }}
                  - { property: 'sousRegion', type_options: { required: false }}
                  - { property: 'pleiadesVille', format: '%d'}
                  - 'nomVille'

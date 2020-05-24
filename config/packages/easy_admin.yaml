@@ -4,6 +4,7 @@ easy_admin:
         date:     'd/m/Y'
         time:     'H:i'
         datetime: 'd/m/Y H:i:s'
+        number:   '%.8f'
     list:
         max_results: 30
     show:
@@ -180,6 +181,22 @@ easy_admin:
                   label: ''
                   type: 'App\EasyAdmin\Filter\GrandeSousRegion'
                   mapped: false
+                actions: ['-new', '-delete']
+            edit:
+                fields:
+                 - { property: 'entitePolitique', type_options: { required: false }}
+                 - { property: 'grandeRegion', type_options: { required: false }}
+                 - { property: 'sousRegion', type_options: { required: false }}
+                 - { property: 'pleiadesVille', format: '%d'}
+                 - 'nomVille'
+                 - { property: 'pleiadesSite', format: '%d'}
+                 - 'nomSite'
+                 - { property: 'latitude', type_options: { scale: 8 }}
+                 - { property: 'longitude', type_options: { scale: 8 }}
+                 - { property: 'topographies', type_options: { required: false, by_reference: false }}
+                 - { property: 'fonctions', type_options: { required: false, by_reference: false }}
+                 - 'commentaireFr'
+                 - 'commentaireEn'
         Materiau:
             class: App\Entity\Materiau
             label: Matériau

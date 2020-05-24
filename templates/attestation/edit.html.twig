@@ -167,13 +167,7 @@
         'expanded'          : true
     } only %}
         <div class="collapse show" id="section-localisation">
-            {{ form_row(form.estLocalisee) }}
-            <div class="row">
-                <div class="col-sm-12 dependent_field_estlocalisee">
-                    {{ form_errors(form.localisation) }}
-                    {{ form_widget(form.localisation) }}
-                </div>
-            </div>
+            {{ form_row(form.localisation) }}
         </div>
     </section>
 
@@ -349,7 +343,8 @@
                     });
                     $(el).find('select.autocomplete').chosen(CHOSEN_SETTINGS);
                     $(el).find('.selectorcreate').selectOrCreate();
-                    $(el).find('.element_traductions').after($('<a href="#" class="btn btn-primary collection-add-link link-add-traduction"><i class="fa fa-plus"></i>&nbsp;                                          {{ "element.add_traduction"|trans }}</a>'));
+                    const addTranslationLabel = '{{ "element.add_traduction"|trans }}';
+                    $(el).find('.element_traductions').after($('<a href="#" class="btn btn-primary collection-add-link link-add-traduction"><i class="fa fa-plus"></i>&nbsp;' + addTranslationLabel + '</a>'));
                     $(el).find('.element_traductions').collectionField({
                         addLink: $(el).find('.link-add-traduction'),
                         blockTitle: "#",
@@ -377,7 +372,8 @@
                     if (!$.isNumeric(entryId)) {
                         return "";
                     }
-                    return $('<a href="' + url.replace('-ID-', entryId) + '" class="btn btn-sm btn-warning ml-2 mb-1" target="_blank" rel="noopener"><i class="fa fa-fw                                           {{ icons.element }}"></i>' + entryName + '</a >');
+                    const elementIcon = '{{ icons.element }}';
+                    return $('<a href="' + url.replace('-ID-', entryId) + '" class="btn btn-sm btn-warning ml-2 mb-1" target="_blank" rel="noopener"><i class="fa fa-fw ' + elementIcon + '"></i>' + entryName + '</a >');
                 }
             });
 

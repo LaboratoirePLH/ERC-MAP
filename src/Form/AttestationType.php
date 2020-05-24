@@ -5,12 +5,12 @@ namespace App\Form;
 use App\Entity\Attestation;
 use App\Entity\CategorieOccasion;
 use App\Entity\EtatFiche;
+use App\Entity\Localisation;
 use App\Entity\Pratique;
 use App\Entity\Occasion;
 
 use App\Form\Type\DependentSelectType;
-
-
+use App\Form\Type\SelectOrCreateType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -22,7 +22,9 @@ use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-
+use Symfony\Component\Form\ChoiceList\View\ChoiceView;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
 
 class AttestationType extends AbstractType
 {
@@ -152,7 +154,7 @@ class AttestationType extends AbstractType
             ->add('agents', CollectionType::class, [
                 'label'         => false,
                 'entry_type'    => AgentType::class,
-                'entry_options' => array_intersect_key($options, array_flip(["translations", "locale"])),
+                'entry_options' => array_intersect_key($options, array_flip(["translations", "locale", "formAction"])),
                 'allow_add'     => true,
                 'allow_delete'  => true,
                 'required'      => false,
@@ -165,19 +167,22 @@ class AttestationType extends AbstractType
                 'required' => false,
             ])
             ->add('datation', DatationType::class)
-            ->add('estLocalisee', CheckboxType::class, [
-                'label'      => 'generic.fields.est_localisee',
-                'label_attr' => [
-                    'class' => 'dependent_field_estlocalisee_main'
-                ],
-                'required' => false,
-            ])
-            ->add('localisation', LocalisationType::class, [
-                'label'           => 'generic.fields.localisation',
-                'required'        => false,
-                'attr'            => ['class' => 'localisation_form'],
-                'locale'          => $options['locale'],
-                'translations'    => $options['translations'],
+            ->add('localisation', SelectOrCreateType::class, [
+                'label'      => false,
+                'required'                => false,
+                'locale'                  => $options['locale'],
+                'translations'            => $options['translations'],
+                'field_name'              => 'localisation',
+                'object_class'            => Localisation::class,
+                'creation_form_class'     => LocalisationType::class,
+                'creation_form_css_class' => 'localisation_form',
+                'selection_choice_label'  => 'affichage' . ucfirst($locale),
+                'allow_none'              => true,
+                'formAction'              => $options['formAction'],
+                'isClone'                 => $options['isClone'],
+                'selection_query_builder' => function (EntityRepository $er) use ($locale) {
+                    return $er->createQueryBuilder('e');
+                }
             ])
             ->add('attestationsLiees', EntityType::class, [
                 'label'        => 'attestation.fields.attestations_liees',
@@ -239,7 +244,16 @@ class AttestationType extends AbstractType
         $resolver->setRequired('source');
         $resolver->setRequired('attestation');
         $resolver->setRequired('translations');
+        $resolver->setRequired('formAction');
         $resolver->setDefined('locale');
         $resolver->setDefault('isClone', false);
+    }
+
+    public function finishView(FormView $view, FormInterface $form, array $options)
+    {
+        usort($view->children['localisation']->children['selection']->vars['choices'], function (ChoiceView $a, ChoiceView $b) {
+            return \App\Utils\StringHelper::removeAccents($a->label)
+                <=> \App\Utils\StringHelper::removeAccents($b->label);
+        });
     }
 }

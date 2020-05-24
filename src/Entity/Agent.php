@@ -283,15 +283,15 @@ class Agent extends AbstractEntity
 
     public function isBlank(): bool
     {
-        return !(strlen($this->designation) > 0
-            || !$this->agentivites->isEmpty()
+        return !(!$this->agentivites->isEmpty()
             || !$this->statutAffiches->isEmpty()
             || !$this->natures->isEmpty()
             || !$this->genres->isEmpty()
             || !$this->activites->isEmpty()
             || (!is_null($this->localisation) && !$this->localisation->isBlank())
-            || strlen($this->commentaireFr) > 0
-            || strlen($this->commentaireEn) > 0);
+            || (!is_null($this->commentaireFr) && strlen($this->commentaireFr) > 0)
+            || (!is_null($this->commentaireEn) && strlen($this->commentaireEn) > 0)
+            || (!is_null($this->designation) && strlen($this->designation) > 0));
     }
 
     public function toArray(): array

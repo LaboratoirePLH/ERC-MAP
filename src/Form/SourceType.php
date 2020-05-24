@@ -31,6 +31,9 @@ use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\ChoiceList\View\ChoiceView;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
 
 class SourceType extends AbstractType
 {
@@ -266,9 +269,7 @@ class SourceType extends AbstractType
                 'formAction'              => $options['formAction'],
                 'isClone'                 => $options['isClone'],
                 'selection_query_builder' => function (EntityRepository $er) use ($locale) {
-                    return $er->createQueryBuilder('e')
-                        ->leftJoin('e.grandeRegion', 'gr')
-                        ->orderBy('unaccent(gr.nom' . ucfirst($locale) . ')', 'ASC');
+                    return $er->createQueryBuilder('e');
                 }
             ])
             ->add('lieuOrigine', SelectOrCreateType::class, [
@@ -290,9 +291,7 @@ class SourceType extends AbstractType
                 'formAction'              => $options['formAction'],
                 'isClone'                 => $options['isClone'],
                 'selection_query_builder' => function (EntityRepository $er) use ($locale) {
-                    return $er->createQueryBuilder('e')
-                        ->leftJoin('e.grandeRegion', 'gr')
-                        ->orderBy('unaccent(gr.nom' . ucfirst($locale) . ')', 'ASC');
+                    return $er->createQueryBuilder('e');
                 }
             ])
             ->add('inSitu', CheckboxType::class, [
@@ -329,5 +328,17 @@ class SourceType extends AbstractType
         $resolver->setRequired('formAction');
         $resolver->setRequired('user');
         $resolver->setDefault('isClone', false);
+    }
+
+    public function finishView(FormView $view, FormInterface $form, array $options)
+    {
+        usort($view->children['lieuDecouverte']->children['selection']->vars['choices'], function (ChoiceView $a, ChoiceView $b) {
+            return \App\Utils\StringHelper::removeAccents($a->label)
+                <=> \App\Utils\StringHelper::removeAccents($b->label);
+        });
+        usort($view->children['lieuOrigine']->children['selection']->vars['choices'], function (ChoiceView $a, ChoiceView $b) {
+            return \App\Utils\StringHelper::removeAccents($a->label)
+                <=> \App\Utils\StringHelper::removeAccents($b->label);
+        });
     }
 }

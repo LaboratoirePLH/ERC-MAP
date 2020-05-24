@@ -17,6 +17,9 @@ use Doctrine\ORM\EntityRepository;
 
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\ChoiceList\View\ChoiceView;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
 
 class AgentType extends AbstractType
 {
@@ -123,9 +126,7 @@ class AgentType extends AbstractType
                 'formAction'              => $options['formAction'],
                 'isClone'                 => $options['isClone'],
                 'selection_query_builder' => function (EntityRepository $er) use ($locale) {
-                    return $er->createQueryBuilder('e')
-                        ->leftJoin('e.grandeRegion', 'gr')
-                        ->orderBy('unaccent(gr.nom' . ucfirst($locale) . ')', 'ASC');
+                    return $er->createQueryBuilder('e');
                 }
             ])
             ->add('commentaireFr', Type\QuillType::class, array(
@@ -149,5 +150,13 @@ class AgentType extends AbstractType
         $resolver->setRequired('formAction');
         $resolver->setDefined('locale');
         $resolver->setDefault('isClone', false);
+    }
+
+    public function finishView(FormView $view, FormInterface $form, array $options)
+    {
+        usort($view->children['localisation']->children['selection']->vars['choices'], function (ChoiceView $a, ChoiceView $b) {
+            return \App\Utils\StringHelper::removeAccents($a->label)
+                <=> \App\Utils\StringHelper::removeAccents($b->label);
+        });
     }
 }

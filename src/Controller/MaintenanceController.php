@@ -447,9 +447,11 @@ class MaintenanceController extends AbstractController
                     $method = "set" . ucfirst($m['field']);
                     $record->$method($master_location);
 
+                    $to_delete = [];
+
                     // Fetch location (if it still exists)
-                    $location = $em->getRepository(Localisation::class)->find($m['location_id']);
-                    if ($location instanceof Localisation) {
+                    if (!array_key_exists($m['location_id'], $to_delete)) {
+                        $location = $em->getRepository(Localisation::class)->find($m['location_id']);
                         // Get data to merge comments
                         $commentaireFr[] = $location->getCommentaireFr();
                         $commentaireEn[] = $location->getCommentaireEn();
@@ -461,9 +463,13 @@ class MaintenanceController extends AbstractController
                         foreach ($location->getFonctions() as $f) {
                             $master_location->addFonction($f);
                         }
-                        $em->remove($location);
+
                         $total_merged++;
+                        $to_delete[$m['location_id']] = $location;
                     }
+                }
+                foreach ($to_delete as $id => $record) {
+                    $em->remove($record);
                 }
 
                 // Save comments in master location

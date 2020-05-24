@@ -12,6 +12,17 @@
     <hr/>
     <div class="row justify-content-center">
         <div class="col-sm-auto">
+            <a href="{{ url('maintenance_is_located_cleanup') }}" class="btn btn-sm btn-warning">
+                {{ 'maintenance.is_located_cleanup'|trans }}
+            </a>
+            <a href="{{ url('maintenance_in_situ_cleanup') }}" class="btn btn-sm btn-warning">
+                {{ 'maintenance.in_situ_cleanup'|trans }}
+            </a>
+        </div>
+    </div>
+    <hr/>
+    <div class="row justify-content-center">
+        <div class="col-sm-auto">
             <table class="table-sm table-bordered">
                 <thead class="thead-light">
                     <tr>

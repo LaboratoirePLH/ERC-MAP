@@ -645,6 +645,8 @@ maintenance:
     locations_cleanup_empty: "Empty Locations"
     locations_cleanup_duplicate: "Duplicate Locations"
     locations_cleanup_manual_duplicate: "Duplicate Locations (manual action)"
+    is_located_cleanup: "\"Is Located ?\" booleans cleanup"
+    in_situ_cleanup: "\"In Situ ?\" booleans cleanup"
     messages:
         invalid_char: "Invalid character(s)"
         invalid_length: "Length difference"
@@ -657,3 +659,4 @@ maintenance:
         forbidden_attributes: "Unauthorized styling"
         bad_diacritics: "Abnormal diacritics"
         locations_cleaned: "%deleted% location(s) deleted et %merged% location(s) merged"
+        booleans_cleaned: "%updated% boolean(s) updated"

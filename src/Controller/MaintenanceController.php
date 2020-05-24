@@ -486,4 +486,49 @@ class MaintenanceController extends AbstractController
         }
         return $this->redirectToRoute("maintenance_locations_cleanup");
     }
+
+    /**
+     * @Route("/maintenance/is_located_cleanup", name="maintenance_is_located_cleanup")
+     */
+    public function isLocatedCleanup(Request $request, TranslatorInterface $translator)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $total_updated = 0;
+        $total_updated += $em->createQuery("UPDATE \App\Entity\Agent a SET a.estLocalisee = false WHERE a.estLocalisee = true AND a.localisation IS NULL")->execute();
+        $total_updated += $em->createQuery("UPDATE \App\Entity\Agent a SET a.estLocalisee = true WHERE a.estLocalisee = false AND a.localisation IS NOT NULL")->execute();
+        $total_updated += $em->createQuery("UPDATE \App\Entity\Attestation a SET a.estLocalisee = false WHERE a.estLocalisee = true AND a.localisation IS NULL")->execute();
+        $total_updated += $em->createQuery("UPDATE \App\Entity\Attestation a SET a.estLocalisee = true WHERE a.estLocalisee = false AND a.localisation IS NOT NULL")->execute();
+        $total_updated += $em->createQuery("UPDATE \App\Entity\Element e SET e.estLocalisee = false WHERE e.estLocalisee = true AND e.localisation IS NULL")->execute();
+        $total_updated += $em->createQuery("UPDATE \App\Entity\Element e SET e.estLocalisee = true WHERE e.estLocalisee = false AND e.localisation IS NOT NULL")->execute();
+
+        $request->getSession()->getFlashBag()->add(
+            'success',
+            $translator->trans('maintenance.messages.booleans_cleaned', [
+                '%updated%' => $total_updated
+            ])
+        );
+        return $this->redirectToRoute("maintenance_locations_cleanup");
+    }
+
+    /**
+     * @Route("/maintenance/in_situ_cleanup", name="maintenance_in_situ_cleanup")
+     */
+    public function inSituCleanup(Request $request, TranslatorInterface $translator)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $total_updated = 0;
+        $total_updated += $em->createQuery("UPDATE \App\Entity\Source s SET s.inSitu = false WHERE s.lieuOrigine IS NOT NULL AND s.lieuOrigine != s.lieuDecouverte AND s.inSitu = true")->execute();
+        $total_updated += $em->createQuery("UPDATE \App\Entity\Source s SET s.inSitu = true WHERE s.lieuOrigine IS NOT NULL AND s.lieuOrigine = s.lieuDecouverte")->execute();
+        $total_updated += $em->createQuery("UPDATE \App\Entity\Source s SET s.lieuOrigine = s.lieuDecouverte WHERE s.inSitu = true AND s.lieuOrigine IS NULL")->execute();
+
+        $request->getSession()->getFlashBag()->add(
+            'success',
+            $translator->trans('maintenance.messages.booleans_cleaned', [
+                '%updated%' => $total_updated
+            ])
+        );
+        return $this->redirectToRoute("maintenance_locations_cleanup");
+    }
 }

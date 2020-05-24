@@ -644,6 +644,8 @@ maintenance:
     locations_cleanup_empty: "Localisations Vides"
     locations_cleanup_duplicate: "Localisation Dupliquées"
     locations_cleanup_manual_duplicate: "Localisation Dupliquées (action manuelle)"
+    is_located_cleanup: "Nettoyage des booléens \"Est Localisé(e) ?\""
+    in_situ_cleanup: "Nettoyage des booléens \"In Situ ?\""
     messages:
         invalid_char: "Caractère(s) invalide(s)"
         invalid_length: "Différence de longueur"
@@ -656,3 +658,4 @@ maintenance:
         forbidden_attributes: "Style non autorisé"
         bad_diacritics: "Signes diacritiques anormaux"
         locations_cleaned: "%deleted% localisation(s) supprimée(s) et %merged% localisation(s) fusionnée(s)"
+        booleans_cleaned: "%updated% booléen(s) mis à jour"

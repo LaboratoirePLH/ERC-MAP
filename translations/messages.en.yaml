@@ -656,3 +656,4 @@ maintenance:
         forbidden_tags: "Unauthorized HTML tags"
         forbidden_attributes: "Unauthorized styling"
         bad_diacritics: "Abnormal diacritics"
+        locations_cleaned: "%deleted% location(s) deleted et %merged% location(s) merged"

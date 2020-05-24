@@ -8,6 +8,7 @@ use App\Utils\StringHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class MaintenanceController extends AbstractController
 {
@@ -259,15 +260,7 @@ class MaintenanceController extends AbstractController
         //         - Entity Type (Source, Attestation, Agent, Element)
         //         - Entity ID
         //         - Foreign Key field (because Source has 2 location foreign keys)
-        // Operations inner workings :
-        //    Delete : - Unlink the given location from every entity to which is was linked (set the foreign key to null). 
-        //             - Lifecycle events will then automatically remove the orphan location
-        //    Merge : - Keep the location with the lowest ID as the master location (could be any other)
-        //            - Merge the following fields if they differ between duplicates : 
-        //                - Commentaire FR & Commentaire EN : Join all unique variants separated by 2 newlines
-        //                - Topographies & Fonctions : Merge collections
-        //            - Update the foreign key for all entities linked to duplicates other than the master location
-        //            - Lifecycle events will then automatically remove the orphan locations
+        // Form is submitted to function below (doLocationsCleanup), then redirected here
 
         $em = $this->getDoctrine()->getManager();
 
@@ -335,7 +328,7 @@ class MaintenanceController extends AbstractController
             $isUnique = true;
 
             foreach ($uniqueLocations as $ul) {
-                // Check if $ul is a duplicate of $l
+                // Check if $l is a duplicate of $ul
                 $dupe = isDuplicate($l, $ul);
                 if ($dupe === false) {
                     continue;
@@ -346,8 +339,12 @@ class MaintenanceController extends AbstractController
                     $$targetArray[$ul_id] = [$ul];
                 }
                 $$targetArray[$ul_id][] = $l;
-                $isUnique = false;
-                break;
+
+                // If $l is a duplicate of $ul, but cannot be merged manually, we keep looping on unique locations, because maybe it can be merged directly with another
+                if ($dupe) {
+                    $isUnique = false;
+                    break;
+                }
             }
             if ($isUnique) {
                 $uniqueLocations[] = $l;
@@ -387,5 +384,106 @@ class MaintenanceController extends AbstractController
             'duplicates'       => $duplicates,
             'manualDuplicates' => $manualDuplicates
         ]);
+    }
+
+    /**
+     * @Route("/maintenance/do_locations_cleanup", name="maintenance_do_locations_cleanup")
+     */
+    public function doLocationsCleanup(Request $request, TranslatorInterface $translator)
+    {
+        // Operations inner workings :
+        //    Delete : - Unlink the given location from every entity to which is was linked (set the foreign key to null). 
+        //             - Lifecycle events will then automatically remove the orphan location
+        //    Merge : - Keep the location with the lowest ID as the master location (could be any other)
+        //            - Merge the following fields if they differ between duplicates : 
+        //                - Commentaire FR & Commentaire EN : Join all unique variants separated by 2 newlines
+        //                - Topographies & Fonctions : Merge collections
+        //            - Update the foreign key for all entities linked to duplicates other than the master location
+        //            - Lifecycle events will then automatically remove the orphan locations
+
+        if ($request->isMethod('POST')) {
+            $delete = $request->request->get('delete', []);
+            $merge = $request->request->get('merge', []);
+
+            $em = $this->getDoctrine()->getManager();
+
+            $delete = array_reduce($delete, function ($total, $carry) {
+                return array_merge($total, json_decode($carry, true));
+            }, []);
+            $merge = array_reduce($merge, function ($total, $carry) {
+                array_push($total, json_decode($carry, true));
+                return $total;
+            }, []);
+
+            $total_deleted = 0;
+            $total_merged = 0;
+
+            foreach ($delete as $d) {
+                // Fetch linked record and remove Localisation
+                $record = $em->getRepository("\App\Entity\\" . $d['entity'])->find($d['id']);
+                $method = "set" . ucfirst($d['field']);
+                $record->$method(null);
+            }
+            $ids = array_unique(array_column($delete, 'location_id'));
+            foreach ($ids as $id) {
+                $location = $em->getRepository(Localisation::class)->find($id);
+                $em->remove($location);
+
+                $total_deleted++;
+            }
+
+            foreach ($merge as $m_group) {
+                usort($m_group, function ($a, $b) {
+                    return $a['location_id'] <=> $b['location_id'];
+                });
+                $master = array_shift($m_group);
+                $master_location = $em->getRepository(Localisation::class)->find($master['location_id']);
+                $commentaireFr = [$master_location->getCommentaireFr()];
+                $commentaireEn = [$master_location->getCommentaireEn()];
+
+                foreach ($m_group as $m) {
+                    // Update linked record
+                    $record = $em->getRepository("\App\Entity\\" . $m['entity'])->find($m['id']);
+                    $method = "set" . ucfirst($m['field']);
+                    $record->$method($master_location);
+
+                    // Fetch location (if it still exists)
+                    $location = $em->getRepository(Localisation::class)->find($m['location_id']);
+                    if ($location instanceof Localisation) {
+                        // Get data to merge comments
+                        $commentaireFr[] = $location->getCommentaireFr();
+                        $commentaireEn[] = $location->getCommentaireEn();
+
+                        // Merge collections
+                        foreach ($location->getTopographies() as $t) {
+                            $master_location->addTopography($t);
+                        }
+                        foreach ($location->getFonctions() as $f) {
+                            $master_location->addFonction($f);
+                        }
+                        $em->remove($location);
+                        $total_merged++;
+                    }
+                }
+
+                // Save comments in master location
+                $commentaireFr = array_unique(array_filter(array_map('trim', $commentaireFr)));
+                $commentaireEn = array_unique(array_filter(array_map('trim', $commentaireEn)));
+                $master_location->setCommentaireFr(implode('<br />', $commentaireFr));
+                $master_location->setCommentaireEn(implode('<br />', $commentaireEn));
+                $total_merged++;
+            }
+
+            $em->flush();
+
+            $request->getSession()->getFlashBag()->add(
+                'success',
+                $translator->trans('maintenance.messages.locations_cleaned', [
+                    '%deleted%' => $total_deleted,
+                    '%merged%' => $total_merged
+                ])
+            );
+        }
+        return $this->redirectToRoute("maintenance_locations_cleanup");
     }
 }

@@ -39,7 +39,7 @@
         </div>
     </div>
     <hr/>
-    <form action="">
+    <form action="{{ url('maintenance_do_locations_cleanup') }}" method="POST">
         <div class="row">
             <div class="col-12">
                 <h5 class="text-center" id="empty">
@@ -70,7 +70,7 @@
                                     {% endfor %}
                                 </td>
                                 <td class="text-center">
-                                    <input type="checkbox" name="deleteEmpty[]" class="change-checkbox" value="{{ l.links|json_encode }}"/>
+                                    <input type="checkbox" name="delete[]" class="change-checkbox" value="{{ l.links|json_encode }}"/>
                                 </td>
                             </tr>
                         {% endfor %}

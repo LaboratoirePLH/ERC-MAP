@@ -655,3 +655,4 @@ maintenance:
         forbidden_tags: "Balises HTML non autorisées"
         forbidden_attributes: "Style non autorisé"
         bad_diacritics: "Signes diacritiques anormaux"
+        locations_cleaned: "%deleted% localisation(s) supprimée(s) et %merged% localisation(s) fusionnée(s)"

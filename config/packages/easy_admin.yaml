@@ -4,6 +4,7 @@ easy_admin:
         date:     'd/m/Y'
         time:     'H:i'
         datetime: 'd/m/Y H:i:s'
+        number:   '%.8f'
     list:
         max_results: 30
     show:
@@ -183,15 +184,15 @@ easy_admin:
                 actions: ['-new', '-delete']
             edit:
                 fields:
-                 - { property: 'entitePolitique', type_options: { required: false, by_reference: false }}
-                 - { property: 'grandeRegion', type_options: { required: true, by_reference: true }}
-                 - { property: 'sousRegion', type_options: { required: false, by_reference: true }}
+                 - { property: 'entitePolitique', type_options: { required: false }}
+                 - { property: 'grandeRegion', type_options: { required: true }}
+                 - { property: 'sousRegion', type_options: { required: false }}
                  - { property: 'pleiadesVille', format: '%d'}
                  - 'nomVille'
                  - { property: 'pleiadesSite', format: '%d'}
                  - 'nomSite'
-                 - { property: 'latitude', format: '%.8f'}
-                 - { property: 'longitude', format: '%.8f'}
+                 - { property: 'latitude', type_options: { scale: 8 }}
+                 - { property: 'longitude', type_options: { scale: 8 }}
                  - { property: 'topographies', type_options: { required: false, by_reference: false }}
                  - { property: 'fonctions', type_options: { required: false, by_reference: false }}
                  - 'commentaireFr'

@@ -418,9 +418,9 @@ class Localisation extends AbstractEntity
             $base[] = $this->nomSite . ($this->pleiadesSite !== null ? '(#' . $this->pleiadesSite . ')' : '');
         }
         $base = implode(' > ', $base);
-        $base = str_replace('> >', '>>', $base);
-        $base = trim($base);
-        return '#' . $this->id . ' : ' . $base . (!is_null($this->entitePolitique) ? (' - ' . $this->entitePolitique) : '');
+        $base = str_replace('>  >', '>>', $base);
+        $base = trim($base, "> ");
+        return $base . (!is_null($this->entitePolitique) ? (' - ' . $this->entitePolitique) : '') . ' [#' . $this->id . ']';
     }
 
     public function getAffichageFr(): string

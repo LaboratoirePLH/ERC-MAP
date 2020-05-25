@@ -12,6 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -181,10 +182,13 @@ class ListController extends AbstractController
             ];
         }, $attestations);
 
-        return new JsonResponse([
+        $result = [
             'success' => true,
             'data'    => $data
-        ]);
+        ];
+        $response = new Response(json_encode($result, JSON_INVALID_UTF8_IGNORE));
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
     }
 
     /**

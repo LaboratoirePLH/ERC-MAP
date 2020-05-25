@@ -181,7 +181,15 @@ class AttestationType extends AbstractType
                 'formAction'              => $options['formAction'],
                 'isClone'                 => $options['isClone'],
                 'selection_query_builder' => function (EntityRepository $er) use ($locale) {
-                    return $er->createQueryBuilder('e');
+                    $nameField = 'nom' . ucfirst($locale);
+                    return $er->createQueryBuilder('e')
+                        ->leftJoin('e.grandeRegion', 'gr')
+                        ->leftJoin('e.sousRegion', 'sr')
+                        ->addOrderBy("unaccent(gr.$nameField)", 'ASC')
+                        ->addOrderBy("unaccent(sr.$nameField)", 'ASC')
+                        ->addOrderBy("e.nomVille", 'ASC')
+                        ->addOrderBy("e.nomSite", 'ASC')
+                        ->addOrderBy("e.id", 'ASC');
                 }
             ])
             ->add('attestationsLiees', EntityType::class, [
@@ -247,13 +255,5 @@ class AttestationType extends AbstractType
         $resolver->setRequired('formAction');
         $resolver->setDefined('locale');
         $resolver->setDefault('isClone', false);
-    }
-
-    public function finishView(FormView $view, FormInterface $form, array $options)
-    {
-        usort($view->children['localisation']->children['selection']->vars['choices'], function (ChoiceView $a, ChoiceView $b) {
-            return \App\Utils\StringHelper::removeAccents($a->label)
-                <=> \App\Utils\StringHelper::removeAccents($b->label);
-        });
     }
 }

@@ -109,16 +109,21 @@ class Chercheur extends AbstractEntity implements UserInterface
     private $requetes; //Ici ça va être un tableau de requêtes en fait
 
     /**
+     * @ORM\OneToMany(targetEntity="App\Entity\RechercheEnregistree", mappedBy="createur", orphanRemoval=true, cascade={"remove"})
+     */
+    private $recherchesEnregistrees;
+
+    /**
      * @var bool
      *
-     * @ORM\Column(name="actif", type="boolean", nullable=false)
+     * @ORM\Column(name="actif", type="boolean", nullable=false, options={"default" : false})
      */
     private $actif = false;
 
     /**
      * @var bool
      *
-     * @ORM\Column(name="gestionnaire_comptes", type="boolean", nullable=false)
+     * @ORM\Column(name="gestionnaire_comptes", type="boolean", nullable=false, options={"default" : false})
      */
     private $gestionnaireComptes = false;
 
@@ -130,6 +135,7 @@ class Chercheur extends AbstractEntity implements UserInterface
         $this->projets = new \Doctrine\Common\Collections\ArrayCollection();
         $this->verrous = new ArrayCollection();
         $this->requetes = new ArrayCollection();
+        $this->recherchesEnregistrees = new ArrayCollection();
 
         $this->setDateAjout(new \DateTime());
     }
@@ -407,6 +413,37 @@ class Chercheur extends AbstractEntity implements UserInterface
     public function setGestionnaireComptes(bool $gestionnaireComptes): self
     {
         $this->gestionnaireComptes = $gestionnaireComptes;
+        return $this;
+    }
+
+    /**
+     * @return Collection|RechercheEnregistree[]
+     */
+    public function getRecherchesEnregistrees(): Collection
+    {
+        return $this->recherchesEnregistrees;
+    }
+
+    public function addRecherchesEnregistree(RechercheEnregistree $recherchesEnregistree): self
+    {
+        if (!$this->recherchesEnregistrees->contains($recherchesEnregistree)) {
+            $this->recherchesEnregistrees[] = $recherchesEnregistree;
+            $recherchesEnregistree->setCreateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRecherchesEnregistree(RechercheEnregistree $recherchesEnregistree): self
+    {
+        if ($this->recherchesEnregistrees->contains($recherchesEnregistree)) {
+            $this->recherchesEnregistrees->removeElement($recherchesEnregistree);
+            // set the owning side to null (unless already changed)
+            if ($recherchesEnregistree->getCreateur() === $this) {
+                $recherchesEnregistree->setCreateur(null);
+            }
+        }
+
         return $this;
     }
 }

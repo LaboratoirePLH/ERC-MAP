@@ -489,6 +489,7 @@ misc:
     back_to_top: "Back to top"
     copyright: "ERC-MAP - Laboratoire PLH - Université Toulouse - Jean Jaurès"
     export_copyright: "Bonnet C. (dir.), ERC Mapping Ancient Polytheisms 741182 (DB MAP), Toulouse 2017-2022 : https://base-map-polytheisms.huma-num.fr/ (%date%)."
+    cookies: "This website uses cookies only to improve the user experience. No personal and/or tracking data is collected."
 
 pages:
     home:

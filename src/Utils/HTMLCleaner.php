@@ -28,6 +28,9 @@ class HTMLCleaner
             $string = html_entity_decode($string);
         } while ($string !== $before); // Repeat until no changes are done
 
+        // Add special case to decode single quotes (not managed by html_entity_decode)
+        $string = htmlspecialchars_decode($string, ENT_QUOTES);
+
         $string = str_replace(['#@LT@#', '#@GT@#'], ['&lt;', '&gt;'], $string);
 
         return $string;

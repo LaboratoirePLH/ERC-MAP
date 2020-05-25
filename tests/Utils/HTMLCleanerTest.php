@@ -22,6 +22,7 @@ class HTMLCleanerTest extends TestCase
         $this->assertEquals('é', HTMLCleaner::sanitizeHtmlEncoding('&amp;eacute;'));
         $this->assertEquals('Λοκ[ρος]', HTMLCleaner::sanitizeHtmlEncoding('&Lambda;&omicron;&kappa;[&rho;&omicron;&sigmaf;]'));
         $this->assertEquals('Λοκ[ρος]', HTMLCleaner::sanitizeHtmlEncoding('Λοκ[ρος]'));
+        $this->assertEquals("'", HTMLCleaner::sanitizeHtmlEncoding('&#39;'));
     }
 
     public function testSanitizeEncodingWillKeepChevronsEncoded()

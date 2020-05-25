@@ -92,6 +92,7 @@ generic:
         modifie: "Edited"
         by: "by"
         type: "Type"
+        types: "Types"
         commentaire: "Commentary"
         message: "Message"
         utilisation: "Usage"
@@ -356,11 +357,11 @@ agent:
     name: 'Agent'
     fields:
         designation: "Designation"
-        agentivite: "Agency"
-        nature: "Nature"
-        genre: "Gender"
-        statut_affiche: "Explicit Status"
-        activite: "Activity"
+        agentivite: "Agencies"
+        nature: "Natures"
+        genre: "Genders"
+        statut_affiche: "Explicit Statuses"
+        activite: "Activities"
 
 datation:
     fields:
@@ -392,8 +393,8 @@ localisation:
         pleiades_site: "Pleiades Number (Site)"
         site: "Site"
         nom_site : "Name (Site)"
-        topographie : "Topography"
-        fonction: "Function"
+        topographie : "Topographies"
+        fonction: "Functions"
         precision: "Location precision"
     precision:
         niveau_1: "(1) Site"

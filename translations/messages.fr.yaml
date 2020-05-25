@@ -91,14 +91,15 @@ generic:
         modifie: "Modifié"
         by: "par"
         type: "Type"
+        types: "Types"
         commentaire: "Commentaire"
         message: "Message"
         utilisation: "Utilisation"
         nom: "Nom"
         nom_fr: "Nom (FR)"
         nom_en: "Nom (EN)"
-        commentaire_fr: "Commentaires (FR)"
-        commentaire_en: "Commentaires (EN)"
+        commentaire_fr: "Commentaire (FR)"
+        commentaire_en: "Commentaire (EN)"
         langue: "Langue"
         to_translate: "Traduire en"
         translation: "Traduction"
@@ -356,11 +357,11 @@ agent:
     name: 'Agent'
     fields:
         designation: "Désignation"
-        agentivite: "Agentivité"
-        nature: "Nature"
-        genre: "Genre"
-        statut_affiche: "Statut Affiché"
-        activite: "Activité"
+        agentivite: "Agentivités"
+        nature: "Natures"
+        genre: "Genres"
+        statut_affiche: "Statuts Affichés"
+        activite: "Activités"
 
 datation:
     fields:
@@ -392,8 +393,8 @@ localisation:
         pleiades_site: "Numéro Pléiades (Site)"
         site: "Site"
         nom_site : "Nom (Site)"
-        topographie : "Topographie"
-        fonction: "Fonction"
+        topographie : "Topographies"
+        fonction: "Fonctions"
         precision: "Précision de la Localisation"
     precision:
         niveau_1: "(1) Site"

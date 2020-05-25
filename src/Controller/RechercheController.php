@@ -419,9 +419,6 @@ class RechercheController extends AbstractController
             // List all the records to reindex
             $allRecords = $repo->buildReindexList();
 
-            // Delete existing entries
-            $repo->deleteAll();
-
             // Generate a key
             $rebuildKey = uniqid('rebuild_');
 
@@ -441,7 +438,7 @@ class RechercheController extends AbstractController
                 list($entityType, $entityId) = array_shift($rebuildData['remaining']);
 
                 // Rebuild the entry
-                $repo->rebuildEntry($entityType, $entityId, true);
+                $repo->rebuildEntry($entityType, $entityId);
 
                 // Update rebuild data array
                 $rebuildData['doneCount']++;

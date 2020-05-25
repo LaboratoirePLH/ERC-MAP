@@ -320,6 +320,7 @@
                     $(el).find('select.autocomplete').chosen(CHOSEN_SETTINGS);
                     $(el).find('.grandeSousRegion').dependentSelects({data_url: "{{ url('data_sous_region') }}"});
                     $(el).find('.quill').quill();
+                    $(el).find('.selectorcreate').selectOrCreate();
                 },
                 addListener: function (newEl, idx) {
                     $('#counter-agents').text(parseInt($('#counter-agents').text(), 10) + 1);

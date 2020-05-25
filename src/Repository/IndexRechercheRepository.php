@@ -364,7 +364,7 @@ class IndexRechercheRepository extends ServiceEntityRepository
 
         $localisation = $source['lieuDecouverte'] ?? $source['lieuOrigine'] ?? null;
         if ($localisation !== null) {
-            $localisation = $localisation['nomSite'] ?? $localisation['nomVille'] ?? $localisation['grandeRegion']['nom' . ucFirst($locale)] ?? $localisation['sousRegion']['nom' . ucFirst($locale)] ?? null;
+            $localisation = $localisation['nomVille'] ?? $localisation['sousRegion']['nom' . ucFirst($locale)] ?? $localisation['grandeRegion']['nom' . ucFirst($locale)] ?? null;
         }
 
         $attestationIds = implode(',', $source['attestations'] ?? []);
@@ -405,7 +405,7 @@ class IndexRechercheRepository extends ServiceEntityRepository
 
         $localisation = $attestation['localisation'] ?? null;
         if ($localisation !== null) {
-            $localisation = $localisation['nomSite'] ?? $localisation['nomVille'] ?? $localisation['grandeRegion']['nom' . ucFirst($locale)] ?? $localisation['sousRegion']['nom' . ucFirst($locale)] ?? null;
+            $localisation = $localisation['nomVille'] ?? $localisation['sousRegion']['nom' . ucFirst($locale)] ?? $localisation['grandeRegion']['nom' . ucFirst($locale)] ?? null;
         }
 
         $text = $attestation['extraitAvecRestitution'] ?? $attestation['translitteration'] ?? "";

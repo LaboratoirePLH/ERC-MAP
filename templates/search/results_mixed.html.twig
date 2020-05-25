@@ -144,7 +144,13 @@
                         data: 'reference'
                     },
                     {
-                        data: 'localisation'
+                        data: 'localisation',
+                        render: function (data, type, row) {
+                            if (type == 'filter' || type == 'sort') {
+                                return(data || '').replace(/[^0-9a-z\s-]/gi, '');
+                            }
+                            return data;
+                        }
                     },
                     {
                         data: 'postQuem',

@@ -132,10 +132,9 @@
                             if (type === 'sort' || type === 'type') {
                                 return data;
                             }
-                            const versionLabel = "{{ 'generic.fields.version'|trans }}";
-                            return '#' + data + '<br/><small>' + versionLabel + ' ' + (
+                            return '#' + data + ' <small>(v' + (
                                 row.version || '?'
-                            ) + "</small>";
+                            ) + ')</small>';
                         }
                     },
                     {

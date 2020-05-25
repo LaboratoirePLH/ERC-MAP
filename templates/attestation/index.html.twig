@@ -136,16 +136,15 @@
                         data: 'id',
                         render: function (data, type, row) {
                             if (type === 'filter') {
-                                return row.projet + ' #' + data + ' source #' + row.source;
+                                return row.projet + ' #' + data + ' s#' + row.source;
                             }
                             if (type === 'sort' || type === 'type') {
                                 return data;
                             }
-                            const versionLabel = "{{ 'generic.fields.version'|trans }}";
-                            const sourceLabel = "{{ 'source.name'|trans }}";
-                            return row.projet + ' #' + data + '<br/><small>' + versionLabel + ' ' + (
+                            const sourceLabel = "S";
+                            return row.projet + '<br/>#' + data + ' <small>(v' + (
                                 row.version || '?'
-                            ) + "<br/><i>(" + sourceLabel + " #" + row.source + ")</i></small>";
+                            ) + ')<br/><i>(' + sourceLabel + '#' + row.source + ')</i></small>';
                         }
                     },
                     {

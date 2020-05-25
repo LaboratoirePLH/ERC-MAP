@@ -8,7 +8,8 @@
                 {% include "partials/_entitylink.html.twig" with {
                     'entity': 'source',
                     'link': url('source_show', {'id': attestation.source.id}),
-                    'text': '#' ~ attestation.source.id
+                    'text': '#' ~ attestation.source.id,
+                    'buttonblock': false
                 } %}
             </td>
         </tr>
@@ -53,10 +54,11 @@
             <td>
                 {% for al in attestationsLiees %}
                     {% include "partials/_entitylink.html.twig" with {
-                                    'entity': 'attestation',
-                                    'link': url('attestation_show', {'id': al.id}),
-                                    'text': al.affichage
-                                } %}
+                        'entity': 'attestation',
+                        'link': url('attestation_show', {'id': al.id}),
+                        'text': al.affichage,
+                        'buttonblock': false
+                    } %}
                 {% endfor %}
             </td>
         </tr>
@@ -347,10 +349,11 @@
                                     <th scope="row">{{ 'element.name'|trans }}</th>
                                     <td>
                                         {% include "partials/_entitylink.html.twig" with {
-                                        'entity': 'element',
-                                        'link': url('element_show', {'id': ce.element.id}),
-                                        'text': '#' ~ ce.element.id ~ " " ~ (ce.element.etatAbsolu|raw|striptags('<span>'))
-                                    } %}
+                                            'entity': 'element',
+                                            'link': url('element_show', {'id': ce.element.id}),
+                                            'text': '#' ~ ce.element.id ~ " " ~ (ce.element.etatAbsolu|raw|striptags('<span>')),
+                                            'buttonblock': false
+                                        } %}
                                     </td>
                                 </tr>
                                 <tr>

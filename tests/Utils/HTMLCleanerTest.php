@@ -188,4 +188,13 @@ class HTMLCleanerTest extends TestCase
             HTMLCleaner::sanitizeOpenXML('<xml>Foo</xml>Bar<xml>Baz</xml>')
         );
     }
+
+    public function testSanitizeFunctionsWillKeepCurlyBrackets()
+    {
+        $this->assertEquals("{x}", HTMLCleaner::sanitizeHtmlEncoding('{x}'));
+        $this->assertEquals("{x}", HTMLCleaner::sanitizeHtmlTags("{x}"));
+        $this->assertEquals('{x}', HTMLCleaner::sanitizeHtmlAttributes('{x}'));
+        $this->assertEquals('{x}', HTMLCleaner::sanitizeHtmlNewLines('{x}'));
+        $this->assertEquals('{x}', HTMLCleaner::sanitizeOpenXML('{x}'));
+    }
 }

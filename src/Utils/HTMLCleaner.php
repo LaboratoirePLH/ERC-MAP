@@ -9,6 +9,12 @@ use PHPHtmlParser\Dom\Tag;
 class HTMLCleaner
 {
 
+    public static $DOM_PARSER_OPTIONS = [
+        'removeDoubleSpace' => false,
+        'removeSmartyScripts' => false,
+        // 'htmlSpecialCharsDecode' => true
+    ];
+
     /**
      * Function to unencode all HTML entities
      */
@@ -59,10 +65,7 @@ class HTMLCleaner
             return null;
         }
         $dom = new Dom();
-        $dom->setOptions([
-            "removeDoubleSpace" => false,
-            // "htmlSpecialCharsDecode" => true
-        ]);
+        $dom->setOptions(self::$DOM_PARSER_OPTIONS);
         $dom->load($string);
         $spans = $dom->find('span');
 
@@ -108,10 +111,7 @@ class HTMLCleaner
 
         // Replace <p> and <div> with a <br/>
         $dom = new Dom();
-        $dom->setOptions([
-            "removeDoubleSpace" => false,
-            // 'cleanupInput' => false,
-        ]);
+        $dom->setOptions(self::$DOM_PARSER_OPTIONS);
         $dom->load($string);
         $blocks = $dom->find('div, p');
 

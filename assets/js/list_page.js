@@ -54,7 +54,40 @@ jQuery.fn.dataTable.ext.type.order['id-pre'] = function (d) {
     return (typeNumber * 1e10) + parseInt(id, 10);
 };
 
+
 (function ($) {
+    $.fn.datatablesTemplateColumn = function (name, visibility) {
+        switch (name) {
+            case 'date_creation':
+                return {
+                    data: 'date_creation',
+                    visible: visibility,
+                    render: function (data, type, row) {
+                        if (type === 'display') {
+                            return data.display + '<br/><small><acronym title="' + row.createur.value + '">' + row.createur.display + '</acronym></small>';
+                        }
+                        if (type === 'filter') {
+                            return [data.display, row.createur.display, row.createur.value].join(' ; ');
+                        }
+                        return data.timestamp;
+                    }
+                };
+            case 'date_modification':
+                return {
+                    data: 'date_modification',
+                    visible: visibility,
+                    render: function (data, type, row) {
+                        if (type === 'display') {
+                            return data.display + '<br/><small><acronym title="' + row.editeur.value + '">' + row.editeur.display + '</acronym></small>';
+                        }
+                        if (type === 'filter') {
+                            return [data.display, row.editeur.display, row.editeur.value].join(' ; ');
+                        }
+                        return data.timestamp;
+                    }
+                }
+        }
+    };
     $.fn.setupList = function (listId, tableOptions, searchPlaceholder) {
 
         // Replace tfoot cell values by search fields

@@ -145,6 +145,13 @@ class Chercheur extends AbstractEntity implements UserInterface
         return $this;
     }
 
+    public function getInitials(): ?string
+    {
+        return implode('', array_map(function ($w) {
+            return strtoupper(substr($w, 0, 1));
+        }, explode(' ', str_replace('-', ' ', $this->prenomNom))));
+    }
+
     public function getUsername(): ?string
     {
         return $this->username;

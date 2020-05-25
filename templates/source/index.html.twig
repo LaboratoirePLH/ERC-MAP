@@ -189,25 +189,9 @@
                         data: 'titre_abrege'
                     }, {
                         data: 'reference'
-                    }, {
-                        data: 'date_creation',
-                        visible: isContributor,
-                        render: function (data, type, row) {
-                            if (type === 'display' || type === 'filter') {
-                                return data.display + '<br/><small>' + row.createur + '</small>';
-                            }
-                            return data.timestamp;
-                        }
-                    }, {
-                        data: 'date_modification',
-                        visible: isContributor,
-                        render: function (data, type, row) {
-                            if (type === 'display' || type === 'filter') {
-                                return data.display + '<br/><small>' + row.editeur + '</small>';
-                            }
-                            return data.timestamp;
-                        }
-                    }, {
+                    },
+                    $.fn.datatablesTemplateColumn('date_creation', isContributor),
+                    $.fn.datatablesTemplateColumn('date_modification', isContributor), {
                         data: 'traduire',
                         visible: isContributor,
                         render: function (data, type, row) {

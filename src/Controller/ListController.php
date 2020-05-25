@@ -78,8 +78,14 @@ class ListController extends AbstractController
                     'timestamp' => $source->getDateModification()->getTimestamp(),
                 ],
                 'createur_id' => $source->getCreateur()->getId(),
-                'createur' => $source->getCreateur()->getPrenomNom(),
-                'editeur'  => $source->getDernierEditeur()->getPrenomNom(),
+                'createur' => [
+                    'value'   => $source->getCreateur()->getPrenomNom(),
+                    'display' => $source->getCreateur()->getInitials()
+                ],
+                'editeur'  => [
+                    'value'   => $source->getDernierEditeur()->getPrenomNom(),
+                    'display' => $source->getDernierEditeur()->getInitials()
+                ],
                 'traduire' => array_values(array_filter([
                     $source->getTraduireFr() ? $translator->trans('languages.fr') : null,
                     $source->getTraduireEn() ? $translator->trans('languages.en') : null
@@ -159,8 +165,14 @@ class ListController extends AbstractController
                     'timestamp' => $attestation->getDateModification()->getTimestamp(),
                 ],
                 'createur_id' => $attestation->getCreateur()->getId(),
-                'createur' => $attestation->getCreateur()->getPrenomNom(),
-                'editeur'  => $attestation->getDernierEditeur()->getPrenomNom(),
+                'createur' => [
+                    'value'   => $attestation->getCreateur()->getPrenomNom(),
+                    'display' => $attestation->getCreateur()->getInitials()
+                ],
+                'editeur'  => [
+                    'value'   => $attestation->getDernierEditeur()->getPrenomNom(),
+                    'display' => $attestation->getDernierEditeur()->getInitials()
+                ],
                 'traduire' => array_values(array_filter([
                     $attestation->getTraduireFr() ? $translator->trans('languages.fr') : null,
                     $attestation->getTraduireEn() ? $translator->trans('languages.en') : null
@@ -221,8 +233,14 @@ class ListController extends AbstractController
                     'timestamp' => $element->getDateModification()->getTimestamp(),
                 ],
                 'createur_id' => $element->getCreateur()->getId(),
-                'createur' => $element->getCreateur()->getPrenomNom(),
-                'editeur'  => $element->getDernierEditeur()->getPrenomNom(),
+                'createur' => [
+                    'value'   => $element->getCreateur()->getPrenomNom(),
+                    'display' => $element->getCreateur()->getInitials()
+                ],
+                'editeur'  => [
+                    'value'   => $element->getDernierEditeur()->getPrenomNom(),
+                    'display' => $element->getDernierEditeur()->getInitials()
+                ],
                 'traduire' => array_values(array_filter([
                     $element->getTraduireFr() ? $translator->trans('languages.fr') : null,
                     $element->getTraduireEn() ? $translator->trans('languages.en') : null

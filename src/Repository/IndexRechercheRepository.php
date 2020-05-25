@@ -362,7 +362,7 @@ class IndexRechercheRepository extends ServiceEntityRepository
                 $mainEdition['reference'] ?? null
             ]));
 
-        $localisation = $source['lieuOrigine'] ?? $source['lieuDecouverte'] ?? null;
+        $localisation = $source['lieuDecouverte'] ?? $source['lieuOrigine'] ?? null;
         if ($localisation !== null) {
             $localisation = $localisation['nomSite'] ?? $localisation['nomVille'] ?? $localisation['grandeRegion']['nom' . ucFirst($locale)] ?? $localisation['sousRegion']['nom' . ucFirst($locale)] ?? null;
         }

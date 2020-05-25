@@ -33,9 +33,11 @@ class RechercheController extends AbstractController
 
         $user = $this->get('security.token_storage')->getToken()->getUser();
 
-        $queries = $this->getDoctrine()
-            ->getRepository(RechercheEnregistree::class)
-            ->findAllByChercheur($user);
+        $queries = $this->isGranted('ROLE_USER')
+            ? ($this->getDoctrine()
+                ->getRepository(RechercheEnregistree::class)
+                ->findAllByChercheur($user))
+            : [];
 
         return $this->render('search/index.html.twig', [
             'controller_name' => 'RechercheController',

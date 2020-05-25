@@ -23,6 +23,7 @@ nav:
 login_page:
     login_required: "Login required"
     access_database: "Access the database"
+    login_database: "Login to your account"
     request_account: "Request an account"
     register: "Register"
     reset_password: "Reset your password"
@@ -480,6 +481,7 @@ autocomplete:
     no_matches: "No matches found for : "
 
 misc:
+    legal: "Legal Information"
     back_to_top: "Back to top"
     copyright: "ERC-MAP - Laboratoire PLH - Université Toulouse - Jean Jaurès"
     export_copyright: "Bonnet C. (dir.), ERC Mapping Ancient Polytheisms 741182 (DB MAP), Toulouse 2017-2022 : https://base-map-polytheisms.huma-num.fr/ (%date%)."

@@ -90,7 +90,7 @@ class ListController extends AbstractController
                     $source->getTraduireFr() ? $translator->trans('languages.fr') : null,
                     $source->getTraduireEn() ? $translator->trans('languages.en') : null
                 ])),
-                'verrou' => ($source->getVerrou() !== null && !$source->getVerrou()->isWritable($user)) ? $source->getVerrou()->toArray($translator->trans('locale_datetime')) : false
+                'verrou' => ($this->isGranted('ROLE_USER') && $source->getVerrou() !== null && !$source->getVerrou()->isWritable($user)) ? $source->getVerrou()->toArray($translator->trans('locale_datetime')) : false
             ];
         }, $sources);
 
@@ -177,7 +177,7 @@ class ListController extends AbstractController
                     $attestation->getTraduireFr() ? $translator->trans('languages.fr') : null,
                     $attestation->getTraduireEn() ? $translator->trans('languages.en') : null
                 ])),
-                'verrou' => ($attestation->getVerrou() !== null && !$attestation->getVerrou()->isWritable($user)) ? $attestation->getVerrou()->toArray($translator->trans('locale_datetime')) : false
+                'verrou' => ($this->isGranted('ROLE_USER') && $attestation->getVerrou() !== null && !$attestation->getVerrou()->isWritable($user)) ? $attestation->getVerrou()->toArray($translator->trans('locale_datetime')) : false
             ];
         }, $attestations);
 
@@ -245,7 +245,7 @@ class ListController extends AbstractController
                     $element->getTraduireFr() ? $translator->trans('languages.fr') : null,
                     $element->getTraduireEn() ? $translator->trans('languages.en') : null
                 ])),
-                'verrou' => ($element->getVerrou() !== null && !$element->getVerrou()->isWritable($user)) ? $element->getVerrou()->toArray($translator->trans('locale_datetime')) : false
+                'verrou' => ($this->isGranted('ROLE_USER') && $element->getVerrou() !== null && !$element->getVerrou()->isWritable($user)) ? $element->getVerrou()->toArray($translator->trans('locale_datetime')) : false
             ];
         }, $elements);
 
@@ -292,7 +292,7 @@ class ListController extends AbstractController
                     'sources'  => count($sourceBiblios),
                     'elements' => count($bibliography->getElementBiblios()),
                 ],
-                'verrou' => ($bibliography->getVerrou() !== null && !$bibliography->getVerrou()->isWritable($user)) ? $bibliography->getVerrou()->toArray($translator->trans('locale_datetime')) : false
+                'verrou' => ($this->isGranted('ROLE_USER') && $bibliography->getVerrou() !== null && !$bibliography->getVerrou()->isWritable($user)) ? $bibliography->getVerrou()->toArray($translator->trans('locale_datetime')) : false
             ];
         }, $bibliographies);
 

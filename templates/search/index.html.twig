@@ -14,7 +14,8 @@
         </div>
     {% endif %}
     <div class="row my-3">
-        <div class="col-sm-12 col-xl-8 text-center mb-3 mb-xl-0" id="search-panel">
+
+        <div class="col-sm-12 {{ is_granted('ROLE_USER') ? 'col-xl-8' : 'col-xl-12' }} text-center mb-3 mb-xl-0" id="search-panel">
             <ul class="nav nav-pills nav-fill" id="searchTabLinks" role="tablist">
                 <li class="nav-item">
                     <a class="nav-link font-weight-bolder active" id="simple-tab" data-toggle="tab" href="#simple" role="tab" aria-controls="simple" aria-selected="true">
@@ -344,24 +345,26 @@
                 </div>
             </div>
         </div>
-        <div class="col-sm-12 col-xl-4">
-            <ul class="nav nav-pills nav-fill" id="myTab" role="tablist">
-                <li class="nav-item">
-                    <a class="nav-link text-white background-map-grey" role="tab">
-                        {{ ('search.saved_queries')|trans }}
-                    </a>
-                </li>
-            </ul>
-            <div class="tab-content overflow-auto" id="savedQueriesTab" style="max-height: 400px; ">
-                <div class="tab-pane show active" role="tabpanel">
-                    <ul class="list-group list-group-flush">
-                        {% for query in saved_queries %}
-                            {% include "search/_saved_query.html.twig" with {'query': query, 'criteria_list': criteria_list} only %}
-                        {% endfor %}
-                    </ul>
+        {% if is_granted('ROLE_USER') %}
+            <div class="col-sm-12 col-xl-4">
+                <ul class="nav nav-pills nav-fill" id="myTab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link text-white background-map-grey" role="tab">
+                            {{ ('search.saved_queries')|trans }}
+                        </a>
+                    </li>
+                </ul>
+                <div class="tab-content overflow-auto" id="savedQueriesTab" style="max-height: 400px; ">
+                    <div class="tab-pane show active" role="tabpanel">
+                        <ul class="list-group list-group-flush">
+                            {% for query in saved_queries %}
+                                {% include "search/_saved_query.html.twig" with {'query': query, 'criteria_list': criteria_list} only %}
+                            {% endfor %}
+                        </ul>
+                    </div>
                 </div>
             </div>
-        </div>
+        {% endif %}
     </div>
     {% include "search/_templates.html.twig" with {'criteria_list': criteria_list} only %}
     {% if is_granted('ROLE_ADMIN') %}

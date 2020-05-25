@@ -1,43 +1,53 @@
 {% extends 'page.html.twig' %}
 {% block title %}
-{{ 'chercheur.profile'|trans }}
+    {{ 'chercheur.profile'|trans }}
 {% endblock %}
 {% block content %}
-<hr />
+    {{ form_start(accountForm, {'attr' : {'id': 'profile'}}) }}
+    {{ form_errors(accountForm) }}
+    {{ form_rest(accountForm) }}
 
-{{ form_start(accountForm, {'attr' : {'id': 'profile'}} ) }}
-{{ form_errors(accountForm) }}
-{{ form_rest(accountForm) }}
-<hr />
-<div class="form-group row">
-    <div class="col-sm-12 text-center">
-        {% include "partials/_formbuttons.html.twig" with {
+    <div class="form-group row">
+        <div class="col-sm-12 text-center">
+            {% include "partials/_formbuttons.html.twig" with {
             'exitUrl'      : url('home'),
             'hideSaveClose': true
         } %}
+        </div>
     </div>
-</div>
-{{ form_end(accountForm) }}
-<hr />
-<div class="row">
-    <div class="col-12">
-        <h2 class="text-center">
-            {{ 'chercheur.password'|trans }}
-        </h2>
+    {{ form_end(accountForm) }}
+    <hr/>
+    <div class="row">
+        <div class="col-12">
+            <h2 class="text-center">
+                {{ 'chercheur.password'|trans }}
+            </h2>
+        </div>
     </div>
-</div>
-{{ form_start(passwordForm, {'attr' : {'id': 'profile'}} ) }}
-{{ form_errors(passwordForm) }}
-{{ form_rest(passwordForm) }}
-<hr />
-<div class="form-group row">
-    <div class="col-sm-12 text-center">
-        {% include "partials/_formbuttons.html.twig" with {
+    {{ form_start(passwordForm, {'attr' : {'id': 'profile'}}
+    ) }}
+    {{ form_errors(passwordForm) }}
+    {{ form_rest(passwordForm) }}
+    <div class="form-group row">
+        <div class="col-sm-12 text-center">
+            {% include "partials/_formbuttons.html.twig" with {
             'exitUrl'      : url('home'),
             'hideSaveClose': true
         } %}
+        </div>
     </div>
-</div>
-{{ form_end(passwordForm) }}
+    {{ form_end(passwordForm) }}
+    {% if not is_granted('ROLE_CONTRIBUTOR') %}
+        <hr/>
+        <div class="row">
+            <div class="col-12 text-center">
+                <button type="button" class="btn btn-danger mb-1" id="delete-account-button" data-toggle="modal" data-target="#delete-account-modal">
+                    <i class="fas fa-trash fa-fw"></i>
+                    {{ 'chercheur.delete_account'|trans }}
+                </button>
+                {% include "modals/delete_account.html.twig" %}
+            </div>
+        </div>
+    {% endif %}
 
 {% endblock %}

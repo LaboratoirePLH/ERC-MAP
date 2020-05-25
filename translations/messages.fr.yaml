@@ -411,6 +411,7 @@ chercheur:
     repeat_password_error: "Les champs de mots de passe doivent correspondre"
     incorrect_password: "Mot de passe incorrect"
     incorrect_password_error: "Vous devez saisir votre mot de passe actuel correctement pour le changer"
+    delete_account: "Supprimer mon compte"
     fields:
         username: "Nom d'utilisateur"
         nom: "Nom complet"
@@ -468,7 +469,9 @@ modals:
     query_save:
         title: "Enregistrement de la requête"
         body: "Veuillez saisir un nom pour votre requête"
-
+    delete_account:
+        title: "Supprimer mon compte"
+        body: "Cette action ne peut pas être annulée ! Veuillez saisir votre adresse e-mail pour confirmer que vous souhaitez supprimer votre compte."
 
 datatable:
     all: "Tous"
@@ -500,8 +503,11 @@ pages:
         corpus_state: "Etat de dépouillement des corpus"
         corpus_state_filter: "Tapez du texte pour filtrer les Références Bibliographiques"
     messages:
+        name_mandatory: "Merci de saisir votre nom"
+        email_mandatory: "Merci de saisir votre adresse e-mail"
         subject_mandatory: "Merci de saisir l'objet de votre message"
         message_mandatory: "Merci de saisir votre message"
+        invalid_email: "L'adresse e-mail ne correspond pas à celle de votre compte"
     error:
         404:
             title: "Page introuvable"

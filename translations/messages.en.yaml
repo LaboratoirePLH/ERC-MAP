@@ -411,6 +411,7 @@ chercheur:
     repeat_password_error: "The password fields must match"
     incorrect_password: "Incorrect password"
     incorrect_password_error: "You must enter the current password correctly to change it"
+    delete_account: "Delete my account"
     fields:
         username: "Username"
         nom: "Full Name"
@@ -468,6 +469,9 @@ modals:
     query_save:
         title: "Query save"
         body: "Please enter a name for your query"
+    delete_account:
+        title: "Delete my account"
+        body: "This action cannot be reversed ! Please enter your email address to confirm you wish to delete your account."
 
 datatable:
     all: "All"
@@ -500,8 +504,11 @@ pages:
         corpus_state: "Corpus counting state"
         corpus_state_filter: "Type text to filter bibliographic references"
     messages:
+        name_mandatory: "Please enter your name"
+        email_mandatory: "Please enter email adress"
         subject_mandatory: "Please enter the subject of your message"
         message_mandatory: "Please enter your message"
+        invalid_email: "The e-mail address does not match with the one from your account"
     error:
         404:
             title: "Page not found"

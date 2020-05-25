@@ -176,4 +176,37 @@ class SecurityController extends AbstractController
             'form' => $form->createView()
         ]);
     }
+
+    /**
+     * @Route("/delete_account", name="delete_account")
+     */
+    public function deleteAccount(Request $request)
+    {
+        $this->denyAccessUnlessGranted("ROLE_USER");
+        if ($this->isGranted('ROLE_CONTRIBUTOR') || !$request->isMethod('POST')) {
+            return $this->redirectToRoute('profile');
+        }
+
+        if (!$this->isCsrfTokenValid('delete_account', $request->request->get('token'))) {
+            $request->getSession()->getFlashBag()->add('error', 'generic.messages.deletion_failed_csrf');
+            return $this->redirectToRoute('profile');
+        }
+
+        $email = $request->request->get('email', '');
+        if (!strlen($email)) {
+            $request->getSession()->getFlashBag()->add('error', 'pages.messages.email_mandatory');
+            return $this->redirectToRoute('profile');
+        }
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+        if ($email != $user->getMail()) {
+            $request->getSession()->getFlashBag()->add('error', 'pages.messages.invalid_email');
+            return $this->redirectToRoute('profile');
+        }
+
+        $this->getDoctrine()->getManager()->remove($user);
+        $this->getDoctrine()->getManager()->flush();
+        $this->get('security.token_storage')->setToken(null);
+        $request->getSession()->invalidate();
+        return $this->redirectToRoute('home');
+    }
 }

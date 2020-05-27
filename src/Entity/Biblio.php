@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Biblio
  *
  * @ORM\Table(name="biblio")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\BibliographyRepository")
  */
 class Biblio extends AbstractEntity
 {

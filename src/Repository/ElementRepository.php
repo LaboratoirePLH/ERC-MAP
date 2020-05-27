@@ -21,11 +21,33 @@ class ElementRepository extends ServiceEntityRepository
 
     public function findByAttestation($attestationId)
     {
-        $queryBuilder = $this->createQueryBuilder("elt");
-        $queryBuilder->leftJoin("elt.contientElements", "ce");
-        $queryBuilder->leftJoin("ce.attestation", "att");
-        $queryBuilder->where("att.id = :attId");
-        $queryBuilder->setParameter(":attId", $attestationId);
-        return $queryBuilder->getQuery()->getResult();
+        return $this->createQueryBuilder('e')
+            ->select('e', 'v', 'l', 'c', 'de', 't', 'cat')
+            ->leftJoin('e.verrou', 'v')
+            ->leftJoin('e.localisation', 'l')
+            ->leftJoin('e.createur', 'c')
+            ->leftJoin('e.dernierEditeur', 'de')
+            ->leftJoin('e.traductions', 't')
+            ->leftJoin('e.categories', 'cat')
+            ->leftJoin("e.contientElements", "ce")
+            ->leftJoin("ce.attestation", "att")
+            ->where("att.id = :attId")
+            ->setParameter(":attId", $attestationId)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findAll()
+    {
+        return $this->createQueryBuilder('e')
+            ->select('e', 'v', 'l', 'c', 'de', 't', 'cat')
+            ->leftJoin('e.verrou', 'v')
+            ->leftJoin('e.localisation', 'l')
+            ->leftJoin('e.createur', 'c')
+            ->leftJoin('e.dernierEditeur', 'de')
+            ->leftJoin('e.traductions', 't')
+            ->leftJoin('e.categories', 'cat')
+            ->getQuery()
+            ->getResult();
     }
 }

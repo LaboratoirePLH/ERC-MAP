@@ -208,8 +208,16 @@ class AttestationType extends AbstractType
                 ],
                 'query_builder' => function (EntityRepository $er) use ($options) {
                     $qb = $er->createQueryBuilder('e');
+                    $qb = $qb->select('e', 's', 'sb', 'b', 'l', 'd')
+                        ->join('e.source', 's')
+                        ->join('s.sourceBiblios', 'sb')
+                        ->join('sb.biblio', 'b')
+                        ->leftJoin('s.langues', 'l')
+                        ->leftJoin('s.datation', 'd')
+                        ->andWhere($qb->expr()->eq('sb.editionPrincipale', ':edPpale'))
+                        ->setParameter('edPpale', true);
                     if ($options['attestation']->getId() !== null) {
-                        $qb = $qb->where($qb->expr()->neq('e.id', $options['attestation']->getId()));
+                        $qb = $qb->andWhere($qb->expr()->neq('e.id', $options['attestation']->getId()));
                     }
                     return $qb->orderBy('e.id', 'ASC');
                 }

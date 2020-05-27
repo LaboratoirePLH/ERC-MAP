@@ -127,13 +127,20 @@ class AgentType extends AbstractType
                 'isClone'                 => $options['isClone'],
                 'selection_query_builder' => function (EntityRepository $er) use ($locale) {
                     $nameField = 'nom' . ucfirst($locale);
-                    return $er->createQueryBuilder('e')
+                    $qb = $er->createQueryBuilder('e');
+                    return $qb
                         ->leftJoin('e.grandeRegion', 'gr')
                         ->leftJoin('e.sousRegion', 'sr')
                         ->addOrderBy("unaccent(gr.$nameField)", 'ASC')
                         ->addOrderBy("unaccent(sr.$nameField)", 'ASC')
                         ->addOrderBy("e.nomVille", 'ASC')
                         ->addOrderBy("e.nomSite", 'ASC')
+                        ->where($qb->expr()->orX(
+                            $qb->expr()->isNotNull('e.grandeRegion'),
+                            $qb->expr()->isNotNull('e.sousRegion'),
+                            $qb->expr()->isNotNull('e.nomVille'),
+                            $qb->expr()->isNotNull('e.nomSite')
+                        ))
                         ->addOrderBy("e.id", 'ASC');
                 }
             ])

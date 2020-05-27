@@ -64,6 +64,7 @@ trait ShouldClearOrphanLocations
         // Delete Locations not in the array
         $criteria = new Criteria();
         $criteria->where($criteria->expr()->notIn('id', $activeLocations));
+        $criteria->setMaxResults(1000);
         $inactiveLocations = $em->getRepository(Localisation::class)->matching($criteria);
         foreach ($inactiveLocations as $l) {
             $em->remove($l);

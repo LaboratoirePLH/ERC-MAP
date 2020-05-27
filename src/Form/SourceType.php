@@ -281,7 +281,7 @@ class SourceType extends AbstractType
                 }
             ])
             ->add('lieuOrigine', SelectOrCreateType::class, [
-                'label'      => 'source.fields.lieu_decouverte',
+                'label'      => 'source.fields.lieu_origine',
                 'label_attr' => [
                     'class' => 'dependent_field_insitu dependent_field_inverse'
                 ],

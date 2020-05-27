@@ -600,7 +600,7 @@ class Source extends AbstractEntity
     public function getEditionPrincipaleBiblio(): ?SourceBiblio
     {
         foreach ($this->getSourceBiblios() as $sb) {
-            if ($sb->getEditionPrincipale()) {
+            if ($sb->getEditionPrincipale() && $sb->getBiblio() !== null) {
                 return $sb;
             }
         }
@@ -611,7 +611,9 @@ class Source extends AbstractEntity
     {
         $biblios = [];
         foreach ($this->getSourceBiblios() as $sb) {
-            $biblios[] = $sb->getBiblio()->getId();
+            if ($sb->getBiblio() != null) {
+                $biblios[] = $sb->getBiblio()->getId();
+            }
         }
         return count(array_unique($biblios)) == count($biblios);
     }

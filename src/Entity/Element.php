@@ -155,11 +155,6 @@ class Element extends AbstractEntity
             $this->version          = null;
             $this->verrou           = null;
 
-            // Clone localisation
-            if ($this->localisation !== null) {
-                $this->localisation = clone $this->localisation;
-            }
-
             // Clone Traductions
             $cloneTraductions = new ArrayCollection();
             foreach ($this->traductions as $t) {

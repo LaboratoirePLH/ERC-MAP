@@ -258,12 +258,6 @@ class Source extends AbstractEntity
             if ($this->datation !== null) {
                 $this->datation = clone $this->datation;
             }
-            if ($this->lieuDecouverte !== null) {
-                $this->lieuDecouverte = clone $this->lieuDecouverte;
-            }
-            if ($this->lieuOrigine !== null) {
-                $this->lieuOrigine = clone $this->lieuOrigine;
-            }
 
             // Clone sourceBiblios
             $cloneSourceBiblios = new ArrayCollection();

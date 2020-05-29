@@ -613,6 +613,7 @@ maintenance:
     locations_cleanup_empty: "Empty Locations"
     locations_cleanup_duplicate: "Duplicate Locations"
     locations_cleanup_manual_duplicate: "Duplicate Locations (manual action)"
+    locations_cleanup_merge_group: "Select the entire group"
     is_located_cleanup: "\"Is Located ?\" booleans cleanup"
     in_situ_cleanup: "\"In Situ ?\" booleans cleanup"
     messages:

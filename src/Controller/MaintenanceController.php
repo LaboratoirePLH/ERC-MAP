@@ -411,7 +411,11 @@ class MaintenanceController extends AbstractController
                 return array_merge($total, json_decode($carry, true));
             }, []);
             $merge = array_reduce($merge, function ($total, $carry) {
-                array_push($total, json_decode($carry, true));
+                if (count($carry) > 1) {
+                    array_push($total, array_map(function ($c) {
+                        return json_decode($c, true);
+                    }, $carry));
+                }
                 return $total;
             }, []);
 

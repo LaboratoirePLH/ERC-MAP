@@ -611,6 +611,7 @@ maintenance:
     locations_cleanup_empty: "Localisations Vides"
     locations_cleanup_duplicate: "Localisation Dupliquées"
     locations_cleanup_manual_duplicate: "Localisation Dupliquées (action manuelle)"
+    locations_cleanup_merge_group: "Sélectionner le groupe entier"
     is_located_cleanup: "Nettoyage des booléens \"Est Localisé(e) ?\""
     in_situ_cleanup: "Nettoyage des booléens \"In Situ ?\""
     messages:

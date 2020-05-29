@@ -265,7 +265,7 @@ class MaintenanceController extends AbstractController
         $em = $this->getDoctrine()->getManager();
 
         // Select all locations
-        $allLocations = $em->createQuery("SELECT e FROM App\Entity\Localisation e ORDER BY e.id ASC")->getResult();
+        $allLocations = $em->getRepository(Localisation::class)->findAll();
 
         // Get all the entities-locations links
         $allLinks = array_merge(
@@ -392,10 +392,10 @@ class MaintenanceController extends AbstractController
     public function doLocationsCleanup(Request $request, TranslatorInterface $translator)
     {
         // Operations inner workings :
-        //    Delete : - Unlink the given location from every entity to which is was linked (set the foreign key to null). 
+        //    Delete : - Unlink the given location from every entity to which is was linked (set the foreign key to null).
         //             - Lifecycle events will then automatically remove the orphan location
         //    Merge : - Keep the location with the lowest ID as the master location (could be any other)
-        //            - Merge the following fields if they differ between duplicates : 
+        //            - Merge the following fields if they differ between duplicates :
         //                - Commentaire FR & Commentaire EN : Join all unique variants separated by 2 newlines
         //                - Topographies & Fonctions : Merge collections
         //            - Update the foreign key for all entities linked to duplicates other than the master location

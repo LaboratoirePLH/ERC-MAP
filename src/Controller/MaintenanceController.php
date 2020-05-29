@@ -408,7 +408,8 @@ class MaintenanceController extends AbstractController
             $em = $this->getDoctrine()->getManager();
 
             $delete = array_reduce($delete, function ($total, $carry) {
-                return array_merge($total, json_decode($carry, true));
+                array_push($total, json_decode($carry, true));
+                return $total;
             }, []);
             $merge = array_reduce($merge, function ($total, $carry) {
                 if (count($carry) > 1) {
@@ -423,12 +424,14 @@ class MaintenanceController extends AbstractController
             $total_merged = 0;
 
             foreach ($delete as $d) {
-                // Fetch linked record and remove Localisation
-                $record = $em->getRepository("\App\Entity\\" . $d['entity'])->find($d['id']);
-                $method = "set" . ucfirst($d['field']);
-                $record->$method(null);
+                // Fetch linked records and remove Localisation
+                foreach ($d['links'] as $l) {
+                    $record = $em->getRepository("\App\Entity\\" . $l['entity'])->find($l['id']);
+                    $method = "set" . ucfirst($l['field']);
+                    $record->$method(null);
+                }
             }
-            $ids = array_unique(array_column($delete, 'location_id'));
+            $ids = array_unique(array_column($delete, 'id'));
             foreach ($ids as $id) {
                 $location = $em->getRepository(Localisation::class)->find($id);
                 $em->remove($location);

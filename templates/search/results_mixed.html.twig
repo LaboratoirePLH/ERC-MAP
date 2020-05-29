@@ -17,15 +17,17 @@
                     </button>
                 </form>
             </div>
-            <button type="button" class="btn btn-warning mb-1" id="query-save-button" data-toggle="modal" data-target="#query-save-modal">
-                <i class="fas fa-save fa-fw"></i>
-                {{ 'generic.save'|trans }}
-            </button>
-            {% include "modals/query_save.html.twig" with {
-            'targetUrl': url('search_save'),
-            'queryMode': mode,
-            'queryCriteria': criteria
-        } %}
+            {% if is_granted('ROLE_USER') %}
+                <button type="button" class="btn btn-warning mb-1" id="query-save-button" data-toggle="modal" data-target="#query-save-modal">
+                    <i class="fas fa-save fa-fw"></i>
+                    {{ 'generic.save'|trans }}
+                </button>
+                {% include "modals/query_save.html.twig" with {
+                    'targetUrl': url('search_save'),
+                    'queryMode': mode,
+                    'queryCriteria': criteria
+                } %}
+            {% endif %}
         </div>
         {% include "search/_criteria.html.twig" with {
         'mode' : mode,
@@ -144,7 +146,13 @@
                         data: 'reference'
                     },
                     {
-                        data: 'localisation'
+                        data: 'localisation',
+                        render: function (data, type, row) {
+                            if (type == 'filter' || type == 'sort') {
+                                return(data || '').replace(/[^0-9a-z\s-]/gi, '');
+                            }
+                            return data;
+                        }
                     },
                     {
                         data: 'postQuem',

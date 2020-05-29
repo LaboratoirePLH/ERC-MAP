@@ -404,4 +404,32 @@ class Localisation extends AbstractEntity
             'commentaireEn' => $this->commentaireEn
         ];
     }
+
+    private function _affichage($lang)
+    {
+        $base = [
+            $this->grandeRegion !== null ? $this->grandeRegion->getNom($lang) : '',
+            $this->sousRegion !== null ? $this->sousRegion->getNom($lang) : ''
+        ];
+        if ($this->nomVille !== null) {
+            $base[] = $this->nomVille . ($this->pleiadesVille !== null ? '(#' . $this->pleiadesVille . ')' : '');
+        }
+        if ($this->nomSite !== null) {
+            $base[] = $this->nomSite . ($this->pleiadesSite !== null ? '(#' . $this->pleiadesSite . ')' : '');
+        }
+        $base = implode(' > ', $base);
+        $base = str_replace('>  >', '>>', $base);
+        $base = trim($base, "> ");
+        return $base . (!is_null($this->entitePolitique) ? (' - ' . $this->entitePolitique) : '') . ' [#' . $this->id . ']';
+    }
+
+    public function getAffichageFr(): string
+    {
+        return $this->_affichage('fr');
+    }
+
+    public function getAffichageEn(): string
+    {
+        return $this->_affichage('en');
+    }
 }

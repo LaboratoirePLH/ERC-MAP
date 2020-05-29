@@ -81,6 +81,7 @@ class ElementController extends AbstractController
         $element = new Element();
 
         $form   = $this->get('form.factory')->create(ElementType::class, $element, [
+            'formAction'   => 'create',
             'element'      => $element,
             'locale'       => $request->getLocale(),
             'translations' => [
@@ -226,6 +227,7 @@ class ElementController extends AbstractController
         }
 
         $form   = $this->get('form.factory')->create(ElementType::class, $element, [
+            'formAction'   => 'edit',
             'element'      => $element,
             'locale'       => $request->getLocale(),
             'translations' => [

@@ -6,9 +6,10 @@ use App\Entity\ActiviteAgent;
 use App\Entity\Agent;
 use App\Entity\Agentivite;
 use App\Entity\Genre;
+use App\Entity\Localisation;
 use App\Entity\Nature;
 use App\Entity\StatutAffiche;
-
+use App\Form\Type\SelectOrCreateType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -16,6 +17,9 @@ use Doctrine\ORM\EntityRepository;
 
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\ChoiceList\View\ChoiceView;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
 
 class AgentType extends AbstractType
 {
@@ -108,19 +112,37 @@ class AgentType extends AbstractType
                         ->orderBy('e.nom' . ucfirst($locale), 'ASC');
                 }
             ])
-            ->add('estLocalisee', CheckboxType::class, [
-                'label'      => 'generic.fields.est_localisee',
-                'label_attr' => [
-                    'class' => 'dependent_field_estlocalisee_main'
-                ],
-                'required' => false,
-            ])
-            ->add('localisation', LocalisationType::class, [
-                'label'           => 'generic.fields.localisation',
-                'required'        => false,
-                'attr'            => ['class' => 'localisation_form dependent_field_estlocalisee'],
-                'locale'          => $options['locale'],
-                'translations'    => $options['translations'],
+            ->add('localisation', SelectOrCreateType::class, [
+                'label'                   => 'generic.fields.localisation',
+                'required'                => false,
+                'locale'                  => $options['locale'],
+                'translations'            => $options['translations'],
+                'field_name'              => 'localisation',
+                'object_class'            => Localisation::class,
+                'creation_form_class'     => LocalisationType::class,
+                'creation_form_css_class' => 'localisation_form',
+                'selection_choice_label'  => 'affichage' . ucfirst($locale),
+                'allow_none'              => true,
+                'formAction'              => $options['formAction'],
+                'isClone'                 => $options['isClone'],
+                'selection_query_builder' => function (EntityRepository $er) use ($locale) {
+                    $nameField = 'nom' . ucfirst($locale);
+                    $qb = $er->createQueryBuilder('e');
+                    return $qb
+                        ->leftJoin('e.grandeRegion', 'gr')
+                        ->leftJoin('e.sousRegion', 'sr')
+                        ->addOrderBy("unaccent(gr.$nameField)", 'ASC')
+                        ->addOrderBy("unaccent(sr.$nameField)", 'ASC')
+                        ->addOrderBy("e.nomVille", 'ASC')
+                        ->addOrderBy("e.nomSite", 'ASC')
+                        ->where($qb->expr()->orX(
+                            $qb->expr()->isNotNull('e.grandeRegion'),
+                            $qb->expr()->isNotNull('e.sousRegion'),
+                            $qb->expr()->isNotNull('e.nomVille'),
+                            $qb->expr()->isNotNull('e.nomSite')
+                        ))
+                        ->addOrderBy("e.id", 'ASC');
+                }
             ])
             ->add('commentaireFr', Type\QuillType::class, array(
                 'attr'        => ['class' => 'wysiwyg-editor', 'rows' => 2],
@@ -140,6 +162,8 @@ class AgentType extends AbstractType
             'data_class' => Agent::class,
         ]);
         $resolver->setRequired('translations');
+        $resolver->setRequired('formAction');
         $resolver->setDefined('locale');
+        $resolver->setDefault('isClone', false);
     }
 }

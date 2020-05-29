@@ -1,5 +1,6 @@
 {% set entity = entity|default(null) %}
 {% set small = small is defined ? small : true %}
+{% set buttonblock = buttonblock is defined ? buttonblock : true %}
 {% if entity == "source" %}
     {% set color = "btn-primary" %}
     {% set icon = icons.source %}
@@ -17,7 +18,7 @@
     {% set icon = icon|default(false) %}
 {% endif %}
 {% if color is defined and icon is defined and link is defined and text is defined %}
-    <a href="{{ link }}" class="btn {{ small ? 'btn-sm' : ''}} btn-block {{color}}" role="button" target="_blank" rel="noopener noreferrer">
+    <a href="{{ link }}" class="btn {{ small ? 'btn-sm' : ''}} {{buttonblock ? 'btn-block' : ''}} {{color}}" role="button" target="_blank" rel="noopener noreferrer">
         {% if icon != false %}
             {{ ('<i class="fas fa-fw ' ~ icon ~ '"></i>' ~ text|raw)|spaceless }}
         {% else %}

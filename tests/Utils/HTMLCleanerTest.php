@@ -22,6 +22,7 @@ class HTMLCleanerTest extends TestCase
         $this->assertEquals('é', HTMLCleaner::sanitizeHtmlEncoding('&amp;eacute;'));
         $this->assertEquals('Λοκ[ρος]', HTMLCleaner::sanitizeHtmlEncoding('&Lambda;&omicron;&kappa;[&rho;&omicron;&sigmaf;]'));
         $this->assertEquals('Λοκ[ρος]', HTMLCleaner::sanitizeHtmlEncoding('Λοκ[ρος]'));
+        $this->assertEquals("'", HTMLCleaner::sanitizeHtmlEncoding('&#39;'));
     }
 
     public function testSanitizeEncodingWillKeepChevronsEncoded()
@@ -186,5 +187,14 @@ class HTMLCleanerTest extends TestCase
             'Bar',
             HTMLCleaner::sanitizeOpenXML('<xml>Foo</xml>Bar<xml>Baz</xml>')
         );
+    }
+
+    public function testSanitizeFunctionsWillKeepCurlyBrackets()
+    {
+        $this->assertEquals("{x}", HTMLCleaner::sanitizeHtmlEncoding('{x}'));
+        $this->assertEquals("{x}", HTMLCleaner::sanitizeHtmlTags("{x}"));
+        $this->assertEquals('{x}', HTMLCleaner::sanitizeHtmlAttributes('{x}'));
+        $this->assertEquals('{x}', HTMLCleaner::sanitizeHtmlNewLines('{x}'));
+        $this->assertEquals('{x}', HTMLCleaner::sanitizeOpenXML('{x}'));
     }
 }

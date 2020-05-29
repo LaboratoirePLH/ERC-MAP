@@ -8,6 +8,8 @@ use Doctrine\ORM\Mapping as ORM;
 
 trait Located
 {
+    use ShouldClearOrphanLocations;
+
     /**
      * @var bool
      *
@@ -29,7 +31,7 @@ trait Located
     /**
      * @var \Localisation|null
      *
-     * @ORM\OneToOne(targetEntity="Localisation", cascade={"persist", "remove"}, fetch="EAGER", orphanRemoval=true)
+     * @ORM\ManyToOne(targetEntity="Localisation", cascade={"persist"}, fetch="EAGER")
      * @ORM\JoinColumn(name="localisation_id", referencedColumnName="id", nullable=true)
      */
     private $localisation;
@@ -42,17 +44,7 @@ trait Located
     public function setLocalisation(?Localisation $localisation): self
     {
         $this->localisation = $localisation;
+        $this->setEstLocalisee($localisation !== null);
         return $this;
-    }
-
-    /**
-     * @ORM\PrePersist
-     * @ORM\PreUpdate
-     */
-    public function _clearOrphanLocalisation()
-    {
-        if (!$this->getEstLocalisee()) {
-            $this->setLocalisation(null);
-        }
     }
 }

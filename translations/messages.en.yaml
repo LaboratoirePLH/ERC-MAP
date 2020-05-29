@@ -1,7 +1,7 @@
 app_name: "ERC MAP"
 locale: "en"
 locale_date: "Y-m-d"
-locale_datetime: "Y-m-d H:i:s (e)"
+locale_datetime: "Y-m-d H:i:s"
 languages:
     fr: "French"
     en: "English"
@@ -23,6 +23,7 @@ nav:
 login_page:
     login_required: "Login required"
     access_database: "Access the database"
+    login_database: "Login to your account"
     request_account: "Request an account"
     register: "Register"
     reset_password: "Reset your password"
@@ -72,6 +73,7 @@ generic:
     choose: "Choose"
     confirm: "Confirm"
     start: "Start"
+    merge: "Merge"
     toggle_section: "Show/Hide section"
     export_csv: "Export as CSV file"
     locked: "Locked"
@@ -91,6 +93,7 @@ generic:
         modifie: "Edited"
         by: "by"
         type: "Type"
+        types: "Types"
         commentaire: "Commentary"
         message: "Message"
         utilisation: "Usage"
@@ -173,7 +176,7 @@ source:
         titre_fr:  "Title (FR)"
         titre_en:  "Title (EN)"
         titre_principal: "Main Title"
-        auteurs: "Authors"
+        auteurs: "Author"
         types_source: "Source Types"
         type_source: "Source Type"
         categorie_source: "Source Category"
@@ -192,7 +195,7 @@ source:
         fiability_score: "Reliability score"
         url_image: "Image URL"
         url_texte: "Text URL"
-        in_situ: "Same Location ?"
+        in_situ: "Same Original Location ?"
         origine: "Origin"
         region_origine: "Original Region"
         lieu_origine: "Original Location"
@@ -257,7 +260,7 @@ attestation:
         occasion_n: "Occasion #"
         pratiques: "Connected Acts"
         categorie_materiel: "Material Category"
-        materiel : "Material"
+        materiel : "Materials"
         materiel_n : "Connected Material #"
         agent_n : "Agent #"
         element_n : "Element #"
@@ -355,11 +358,11 @@ agent:
     name: 'Agent'
     fields:
         designation: "Designation"
-        agentivite: "Agency"
-        nature: "Nature"
-        genre: "Gender"
-        statut_affiche: "Explicit Status"
-        activite: "Activity"
+        agentivite: "Agencies"
+        nature: "Natures"
+        genre: "Genders"
+        statut_affiche: "Explicit Statuses"
+        activite: "Activities"
 
 datation:
     fields:
@@ -391,8 +394,8 @@ localisation:
         pleiades_site: "Pleiades Number (Site)"
         site: "Site"
         nom_site : "Name (Site)"
-        topographie : "Topography"
-        fonction: "Function"
+        topographie : "Topographies"
+        fonction: "Functions"
         precision: "Location precision"
     precision:
         niveau_1: "(1) Site"
@@ -408,6 +411,7 @@ chercheur:
     repeat_password_error: "The password fields must match"
     incorrect_password: "Incorrect password"
     incorrect_password_error: "You must enter the current password correctly to change it"
+    delete_account: "Delete my account"
     fields:
         username: "Username"
         nom: "Full Name"
@@ -465,6 +469,9 @@ modals:
     query_save:
         title: "Query save"
         body: "Please enter a name for your query"
+    delete_account:
+        title: "Delete my account"
+        body: "This action cannot be reversed ! Please enter your email address to confirm you wish to delete your account."
 
 datatable:
     all: "All"
@@ -478,9 +485,11 @@ autocomplete:
     no_matches: "No matches found for : "
 
 misc:
+    legal: "Legal Information"
     back_to_top: "Back to top"
     copyright: "ERC-MAP - Laboratoire PLH - Université Toulouse - Jean Jaurès"
     export_copyright: "Bonnet C. (dir.), ERC Mapping Ancient Polytheisms 741182 (DB MAP), Toulouse 2017-2022 : https://base-map-polytheisms.huma-num.fr/ (%date%)."
+    cookies: "This website uses cookies only to improve the user experience. No personal and/or tracking data is collected."
 
 pages:
     home:
@@ -496,8 +505,11 @@ pages:
         corpus_state: "Corpus counting state"
         corpus_state_filter: "Type text to filter bibliographic references"
     messages:
+        name_mandatory: "Please enter your name"
+        email_mandatory: "Please enter email adress"
         subject_mandatory: "Please enter the subject of your message"
         message_mandatory: "Please enter your message"
+        invalid_email: "The e-mail address does not match with the one from your account"
     error:
         404:
             title: "Page not found"
@@ -640,6 +652,12 @@ maintenance:
     html_cleanup_selection: " line(s) selected"
     html_cleanup_updated: "%updated% ligne(s) updated"
     html_cleanup_updated_incomplete: "%updated% ligne(s) updated (out of %selected% selected)"
+    locations_cleanup: "Locations Cleanup"
+    locations_cleanup_empty: "Empty Locations"
+    locations_cleanup_duplicate: "Duplicate Locations"
+    locations_cleanup_manual_duplicate: "Duplicate Locations (manual action)"
+    is_located_cleanup: "\"Is Located ?\" booleans cleanup"
+    in_situ_cleanup: "\"In Situ ?\" booleans cleanup"
     messages:
         invalid_char: "Invalid character(s)"
         invalid_length: "Length difference"
@@ -651,3 +669,5 @@ maintenance:
         forbidden_tags: "Unauthorized HTML tags"
         forbidden_attributes: "Unauthorized styling"
         bad_diacritics: "Abnormal diacritics"
+        locations_cleaned: "%deleted% location(s) deleted et %merged% location(s) merged"
+        booleans_cleaned: "%updated% boolean(s) updated"

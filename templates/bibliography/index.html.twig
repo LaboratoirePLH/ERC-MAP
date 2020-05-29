@@ -91,7 +91,7 @@
             // Role management
             var isAdmin = "{{ is_granted('ROLE_ADMIN') ? 1 : 0 }}" === "1";
             var isModerator = "{{ is_granted('ROLE_MODERATOR') ? 1 : 0 }}" === "1";
-            var currentUser = parseInt("{{ app.user.id }}", 10);
+            var currentUser = parseInt("{{ app.user.id|default(-1) }}", 10);
 
             const tableOptions = {
                 ajax: {

@@ -3,10 +3,12 @@
     {{ 'pages.home.title'|trans }}
 {% endblock %}
 {% block content %}
-    <h4 class="text-center">
-        {{ 'pages.home.logged_as'|trans }}
-        {{ user_name }}
-    </h4>
+    {% if user_name != null %}
+        <h4 class="text-center">
+            {{ 'pages.home.logged_as'|trans }}
+            {{ user_name }}
+        </h4>
+    {% endif %}
     <section id="homepage">
         <div class="row justify-content-center">
             <div class="col-10 col-lg-4">

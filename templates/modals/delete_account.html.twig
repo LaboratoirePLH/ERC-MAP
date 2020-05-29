@@ -1,0 +1,37 @@
+{#
+Modal component.
+Parameters :
+- targetUrl : URL to send data to
+- queryMode : Query mode
+- queryCriteria : Query criteria
+#}
+<div class="modal fade" id="delete-account-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{ ('modals.delete_account.title')|trans }}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="{{ 'generic.close'|trans}}">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{{ url('delete_account') }}" method="POST">
+                <div class="modal-body">
+                    <p>{{ ('modals.delete_account.body')|trans }}</p>
+                    <p>
+                        <input type="email" name="email" id="email" class="form-control" required placeholder="{{ 'chercheur.fields.mail'|trans }}"/>
+                        <input type="hidden" name="token" value="{{ csrf_token("delete_account") }}"/>
+                    </p>
+                    <div class="alert d-none" id="save-query-result" role="alert"></div>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-secondary" data-dismiss="modal">{{ cancelLabel|default('generic.cancel')|trans }}</a>
+
+                    <button type="submit" class="btn btn-danger modal-accept-button">
+                        {{ 'generic.delete'|trans }}
+                    </button>
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

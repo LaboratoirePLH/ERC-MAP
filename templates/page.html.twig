@@ -36,11 +36,16 @@
     <hr/>
     <footer class="text-center font-weight-light">
         &copy;
-        {{ 'misc.copyright'|trans }}<br/>
+        {{ 'misc.copyright'|trans }}
+        -
+        <a href="{{ url('legal') }}">{{ 'misc.legal'|trans }}</a>
+        <br/>
         <img src="{{ asset('build/images/eu_flag.jpg') }}" alt="Union Européenne" height="60"/>
         &nbsp;&nbsp;
         <img src="{{ asset('build/images/erc_logo.jpg') }}" alt="European Research Council" height="60"/>
         &nbsp;&nbsp;
         <img src="{{ asset('build/images/ut2j_logo.png') }}" alt="Université Toulouse 2 Jean Jaurès" height="60"/>
+        &nbsp;&nbsp;
+        <img src="{{ asset('build/images/logo-erasme.jpg') }}" alt="Laboratoire PLH - ERASME" height="60"/>
     </footer>
 {% endblock %}

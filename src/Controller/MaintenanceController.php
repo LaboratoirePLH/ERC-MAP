@@ -2,11 +2,13 @@
 
 namespace App\Controller;
 
+use App\Entity\Localisation;
 use App\Utils\StringHelper;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class MaintenanceController extends AbstractController
 {
@@ -239,5 +241,300 @@ class MaintenanceController extends AbstractController
             'count_messages'  => $count_messages,
             'count_tables'    => $count_tables,
         ]);
+    }
+
+    /**
+     * @Route("/maintenance/locations_cleanup", name="maintenance_locations_cleanup")
+     */
+    public function locationsCleanup(Request $request)
+    {
+        // We are looking for 2 problems :
+        //    - Locations that are empty and should be deleted
+        //    - Locations that have duplicates (same greaterRegion, subRegion, pleiadesVille, pleiadesSite) and should be merged
+        //        WARNING : Merging locations can only be done when fields "Political Entity", "Latitude" and "Longitude" are identical in all duplicates.
+        //                  If this is not the case, the script won't allow the merge and will instead ask the user correct those fields (in easyadmin) so the merge can be done automatically
+        // For any of those 2 operations to be performed, we need to keep the following informations :
+        //    - Operation (merge, delete)
+        //    - Localisation ID(s) (1 ID for deletion, 2+ IDs for merge)
+        //    - Links :
+        //         - Entity Type (Source, Attestation, Agent, Element)
+        //         - Entity ID
+        //         - Foreign Key field (because Source has 2 location foreign keys)
+        // Form is submitted to function below (doLocationsCleanup), then redirected here
+
+        $em = $this->getDoctrine()->getManager();
+
+        // Select all locations
+        $allLocations = $em->createQuery("SELECT e FROM App\Entity\Localisation e ORDER BY e.id ASC")->getResult();
+
+        // Get all the entities-locations links
+        $allLinks = array_merge(
+            $em->createQuery("SELECT 'Source' as entity, e.id as id, 'lieuDecouverte' as field, IDENTITY(e.lieuDecouverte) as location_id FROM App\Entity\Source e WHERE e.lieuDecouverte IS NOT NULL")->getScalarResult(),
+            $em->createQuery("SELECT 'Source' as entity, e.id as id, 'lieuOrigine' as field, IDENTITY(e.lieuOrigine) as location_id FROM App\Entity\Source e WHERE e.lieuOrigine IS NOT NULL")->getScalarResult(),
+            $em->createQuery("SELECT 'Attestation' as entity, e.id as id, 'localisation' as field, IDENTITY(e.localisation) as location_id FROM App\Entity\Attestation e WHERE e.localisation IS NOT NULL")->getScalarResult(),
+            $em->createQuery("SELECT 'Agent' as entity, e.id as id, 'localisation' as field, IDENTITY(e.localisation) as location_id FROM App\Entity\Agent e WHERE e.localisation IS NOT NULL")->getScalarResult(),
+            $em->createQuery("SELECT 'Element' as entity, e.id as id, 'localisation' as field, IDENTITY(e.localisation) as location_id FROM App\Entity\Element e WHERE e.localisation IS NOT NULL")->getScalarResult()
+        );
+
+        // Separate empty and non-empty locations
+        $emptyLocations = array_values(array_filter($allLocations, function ($l) {
+            return $l->isBlank();
+        }));
+        $nonEmptyLocations = array_values(array_diff($allLocations, $emptyLocations));
+
+        // Simplify empty locations to ID and links
+        $emptyLocations = array_map(function ($l) use ($allLinks) {
+            return [
+                'id'    => $l->getId(),
+                'links' => array_values(array_filter($allLinks, function ($link) use ($l) {
+                    return $link['location_id'] === $l->getId();
+                }))
+            ];
+        }, $emptyLocations);
+
+        // Identify duplicates
+        //   - $uniqueLocations is a numeric array containing the "master locations"
+        //   - $duplicates is an associative array containing duplicates able to be merged automatically (master location ID as key ; array of locations as value)
+        //   - $manualDuplicates is an associative array contaning duplicates requiring manual action (master location ID as key ; array of locations as value)
+        $uniqueLocations = [];
+        $duplicates = [];
+        $manualDuplicates = [];
+
+        function isDuplicate(Localisation $a, Localisation $b): ?bool
+        {
+            $arr_a = $a->toArray();
+            $arr_b = $b->toArray();
+
+            $identicalFields = array_flip(['grandeRegion', 'sousRegion', 'pleiadesVille', 'nomVille', 'pleiadesSite', 'nomSite']);
+
+            $crit_a = array_intersect_key($arr_a, $identicalFields);
+            $crit_b = array_intersect_key($arr_b, $identicalFields);
+            if ($crit_a === $crit_b) {
+                if (
+                    $arr_a['entitePolitique'] === $arr_b['entitePolitique']
+                    && $arr_a['latitude'] === $arr_b['latitude']
+                    && $arr_a['longitude'] === $arr_b['longitude']
+                ) {
+                    return true;
+                } else {
+                    return null;
+                }
+            } else {
+                return false;
+            }
+        }
+
+        foreach ($nonEmptyLocations as $l) {
+            $isUnique = true;
+
+            foreach ($uniqueLocations as $ul) {
+                // Check if $l is a duplicate of $ul
+                $dupe = isDuplicate($l, $ul);
+                if ($dupe === false) {
+                    continue;
+                }
+                $targetArray = $dupe ? 'duplicates' : 'manualDuplicates';
+                $ul_id = $ul->getId();
+                if (!array_key_exists($ul_id, $$targetArray)) {
+                    $$targetArray[$ul_id] = [$ul];
+                }
+                $$targetArray[$ul_id][] = $l;
+
+                // If $l is a duplicate of $ul, but cannot be merged manually, we keep looping on unique locations, because maybe it can be merged directly with another
+                if ($dupe) {
+                    $isUnique = false;
+                    break;
+                }
+            }
+            if ($isUnique) {
+                $uniqueLocations[] = $l;
+            }
+        }
+        ksort($duplicates);
+        ksort($manualDuplicates);
+        // Remove keys, we don't need them anymore
+        $duplicates = array_values($duplicates);
+        $manualDuplicates = array_values($manualDuplicates);
+        // Delete nonEmptyLocations and uniqueLocations, we don't need them anymore
+        unset($nonEmptyLocations);
+        unset($uniqueLocations);
+
+        // Loop on both arrays (duplicates and manualDuplicates), and prepare view data
+        foreach (['duplicates', 'manualDuplicates'] as $arr_name) {
+            foreach ($$arr_name as &$values) {
+                $first = reset($values);
+                $newValues = $first->toArray();
+                // Keep only the necessary fields for view display
+                $newValues = array_intersect_key($newValues, array_flip(['grandeRegion', 'sousRegion', 'pleiadesVille', 'nomVille', 'pleiadesSite', 'nomSite']));
+                // Put locations ID and links in a sub array
+                $newValues['links'] = array_reduce($values, function ($links, $value) use ($allLinks) {
+                    return array_merge($links, array_values(array_filter($allLinks, function ($link) use ($value) {
+                        return $link['location_id'] === $value->getId();
+                    })));
+                }, []);
+
+                $values = $newValues;
+            }
+        }
+
+        return $this->render('maintenance/locations_cleanup.html.twig', [
+            'controller_name'  => 'MaintenanceController',
+            'locale'           => $request->getLocale(),
+            'emptyLocations'   => $emptyLocations,
+            'duplicates'       => $duplicates,
+            'manualDuplicates' => $manualDuplicates
+        ]);
+    }
+
+    /**
+     * @Route("/maintenance/do_locations_cleanup", name="maintenance_do_locations_cleanup")
+     */
+    public function doLocationsCleanup(Request $request, TranslatorInterface $translator)
+    {
+        // Operations inner workings :
+        //    Delete : - Unlink the given location from every entity to which is was linked (set the foreign key to null). 
+        //             - Lifecycle events will then automatically remove the orphan location
+        //    Merge : - Keep the location with the lowest ID as the master location (could be any other)
+        //            - Merge the following fields if they differ between duplicates : 
+        //                - Commentaire FR & Commentaire EN : Join all unique variants separated by 2 newlines
+        //                - Topographies & Fonctions : Merge collections
+        //            - Update the foreign key for all entities linked to duplicates other than the master location
+        //            - Lifecycle events will then automatically remove the orphan locations
+
+        if ($request->isMethod('POST')) {
+            $delete = $request->request->get('delete', []);
+            $merge = $request->request->get('merge', []);
+
+            $em = $this->getDoctrine()->getManager();
+
+            $delete = array_reduce($delete, function ($total, $carry) {
+                return array_merge($total, json_decode($carry, true));
+            }, []);
+            $merge = array_reduce($merge, function ($total, $carry) {
+                array_push($total, json_decode($carry, true));
+                return $total;
+            }, []);
+
+            $total_deleted = 0;
+            $total_merged = 0;
+
+            foreach ($delete as $d) {
+                // Fetch linked record and remove Localisation
+                $record = $em->getRepository("\App\Entity\\" . $d['entity'])->find($d['id']);
+                $method = "set" . ucfirst($d['field']);
+                $record->$method(null);
+            }
+            $ids = array_unique(array_column($delete, 'location_id'));
+            foreach ($ids as $id) {
+                $location = $em->getRepository(Localisation::class)->find($id);
+                $em->remove($location);
+
+                $total_deleted++;
+            }
+
+            foreach ($merge as $m_group) {
+                usort($m_group, function ($a, $b) {
+                    return $a['location_id'] <=> $b['location_id'];
+                });
+                $master = array_shift($m_group);
+                $master_location = $em->getRepository(Localisation::class)->find($master['location_id']);
+                $commentaireFr = [$master_location->getCommentaireFr()];
+                $commentaireEn = [$master_location->getCommentaireEn()];
+
+                foreach ($m_group as $m) {
+                    // Update linked record
+                    $record = $em->getRepository("\App\Entity\\" . $m['entity'])->find($m['id']);
+                    $method = "set" . ucfirst($m['field']);
+                    $record->$method($master_location);
+
+                    $to_delete = [];
+
+                    // Fetch location (if it still exists)
+                    if (!array_key_exists($m['location_id'], $to_delete)) {
+                        $location = $em->getRepository(Localisation::class)->find($m['location_id']);
+                        // Get data to merge comments
+                        $commentaireFr[] = $location->getCommentaireFr();
+                        $commentaireEn[] = $location->getCommentaireEn();
+
+                        // Merge collections
+                        foreach ($location->getTopographies() as $t) {
+                            $master_location->addTopography($t);
+                        }
+                        foreach ($location->getFonctions() as $f) {
+                            $master_location->addFonction($f);
+                        }
+
+                        $total_merged++;
+                        $to_delete[$m['location_id']] = $location;
+                    }
+                }
+                foreach ($to_delete as $id => $record) {
+                    $em->remove($record);
+                }
+
+                // Save comments in master location
+                $commentaireFr = array_unique(array_filter(array_map('trim', $commentaireFr)));
+                $commentaireEn = array_unique(array_filter(array_map('trim', $commentaireEn)));
+                $master_location->setCommentaireFr(implode('<br />', $commentaireFr));
+                $master_location->setCommentaireEn(implode('<br />', $commentaireEn));
+                $total_merged++;
+            }
+
+            $em->flush();
+
+            $request->getSession()->getFlashBag()->add(
+                'success',
+                $translator->trans('maintenance.messages.locations_cleaned', [
+                    '%deleted%' => $total_deleted,
+                    '%merged%' => $total_merged
+                ])
+            );
+        }
+        return $this->redirectToRoute("maintenance_locations_cleanup");
+    }
+
+    /**
+     * @Route("/maintenance/is_located_cleanup", name="maintenance_is_located_cleanup")
+     */
+    public function isLocatedCleanup(Request $request, TranslatorInterface $translator)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $total_updated = 0;
+        $total_updated += $em->createQuery("UPDATE \App\Entity\Agent a SET a.estLocalisee = false WHERE a.estLocalisee = true AND a.localisation IS NULL")->execute();
+        $total_updated += $em->createQuery("UPDATE \App\Entity\Agent a SET a.estLocalisee = true WHERE a.estLocalisee = false AND a.localisation IS NOT NULL")->execute();
+        $total_updated += $em->createQuery("UPDATE \App\Entity\Attestation a SET a.estLocalisee = false WHERE a.estLocalisee = true AND a.localisation IS NULL")->execute();
+        $total_updated += $em->createQuery("UPDATE \App\Entity\Attestation a SET a.estLocalisee = true WHERE a.estLocalisee = false AND a.localisation IS NOT NULL")->execute();
+        $total_updated += $em->createQuery("UPDATE \App\Entity\Element e SET e.estLocalisee = false WHERE e.estLocalisee = true AND e.localisation IS NULL")->execute();
+        $total_updated += $em->createQuery("UPDATE \App\Entity\Element e SET e.estLocalisee = true WHERE e.estLocalisee = false AND e.localisation IS NOT NULL")->execute();
+
+        $request->getSession()->getFlashBag()->add(
+            'success',
+            $translator->trans('maintenance.messages.booleans_cleaned', [
+                '%updated%' => $total_updated
+            ])
+        );
+        return $this->redirectToRoute("maintenance_locations_cleanup");
+    }
+
+    /**
+     * @Route("/maintenance/in_situ_cleanup", name="maintenance_in_situ_cleanup")
+     */
+    public function inSituCleanup(Request $request, TranslatorInterface $translator)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $total_updated = 0;
+        $total_updated += $em->createQuery("UPDATE \App\Entity\Source s SET s.inSitu = false WHERE s.lieuOrigine IS NOT NULL AND s.lieuOrigine != s.lieuDecouverte AND s.inSitu = true")->execute();
+        $total_updated += $em->createQuery("UPDATE \App\Entity\Source s SET s.inSitu = true WHERE s.lieuOrigine IS NOT NULL AND s.lieuOrigine = s.lieuDecouverte")->execute();
+        $total_updated += $em->createQuery("UPDATE \App\Entity\Source s SET s.lieuOrigine = s.lieuDecouverte WHERE s.inSitu = true AND s.lieuOrigine IS NULL")->execute();
+
+        $request->getSession()->getFlashBag()->add(
+            'success',
+            $translator->trans('maintenance.messages.booleans_cleaned', [
+                '%updated%' => $total_updated
+            ])
+        );
+        return $this->redirectToRoute("maintenance_locations_cleanup");
     }
 }

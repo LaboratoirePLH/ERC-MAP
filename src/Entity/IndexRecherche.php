@@ -78,7 +78,7 @@ class IndexRecherche
     }
 
     /**
-     * @ORM\Column(name="text_data", type="text", nullable=false, options={"collation":"utf8_bin"})
+     * @ORM\Column(name="text_data", type="text", nullable=true, options={"collation":"utf8_bin"})
      */
     private $textData;
 
@@ -96,7 +96,7 @@ class IndexRecherche
     /**
      * @var bool
      *
-     * @ORM\Column(name="corpus_ready", type="boolean", nullable=false)
+     * @ORM\Column(name="corpus_ready", type="boolean", nullable=false, options={"default" : false})
      */
     private $corpusReady = false;
 

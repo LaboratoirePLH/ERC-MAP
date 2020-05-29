@@ -117,7 +117,7 @@
             var isContributor = "{{ is_granted('ROLE_CONTRIBUTOR') ? 1 : 0 }}" === "1";
             var isModerator = "{{ is_granted('ROLE_MODERATOR') ? 1 : 0 }}" === "1";
             var isAdmin = "{{ is_granted('ROLE_ADMIN') ? 1 : 0 }}" === "1";
-            var currentUser = parseInt("{{ app.user.id }}", 10);
+            var currentUser = parseInt("{{ app.user.id|default(-1) }}", 10);
 
             const tableOptions = {
                 ajax: ajax,
@@ -132,10 +132,9 @@
                             if (type === 'sort' || type === 'type') {
                                 return data;
                             }
-                            const versionLabel = "{{ 'generic.fields.version'|trans }}";
-                            return '#' + data + '<br/><small>' + versionLabel + ' ' + (
+                            return '#' + data + ' <small>(v' + (
                                 row.version || '?'
-                            ) + "</small>";
+                            ) + ')</small>';
                         }
                     },
                     {
@@ -160,25 +159,9 @@
                             }
                             return data.join(' ; ');
                         }
-                    }, {
-                        data: 'date_creation',
-                        visible: isContributor,
-                        render: function (data, type, row) {
-                            if (type === 'display' || type === 'filter') {
-                                return data.display + '<br/><small>' + row.createur + '</small>';
-                            }
-                            return data.timestamp;
-                        }
-                    }, {
-                        data: 'date_modification',
-                        visible: isContributor,
-                        render: function (data, type, row) {
-                            if (type === 'display' || type === 'filter') {
-                                return data.display + '<br/><small>' + row.editeur + '</small>';
-                            }
-                            return data.timestamp;
-                        }
-                    }, {
+                    },
+                    $.fn.datatablesTemplateColumn('date_creation', isContributor),
+                    $.fn.datatablesTemplateColumn('date_modification', isContributor), {
                         data: 'traduire',
                         visible: isContributor,
                         render: function (data, type, row) {

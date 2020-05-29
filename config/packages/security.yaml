@@ -18,7 +18,7 @@ security:
                 default_target_path: home
             logout:
                 path:   /logout
-                target: /login
+                target: /
             guard:
                 authenticators:
                     - App\Security\LoginFormAuthenticator
@@ -46,4 +46,4 @@ security:
         - { path: ^/language,           roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/register,           roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/inactive_account,   roles: [ROLE_UNVERIFIED_USER, ROLE_USER] }
-        - { path: ^/,                   roles: ROLE_USER }
+        # - { path: ^/,                   roles: ROLE_USER }

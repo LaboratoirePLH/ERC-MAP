@@ -45,7 +45,7 @@ class HomeController extends AbstractController
 
         return $this->render('home/index.html.twig', [
             'controller_name' => 'HomeController',
-            'user_name'       => $user->getPrenomNom(),
+            'user_name'       => $this->isGranted('ROLE_USER') ? $user->getPrenomNom() : null,
             'webmapping_url'  => $this->getParameter('geo.app_url_' . $locale),
             'counters'        => $counters
         ]);
@@ -60,15 +60,33 @@ class HomeController extends AbstractController
     }
 
     /**
+     * @Route("/legal", name="legal")
+     */
+    public function legal()
+    {
+        return $this->render('home/legal.html.twig');
+    }
+
+    /**
      * @Route("/contact", name="contact")
      */
     public function contact(Request $request, \Swift_Mailer $mailer, TranslatorInterface $translator)
     {
         if ($request->isMethod('POST')) {
             $user = $this->get('security.token_storage')->getToken()->getUser();
+            $name = $request->request->get('name', '');
+            $email = $request->request->get('email', '');
             $message = $request->request->get('message', '');
             $subject = $request->request->get('subject', '');
 
+            if (!$this->isGranted('ROLE_USER') && !strlen($name)) {
+                $request->getSession()->getFlashBag()->add('error', 'pages.messages.name_mandatory');
+                return $this->redirectToRoute('contact');
+            }
+            if (!$this->isGranted('ROLE_USER') && !strlen($email)) {
+                $request->getSession()->getFlashBag()->add('error', 'pages.messages.email_mandatory');
+                return $this->redirectToRoute('contact');
+            }
             if (!strlen($message)) {
                 $request->getSession()->getFlashBag()->add('error', 'pages.messages.message_mandatory');
                 return $this->redirectToRoute('contact');
@@ -76,6 +94,11 @@ class HomeController extends AbstractController
             if (!strlen($subject)) {
                 $request->getSession()->getFlashBag()->add('error', 'pages.messages.subject_mandatory');
                 return $this->redirectToRoute('contact');
+            }
+
+            if ($this->isGranted('ROLE_USER')) {
+                $name = $user->getPrenomNom();
+                $email = $user->getMail();
             }
 
             $admins = $this->getDoctrine()
@@ -88,11 +111,11 @@ class HomeController extends AbstractController
             $mail = (new \Swift_Message($translator->trans('mails.contact.title')))
                 ->setFrom([$this->fromEmail => $this->fromName])
                 ->setTo($emails)
-                ->setReplyTo($user->getMail())
+                ->setReplyTo($email)
                 ->setBody(
                     $this->renderView(
                         'email/contact.html.twig',
-                        compact('user', 'subject', 'message')
+                        compact('name', 'email', 'subject', 'message')
                     ),
                     'text/html'
                 );

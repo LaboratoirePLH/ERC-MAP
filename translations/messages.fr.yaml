@@ -1,7 +1,7 @@
 app_name: "ERC MAP"
 locale: "fr"
 locale_date: "d/m/Y"
-locale_datetime: "d/m/Y H:i:s (e)"
+locale_datetime: "d/m/Y H:i:s"
 languages:
     fr: "Français"
     en: "Anglais"
@@ -23,6 +23,7 @@ nav:
 login_page:
     login_required: "Identification requise"
     access_database: "Accès à la base de données"
+    login_database: "Connectez-vous à votre compte"
     request_account: "Demander un compte d'accès"
     register: "Créer un compte"
     reset_password: "Réinitialiser votre mot de passe"
@@ -71,6 +72,7 @@ generic:
     choose: "Choisir"
     confirm: "Confirmer"
     start: "Démarrer"
+    merge: "Fusionner"
     toggle_section: "Afficher/Cacher la section"
     export_csv: "Exporter en CSV"
     locked: "Verrouillé"
@@ -90,14 +92,15 @@ generic:
         modifie: "Modifié"
         by: "par"
         type: "Type"
+        types: "Types"
         commentaire: "Commentaire"
         message: "Message"
         utilisation: "Utilisation"
         nom: "Nom"
         nom_fr: "Nom (FR)"
         nom_en: "Nom (EN)"
-        commentaire_fr: "Commentaires (FR)"
-        commentaire_en: "Commentaires (EN)"
+        commentaire_fr: "Commentaire (FR)"
+        commentaire_en: "Commentaire (EN)"
         langue: "Langue"
         to_translate: "Traduire en"
         translation: "Traduction"
@@ -172,7 +175,7 @@ source:
         titre_fr:  "Titre (FR)"
         titre_en:  "Titre (EN)"
         titre_principal: "Titre Principal"
-        auteurs: "Auteurs"
+        auteurs: "Auteur"
         types_source: "Types de Source"
         type_source: "Type de Source"
         categorie_source: "Catégorie de Source"
@@ -191,7 +194,7 @@ source:
         fiability: "Score de fiabilité"
         url_image: "URL de l'image"
         url_texte: "URL du texte"
-        in_situ: "Même Localisation ?"
+        in_situ: "Même Localisation d'Origine ?"
         origine: "Origine"
         region_origine: "Région d'Origine"
         lieu_origine: "Lieu d'Origine"
@@ -256,7 +259,7 @@ attestation:
         occasion_n: "Occasion #"
         pratiques: "Pratiques Associées"
         categorie_materiel: "Catégorie de Matériel"
-        materiel : "Matériel"
+        materiel : "Matériels"
         materiel_n : "Matériel Associé #"
         agent_n : "Agent #"
         element_n : "Élément #"
@@ -355,11 +358,11 @@ agent:
     name: 'Agent'
     fields:
         designation: "Désignation"
-        agentivite: "Agentivité"
-        nature: "Nature"
-        genre: "Genre"
-        statut_affiche: "Statut Affiché"
-        activite: "Activité"
+        agentivite: "Agentivités"
+        nature: "Natures"
+        genre: "Genres"
+        statut_affiche: "Statuts Affichés"
+        activite: "Activités"
 
 datation:
     fields:
@@ -391,8 +394,8 @@ localisation:
         pleiades_site: "Numéro Pléiades (Site)"
         site: "Site"
         nom_site : "Nom (Site)"
-        topographie : "Topographie"
-        fonction: "Fonction"
+        topographie : "Topographies"
+        fonction: "Fonctions"
         precision: "Précision de la Localisation"
     precision:
         niveau_1: "(1) Site"
@@ -408,6 +411,7 @@ chercheur:
     repeat_password_error: "Les champs de mots de passe doivent correspondre"
     incorrect_password: "Mot de passe incorrect"
     incorrect_password_error: "Vous devez saisir votre mot de passe actuel correctement pour le changer"
+    delete_account: "Supprimer mon compte"
     fields:
         username: "Nom d'utilisateur"
         nom: "Nom complet"
@@ -465,7 +469,9 @@ modals:
     query_save:
         title: "Enregistrement de la requête"
         body: "Veuillez saisir un nom pour votre requête"
-
+    delete_account:
+        title: "Supprimer mon compte"
+        body: "Cette action ne peut pas être annulée ! Veuillez saisir votre adresse e-mail pour confirmer que vous souhaitez supprimer votre compte."
 
 datatable:
     all: "Tous"
@@ -478,9 +484,11 @@ autocomplete:
     no_matches: "Aucune correspondance trouvée pour : "
 
 misc:
+    legal: "Mentions Légales"
     back_to_top: "Retour en haut de la page"
     copyright: "ERC-MAP - Laboratoire PLH - Université Toulouse - Jean Jaurès"
     export_copyright: "Bonnet C. (dir.), ERC Mapping Ancient Polytheisms 741182 (DB MAP), Toulouse 2017-2022 : https://base-map-polytheisms.huma-num.fr/ (%date%)."
+    cookies: "Ce site utilise des cookies uniquement à des fins d'amélioration de l'expérience du visiteur. Aucune donnée personnelle et/ou de suivi n'est recueillie."
 
 pages:
     home:
@@ -496,8 +504,11 @@ pages:
         corpus_state: "Etat de dépouillement des corpus"
         corpus_state_filter: "Tapez du texte pour filtrer les Références Bibliographiques"
     messages:
+        name_mandatory: "Merci de saisir votre nom"
+        email_mandatory: "Merci de saisir votre adresse e-mail"
         subject_mandatory: "Merci de saisir l'objet de votre message"
         message_mandatory: "Merci de saisir votre message"
+        invalid_email: "L'adresse e-mail ne correspond pas à celle de votre compte"
     error:
         404:
             title: "Page introuvable"
@@ -639,6 +650,12 @@ maintenance:
     html_cleanup_help: "Un retour à la ligne est ajouté après chaque balise <br/> afin d'améliorer l'affichage de ce tableau. Ces retours à la ligne n'existent pas dans le HTML stocké en base de données"
     html_cleanup_updated: "%updated% ligne(s) mise(s) à jour"
     html_cleanup_updated_incomplete: "%updated% ligne(s) mise(s) à jour (sur %selected% sélectionnée(s))"
+    locations_cleanup: "Nettoyage des Localisations"
+    locations_cleanup_empty: "Localisations Vides"
+    locations_cleanup_duplicate: "Localisation Dupliquées"
+    locations_cleanup_manual_duplicate: "Localisation Dupliquées (action manuelle)"
+    is_located_cleanup: "Nettoyage des booléens \"Est Localisé(e) ?\""
+    in_situ_cleanup: "Nettoyage des booléens \"In Situ ?\""
     messages:
         invalid_char: "Caractère(s) invalide(s)"
         invalid_length: "Différence de longueur"
@@ -650,3 +667,5 @@ maintenance:
         forbidden_tags: "Balises HTML non autorisées"
         forbidden_attributes: "Style non autorisé"
         bad_diacritics: "Signes diacritiques anormaux"
+        locations_cleaned: "%deleted% localisation(s) supprimée(s) et %merged% localisation(s) fusionnée(s)"
+        booleans_cleaned: "%updated% booléen(s) mis à jour"

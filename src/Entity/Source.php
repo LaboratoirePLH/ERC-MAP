@@ -19,6 +19,7 @@ class Source extends AbstractEntity
     use Traits\DatedWithFiability;
     use Traits\EntityId;
     use Traits\Indexed;
+    use Traits\ShouldClearOrphanLocations;
     use Traits\Tracked;
     use Traits\Translatable;
     use Traits\TranslatedComment;
@@ -135,7 +136,7 @@ class Source extends AbstractEntity
     /**
      * @var \Localisation|null
      *
-     * @ORM\OneToOne(targetEntity="Localisation", cascade={"persist"}, fetch="EAGER", orphanRemoval=true)
+     * @ORM\ManyToOne(targetEntity="Localisation", cascade={"persist"}, fetch="EAGER")
      * @ORM\JoinColumn(name="localisation_decouverte_id", referencedColumnName="id", nullable=true)
      */
     private $lieuDecouverte;
@@ -143,7 +144,7 @@ class Source extends AbstractEntity
     /**
      * @var \Localisation|null
      *
-     * @ORM\OneToOne(targetEntity="Localisation", cascade={"persist"}, fetch="EAGER", orphanRemoval=true)
+     * @ORM\ManyToOne(targetEntity="Localisation", cascade={"persist"}, fetch="EAGER")
      * @ORM\JoinColumn(name="localisation_origine_id", referencedColumnName="id", nullable=true)
      */
     private $lieuOrigine;
@@ -599,7 +600,7 @@ class Source extends AbstractEntity
     public function getEditionPrincipaleBiblio(): ?SourceBiblio
     {
         foreach ($this->getSourceBiblios() as $sb) {
-            if ($sb->getEditionPrincipale()) {
+            if ($sb->getEditionPrincipale() && $sb->getBiblio() !== null) {
                 return $sb;
             }
         }
@@ -610,7 +611,9 @@ class Source extends AbstractEntity
     {
         $biblios = [];
         foreach ($this->getSourceBiblios() as $sb) {
-            $biblios[] = $sb->getBiblio()->getId();
+            if ($sb->getBiblio() != null) {
+                $biblios[] = $sb->getBiblio()->getId();
+            }
         }
         return count(array_unique($biblios)) == count($biblios);
     }
@@ -672,6 +675,17 @@ class Source extends AbstractEntity
             }
         }
         $this->setFiabiliteLocalisation($fiabLocalisation);
+    }
+
+    /**
+     * @ORM\PrePersist
+     * @ORM\PreUpdate
+     */
+    public function _updateInSituLocalisation()
+    {
+        if ($this->getInSitu() === true) {
+            $this->setLieuOrigine($this->getLieuDecouverte());
+        }
     }
 
     public function getVerrou(): ?VerrouEntite

@@ -26,7 +26,8 @@ abstract class AbstractEntity
             "\App\Utils\HTMLCleaner::sanitizeHtmlEncoding",
             "\App\Utils\HTMLCleaner::sanitizeHtmlNewLines",
             "\App\Utils\HTMLCleaner::sanitizeHtmlTags",
-            "\App\Utils\HTMLCleaner::sanitizeHtmlAttributes"
+            "\App\Utils\HTMLCleaner::sanitizeHtmlAttributes",
+            "\App\Utils\StringHelper::normalizeDiacritics"
         ];
         foreach ($functions as $f) {
             $string = $f($string);

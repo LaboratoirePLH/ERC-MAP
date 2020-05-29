@@ -611,7 +611,7 @@ class Source extends AbstractEntity
     {
         $biblios = [];
         foreach ($this->getSourceBiblios() as $sb) {
-            if ($sb->getBiblio() != null) {
+            if ($sb->getBiblio() != null && $sb->getBiblio()->getId()) {
                 $biblios[] = $sb->getBiblio()->getId();
             }
         }

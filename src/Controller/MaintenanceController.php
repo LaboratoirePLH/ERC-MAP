@@ -367,12 +367,30 @@ class MaintenanceController extends AbstractController
                 // Keep only the necessary fields for view display
                 $newValues = array_intersect_key($newValues, array_flip(['grandeRegion', 'sousRegion', 'pleiadesVille', 'nomVille', 'pleiadesSite', 'nomSite']));
                 // Put locations ID and links in a sub array
-                $newValues['links'] = array_reduce($values, function ($links, $value) use ($allLinks) {
-                    return array_merge($links, array_values(array_filter($allLinks, function ($link) use ($value) {
-                        return $link['location_id'] === $value->getId();
-                    })));
-                }, []);
-
+                $newValues['links'] = [];
+                foreach ($values as $value) {
+                    $id = $value->getId();
+                    $links =  array_filter($allLinks, function ($link) use ($id) {
+                        return $link['location_id'] === $id;
+                    });
+                    usort($links, function ($a, $b) {
+                        if ($a['entity'] != $b['entity']) {
+                            $map = [
+                                'Source' => 1,
+                                'Attestation' => 2,
+                                'Agent' => 3,
+                                'Element' => 4
+                            ];
+                            return $map[$a['entity']] <=> $map[$b['entity']];
+                        }
+                        return $a['id'] <=> $b['id'];
+                    });
+                    $newValues['links'][$id] = $links;
+                }
+                ksort($newValues['links'], SORT_NUMERIC);
+                $newValues['total'] = array_reduce($newValues['links'], function ($total, $carry) {
+                    return $total + count($carry);
+                }, 0);
                 $values = $newValues;
             }
         }
@@ -413,9 +431,9 @@ class MaintenanceController extends AbstractController
             }, []);
             $merge = array_reduce($merge, function ($total, $carry) {
                 if (count($carry) > 1) {
-                    array_push($total, array_map(function ($c) {
-                        return json_decode($c, true);
-                    }, $carry));
+                    array_push($total, array_reduce($carry, function ($t, $c) {
+                        return array_merge($t, json_decode($c, true));
+                    }, []));
                 }
                 return $total;
             }, []);
@@ -449,6 +467,11 @@ class MaintenanceController extends AbstractController
                 $commentaireEn = [$master_location->getCommentaireEn()];
 
                 foreach ($m_group as $m) {
+                    // Do not merge locations with the same ID as the master location
+                    // This cas happens when the location when the master location is mapped to several entities
+                    if ($m['location_id'] == $master['location_id']) {
+                        continue;
+                    }
                     // Update linked record
                     $record = $em->getRepository("\App\Entity\\" . $m['entity'])->find($m['id']);
                     $method = "set" . ucfirst($m['field']);
@@ -474,9 +497,10 @@ class MaintenanceController extends AbstractController
                         $total_merged++;
                         $to_delete[$m['location_id']] = $location;
                     }
-                }
-                foreach ($to_delete as $id => $record) {
-                    $em->remove($record);
+                    //
+                    foreach ($to_delete as $id => $record) {
+                        $em->remove($record);
+                    }
                 }
 
                 // Save comments in master location

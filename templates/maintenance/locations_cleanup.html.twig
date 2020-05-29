@@ -241,7 +241,7 @@
             $('.merge-select-group').on('click', function (e) {
                 e.preventDefault();
                 const group = $(this).data('group');
-                $('input[type=checkbox][name^="merge[' + group + ']"').prop('checked', true);
+                $('input[type=checkbox][name^="merge[' + group + ']"').prop('checked', true).trigger('change');
                 return false;
             });
             $('form').on('reset', function () {

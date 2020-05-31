@@ -265,7 +265,7 @@ class MaintenanceController extends AbstractController
         $em = $this->getDoctrine()->getManager();
 
         // Select all locations
-        $allLocations = $em->createQuery("SELECT e FROM App\Entity\Localisation e ORDER BY e.id ASC")->getResult();
+        $allLocations = $em->getRepository(Localisation::class)->findAll();
 
         // Get all the entities-locations links
         $allLinks = array_merge(
@@ -367,12 +367,30 @@ class MaintenanceController extends AbstractController
                 // Keep only the necessary fields for view display
                 $newValues = array_intersect_key($newValues, array_flip(['grandeRegion', 'sousRegion', 'pleiadesVille', 'nomVille', 'pleiadesSite', 'nomSite']));
                 // Put locations ID and links in a sub array
-                $newValues['links'] = array_reduce($values, function ($links, $value) use ($allLinks) {
-                    return array_merge($links, array_values(array_filter($allLinks, function ($link) use ($value) {
-                        return $link['location_id'] === $value->getId();
-                    })));
-                }, []);
-
+                $newValues['links'] = [];
+                foreach ($values as $value) {
+                    $id = $value->getId();
+                    $links =  array_filter($allLinks, function ($link) use ($id) {
+                        return $link['location_id'] === $id;
+                    });
+                    usort($links, function ($a, $b) {
+                        if ($a['entity'] != $b['entity']) {
+                            $map = [
+                                'Source' => 1,
+                                'Attestation' => 2,
+                                'Agent' => 3,
+                                'Element' => 4
+                            ];
+                            return $map[$a['entity']] <=> $map[$b['entity']];
+                        }
+                        return $a['id'] <=> $b['id'];
+                    });
+                    $newValues['links'][$id] = $links;
+                }
+                ksort($newValues['links'], SORT_NUMERIC);
+                $newValues['total'] = array_reduce($newValues['links'], function ($total, $carry) {
+                    return $total + count($carry);
+                }, 0);
                 $values = $newValues;
             }
         }
@@ -392,10 +410,10 @@ class MaintenanceController extends AbstractController
     public function doLocationsCleanup(Request $request, TranslatorInterface $translator)
     {
         // Operations inner workings :
-        //    Delete : - Unlink the given location from every entity to which is was linked (set the foreign key to null). 
+        //    Delete : - Unlink the given location from every entity to which is was linked (set the foreign key to null).
         //             - Lifecycle events will then automatically remove the orphan location
         //    Merge : - Keep the location with the lowest ID as the master location (could be any other)
-        //            - Merge the following fields if they differ between duplicates : 
+        //            - Merge the following fields if they differ between duplicates :
         //                - Commentaire FR & Commentaire EN : Join all unique variants separated by 2 newlines
         //                - Topographies & Fonctions : Merge collections
         //            - Update the foreign key for all entities linked to duplicates other than the master location
@@ -408,10 +426,15 @@ class MaintenanceController extends AbstractController
             $em = $this->getDoctrine()->getManager();
 
             $delete = array_reduce($delete, function ($total, $carry) {
-                return array_merge($total, json_decode($carry, true));
+                array_push($total, json_decode($carry, true));
+                return $total;
             }, []);
             $merge = array_reduce($merge, function ($total, $carry) {
-                array_push($total, json_decode($carry, true));
+                if (count($carry) > 1) {
+                    array_push($total, array_reduce($carry, function ($t, $c) {
+                        return array_merge($t, json_decode($c, true));
+                    }, []));
+                }
                 return $total;
             }, []);
 
@@ -419,12 +442,14 @@ class MaintenanceController extends AbstractController
             $total_merged = 0;
 
             foreach ($delete as $d) {
-                // Fetch linked record and remove Localisation
-                $record = $em->getRepository("\App\Entity\\" . $d['entity'])->find($d['id']);
-                $method = "set" . ucfirst($d['field']);
-                $record->$method(null);
+                // Fetch linked records and remove Localisation
+                foreach ($d['links'] as $l) {
+                    $record = $em->getRepository("\App\Entity\\" . $l['entity'])->find($l['id']);
+                    $method = "set" . ucfirst($l['field']);
+                    $record->$method(null);
+                }
             }
-            $ids = array_unique(array_column($delete, 'location_id'));
+            $ids = array_unique(array_column($delete, 'id'));
             foreach ($ids as $id) {
                 $location = $em->getRepository(Localisation::class)->find($id);
                 $em->remove($location);
@@ -442,6 +467,11 @@ class MaintenanceController extends AbstractController
                 $commentaireEn = [$master_location->getCommentaireEn()];
 
                 foreach ($m_group as $m) {
+                    // Do not merge locations with the same ID as the master location
+                    // This cas happens when the location when the master location is mapped to several entities
+                    if ($m['location_id'] == $master['location_id']) {
+                        continue;
+                    }
                     // Update linked record
                     $record = $em->getRepository("\App\Entity\\" . $m['entity'])->find($m['id']);
                     $method = "set" . ucfirst($m['field']);
@@ -467,9 +497,10 @@ class MaintenanceController extends AbstractController
                         $total_merged++;
                         $to_delete[$m['location_id']] = $location;
                     }
-                }
-                foreach ($to_delete as $id => $record) {
-                    $em->remove($record);
+                    //
+                    foreach ($to_delete as $id => $record) {
+                        $em->remove($record);
+                    }
                 }
 
                 // Save comments in master location

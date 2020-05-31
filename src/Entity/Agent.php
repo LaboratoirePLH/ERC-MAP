@@ -130,11 +130,6 @@ class Agent extends AbstractEntity
     {
         if ($this->id !== null) {
             $this->id = null;
-
-            // Clone localisation
-            if ($this->localisation !== null) {
-                $this->localisation = clone $this->localisation;
-            }
         }
     }
 

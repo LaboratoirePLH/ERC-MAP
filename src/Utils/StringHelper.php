@@ -15,8 +15,12 @@ class StringHelper
         return $transliterator->transliterate($input);
     }
 
-    public static function normalizeDiacritics(string $input): string
+    public static function normalizeDiacritics($input): ?string
     {
+        // Catch null strings and don't process them
+        if (is_null($input)) {
+            return null;
+        }
         return \Normalizer::normalize($input, \Normalizer::FORM_C);
     }
 

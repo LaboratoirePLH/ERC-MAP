@@ -213,9 +213,6 @@ class Attestation extends AbstractEntity
             if ($this->datation !== null) {
                 $this->datation = clone $this->datation;
             }
-            if ($this->localisation !== null) {
-                $this->localisation = clone $this->localisation;
-            }
 
             // Clone agents
             $cloneAgents = new ArrayCollection();

@@ -24,7 +24,6 @@ Encore
     .addEntry('attestation_form_page', './assets/js/attestation_form_page.js')
     .addEntry('attestation_view_page', './assets/js/attestation_view_page.js')
     .addEntry('search_page', './assets/js/search_page.js')
-    .addEntry('requetes', './assets/js/requetes.js')
     .addStyleEntry('fonts', './assets/css/fonts.css')
 
     // will require an extra script tag for runtime.js

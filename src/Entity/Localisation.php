@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Localisation
  *
  * @ORM\Table(name="localisation")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\LocalisationRepository")
  * @ORM\HasLifecycleCallbacks()
  */
 class Localisation extends AbstractEntity

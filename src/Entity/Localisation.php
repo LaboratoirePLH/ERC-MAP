@@ -420,7 +420,32 @@ class Localisation extends AbstractEntity
         $base = implode(' > ', $base);
         $base = str_replace('>  >', '>>', $base);
         $base = trim($base, "> ");
-        return $base . (!is_null($this->entitePolitique) ? (' - ' . $this->entitePolitique) : '') . ' [#' . $this->id . ']';
+
+        if (strlen($base) > 0 && !is_null($this->entitePolitique)) {
+            $base = $base . ' - ' . $this->entitePolitique;
+        }
+        if (strlen($base) == 0) {
+            $topographies = $this->topographies->map(function ($t) use ($lang) {
+                return $t->getNom($lang);
+            })->toArray();
+            $fonctions = $this->fonctions->map(function ($t) use ($lang) {
+                return $t->getNom($lang);
+            })->toArray();
+            $base = '{ ' . implode(
+                ' || ',
+                array_map(
+                    function ($arr) {
+                        return implode(', ', $arr);
+                    },
+                    array_filter([
+                        $topographies,
+                        $fonctions
+                    ])
+                )
+            ) . ' }';
+        }
+
+        return  $base . ' [#' . $this->id . ']';
     }
 
     public function getAffichageFr(): string

@@ -190,12 +190,6 @@ class AttestationType extends AbstractType
                         ->addOrderBy("unaccent(sr.$nameField)", 'ASC')
                         ->addOrderBy("e.nomVille", 'ASC')
                         ->addOrderBy("e.nomSite", 'ASC')
-                        ->where($qb->expr()->orX(
-                            $qb->expr()->isNotNull('e.grandeRegion'),
-                            $qb->expr()->isNotNull('e.sousRegion'),
-                            $qb->expr()->isNotNull('e.nomVille'),
-                            $qb->expr()->isNotNull('e.nomSite')
-                        ))
                         ->addOrderBy("e.id", 'ASC');
                 }
             ])

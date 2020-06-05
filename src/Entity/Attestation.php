@@ -14,7 +14,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass="App\Repository\AttestationRepository")
  * @ORM\HasLifecycleCallbacks()
  */
-class Attestation extends AbstractEntity
+class Attestation extends AbstractEntity implements Interfaces\Located
 {
     use Traits\Dated;
     use Traits\EntityId;

@@ -8,8 +8,6 @@ use Doctrine\ORM\Mapping as ORM;
 
 trait Located
 {
-    use ShouldClearOrphanLocations;
-
     /**
      * @var bool
      *

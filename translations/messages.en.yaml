@@ -79,6 +79,7 @@ generic:
     locked: "Locked"
     link: "Link"
     view_list: "View list"
+    help_button: "Help"
     webmapping: "Cartography"
     fields:
         id: "ID"

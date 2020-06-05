@@ -79,6 +79,7 @@ generic:
     link: "Lien"
     view_list: "Voir la liste"
     webmapping: "Cartographie"
+    help_button: "Aide"
     fields:
         id: "ID"
         table: "Table"

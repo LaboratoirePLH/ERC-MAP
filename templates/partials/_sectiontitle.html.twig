@@ -1,22 +1,23 @@
 {% set expanded = expanded|default(false) %}
 <h3 class="form-section-title row px-0">
     <div class="d-inline-block col-2 px-0">
-        <button class="btn btn-sm btn-outline-secondary expand-button float-left"
-            title="{{ 'generic.toggle_section'|trans }}" type="button" data-toggle="collapse"
-            data-target="{{ collapseTarget }}" aria-expanded="{{ expanded ? 'true' : 'false'}}"
-            onclick="$(this).children('i.fas').toggleClass('fa-rotate-90');">
+        <button class="btn btn-sm btn-outline-secondary expand-button float-left" title="{{ 'generic.toggle_section'|trans }}" type="button" data-toggle="collapse" data-target="{{ collapseTarget }}" aria-expanded="{{ expanded ? 'true' : 'false'}}" onclick="$(this).children('i.fas').toggleClass('fa-rotate-90');">
             <i class="fas fa-caret-right fa-fw {% if expanded %} fa-rotate-90 {% endif %}"></i>
         </button>
     </div>
     <span class="col-8 px-0">
         {{ title|trans }}
         {% if counter is defined %}
-        <span class="badge badge-light my-0 py-0" id="counter-{{ counterId }}">{{ counter }}</span>
+            <span class="badge badge-light my-0 py-0" id="counter-{{ counterId }}">{{ counter }}</span>
         {% endif %}
     </span>
     <div class="d-inline-block col-2 px-0">
         {% if precisionIndicator is defined %}
-        {% include 'partials/_precision.html.twig' %}
+            {% include 'partials/_precision.html.twig' %}
         {% endif %}
+        <span class="float-right mr-1" style="margin-top:-2px;">
+            {% include 'partials/_help.html.twig' %}
+        </span>
+
     </div>
 </h3>

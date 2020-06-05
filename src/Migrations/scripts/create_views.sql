@@ -112,6 +112,17 @@ FROM
     LEFT JOIN statut_affiche ON statut_affiche.id = agent_statut.id_statut
     LEFT JOIN agent_activite ON agent_activite.id_agent = agent.id
     LEFT JOIN activite_agent ON activite_agent.id = agent_activite.id_activite
+WHERE
+    (
+        agent.id_attestation IN (
+            SELECT
+                attestation.id
+            FROM
+                attestation
+            WHERE
+                attestation.id_etat_fiche = 3
+        )
+    )
 GROUP BY
     agent.id,
     agent.id_attestation,
@@ -154,6 +165,17 @@ FROM
     LEFT JOIN statut_affiche ON statut_affiche.id = agent_statut.id_statut
     LEFT JOIN agent_activite ON agent_activite.id_agent = agent.id
     LEFT JOIN activite_agent ON activite_agent.id = agent_activite.id_activite
+WHERE
+    (
+        agent.id_attestation IN (
+            SELECT
+                attestation.id
+            FROM
+                attestation
+            WHERE
+                attestation.id_etat_fiche = 3
+        )
+    )
 GROUP BY
     agent.id,
     agent.id_attestation,
@@ -254,6 +276,8 @@ FROM
     LEFT JOIN formule ON formule.attestation_id = attestation.id
     LEFT JOIN attestation_pratique ON attestation_pratique.id_attestation = attestation.id
     LEFT JOIN pratique ON pratique.id = attestation_pratique.id_pratique
+WHERE
+    attestation.id_etat_fiche = 3
 GROUP BY
     attestation.id,
     attestation.id_source,
@@ -319,6 +343,8 @@ FROM
     LEFT JOIN formule ON formule.attestation_id = attestation.id
     LEFT JOIN attestation_pratique ON attestation_pratique.id_attestation = attestation.id
     LEFT JOIN pratique ON pratique.id = attestation_pratique.id_pratique
+WHERE
+    attestation.id_etat_fiche = 3
 GROUP BY
     attestation.id,
     attestation.id_source,
@@ -363,6 +389,17 @@ FROM
     LEFT JOIN genre_element ON genre_element.id = contient_element.id_genre_element
     LEFT JOIN nombre_element ON nombre_element.id = contient_element.id_nombre_element
     LEFT JOIN categorie_element ON categorie_element.id = contient_element.id_categorie_element
+WHERE
+    (
+        contient_element.id_attestation IN (
+            SELECT
+                attestation_1.id
+            FROM
+                attestation attestation_1
+            WHERE
+                attestation_1.id_etat_fiche = 3
+        )
+    )
 ORDER BY
     (row_number() OVER ());
 
@@ -401,6 +438,17 @@ FROM
     LEFT JOIN genre_element ON genre_element.id = contient_element.id_genre_element
     LEFT JOIN nombre_element ON nombre_element.id = contient_element.id_nombre_element
     LEFT JOIN categorie_element ON categorie_element.id = contient_element.id_categorie_element
+WHERE
+    (
+        contient_element.id_attestation IN (
+            SELECT
+                attestation_1.id
+            FROM
+                attestation attestation_1
+            WHERE
+                attestation_1.id_etat_fiche = 3
+        )
+    )
 ORDER BY
     (row_number() OVER ());
 
@@ -730,6 +778,26 @@ FROM
     LEFT JOIN biblio b ON b.id = sb.id_biblio
 WHERE
     sb.edition_principale IS TRUE
+    AND (
+        source.id IN (
+            SELECT
+                source_1.id
+            FROM
+                source source_1
+                LEFT JOIN attestation ON attestation.id_source = source_1.id
+            WHERE
+                attestation.id_etat_fiche = 3
+            EXCEPT
+            SELECT
+                source_1.id
+            FROM
+                source source_1
+                LEFT JOIN attestation ON attestation.id_source = source_1.id
+            WHERE
+                attestation.id_etat_fiche = 1
+                OR attestation.id_etat_fiche = 2
+        )
+    )
 GROUP BY
     source.id,
     titre.nom_en,
@@ -817,6 +885,26 @@ FROM
     LEFT JOIN biblio b ON b.id = sb.id_biblio
 WHERE
     sb.edition_principale IS TRUE
+    AND (
+        source.id IN (
+            SELECT
+                source_1.id
+            FROM
+                source source_1
+                LEFT JOIN attestation ON attestation.id_source = source_1.id
+            WHERE
+                attestation.id_etat_fiche = 3
+            EXCEPT
+            SELECT
+                source_1.id
+            FROM
+                source source_1
+                LEFT JOIN attestation ON attestation.id_source = source_1.id
+            WHERE
+                attestation.id_etat_fiche = 1
+                OR attestation.id_etat_fiche = 2
+        )
+    )
 GROUP BY
     source.id,
     titre.nom_fr,

@@ -108,7 +108,7 @@ class AttestationType extends AbstractType
                 'required'    => false
             ])
             ->add('fiabiliteAttestation', ChoiceType::class, [
-                'label'       => 'generic.fields.fiabilite',
+                'label'       => 'attestation.fields.qualite_lecture',
                 'expanded'    => false,
                 'multiple'    => false,
                 'required'    => false,

@@ -156,8 +156,8 @@ generic:
 source:
     name: "Source"
     list: "Sources List"
-    list_for_element: "Sources linked to Element #%id%"
-    webmapping_for_element: "Cartography of Sources linked to Element #%id%"
+    list_for_element: "Sources linked to Element #%id% (%name%)"
+    webmapping_for_element: "Cartography of Sources linked to Element #%id% (%name%)"
     view: "View Source #%id%"
     create: "Create Source"
     edit: "Edit Source #%id%"

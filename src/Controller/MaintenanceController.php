@@ -482,20 +482,22 @@ class MaintenanceController extends AbstractController
                     // Fetch location (if it still exists)
                     if (!array_key_exists($m['location_id'], $to_delete)) {
                         $location = $em->getRepository(Localisation::class)->find($m['location_id']);
-                        // Get data to merge comments
-                        $commentaireFr[] = $location->getCommentaireFr();
-                        $commentaireEn[] = $location->getCommentaireEn();
+                        if ($location !== null) {
+                            // Get data to merge comments
+                            $commentaireFr[] = $location->getCommentaireFr();
+                            $commentaireEn[] = $location->getCommentaireEn();
 
-                        // Merge collections
-                        foreach ($location->getTopographies() as $t) {
-                            $master_location->addTopography($t);
-                        }
-                        foreach ($location->getFonctions() as $f) {
-                            $master_location->addFonction($f);
-                        }
+                            // Merge collections
+                            foreach ($location->getTopographies() as $t) {
+                                $master_location->addTopography($t);
+                            }
+                            foreach ($location->getFonctions() as $f) {
+                                $master_location->addFonction($f);
+                            }
 
-                        $total_merged++;
-                        $to_delete[$m['location_id']] = $location;
+                            $total_merged++;
+                            $to_delete[$m['location_id']] = $location;
+                        }
                     }
                     //
                     foreach ($to_delete as $id => $record) {

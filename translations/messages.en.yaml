@@ -206,14 +206,14 @@ source:
         source_biblio: "Reference"
         source_biblio_n: "Reference #"
         attestation_n: "Testimony #"
-        commentaire_source_fr: "Source Comments (FR)"
-        commentaire_source_en: "Source Comments (EN)"
+        commentaire_source_fr: "Source Commentary (FR)"
+        commentaire_source_en: "Source Commentary (EN)"
     sections:
         informations_source: "Source information"
         bibliographie: "Bibliography"
         datation: "Source Dating"
         localisation: "Source Location"
-        commentaires: "Comments"
+        commentaires: "Commentary"
         attestations: "Testimonies"
 
 source_biblio:
@@ -299,7 +299,7 @@ attestation:
         agents: "Agents"
         datation: "Testimony Dating"
         localisation: "Testimony Location"
-        commentaires: "Comments"
+        commentaires: "Commentary"
         elements: "Elements"
         formules: "Formulae"
 
@@ -345,7 +345,7 @@ element:
         references: "References to other Elements"
         localisation: "Element Location"
         bibliographie: "Bibliography"
-        commentaires: "Comments"
+        commentaires: "Commentary"
     etat_morphologique:
         nominatif: "Nominative"
         vocatif: "Vocative"
@@ -370,7 +370,7 @@ datation:
         post_quem: "Post Quem"
         ante_quem: "Ante Quem"
         precision: "Dating precision"
-        commentaires: "Dating comments"
+        commentaires: "Dating commentary"
     precision:
         niveau_1: "(1) Dating &le; 5 years"
         niveau_2: "(2) 5 &lt; Dating &le; 50 years"

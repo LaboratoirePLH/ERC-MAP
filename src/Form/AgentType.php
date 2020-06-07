@@ -113,19 +113,20 @@ class AgentType extends AbstractType
                 }
             ])
             ->add('localisation', SelectOrCreateType::class, [
-                'label'                   => 'generic.fields.localisation',
-                'required'                => false,
-                'locale'                  => $options['locale'],
-                'translations'            => $options['translations'],
-                'field_name'              => 'localisation',
-                'object_class'            => Localisation::class,
-                'creation_form_class'     => LocalisationType::class,
-                'creation_form_css_class' => 'localisation_form',
-                'selection_choice_label'  => 'affichage' . ucfirst($locale),
-                'allow_none'              => true,
-                'formAction'              => $options['formAction'],
-                'isClone'                 => $options['isClone'],
-                'selection_query_builder' => function (EntityRepository $er) use ($locale) {
+                'label'                    => 'generic.fields.localisation',
+                'required'                 => false,
+                'locale'                   => $options['locale'],
+                'translations'             => $options['translations'],
+                'field_name'               => 'localisation',
+                'object_class'             => Localisation::class,
+                'creation_form_class'      => LocalisationType::class,
+                'creation_form_css_class'  => 'localisation_form',
+                'selection_form_css_class' => 'localisation_selection',
+                'selection_choice_label'   => 'affichage' . ucfirst($locale),
+                'allow_none'               => true,
+                'formAction'               => $options['formAction'],
+                'isClone'                  => $options['isClone'],
+                'selection_query_builder'  => function (EntityRepository $er) use ($locale) {
                     $nameField = 'nom' . ucfirst($locale);
                     $qb = $er->createQueryBuilder('e');
                     return $qb

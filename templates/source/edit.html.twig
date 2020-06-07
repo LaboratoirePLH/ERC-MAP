@@ -161,23 +161,31 @@
     {{ form_end(form) }}
 
     {% include "modals/confirmation.html.twig" with {
-'modalName': 'confirm_exit_dirty',
-'uuid': 'confirm_exit_dirty',
-'targetUrl': url('source_list'),
-'method': 'GET',
-'confirmationLabel': 'generic.exit',
-'cancelLabel': 'generic.stay'
-} %}
+        'modalName': 'confirm_exit_dirty',
+        'uuid': 'confirm_exit_dirty',
+        'targetUrl': url('source_list'),
+        'method': 'GET',
+        'confirmationLabel': 'generic.exit',
+        'cancelLabel': 'generic.stay'
+    } %}
     {% include "modals/confirmation.html.twig" with {
-'modalName': 'confirm_remove_item',
-'uuid': 'confirm_remove_item',
-'confirmationLabel': 'generic.delete',
-'useForm': false
-} %}
+        'modalName': 'confirm_remove_item',
+        'uuid': 'confirm_remove_item',
+        'confirmationLabel': 'generic.delete',
+        'useForm': false
+    } %}
 
     {{ include('partials/_backtotop.html.twig') }}
 {% endblock %}
 {% block javascripts %}
+    {% set coordinatesButton %}
+    {% include "partials/_entitylink.html.twig" with {
+        'icon'       : 'fa-location-arrow',
+        'text'       : 'COORDINATES',
+        'link'       : 'https://www.google.com/maps/search/?api=1&query=' ~ 'COORDINATES_URL',
+        'buttonblock': false
+    } %}
+    {% endset %}
     {{ parent() }}
     <script type="text/javascript">
         $(document).ready(function () {
@@ -189,7 +197,7 @@
             $('div#source_sourceBiblios').collectionField({
                 blockTitle: '{{ "source.fields.source_biblio_n"|trans }}',
                 deleteLinkGenerator: function () {
-                    return $('<a href="#" class="btn btn-sm btn-danger ml-2 mb-1">      {{ "generic.delete"| trans }}</a>')
+                    return $('<a href="#" class="btn btn-sm btn-danger ml-2 mb-1">           {{ "generic.delete"| trans }}</a>')
                 },
                 confirmationModal: $('#confirm_remove_item'),
                 setupListener: function (el) {
@@ -240,7 +248,7 @@
                         // (meaning it's already persisted in the database)
                         return "";
                     }
-                    return $('<a href="#" class="btn btn-sm btn-danger ml-2 mb-1">      {{ "generic.delete"| trans }}</a>')
+                    return $('<a href="#" class="btn btn-sm btn-danger ml-2 mb-1">           {{ "generic.delete"| trans }}</a>')
                 },
                 confirmationModal: $('#confirm_remove_item'),
                 viewLinkGenerator: function (entry) {
@@ -250,7 +258,7 @@
                     if (!$.isNumeric(entryId)) {
                         return "";
                     }
-                    return $('<a href="' + url.replace('-ID-', entryId) + '" class="btn btn-sm btn-success ml-2 mb-1" target="_blank" rel="noopener"><i class="fa fa-fw       {{ icons.attestation }}"></i>' + entryName + '</a >');
+                    return $('<a href="' + url.replace('-ID-', entryId) + '" class="btn btn-sm btn-success ml-2 mb-1" target="_blank" rel="noopener"><i class="fa fa-fw            {{ icons.attestation }}"></i>' + entryName + '</a >');
                 },
                 addListener: function (newEl, idx) {
                     $('#counter-attestations').text(parseInt($('#counter-attestations').text(), 10) + 1);
@@ -315,6 +323,18 @@
                 notFoundErrorMessage: "{{ 'generic.messages.error_not_found'|trans }}",
                 ambiguousErrorMessage: "{{ 'generic.messages.error_ambiguous'|trans }}",
                 dataUrl: "{{ url('city_search') }}"
+            });
+
+            $('.localisation_selection').localisationDetails({
+                dataUrl: '{{ url("data_localisation", {"id": "##ID##"}) }}',
+                locale: "{{ locale|capitalize }}",
+                labels: {
+                    topographies: '{{ "localisation.fields.topographie"|trans }}',
+                    fonctions: '{{ "localisation.fields.fonction"|trans }}',
+                    coordonnees: '{{ "generic.fields.coordonnees"|trans }}',
+                    commentaires: '{{ "generic.fields.commentaire"|trans }}'
+                },
+                coordinatesButton: '{{ coordinatesButton|e("js") }}'
             });
 
             $('.selectorcreate').selectOrCreate();

@@ -251,6 +251,14 @@
     {{ include('partials/_backtotop.html.twig') }}
 {% endblock %}
 {% block javascripts %}
+    {% set coordinatesButton %}
+    {% include "partials/_entitylink.html.twig" with {
+        'icon'       : 'fa-location-arrow',
+        'text'       : 'COORDINATES',
+        'link'       : 'https://www.google.com/maps/search/?api=1&query=' ~ 'COORDINATES_URL',
+        'buttonblock': false
+    } %}
+    {% endset %}
     {{ encore_entry_script_tags('attestation_form_page') }}
     <script type="text/javascript">
         $(document).ready(function () {
@@ -277,6 +285,17 @@
                 notFoundErrorMessage: "{{ 'generic.messages.error_not_found'|trans }}",
                 ambiguousErrorMessage: "{{ 'generic.messages.error_ambiguous'|trans }}",
                 dataUrl: "{{ url('city_search') }}"
+            };
+            const localisationDetailsSettings = {
+                dataUrl: '{{ url("data_localisation", {"id": "##ID##"}) }}',
+                locale: "{{ locale|capitalize }}",
+                labels: {
+                    topographies: '{{ "localisation.fields.topographie"|trans }}',
+                    fonctions: '{{ "localisation.fields.fonction"|trans }}',
+                    coordonnees: '{{ "generic.fields.coordonnees"|trans }}',
+                    commentaires: '{{ "generic.fields.commentaire"|trans }}'
+                },
+                coordinatesButton: '{{ coordinatesButton|e("js") }}'
             };
 
             $('form#attestation').watchFormDirty({message: "{{ 'modals.confirm_exit_dirty.body'|trans }}", modal: $(".modal#confirm_exit_dirty"), exitLink: $('.exit-form-link')});
@@ -321,6 +340,7 @@
                     $(el).find('.grandeSousRegion').dependentSelects({data_url: "{{ url('data_sous_region') }}"});
                     $(el).find('.quill').quill();
                     $(el).find('.selectorcreate').selectOrCreate();
+                    $(el).find('.localisation_selection').localisationDetails(localisationDetailsSettings);
                 },
                 addListener: function (newEl, idx) {
                     $('#counter-agents').text(parseInt($('#counter-agents').text(), 10) + 1);
@@ -454,6 +474,8 @@
             $('#attestation_localisation_creation_grandeSousRegion').dependentSelects({data_url: "{{ url('data_sous_region') }}"});
 
             $('.quill').quill();
+
+            $('.localisation_selection').localisationDetails(localisationDetailsSettings);
 
         });
     </script>

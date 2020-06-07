@@ -7,6 +7,7 @@ require('./plugins/chosen.jquery.js');
 require('./plugins/collection.js');
 require('./plugins/dependent_fields.js');
 require('./plugins/dependent_selects.js');
+require('./plugins/localisation_details.js');
 require('./plugins/localisation_form.js');
 require('./plugins/selectorcreate.js');
 require('./plugins/semitic_keyboard.js');

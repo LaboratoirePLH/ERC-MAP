@@ -255,20 +255,21 @@ class SourceType extends AbstractType
             ])
             ->add('datation', DatationType::class)
             ->add('lieuDecouverte', SelectOrCreateType::class, [
-                'label'                   => 'source.fields.lieu_decouverte',
-                'required'                => false,
-                'locale'                  => $options['locale'],
-                'translations'            => $options['translations'],
-                'field_name'              => 'lieuDecouverte',
-                'object_class'            => Localisation::class,
-                'creation_form_class'     => LocalisationType::class,
-                'creation_form_css_class' => 'localisation_form',
-                'selection_choice_label'  => 'affichage' . ucfirst($locale),
-                'allow_none'              => false,
-                'default_decision'        => 'select',
-                'formAction'              => $options['formAction'],
-                'isClone'                 => $options['isClone'],
-                'selection_query_builder' => function (EntityRepository $er) use ($locale) {
+                'label'                    => 'source.fields.lieu_decouverte',
+                'required'                 => false,
+                'locale'                   => $options['locale'],
+                'translations'             => $options['translations'],
+                'field_name'               => 'lieuDecouverte',
+                'object_class'             => Localisation::class,
+                'creation_form_class'      => LocalisationType::class,
+                'creation_form_css_class'  => 'localisation_form',
+                'selection_form_css_class' => 'localisation_selection',
+                'selection_choice_label'   => 'affichage' . ucfirst($locale),
+                'allow_none'               => false,
+                'default_decision'         => 'select',
+                'formAction'               => $options['formAction'],
+                'isClone'                  => $options['isClone'],
+                'selection_query_builder'  => function (EntityRepository $er) use ($locale) {
                     $nameField = 'nom' . ucfirst($locale);
                     $qb = $er->createQueryBuilder('e');
                     return $qb
@@ -286,20 +287,21 @@ class SourceType extends AbstractType
                 'label_attr' => [
                     'class' => 'dependent_field_insitu dependent_field_inverse'
                 ],
-                'required'                => false,
-                'locale'                  => $options['locale'],
-                'translations'            => $options['translations'],
-                'field_name'              => 'lieuDecouverte',
-                'object_class'            => Localisation::class,
-                'creation_form_class'     => LocalisationType::class,
-                'creation_form_css_class' => 'localisation_form',
-                'selection_choice_label'  => 'affichage' . ucfirst($locale),
-                'allow_none'              => true,
-                'none_label'              => 'generic.fields.indetermine',
-                'default_decision'        => 'select',
-                'formAction'              => $options['formAction'],
-                'isClone'                 => $options['isClone'],
-                'selection_query_builder' => function (EntityRepository $er) use ($locale) {
+                'required'                 => false,
+                'locale'                   => $options['locale'],
+                'translations'             => $options['translations'],
+                'field_name'               => 'lieuDecouverte',
+                'object_class'             => Localisation::class,
+                'creation_form_class'      => LocalisationType::class,
+                'creation_form_css_class'  => 'localisation_form',
+                'selection_form_css_class' => 'localisation_selection',
+                'selection_choice_label'   => 'affichage' . ucfirst($locale),
+                'allow_none'               => true,
+                'none_label'               => 'generic.fields.indetermine',
+                'default_decision'         => 'select',
+                'formAction'               => $options['formAction'],
+                'isClone'                  => $options['isClone'],
+                'selection_query_builder'  => function (EntityRepository $er) use ($locale) {
                     $nameField = 'nom' . ucfirst($locale);
                     $qb = $er->createQueryBuilder('e');
                     return $qb

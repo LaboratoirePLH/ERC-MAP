@@ -64,7 +64,7 @@ class IndexRecherche
 
         $textData = [];
         array_walk_recursive($data, function ($value, $key) use (&$textData) {
-            if ($key !== 'id') {
+            if (!in_array($key, ['id', 'elementIds', 'source', 'attestations']) && !is_bool($value)) {
                 if (!is_numeric($value)) {
                     // First replace <br/> tags by newliens to keep the word boundaries
                     $value = preg_replace('/\<br(\s*)?\/?\>/i', "\n", $value);

@@ -425,6 +425,9 @@ class IndexRechercheRepository extends ServiceEntityRepository
     private function _array_search(array $data, string $search)
     {
         foreach ($data as $key => $value) {
+            if (in_array($key, ['id', 'elementIds', 'source', 'attestations'])) {
+                continue;
+            }
             if ((is_string($value) && (\stripos($value, strval($search)) !== false || \stripos(\App\Utils\StringHelper::removeAccents($value), strval($search)) !== false))
                 || (is_numeric($value) && is_numeric($search) && $value == $search)
             ) {

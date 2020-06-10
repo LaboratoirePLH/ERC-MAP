@@ -139,6 +139,7 @@ class DataController extends AbstractController
      */
     public function citySearch(Request $request)
     {
+        $repo = $this->getDoctrine()->getManager()->getRepository(Localisation::class);
         $query = $repo->createQueryBuilder("e");
 
         if ($request->query->has('city')) {

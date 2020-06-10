@@ -13,7 +13,7 @@
                 {{ 'localisation.fields.entite_politique'|trans}}
             </th>
             <td>
-                {{ localisation.entitePolitique is not empty ? localisation.entitePolitique.getNom(locale) : "" }}
+                {{ localisation.entitePolitique is not empty ? localisation.entitePolitique.getAffichage(locale) : "" }}
             </td>
         </tr>
         <tr>

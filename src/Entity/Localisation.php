@@ -422,7 +422,7 @@ class Localisation extends AbstractEntity
         $base = trim($base, "> ");
 
         if (strlen($base) > 0 && !is_null($this->entitePolitique)) {
-            $base = $base . ' - ' . $this->entitePolitique;
+            $base = $base . ' - ' . $this->entitePolitique->getAffichage($lang);
         }
         if (strlen($base) == 0) {
             $topographies = $this->topographies->map(function ($t) use ($lang) {

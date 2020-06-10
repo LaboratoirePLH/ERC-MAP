@@ -90,14 +90,8 @@ SELECT
     string_agg(DISTINCT agentivite.nom_en :: text, ', ' :: text) AS "Agency",
     string_agg(DISTINCT nature.nom_en :: text, ', ' :: text) AS "Nature",
     string_agg(DISTINCT genre.nom_en :: text, ', ' :: text) AS "Gender",
-    string_agg(
-        DISTINCT statut_affiche.nom_en :: text,
-        ', ' :: text
-    ) AS "Explicit status",
-    string_agg(
-        DISTINCT activite_agent.nom_en :: text,
-        ', ' :: text
-    ) AS "Profession"
+    string_agg(DISTINCT statut_affiche.nom_en :: text, ', ' :: text) AS "Explicit status",
+    string_agg(DISTINCT activite_agent.nom_en :: text, ', ' :: text) AS "Profession"
 FROM
     agent
     LEFT JOIN agent_agentivite ON agent_agentivite.id_agent = agent.id
@@ -142,14 +136,8 @@ SELECT
     string_agg(DISTINCT agentivite.nom_fr :: text, ', ' :: text) AS "Agentivité",
     string_agg(DISTINCT nature.nom_fr :: text, ', ' :: text) AS "Nature",
     string_agg(DISTINCT genre.nom_fr :: text, ', ' :: text) AS "Genre",
-    string_agg(
-        DISTINCT statut_affiche.nom_fr :: text,
-        ', ' :: text
-    ) AS "Statut affiché",
-    string_agg(
-        DISTINCT activite_agent.nom_fr :: text,
-        ', ' :: text
-    ) AS "Activité"
+    string_agg(DISTINCT statut_affiche.nom_fr :: text, ', ' :: text) AS "Statut affiché",
+    string_agg(DISTINCT activite_agent.nom_fr :: text, ', ' :: text) AS "Activité"
 FROM
     agent
     LEFT JOIN agent_agentivite ON agent_agentivite.id_agent = agent.id
@@ -271,6 +259,26 @@ FROM
     LEFT JOIN pratique ON pratique.id = attestation_pratique.id_pratique
 WHERE
     attestation.id_etat_fiche = 3
+    AND (
+        attestation.id_source IN (
+            SELECT
+                source.id
+            FROM
+                source source
+                LEFT JOIN attestation attestation_1 ON attestation_1.id_source = source.id
+            WHERE
+                attestation_1.id_etat_fiche = 3
+            EXCEPT
+            SELECT
+                source.id
+            FROM
+                source
+                LEFT JOIN attestation attestation_1 ON attestation_1.id_source = source.id
+            WHERE
+                attestation_1.id_etat_fiche = 1
+                OR attestation_1.id_etat_fiche = 2
+        )
+    )
 GROUP BY
     attestation.id,
     attestation.id_source,
@@ -337,6 +345,26 @@ FROM
     LEFT JOIN pratique ON pratique.id = attestation_pratique.id_pratique
 WHERE
     attestation.id_etat_fiche = 3
+    AND (
+        attestation.id_source IN (
+            SELECT
+                source.id
+            FROM
+                source source
+                LEFT JOIN attestation attestation_1 ON attestation_1.id_source = source.id
+            WHERE
+                attestation_1.id_etat_fiche = 3
+            EXCEPT
+            SELECT
+                source.id
+            FROM
+                source
+                LEFT JOIN attestation attestation_1 ON attestation_1.id_source = source.id
+            WHERE
+                attestation_1.id_etat_fiche = 1
+                OR attestation_1.id_etat_fiche = 2
+        )
+    )
 GROUP BY
     attestation.id,
     attestation.id_source,
@@ -384,11 +412,9 @@ WHERE
     (
         contient_element.id_attestation IN (
             SELECT
-                attestation_1.id
+                vue_attestation_fr."Id de l'attestation"
             FROM
-                attestation attestation_1
-            WHERE
-                attestation_1.id_etat_fiche = 3
+                vue_attestation_fr
         )
     )
 ORDER BY
@@ -432,11 +458,9 @@ WHERE
     (
         contient_element.id_attestation IN (
             SELECT
-                attestation_1.id
+                vue_attestation_fr."Id de l'attestation"
             FROM
-                attestation attestation_1
-            WHERE
-                attestation_1.id_etat_fiche = 3
+                vue_attestation_fr
         )
     )
 ORDER BY
@@ -597,10 +621,7 @@ SELECT
     localisation.commentaire_en AS "Commentary",
     localisation.geom,
     string_agg(DISTINCT q_fonction.nom_en :: text, ', ' :: text) AS "Function",
-    string_agg(
-        DISTINCT q_topographie.nom_en :: text,
-        ', ' :: text
-    ) AS "Topography",
+    string_agg(DISTINCT q_topographie.nom_en :: text, ', ' :: text) AS "Topography",
     1 AS "Density"
 FROM
     localisation
@@ -639,10 +660,7 @@ SELECT
     localisation.commentaire_fr AS "Commentaire",
     localisation.geom,
     string_agg(DISTINCT q_fonction.nom_fr :: text, ', ' :: text) AS "Qualification fonctionnelle",
-    string_agg(
-        DISTINCT q_topographie.nom_fr :: text,
-        ', ' :: text
-    ) AS "Qualification topographique",
+    string_agg(DISTINCT q_topographie.nom_fr :: text, ', ' :: text) AS "Qualification topographique",
     1 AS "Densité"
 FROM
     localisation

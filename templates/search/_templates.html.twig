@@ -147,4 +147,25 @@
         <div class="col">&nbsp;</div>
         {{ removeCriteriaButton }}
     </div>
+    <div class="form-group row" id="locationreal-template">
+        <label class="col-sm-3 col-form-label">{{ 'generic.fields.localisation_reelle'|trans }}</label>
+        <div class="col-sm-2">
+            <div class="custom-control custom-switch pt-2 mr-2">
+                <input type="checkbox" class="custom-control-input" id="inputRealYes#X#" name="locationReal[]" value="yes">
+                <label class="custom-control-label" for="inputRealYes#X#">
+                    {{ ('generic.choices.oui')|trans }}
+                </label>
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <div class="custom-control custom-switch pt-2 mr-2">
+                <input type="checkbox" class="custom-control-input" id="inputRealNo#X#" name="locationReal[]" value="no">
+                <label class="custom-control-label" for="inputRealNo#X#">
+                    {{ ('generic.choices.non')|trans }}
+                </label>
+            </div>
+        </div>
+        <div class="col">&nbsp;</div>
+        {{ removeCriteriaButton }}
+    </div>
 </div>

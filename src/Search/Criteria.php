@@ -149,6 +149,9 @@ class Criteria
             if ($key === 'new_criteria' || $key === 'search' || $key === 'queryName') {
                 continue;
             }
+            if ($key === "locationReal") {
+                $value = array_unique(array_filter($value));
+            }
             if (is_array($value) && is_array($value[0])) {
                 $value = array_filter($value, function ($cv) {
                     return array_key_exists('values', $cv)
@@ -279,6 +282,11 @@ class Criteria
                             return array_map(function ($v_value) {
                                 return $this->translator->trans('attestation.fields.' . $v_value);
                             }, $v);
+                        }, $value);
+                        break;
+                    case 'locationreal':
+                        $criteriaValues = array_map(function ($v) {
+                            return $this->translator->trans('generic.choices.' . $v);
                         }, $value);
                         break;
                     case 'datation':

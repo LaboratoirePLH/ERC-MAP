@@ -133,7 +133,9 @@ generic:
         existing: "Existing"
         none: "None"
         oui: "Yes"
+        yes: "Yes"
         non: "No"
+        no: "No"
     messages:
         failed_csrf: "Failure, invalid CSRF Token"
         deletion_failed_csrf: "Deletion failed, invalid CSRF Token"

@@ -132,7 +132,9 @@ generic:
         existing: "Existant"
         none: "Aucun"
         oui: "Oui"
+        yes: "Oui"
         non: "Non"
+        no: "Non"
     messages:
         failed_csrf: "Echec, token CSRF invalide"
         deletion_failed_csrf: "Echec de la suppression, token CSRF invalide"

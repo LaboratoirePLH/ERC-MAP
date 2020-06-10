@@ -166,6 +166,11 @@ class CriteriaList
                         'type'    => 'select',
                         'semitic' => false,
                     ],
+                    [
+                        'key'   => 'locationReal',
+                        'label' => $translator->trans('generic.fields.localisation_reelle'),
+                        'type'  => 'locationreal'
+                    ],
                 ]
             ],
             [

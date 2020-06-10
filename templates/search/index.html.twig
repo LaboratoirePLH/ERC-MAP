@@ -545,6 +545,9 @@
                                         $('#advanced').find('input[name="prosePoetry[' + index + '][]"][value=prose]').attr('checked', value.includes('prose'));
                                         $('#advanced').find('input[name="prosePoetry[' + index + '][]"][value=poesie]').attr('checked', value.includes('poesie'));
                                         break;
+                                    case 'locationreal':
+                                        $('#advanced').find('input[name="locationReal[]"][value=' + value + ']').attr('checked', true);
+                                        break;
                                 }
                             })
                         });
@@ -556,7 +559,8 @@
                     setTimeout(() => {
                         Object.entries(data).forEach(([criteriaName, values]) => {
                             if (criteriaName != 'resultsType') {
-                                for (i = 1; i <= Object.values(values).length; i ++) {
+                                const len = criteriaName === 'locationReal' ? 1 : Object.values(values).length;
+                                for (i = 1; i <= len; i ++) {
                                     addNewCriteria(criteriaName);
                                 }
                             }
@@ -794,6 +798,7 @@
                         break;
                     case 'datation':
                     case 'prosepoetry':
+                    case 'locationreal':
                         // Compute an index based on the number of same type templates already added
                         var index = $("#advanced").find('.' + criteria.type + '-template').length;
                         // Replace the "#X#" placeholder in the id and name properties of inputs

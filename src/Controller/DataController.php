@@ -153,13 +153,13 @@ class DataController extends AbstractController
         foreach ($result as $row) {
             $data[] = [
                 "granderegion" => $row->getGrandeRegion() ? $row->getGrandeRegion()->getId() : "",
-                "sousregion" => $row->getSousRegion() ? $row->getSousRegion()->getId() : "",
-                "id" => $row->getPleiadesVille() ?? "",
-                "nom" => $row->getNomVille() ?? "",
-                "idSite" => $row->getPleiadesSite() ?? "",
-                "nomSite" => $row->getNomSite() ?? "",
-                "latitude" => $row->getLatitude() ?? "",
-                "longitude" => $row->getLongitude() ?? ""
+                "sousregion"   => $row->getSousRegion() ? $row->getSousRegion()->getId() : "",
+                "id"           => $row->getPleiadesVille() ?? "",
+                "nom"          => $row->getNomVille() ?? "",
+                "idSite"       => $row->getPleiadesSite() ?? "",
+                "nomSite"      => $row->getNomSite() ?? "",
+                "latitude"     => $row->getLatitude() ?? "",
+                "longitude"    => $row->getLongitude() ?? ""
             ];
         }
         $data = array_map("unserialize", array_unique(array_map("serialize", $data)));

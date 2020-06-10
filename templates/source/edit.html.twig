@@ -197,7 +197,7 @@
             $('div#source_sourceBiblios').collectionField({
                 blockTitle: '{{ "source.fields.source_biblio_n"|trans }}',
                 deleteLinkGenerator: function () {
-                    return $('<a href="#" class="btn btn-sm btn-danger ml-2 mb-1">           {{ "generic.delete"| trans }}</a>')
+                    return $('<a href="#" class="btn btn-sm btn-danger ml-2 mb-1">             {{ "generic.delete"| trans }}</a>')
                 },
                 confirmationModal: $('#confirm_remove_item'),
                 setupListener: function (el) {
@@ -248,7 +248,7 @@
                         // (meaning it's already persisted in the database)
                         return "";
                     }
-                    return $('<a href="#" class="btn btn-sm btn-danger ml-2 mb-1">           {{ "generic.delete"| trans }}</a>')
+                    return $('<a href="#" class="btn btn-sm btn-danger ml-2 mb-1">             {{ "generic.delete"| trans }}</a>')
                 },
                 confirmationModal: $('#confirm_remove_item'),
                 viewLinkGenerator: function (entry) {
@@ -258,7 +258,7 @@
                     if (!$.isNumeric(entryId)) {
                         return "";
                     }
-                    return $('<a href="' + url.replace('-ID-', entryId) + '" class="btn btn-sm btn-success ml-2 mb-1" target="_blank" rel="noopener"><i class="fa fa-fw            {{ icons.attestation }}"></i>' + entryName + '</a >');
+                    return $('<a href="' + url.replace('-ID-', entryId) + '" class="btn btn-sm btn-success ml-2 mb-1" target="_blank" rel="noopener"><i class="fa fa-fw              {{ icons.attestation }}"></i>' + entryName + '</a >');
                 },
                 addListener: function (newEl, idx) {
                     $('#counter-attestations').text(parseInt($('#counter-attestations').text(), 10) + 1);
@@ -332,7 +332,10 @@
                     topographies: '{{ "localisation.fields.topographie"|trans }}',
                     fonctions: '{{ "localisation.fields.fonction"|trans }}',
                     coordonnees: '{{ "generic.fields.coordonnees"|trans }}',
-                    commentaires: '{{ "generic.fields.commentaire"|trans }}'
+                    commentaires: '{{ "generic.fields.commentaire"|trans }}',
+                    reel: '{{ "generic.fields.localisation_reelle"|trans }}',
+                    oui: '{{ "generic.choices.oui"|trans }}',
+                    non: '{{ "generic.choices.non"|trans }}'
                 },
                 coordinatesButton: '{{ coordinatesButton|e("js") }}'
             });

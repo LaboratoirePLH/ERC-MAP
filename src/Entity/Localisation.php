@@ -385,6 +385,7 @@ class Localisation extends AbstractEntity
     {
         return [
             'id'              => $this->getId(),
+            'reel'            => boolval($this->reel),
             'entitePolitique' => $this->entitePolitique === null ? null : $this->entitePolitique->toArray(),
             'grandeRegion'    => $this->grandeRegion === null ? null : $this->grandeRegion->toArray(),
             'sousRegion'      => $this->sousRegion === null ? null : $this->sousRegion->toArray(),

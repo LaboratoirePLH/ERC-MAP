@@ -56,6 +56,7 @@
                         var commentaire = settings.locale.toLowerCase() == 'fr' ? (data.commentaireFr + '<hr/><small>' + data.commentaireEn + '</small>') : (data.commentaireEn + '<hr/><small>' + data.commentaireFr + '</small>');
                         tableRows.push([settings.labels.commentaires, commentaire])
                     }
+                    tableRows.push([settings.labels.reel, data.reel ? settings.labels.oui : settings.labels.non])
                     table.find('tbody').append(... tableRows.map(([label, value]) => $('<tr>').append($('<th scope="row"></th>').text(label), $('<td></td>').html(value))));
                     localisationInfoBox.append(table);
                 }).fail(() => {

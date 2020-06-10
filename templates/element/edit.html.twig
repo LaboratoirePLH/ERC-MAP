@@ -189,7 +189,7 @@
             $('div#element_elementBiblios').collectionField({
                 blockTitle: '{{ "element.fields.element_biblio_n"|trans }}',
                 deleteLinkGenerator: function () {
-                    return $('<a href="#" class="btn btn-sm btn-danger ml-2 mb-1">          {{ "generic.delete"| trans }}</a>')
+                    return $('<a href="#" class="btn btn-sm btn-danger ml-2 mb-1">           {{ "generic.delete"| trans }}</a>')
                 },
                 confirmationModal: $('#confirm_remove_item'),
                 setupListener: function (el) {
@@ -223,7 +223,7 @@
                 addLink: $('#link-add-traduction'),
                 confirmationModal: $('#confirm_remove_item'),
                 deleteLinkGenerator: function () {
-                    return $('<a href="#" class="btn btn-danger ml-2 mb-1" title="          {{ "generic.delete"|trans }}"><i class="fas fa-trash fa-fw"></i></a>')
+                    return $('<a href="#" class="btn btn-danger ml-2 mb-1" title="           {{ "generic.delete"|trans }}"><i class="fas fa-trash fa-fw"></i></a>')
                 },
                 inline: true
             });
@@ -231,19 +231,19 @@
                 addLink: $('#link-add-theonyme-implicite'),
                 confirmationModal: $('#confirm_remove_item'),
                 deleteLinkGenerator: function () {
-                    return $('<a href="#" class="btn btn-danger ml-2 mb-1" title="          {{ "generic.delete"|trans }}"><i class="fas fa-trash fa-fw"></i></a>')
+                    return $('<a href="#" class="btn btn-danger ml-2 mb-1" title="           {{ "generic.delete"|trans }}"><i class="fas fa-trash fa-fw"></i></a>')
                 },
                 inline: true,
                 setupListener: function (el) {
                     $(el).find('.selectorcreate_selection option').each(function () {
                         $(this).html(decodeEntities($(this).html()));
                     })
-                    $(el).find('.element_traductions').after($('<div class="form-group row"><div class="col-sm-11 offset-sm-1"><a href="#" class="btn btn-primary collection-add-link"><i class="fa fa-plus"></i>&nbsp;          {{ "element.add_traduction"| trans }}</a></div></div>'));
+                    $(el).find('.element_traductions').after($('<div class="form-group row"><div class="col-sm-11 offset-sm-1"><a href="#" class="btn btn-primary collection-add-link"><i class="fa fa-plus"></i>&nbsp;           {{ "element.add_traduction"| trans }}</a></div></div>'));
                     $(el).find('.element_traductions').collectionField({
                         addLink: $(el).find('.collection-add-link'),
                         confirmationModal: $('#confirm_remove_item'),
                         deleteLinkGenerator: function () {
-                            return $('<a href="#" class="btn btn-danger ml-2 mb-1" title="          {{ "generic.delete"|trans }}"><i class="fas fa-trash fa-fw"></i></a>')
+                            return $('<a href="#" class="btn btn-danger ml-2 mb-1" title="           {{ "generic.delete"|trans }}"><i class="fas fa-trash fa-fw"></i></a>')
                         },
                         inline: true
                     });
@@ -261,7 +261,7 @@
                     if (!$.isNumeric(entryId)) {
                         return "";
                     }
-                    return $('<a href="' + url.replace('-ID-', entryId) + '" class="btn btn-primary ml-2 mb-1" target="_blank" rel="noopener" title="          {{ "attestation.view_element"|trans }}"><i class="fas fa-external-link-alt fa-fw"></i></a>');
+                    return $('<a href="' + url.replace('-ID-', entryId) + '" class="btn btn-primary ml-2 mb-1" target="_blank" rel="noopener" title="           {{ "attestation.view_element"|trans }}"><i class="fas fa-external-link-alt fa-fw"></i></a>');
                 },
                 addListener: function (newEl, idx) {
                     $('#counter-references').text(parseInt($('#counter-references').text(), 10) + 1);
@@ -274,19 +274,19 @@
                 addLink: $('#link-add-theonyme-construit'),
                 confirmationModal: $('#confirm_remove_item'),
                 deleteLinkGenerator: function () {
-                    return $('<a href="#" class="btn btn-danger ml-2 mb-1" title="          {{ "generic.delete"|trans }}"><i class="fas fa-trash fa-fw"></i></a>')
+                    return $('<a href="#" class="btn btn-danger ml-2 mb-1" title="           {{ "generic.delete"|trans }}"><i class="fas fa-trash fa-fw"></i></a>')
                 },
                 inline: true,
                 setupListener: function (el) {
                     $(el).find('.selectorcreate_selection option').each(function () {
                         $(this).html(decodeEntities($(this).html()));
                     })
-                    $(el).find('.element_traductions').after($('<div class="form-group row"><div class="col-sm-11 offset-sm-1"><a href="#" class="btn btn-primary collection-add-link"><i class="fa fa-plus"></i>&nbsp;          {{ "element.add_traduction"| trans }}</a></div></div>'));
+                    $(el).find('.element_traductions').after($('<div class="form-group row"><div class="col-sm-11 offset-sm-1"><a href="#" class="btn btn-primary collection-add-link"><i class="fa fa-plus"></i>&nbsp;           {{ "element.add_traduction"| trans }}</a></div></div>'));
                     $(el).find('.element_traductions').collectionField({
                         addLink: $(el).find('.collection-add-link'),
                         confirmationModal: $('#confirm_remove_item'),
                         deleteLinkGenerator: function () {
-                            return $('<a href="#" class="btn btn-danger ml-2 mb-1" title="          {{ "generic.delete"|trans }}"><i class="fas fa-trash fa-fw"></i></a>')
+                            return $('<a href="#" class="btn btn-danger ml-2 mb-1" title="           {{ "generic.delete"|trans }}"><i class="fas fa-trash fa-fw"></i></a>')
                         },
                         inline: true
                     });
@@ -304,7 +304,7 @@
                     if (!$.isNumeric(entryId)) {
                         return "";
                     }
-                    return $('<a href="' + url.replace('-ID-', entryId) + '" class="btn btn-primary ml-2 mb-1" target="_blank" rel="noopener" title="          {{ "attestation.view_element"|trans }}"><i class="fas fa-external-link-alt fa-fw"></i></a>');
+                    return $('<a href="' + url.replace('-ID-', entryId) + '" class="btn btn-primary ml-2 mb-1" target="_blank" rel="noopener" title="           {{ "attestation.view_element"|trans }}"><i class="fas fa-external-link-alt fa-fw"></i></a>');
                 },
                 addListener: function (newEl, idx) {
                     $('#counter-references').text(parseInt($('#counter-references').text(), 10) + 1);
@@ -340,7 +340,10 @@
                     topographies: '{{ "localisation.fields.topographie"|trans }}',
                     fonctions: '{{ "localisation.fields.fonction"|trans }}',
                     coordonnees: '{{ "generic.fields.coordonnees"|trans }}',
-                    commentaires: '{{ "generic.fields.commentaire"|trans }}'
+                    commentaires: '{{ "generic.fields.commentaire"|trans }}',
+                    reel: '{{ "generic.fields.localisation_reelle"|trans }}',
+                    oui: '{{ "generic.choices.oui"|trans }}',
+                    non: '{{ "generic.choices.non"|trans }}'
                 },
                 coordinatesButton: '{{ coordinatesButton|e("js") }}'
             });

@@ -1,6 +1,13 @@
 {% set small = small is defined ? small : true %}
 {% set buttonblock = buttonblock is defined ? buttonblock : false %}
 {% set text = text is defined ? text : 'generic.help_button' %}
-<a href="{{ url('help') }}" class="btn {{ small ? 'btn-sm' : ''}} {{buttonblock ? 'btn-block' : ''}} btn-link" role="button" target="_blank" rel="noopener noreferrer">
+<a
+    href="{{ url('help') }}"
+    class="btn {{ small ? 'btn-sm' : ''}} {{buttonblock ? 'btn-block' : ''}} btn-link font-weight-bold"
+    style="font-size: 110%;"
+    role="button"
+    target="_blank"
+    rel="noopener noreferrer"
+>
     {{ ('<i class="fas fa-fw fa-question"></i>' ~ text|trans|raw)|spaceless }}
 </a>

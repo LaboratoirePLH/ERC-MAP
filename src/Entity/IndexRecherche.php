@@ -63,14 +63,16 @@ class IndexRecherche
         $this->data = json_encode($data, JSON_UNESCAPED_UNICODE);
 
         $textData = [];
-        array_walk_recursive($data, function ($i) use (&$textData) {
-            if (!is_numeric($i)) {
-                // First replace <br/> tags by newliens to keep the word boundaries
-                $i = preg_replace('/\<br(\s*)?\/?\>/i', "\n", $i);
-                // Remove tags and accents and convert to lower case
-                $i = strtolower(\App\Utils\StringHelper::removeAccents(strip_tags($i)));
+        array_walk_recursive($data, function ($value, $key) use (&$textData) {
+            if (!in_array($key, ['id', 'elementIds', 'source', 'attestations']) && !is_bool($value)) {
+                if (!is_numeric($value)) {
+                    // First replace <br/> tags by newliens to keep the word boundaries
+                    $value = preg_replace('/\<br(\s*)?\/?\>/i', "\n", $value);
+                    // Remove tags and accents and convert to lower case
+                    $value = strtolower(\App\Utils\StringHelper::removeAccents(strip_tags($value)));
+                }
+                $textData[] = $value;
             }
-            $textData[] = $i;
         });
         $this->setTextData($textData);
 

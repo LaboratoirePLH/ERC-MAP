@@ -46,12 +46,13 @@
                             <i class="fas fa-search fa-fw"></i>
                             {{ 'generic.search'|trans }}
                         </button>
+                        {% include 'partials/_help.html.twig' %}
                     </form>
                 </div>
                 <div class="tab-pane fade p-3" id="guided" role="tabpanel" aria-labelledby="guided-tab">
                     <form action="{{ url('search_guided') }}" method="post">
                         <div class="form-group row">
-                            <label for="inputName" class="col-sm-2 col-form-label">{{ ('generic.fields.nom')|trans }}</label>
+                            <label for="inputName" class="col-sm-2 col-form-label">{{ ('search.criteria_labels.names')|trans }}</label>
                             <div class="col-sm-8">
                                 <select class="form-control autocomplete" name="names[]" id="inputName" size="1" multiple data-placeholder="{{('autocomplete.select_multiple')|trans}}">
                                     <option value></option>
@@ -65,7 +66,7 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="inputLanguage" class="col-sm-2 col-form-label">{{ ('generic.fields.langue')|trans }}</label>
+                            <label for="inputLanguage" class="col-sm-2 col-form-label">{{ ('search.criteria_labels.languages')|trans }}</label>
                             <div class="col-sm-8">
                                 <select class="form-control autocomplete" name="languages[]" id="inputLanguage" size="1" multiple data-placeholder="{{('autocomplete.select_multiple')|trans}}">
                                     <option value></option>
@@ -79,7 +80,7 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-sm-2 col-form-label">{{ ('generic.fields.datation')|trans }}</label>
+                            <label class="col-sm-2 col-form-label">{{ ('search.criteria_labels.datation')|trans }}</label>
                             <div class="col">
                                 <input type="number" step="1" class="form-control" name="datation[post_quem]" id="inputPostQuem" placeholder="{{('datation.fields.post_quem')|trans}}">
                             </div>
@@ -96,7 +97,7 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="inputLocation" class="col-sm-2 col-form-label">{{ ('generic.fields.lieu')|trans }}</label>
+                            <label for="inputLocation" class="col-sm-2 col-form-label">{{ ('search.criteria_labels.locations')|trans }}</label>
                             <div class="col-sm-10">
                                 <select class="form-control autocomplete" name="locations[]" id="inputLocation" size="1" multiple data-placeholder="{{('autocomplete.select_multiple')|trans}}">
                                     <option value></option>
@@ -104,7 +105,7 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="inputSourceType" class="col-sm-2 col-form-label">{{ ('source.name')|trans }}</label>
+                            <label for="inputSourceType" class="col-sm-2 col-form-label">{{ ('search.criteria_labels.sourceTypes')|trans }}</label>
                             <div class="col-sm-10">
                                 <select class="form-control autocomplete" name="sourceTypes[]" id="inputSourceType" size="1" multiple data-placeholder="{{('autocomplete.select_multiple')|trans}}">
                                     <option value></option>
@@ -112,7 +113,7 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="inputAgents" class="col-sm-2 col-form-label">{{ ('agent.name')|trans }}</label>
+                            <label for="inputAgents" class="col-sm-2 col-form-label">{{ ('search.criteria_labels.agents')|trans }}</label>
                             <div class="col-sm-10">
                                 <select class="form-control autocomplete" name="agents[]" id="inputAgents" size="1" multiple data-placeholder="{{('autocomplete.select_multiple')|trans}}">
                                     <option value></option>
@@ -129,6 +130,7 @@
                                     <i class="fas fa-search fa-fw"></i>
                                     {{ 'generic.search'|trans }}
                                 </button>
+                                {% include 'partials/_help.html.twig' %}
                             </div>
                         </div>
                     </form>
@@ -181,6 +183,7 @@
                                     <i class="fas fa-search fa-fw"></i>
                                     {{ 'generic.search'|trans }}
                                 </button>
+                                {% include 'partials/_help.html.twig' %}
                             </div>
                         </div>
                     </form>
@@ -339,6 +342,7 @@
                                     <i class="fas fa-search fa-fw"></i>
                                     {{ 'generic.search'|trans }}
                                 </button>
+                                {% include 'partials/_help.html.twig' %}
                             </div>
                         </div>
                     </form>
@@ -541,6 +545,9 @@
                                         $('#advanced').find('input[name="prosePoetry[' + index + '][]"][value=prose]').attr('checked', value.includes('prose'));
                                         $('#advanced').find('input[name="prosePoetry[' + index + '][]"][value=poesie]').attr('checked', value.includes('poesie'));
                                         break;
+                                    case 'locationreal':
+                                        $('#advanced').find('input[name="locationReal[]"][value=' + value + ']').attr('checked', true);
+                                        break;
                                 }
                             })
                         });
@@ -552,7 +559,8 @@
                     setTimeout(() => {
                         Object.entries(data).forEach(([criteriaName, values]) => {
                             if (criteriaName != 'resultsType') {
-                                for (i = 1; i <= Object.values(values).length; i ++) {
+                                const len = criteriaName === 'locationReal' ? 1 : Object.values(values).length;
+                                for (i = 1; i <= len; i ++) {
                                     addNewCriteria(criteriaName);
                                 }
                             }
@@ -790,6 +798,7 @@
                         break;
                     case 'datation':
                     case 'prosepoetry':
+                    case 'locationreal':
                         // Compute an index based on the number of same type templates already added
                         var index = $("#advanced").find('.' + criteria.type + '-template').length;
                         // Replace the "#X#" placeholder in the id and name properties of inputs

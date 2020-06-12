@@ -79,6 +79,7 @@ generic:
     locked: "Locked"
     link: "Link"
     view_list: "View list"
+    help_button: "Help"
     webmapping: "Cartography"
     fields:
         id: "ID"
@@ -132,7 +133,9 @@ generic:
         existing: "Existing"
         none: "None"
         oui: "Yes"
+        yes: "Yes"
         non: "No"
+        no: "No"
     messages:
         failed_csrf: "Failure, invalid CSRF Token"
         deletion_failed_csrf: "Deletion failed, invalid CSRF Token"
@@ -156,8 +159,8 @@ generic:
 source:
     name: "Source"
     list: "Sources List"
-    list_for_element: "Sources linked to Element #%id%"
-    webmapping_for_element: "Cartography of Sources linked to Element #%id%"
+    list_for_element: "Sources linked to Element #%id% (%name%)"
+    webmapping_for_element: "Cartography of Sources linked to Element #%id% (%name%)"
     view: "View Source #%id%"
     create: "Create Source"
     edit: "Edit Source #%id%"
@@ -205,14 +208,14 @@ source:
         source_biblio: "Reference"
         source_biblio_n: "Reference #"
         attestation_n: "Testimony #"
-        commentaire_source_fr: "Source Comments (FR)"
-        commentaire_source_en: "Source Comments (EN)"
+        commentaire_source_fr: "Source Commentary (FR)"
+        commentaire_source_en: "Source Commentary (EN)"
     sections:
         informations_source: "Source information"
         bibliographie: "Bibliography"
         datation: "Source Dating"
         localisation: "Source Location"
-        commentaires: "Comments"
+        commentaires: "Commentary"
         attestations: "Testimonies"
 
 source_biblio:
@@ -267,6 +270,7 @@ attestation:
         element_invariant: "Element (Invariant)"
         attestations_liees: "Linked Testimonies"
         compte_element: "Element count"
+        qualite_lecture: "Quality of reading"
     fiabilite:
         niveau_0: "Undetermined"
         niveau_1: "(1) Confident reading"
@@ -298,7 +302,7 @@ attestation:
         agents: "Agents"
         datation: "Testimony Dating"
         localisation: "Testimony Location"
-        commentaires: "Comments"
+        commentaires: "Commentary"
         elements: "Elements"
         formules: "Formulae"
 
@@ -344,7 +348,7 @@ element:
         references: "References to other Elements"
         localisation: "Element Location"
         bibliographie: "Bibliography"
-        commentaires: "Comments"
+        commentaires: "Commentary"
     etat_morphologique:
         nominatif: "Nominative"
         vocatif: "Vocative"
@@ -369,7 +373,7 @@ datation:
         post_quem: "Post Quem"
         ante_quem: "Ante Quem"
         precision: "Dating precision"
-        commentaires: "Dating comments"
+        commentaires: "Dating commentary"
     precision:
         niveau_1: "(1) Dating &le; 5 years"
         niveau_2: "(2) 5 &lt; Dating &le; 50 years"

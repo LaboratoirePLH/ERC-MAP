@@ -355,4 +355,13 @@ class HomeController extends AbstractController
 
         return new JsonResponse($tree);
     }
+
+    /**
+     * @Route("/help", name="help")
+     */
+    public function help(Request $request, TranslatorInterface $translator)
+    {
+        echo "Help PDF";
+        die;
+    }
 }

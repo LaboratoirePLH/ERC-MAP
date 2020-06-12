@@ -112,6 +112,16 @@ jQuery.fn.dataTable.ext.type.order['id-pre'] = function (d) {
             scrollX: false,
             searching: true,
             ordering: true,
+            stateSave: true,
+            stateSaveParams: function (settings, data) {
+                // Do not store global search
+                data.search.search = "";
+                // Do not store individual column search
+                data.columns = data.columns.map(c => {
+                    c.search.search = "";
+                    return c;
+                });
+            }
         }, tableOptions);
         var tableRef = $('#' + listId).DataTable(options);
 

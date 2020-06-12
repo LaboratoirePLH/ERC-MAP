@@ -39,7 +39,7 @@ class SelectOrCreateType extends AbstractType implements DataMapperInterface
                 'class'        => $options['object_class'],
                 'choice_label' => $options['selection_choice_label'],
                 'attr'         => [
-                    'class'            => 'autocomplete',
+                    'class'            => 'autocomplete ' . $options['selection_form_css_class'],
                     'data-placeholder' => $options['translations']['autocomplete.select_element']
                 ],
                 'query_builder' => $options['selection_query_builder']
@@ -66,6 +66,7 @@ class SelectOrCreateType extends AbstractType implements DataMapperInterface
         $resolver->setDefault('default_decision', null);
         $resolver->setDefault('formAction', null);
         $resolver->setDefault('creation_form_css_class', '');
+        $resolver->setDefault('selection_form_css_class', '');
     }
 
     public function buildView(FormView $view, FormInterface $form, array $options)

@@ -47,7 +47,6 @@ WHERE
     deux.started IS NOT NULL
     AND deux.ended IS NOT NULL;
 
--- ALTER TABLE public.edges OWNER TO polytheisms;
 -- Nodes
 CREATE
 OR REPLACE VIEW public.nodes AS
@@ -78,7 +77,6 @@ FROM
     agent_activite
     LEFT JOIN activite_agent ON activite_agent.id = agent_activite.id_activite;
 
--- ALTER TABLE public.vue_agent_activite OWNER TO polytheisms;
 -- Agent En
 CREATE
 OR REPLACE VIEW public.vue_agent_en AS
@@ -92,14 +90,8 @@ SELECT
     string_agg(DISTINCT agentivite.nom_en :: text, ', ' :: text) AS "Agency",
     string_agg(DISTINCT nature.nom_en :: text, ', ' :: text) AS "Nature",
     string_agg(DISTINCT genre.nom_en :: text, ', ' :: text) AS "Gender",
-    string_agg(
-        DISTINCT statut_affiche.nom_en :: text,
-        ', ' :: text
-    ) AS "Explicit status",
-    string_agg(
-        DISTINCT activite_agent.nom_en :: text,
-        ', ' :: text
-    ) AS "Profession"
+    string_agg(DISTINCT statut_affiche.nom_en :: text, ', ' :: text) AS "Explicit status",
+    string_agg(DISTINCT activite_agent.nom_en :: text, ', ' :: text) AS "Profession"
 FROM
     agent
     LEFT JOIN agent_agentivite ON agent_agentivite.id_agent = agent.id
@@ -112,6 +104,17 @@ FROM
     LEFT JOIN statut_affiche ON statut_affiche.id = agent_statut.id_statut
     LEFT JOIN agent_activite ON agent_activite.id_agent = agent.id
     LEFT JOIN activite_agent ON activite_agent.id = agent_activite.id_activite
+WHERE
+    (
+        agent.id_attestation IN (
+            SELECT
+                attestation.id
+            FROM
+                attestation
+            WHERE
+                attestation.id_etat_fiche = 3
+        )
+    )
 GROUP BY
     agent.id,
     agent.id_attestation,
@@ -120,7 +123,6 @@ GROUP BY
     agent.designation,
     agent.commentaire_en;
 
--- ALTER TABLE public.vue_agent_en OWNER TO polytheisms;
 -- Agent FR
 CREATE
 OR REPLACE VIEW public.vue_agent_fr AS
@@ -134,14 +136,8 @@ SELECT
     string_agg(DISTINCT agentivite.nom_fr :: text, ', ' :: text) AS "Agentivité",
     string_agg(DISTINCT nature.nom_fr :: text, ', ' :: text) AS "Nature",
     string_agg(DISTINCT genre.nom_fr :: text, ', ' :: text) AS "Genre",
-    string_agg(
-        DISTINCT statut_affiche.nom_fr :: text,
-        ', ' :: text
-    ) AS "Statut affiché",
-    string_agg(
-        DISTINCT activite_agent.nom_fr :: text,
-        ', ' :: text
-    ) AS "Activité"
+    string_agg(DISTINCT statut_affiche.nom_fr :: text, ', ' :: text) AS "Statut affiché",
+    string_agg(DISTINCT activite_agent.nom_fr :: text, ', ' :: text) AS "Activité"
 FROM
     agent
     LEFT JOIN agent_agentivite ON agent_agentivite.id_agent = agent.id
@@ -154,6 +150,17 @@ FROM
     LEFT JOIN statut_affiche ON statut_affiche.id = agent_statut.id_statut
     LEFT JOIN agent_activite ON agent_activite.id_agent = agent.id
     LEFT JOIN activite_agent ON activite_agent.id = agent_activite.id_activite
+WHERE
+    (
+        agent.id_attestation IN (
+            SELECT
+                attestation.id
+            FROM
+                attestation
+            WHERE
+                attestation.id_etat_fiche = 3
+        )
+    )
 GROUP BY
     agent.id,
     agent.id_attestation,
@@ -162,7 +169,6 @@ GROUP BY
     agent.designation,
     agent.commentaire_fr;
 
--- ALTER TABLE public.vue_agent_fr OWNER TO polytheisms;
 -- Agent Genre
 CREATE
 OR REPLACE VIEW public.vue_agent_genre AS
@@ -174,7 +180,6 @@ FROM
     agent_genre
     LEFT JOIN genre ON genre.id = agent_genre.id_genre;
 
--- ALTER TABLE public.vue_agent_genre OWNER TO polytheisms;
 -- Agent Nature
 CREATE
 OR REPLACE VIEW public.vue_agent_nature AS
@@ -186,7 +191,6 @@ FROM
     agent_nature
     LEFT JOIN nature ON nature.id = agent_nature.id_nature;
 
--- ALTER TABLE public.vue_agent_nature OWNER TO polytheisms;
 -- Agent Statut
 CREATE
 OR REPLACE VIEW public.vue_agent_statut AS
@@ -198,7 +202,6 @@ FROM
     agent_statut
     LEFT JOIN statut_affiche ON statut_affiche.id = agent_statut.id_statut;
 
--- ALTER TABLE public.vue_agent_statut OWNER TO polytheisms;
 -- Attestation EN
 CREATE
 OR REPLACE VIEW public.vue_attestation_en AS
@@ -254,6 +257,28 @@ FROM
     LEFT JOIN formule ON formule.attestation_id = attestation.id
     LEFT JOIN attestation_pratique ON attestation_pratique.id_attestation = attestation.id
     LEFT JOIN pratique ON pratique.id = attestation_pratique.id_pratique
+WHERE
+    attestation.id_etat_fiche = 3
+    AND (
+        attestation.id_source IN (
+            SELECT
+                source.id
+            FROM
+                source source
+                LEFT JOIN attestation attestation_1 ON attestation_1.id_source = source.id
+            WHERE
+                attestation_1.id_etat_fiche = 3
+            EXCEPT
+            SELECT
+                source.id
+            FROM
+                source
+                LEFT JOIN attestation attestation_1 ON attestation_1.id_source = source.id
+            WHERE
+                attestation_1.id_etat_fiche = 1
+                OR attestation_1.id_etat_fiche = 2
+        )
+    )
 GROUP BY
     attestation.id,
     attestation.id_source,
@@ -263,7 +288,6 @@ GROUP BY
     datation.ante_quem,
     datation.commentaire_en;
 
--- ALTER TABLE public.vue_attestation_en OWNER TO polytheisms;
 -- Attestation FR
 CREATE
 OR REPLACE VIEW public.vue_attestation_fr AS
@@ -319,6 +343,28 @@ FROM
     LEFT JOIN formule ON formule.attestation_id = attestation.id
     LEFT JOIN attestation_pratique ON attestation_pratique.id_attestation = attestation.id
     LEFT JOIN pratique ON pratique.id = attestation_pratique.id_pratique
+WHERE
+    attestation.id_etat_fiche = 3
+    AND (
+        attestation.id_source IN (
+            SELECT
+                source.id
+            FROM
+                source source
+                LEFT JOIN attestation attestation_1 ON attestation_1.id_source = source.id
+            WHERE
+                attestation_1.id_etat_fiche = 3
+            EXCEPT
+            SELECT
+                source.id
+            FROM
+                source
+                LEFT JOIN attestation attestation_1 ON attestation_1.id_source = source.id
+            WHERE
+                attestation_1.id_etat_fiche = 1
+                OR attestation_1.id_etat_fiche = 2
+        )
+    )
 GROUP BY
     attestation.id,
     attestation.id_source,
@@ -328,7 +374,6 @@ GROUP BY
     datation.ante_quem,
     datation.commentaire_fr;
 
--- ALTER TABLE public.vue_attestation_fr OWNER TO polytheisms;
 -- Contient élément EN
 CREATE
 OR REPLACE VIEW public.vue_contient_element_en AS
@@ -363,10 +408,18 @@ FROM
     LEFT JOIN genre_element ON genre_element.id = contient_element.id_genre_element
     LEFT JOIN nombre_element ON nombre_element.id = contient_element.id_nombre_element
     LEFT JOIN categorie_element ON categorie_element.id = contient_element.id_categorie_element
+WHERE
+    (
+        contient_element.id_attestation IN (
+            SELECT
+                vue_attestation_fr."Id de l'attestation"
+            FROM
+                vue_attestation_fr
+        )
+    )
 ORDER BY
     (row_number() OVER ());
 
--- ALTER TABLE public.vue_contient_element_en OWNER TO polytheisms;
 -- Contient élément FR
 CREATE
 OR REPLACE VIEW public.vue_contient_element_fr AS
@@ -401,10 +454,18 @@ FROM
     LEFT JOIN genre_element ON genre_element.id = contient_element.id_genre_element
     LEFT JOIN nombre_element ON nombre_element.id = contient_element.id_nombre_element
     LEFT JOIN categorie_element ON categorie_element.id = contient_element.id_categorie_element
+WHERE
+    (
+        contient_element.id_attestation IN (
+            SELECT
+                vue_attestation_fr."Id de l'attestation"
+            FROM
+                vue_attestation_fr
+        )
+    )
 ORDER BY
     (row_number() OVER ());
 
--- ALTER TABLE public.vue_contient_element_fr OWNER TO polytheisms;
 -- Elément catégorie
 CREATE
 OR REPLACE VIEW public.vue_element_categorie AS
@@ -419,7 +480,6 @@ FROM
     LEFT JOIN categorie_element ON categorie_element.id = element_categorie.id_categorie_element
     LEFT JOIN element e ON e.id = element_categorie.id_element;
 
--- ALTER TABLE public.vue_element_categorie OWNER TO polytheisms;
 -- Elément EN
 CREATE
 OR REPLACE VIEW public.vue_element_en AS
@@ -461,6 +521,15 @@ FROM
     LEFT JOIN categorie_element ON categorie_element.id = element_categorie.id_categorie_element
     LEFT JOIN element_biblio ON element_biblio.id_element = element.id
     LEFT JOIN biblio ON biblio.id = element_biblio.id_biblio
+WHERE
+    (
+        element.id IN (
+            SELECT
+                vue_contient_element_fr."Id élément"
+            FROM
+                vue_contient_element_fr
+        )
+    )
 GROUP BY
     element.id,
     element.localisation_id,
@@ -472,7 +541,6 @@ GROUP BY
 ORDER BY
     element.id;
 
--- ALTER TABLE public.vue_element_en OWNER TO polytheisms;
 -- Elément FR
 CREATE
 OR REPLACE VIEW public.vue_element_fr AS
@@ -514,6 +582,15 @@ FROM
     LEFT JOIN categorie_element ON categorie_element.id = element_categorie.id_categorie_element
     LEFT JOIN element_biblio ON element_biblio.id_element = element.id
     LEFT JOIN biblio ON biblio.id = element_biblio.id_biblio
+WHERE
+    (
+        element.id IN (
+            SELECT
+                vue_contient_element_fr."Id élément"
+            FROM
+                vue_contient_element_fr
+        )
+    )
 GROUP BY
     element.id,
     element.localisation_id,
@@ -525,7 +602,6 @@ GROUP BY
 ORDER BY
     element.id;
 
--- ALTER TABLE public.vue_element_fr OWNER TO polytheisms;
 -- Localisation EN
 CREATE
 OR REPLACE VIEW public.vue_loc_en AS
@@ -545,10 +621,7 @@ SELECT
     localisation.commentaire_en AS "Commentary",
     localisation.geom,
     string_agg(DISTINCT q_fonction.nom_en :: text, ', ' :: text) AS "Function",
-    string_agg(
-        DISTINCT q_topographie.nom_en :: text,
-        ', ' :: text
-    ) AS "Topography",
+    string_agg(DISTINCT q_topographie.nom_en :: text, ', ' :: text) AS "Topography",
     1 AS "Density"
 FROM
     localisation
@@ -568,7 +641,6 @@ GROUP BY
     entite_politique.nom_en,
     entite_politique.numero_iacp;
 
--- ALTER TABLE public.vue_loc_en OWNER TO polytheisms;
 -- Localisation FR
 CREATE
 OR REPLACE VIEW public.vue_loc_fr AS
@@ -588,10 +660,7 @@ SELECT
     localisation.commentaire_fr AS "Commentaire",
     localisation.geom,
     string_agg(DISTINCT q_fonction.nom_fr :: text, ', ' :: text) AS "Qualification fonctionnelle",
-    string_agg(
-        DISTINCT q_topographie.nom_fr :: text,
-        ', ' :: text
-    ) AS "Qualification topographique",
+    string_agg(DISTINCT q_topographie.nom_fr :: text, ', ' :: text) AS "Qualification topographique",
     1 AS "Densité"
 FROM
     localisation
@@ -611,7 +680,6 @@ GROUP BY
     entite_politique.nom_fr,
     entite_politique.numero_iacp;
 
--- ALTER TABLE public.vue_loc_fr OWNER TO polytheisms;
 -- Attestation Matériel
 CREATE
 OR REPLACE VIEW public.vue_materiel_attestation_fr AS
@@ -630,7 +698,6 @@ FROM
 ORDER BY
     attestation_materiel.id;
 
--- ALTER TABLE public.vue_materiel_attestation_fr OWNER TO polytheisms;
 -- Attestation Occasion
 CREATE
 OR REPLACE VIEW public.vue_occasion_attestation_fr AS
@@ -648,7 +715,6 @@ FROM
 ORDER BY
     attestation_occasion.id;
 
--- ALTER TABLE public.vue_occasion_attestation_fr OWNER TO polytheisms;
 -- Attestation Pratique
 CREATE
 OR REPLACE VIEW public.vue_pratique_attestation_fr AS
@@ -660,7 +726,6 @@ FROM
     attestation_pratique
     LEFT JOIN pratique ON pratique.id = attestation_pratique.id_pratique;
 
--- ALTER TABLE public.vue_pratique_attestation_fr OWNER TO polytheisms;
 -- Source EN
 CREATE
 OR REPLACE VIEW public.vue_source_en AS
@@ -730,6 +795,26 @@ FROM
     LEFT JOIN biblio b ON b.id = sb.id_biblio
 WHERE
     sb.edition_principale IS TRUE
+    AND (
+        source.id IN (
+            SELECT
+                source_1.id
+            FROM
+                source source_1
+                LEFT JOIN attestation ON attestation.id_source = source_1.id
+            WHERE
+                attestation.id_etat_fiche = 3
+            EXCEPT
+            SELECT
+                source_1.id
+            FROM
+                source source_1
+                LEFT JOIN attestation ON attestation.id_source = source_1.id
+            WHERE
+                attestation.id_etat_fiche = 1
+                OR attestation.id_etat_fiche = 2
+        )
+    )
 GROUP BY
     source.id,
     titre.nom_en,
@@ -747,7 +832,6 @@ GROUP BY
     sb.reference_source,
     b.titre_abrege;
 
--- ALTER TABLE public.vue_source_en OWNER TO polytheisms;
 -- Source FR
 CREATE
 OR REPLACE VIEW public.vue_source_fr AS
@@ -817,6 +901,26 @@ FROM
     LEFT JOIN biblio b ON b.id = sb.id_biblio
 WHERE
     sb.edition_principale IS TRUE
+    AND (
+        source.id IN (
+            SELECT
+                source_1.id
+            FROM
+                source source_1
+                LEFT JOIN attestation ON attestation.id_source = source_1.id
+            WHERE
+                attestation.id_etat_fiche = 3
+            EXCEPT
+            SELECT
+                source_1.id
+            FROM
+                source source_1
+                LEFT JOIN attestation ON attestation.id_source = source_1.id
+            WHERE
+                attestation.id_etat_fiche = 1
+                OR attestation.id_etat_fiche = 2
+        )
+    )
 GROUP BY
     source.id,
     titre.nom_fr,
@@ -834,7 +938,6 @@ GROUP BY
     sb.reference_source,
     b.titre_abrege;
 
--- ALTER TABLE public.vue_source_fr OWNER TO polytheisms;
 -- Source Langue
 CREATE
 OR REPLACE VIEW public.vue_source_langue AS
@@ -846,7 +949,6 @@ FROM
     source_langue
     LEFT JOIN langue ON langue.id = source_langue.id_langue;
 
--- ALTER TABLE public.vue_source_langue OWNER TO polytheisms;
 -- Source Typologie
 CREATE
 OR REPLACE VIEW public.vue_source_typologie AS
@@ -861,5 +963,3 @@ FROM
     LEFT JOIN source_type_source ON source_type_source.id_source = source.id
     LEFT JOIN type_source ON source_type_source.id_type_source = type_source.id
     LEFT JOIN categorie_source ON categorie_source.id = source.categorie_source_id;
-
--- ALTER TABLE public.vue_source_typologie OWNER TO polytheisms;

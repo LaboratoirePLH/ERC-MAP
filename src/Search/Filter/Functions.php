@@ -16,7 +16,7 @@ class Functions extends AbstractFilter
 
         // For each location, we get its functions IDs
         $data = array_map(function ($el) {
-            return array_column($el['functions'] ?? [], 'id');
+            return array_column($el['fonctions'] ?? [], 'id');
         }, $localisations);
 
         // For each criteria entry, we will get a boolean result of whether the entry is valid against the data

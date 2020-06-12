@@ -13,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks()
  */
-class Agent extends AbstractEntity
+class Agent extends AbstractEntity implements Interfaces\Located
 {
     use Traits\EntityId;
     use Traits\Located;

@@ -129,7 +129,7 @@ class StringHelper
         return $truncate;
     }
 
-    public function operatorToString(string $operator): string
+    public static function operatorToString(string $operator): string
     {
         switch ($operator) {
             case "eq":

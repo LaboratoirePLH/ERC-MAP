@@ -47,6 +47,10 @@ services:
     App\EventSubscriber\LocaleSubscriber:
         arguments: ['%kernel.default_locale%']
 
+    App\EventListener\ClearOrphanLocationsSubscriber:
+        tags:
+            - { name: 'doctrine.event_subscriber' }
+
     App\EventListener\DatabaseActivitySubscriber:
         tags:
             - { name: 'doctrine.event_subscriber' }

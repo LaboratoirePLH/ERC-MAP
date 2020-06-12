@@ -20,19 +20,19 @@ class DataController extends AbstractController
 {
     private function _fetchDataForCategory($entityClass, $parentField, $parentValue, $locale)
     {
-        if(empty($parentValue)){
+        if (empty($parentValue)) {
             return new JsonResponse(['message' => 'Missing parameters'], 400);
         }
         $repo = $this->getDoctrine()->getManager()->getRepository($entityClass);
         $rows = $repo->createQueryBuilder("e")
             ->where("e.$parentField = :id")
             ->setParameter("id", $parentValue)
-            ->orderBy('e.nom'.ucfirst($locale), 'ASC')
+            ->orderBy('e.nom' . ucfirst($locale), 'ASC')
             ->getQuery()
             ->getResult();
 
         $responseArray = array();
-        foreach($rows as $row){
+        foreach ($rows as $row) {
             $responseArray[] = array(
                 "id" => $row->getId(),
                 "name" => $row->getNom($locale)
@@ -122,6 +122,19 @@ class DataController extends AbstractController
     }
 
     /**
+     * @Route("/data/localisation/{id}", name="data_localisation")
+     */
+    public function localisation($id, Request $request)
+    {
+        $repo = $this->getDoctrine()->getManager()->getRepository(Localisation::class);
+        $localisation = $repo->find($id);
+        if ($localisation === null) {
+            return new JsonResponse(['message' => 'Localisation not found'], 404);
+        }
+        return new JsonResponse(['data' => $localisation->toArray()], 200);
+    }
+
+    /**
      * @Route("/data/city_search", name="city_search")
      */
     public function citySearch(Request $request)
@@ -129,34 +142,30 @@ class DataController extends AbstractController
         $repo = $this->getDoctrine()->getManager()->getRepository(Localisation::class);
         $query = $repo->createQueryBuilder("e");
 
-        if($request->query->has('city'))
-        {
+        if ($request->query->has('city')) {
             $query = $query->where("lower(e.nomVille) LIKE :nomville")
-                        ->setParameter("nomville", '%' . strtolower($request->query->get('city')) . '%');
-        }
-        else
-        {
+                ->setParameter("nomville", '%' . strtolower($request->query->get('city')) . '%');
+        } else {
             return new JsonResponse(['message' => 'Missing parameters'], 400);
         }
         $result = $query->getQuery()->getResult();
         $data = [];
-        foreach($result as $row){
+        foreach ($result as $row) {
             $data[] = [
                 "granderegion" => $row->getGrandeRegion() ? $row->getGrandeRegion()->getId() : "",
-                "sousregion" => $row->getSousRegion() ? $row->getSousRegion()->getId() : "",
-                "id" => $row->getPleiadesVille() ?? "",
-                "nom" => $row->getNomVille() ?? "",
-                "idSite" => $row->getPleiadesSite() ?? "",
-                "nomSite" => $row->getNomSite() ?? "",
-                "latitude" => $row->getLatitude() ?? "",
-                "longitude" => $row->getLongitude() ?? ""
+                "sousregion"   => $row->getSousRegion() ? $row->getSousRegion()->getId() : "",
+                "id"           => $row->getPleiadesVille() ?? "",
+                "nom"          => $row->getNomVille() ?? "",
+                "idSite"       => $row->getPleiadesSite() ?? "",
+                "nomSite"      => $row->getNomSite() ?? "",
+                "latitude"     => $row->getLatitude() ?? "",
+                "longitude"    => $row->getLongitude() ?? ""
             ];
         }
         $data = array_map("unserialize", array_unique(array_map("serialize", $data)));
-        if(count($data) == 0){
+        if (count($data) == 0) {
             return new JsonResponse(['message' => 'Not Found'], 404);
-        }
-        else {
+        } else {
             return new JsonResponse($data);
         }
     }

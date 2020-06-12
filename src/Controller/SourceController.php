@@ -59,7 +59,7 @@ class SourceController extends AbstractController
         return $this->render('source/index.html.twig', [
             'controller_name' => 'SourceController',
             'element'         => $element_id,
-            'title'           => $translator->trans('source.list_for_element', ['%id%' => $element_id]),
+            'title'           => $translator->trans('source.list_for_element', ['%id%' => $element_id, '%name%' => $element->getEtatAbsolu()]),
             'breadcrumbs'     => [
                 ['label' => 'nav.home', 'url' => $this->generateUrl('home')],
                 ['label' => $translator->trans('source.list_for_element', ['%id%' => $element_id])]
@@ -86,7 +86,7 @@ class SourceController extends AbstractController
         return $this->render('source/webmapping.html.twig', [
             'controller_name' => 'SourceController',
             'element'         => $element_id,
-            'title'           => $translator->trans('source.webmapping_for_element', ['%id%' => $element_id]),
+            'title'           => $translator->trans('source.webmapping_for_element', ['%id%' => $element_id, '%name%' => $element->getEtatAbsolu()]),
             'webmapping'      => [
                 'app_url'     => $this->getParameter('geo.app_url_' . $request->getLocale()),
                 'function_id' => $this->getParameter('geo.function_id_' . $request->getLocale())

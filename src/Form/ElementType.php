@@ -141,19 +141,20 @@ class ElementType extends AbstractType
                 'required'      => false,
             ])
             ->add('localisation', SelectOrCreateType::class, [
-                'label'                   => false,
-                'required'                => false,
-                'locale'                  => $options['locale'],
-                'translations'            => $options['translations'],
-                'field_name'              => 'localisation',
-                'object_class'            => Localisation::class,
-                'creation_form_class'     => LocalisationType::class,
-                'creation_form_css_class' => 'localisation_form',
-                'selection_choice_label'  => 'affichage' . ucfirst($locale),
-                'allow_none'              => true,
-                'formAction'              => $options['formAction'],
-                'isClone'                 => false,
-                'selection_query_builder' => function (EntityRepository $er) use ($locale) {
+                'label'                    => false,
+                'required'                 => false,
+                'locale'                   => $options['locale'],
+                'translations'             => $options['translations'],
+                'field_name'               => 'localisation',
+                'object_class'             => Localisation::class,
+                'creation_form_class'      => LocalisationType::class,
+                'creation_form_css_class'  => 'localisation_form',
+                'selection_form_css_class' => 'localisation_selection',
+                'selection_choice_label'   => 'affichage' . ucfirst($locale),
+                'allow_none'               => true,
+                'formAction'               => $options['formAction'],
+                'isClone'                  => false,
+                'selection_query_builder'  => function (EntityRepository $er) use ($locale) {
                     $nameField = 'nom' . ucfirst($locale);
                     $qb = $er->createQueryBuilder('e');
                     return $qb
@@ -163,12 +164,6 @@ class ElementType extends AbstractType
                         ->addOrderBy("unaccent(sr.$nameField)", 'ASC')
                         ->addOrderBy("e.nomVille", 'ASC')
                         ->addOrderBy("e.nomSite", 'ASC')
-                        ->where($qb->expr()->orX(
-                            $qb->expr()->isNotNull('e.grandeRegion'),
-                            $qb->expr()->isNotNull('e.sousRegion'),
-                            $qb->expr()->isNotNull('e.nomVille'),
-                            $qb->expr()->isNotNull('e.nomSite')
-                        ))
                         ->addOrderBy("e.id", 'ASC');
                 }
             ])

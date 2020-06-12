@@ -79,6 +79,7 @@ generic:
     link: "Lien"
     view_list: "Voir la liste"
     webmapping: "Cartographie"
+    help_button: "Aide"
     fields:
         id: "ID"
         table: "Table"
@@ -131,7 +132,9 @@ generic:
         existing: "Existant"
         none: "Aucun"
         oui: "Oui"
+        yes: "Oui"
         non: "Non"
+        no: "Non"
     messages:
         failed_csrf: "Echec, token CSRF invalide"
         deletion_failed_csrf: "Echec de la suppression, token CSRF invalide"
@@ -155,8 +158,8 @@ generic:
 source:
     name: "Source"
     list: "Liste des Sources"
-    list_for_element: "Sources liées à l'Élément #%id%"
-    webmapping_for_element: "Cartographie des Sources liées à l'Élément #%id%"
+    list_for_element: "Sources liées à l'Élément #%id% (%name%)"
+    webmapping_for_element: "Cartographie des Sources liées à l'Élément #%id% (%name%)"
     view: "Visualiser la Source #%id%"
     create: "Nouvelle Source"
     edit: "Modifier la Source #%id%"
@@ -204,14 +207,14 @@ source:
         source_biblio: "Référence"
         source_biblio_n: "Référence #"
         attestation_n: "Attestation #"
-        commentaire_source_fr: "Commentaires sur la Source (FR)"
-        commentaire_source_en: "Commentaires sur la Source (EN)"
+        commentaire_source_fr: "Commentaire sur la Source (FR)"
+        commentaire_source_en: "Commentaire sur la Source (EN)"
     sections:
         informations_source: "Informations de la source"
         bibliographie: "Bibliographie"
         datation: "Datation de la Source"
         localisation: "Localisation de la source"
-        commentaires: "Commentaires"
+        commentaires: "Commentaire"
         attestations: "Attestations"
 
 source_biblio:
@@ -266,6 +269,7 @@ attestation:
         element_invariant: "Élément (Invariant)"
         attestations_liees: "Attestations Liées"
         compte_element: "Nombre d'éléments"
+        qualite_lecture: "Qualité de lecture"
     fiabilite:
         niveau_0: "Indéterminé"
         niveau_1: "(1) Lecture Assurée"
@@ -297,7 +301,7 @@ attestation:
         agents: "Agents"
         datation: "Datation de l'Attestation"
         localisation: "Localisation de l'Attestation"
-        commentaires: "Commentaires"
+        commentaires: "Commentaire"
         elements: "Éléments"
         formules: "Formules"
 
@@ -343,7 +347,7 @@ element:
         references: "Références à d'autres Éléments"
         localisation: "Localisation de l'Élément"
         bibliographie: "Bibliographie"
-        commentaires: "Commentaires"
+        commentaires: "Commentaire"
     etat_morphologique:
         nominatif: "Nominatif"
         vocatif: "Vocatif"
@@ -369,7 +373,7 @@ datation:
         post_quem: "Post Quem"
         ante_quem: "Ante Quem"
         precision: "Précision de la Datation"
-        commentaires: "Commentaires de la datation"
+        commentaires: "Commentaire de la datation"
     precision:
         niveau_1: "(1) Date &le; 5 ans"
         niveau_2: "(2) 5 &lt; Date &le; 50 ans"

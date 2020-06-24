@@ -13,9 +13,11 @@ parameters:
     geo.app_url_fr: "https://geoapps.huma-num.fr/adws/app/8cc4e1b9-3a92-11e9-8702-e571f836e404/"
     geo.app_url_en: "https://geoapps.huma-num.fr/adws/app/6b2d0f72-83ac-11ea-9fab-cdd8796420d3/"
     geo.function_source_fr: "1e143ce6-6ce3-11ea-90e3-f7ccf6c80337"
-    geo.function_source_en: "1e143ce6-6ce3-11ea-90e3-f7ccf6c80337"
+    geo.function_source_en: "3b0dbd72-b252-11ea-999a-b1f174524d4a"
     geo.function_attestation_fr: "535b801c-6ce4-11ea-90e3-f7ccf6c80337"
+    geo.function_attestation_en: "f8241cf7-b252-11ea-999a-b1f174524d4a"
     geo.function_element_fr: "d7d0e69f-7014-11ea-aeaa-a31c099aad1e"
+    geo.function_element_en: "aae3160d-b253-11ea-999a-b1f174524d4a"
 
 services:
     # default configuration for services in *this* file

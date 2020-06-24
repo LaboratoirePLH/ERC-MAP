@@ -552,6 +552,7 @@ search:
     results: "Résultats de la Recherche"
     results_count: "%records% enregistrement%plural%"
     results_count_filtered: "%records% enregistrement%plural% affiché%plural% (sur un total de %total%)"
+    results_webmapping: "Cartographie des résultats de recherche"
     reindex: "Reconstruire l'Index de Recherche"
     clear_cache: "Effacer le cache"
     new_query: "Nouvelle Recherche"

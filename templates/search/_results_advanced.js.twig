@@ -214,6 +214,14 @@
             } counter.text(str);
         };
 
+        function updateWebmappingForms(dt) {
+            const filteredRows = dt.rows({filter: 'applied'}).data();
+            $('form.webmapping-form').each(function () {
+                const type = $(this).find('input[type=hidden][name=type]').val();
+                $(this).find('input[type=hidden][name=ids]').val(JSON.stringify(filteredRows.map(r => r[type].link.id).toArray()));
+            })
+        }
+
         function storeVisibleColumns() {
             var cols = Array.from(dt.columns().visible());
             Cookie.set('search_' + mode + '_columns_' + '{{ resultsType }}', JSON.stringify(cols), {expires: 365});
@@ -260,8 +268,9 @@
                             jQuery.fn.DataTable.ext.type.search.string(removeAccents(this.value))
                     ).draw();
                     updateCounter(dt.page.info());
+                    updateWebmappingForms(dt);
                 }
-            })
+            });
             $('input', this.header()).on('click', function (e) {
                 e.stopPropagation();
             })
@@ -301,6 +310,7 @@
                     jQuery.fn.DataTable.ext.type.search.string(removeAccents(this.value))
             ).draw();
             updateCounter(dt.page.info());
+            updateWebmappingForms(dt);
         });
         $('.clear-filter-button').on('click', function (e) {
             e.preventDefault();
@@ -314,6 +324,7 @@
         dt.on('init', () => {
             dt.buttons().container().appendTo('.table-buttons');
             updateCounter(dt.page.info());
+            updateWebmappingForms(dt);
             loadVisibleColumns();
         })
 

@@ -554,6 +554,7 @@ search:
     results: "Search Results"
     results_count: "%records% record%plural%"
     results_count_filtered: "%records% record%plural% displayed (out of %total% total)"
+    results_webmapping: "Search results cartography"
     reindex: "Rebuild Search Index"
     clear_cache: "Clear Cache"
     new_query: "New Search"

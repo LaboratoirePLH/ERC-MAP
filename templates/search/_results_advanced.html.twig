@@ -102,3 +102,14 @@
         {# set value = value|replace({'<<': '&lt;&lt;', '>>': '&gt;&gt;'}) #}
     </tbody>
 </table>
+<div class="text-center">
+    <form action="{{ url('search_results_webmapping') }}" target="_blank" method="post" class="webmapping-form">
+        <input type="hidden" name="type" value="{{resultsType}}">
+        <input type="hidden" name="ids" value="[]">
+        <button class="btn btn-success" type="submit">
+            <i class="fas fa-map-marked-alt fa-fw"></i>
+            {{ 'search.results_webmapping'|trans }}
+            <i class="fa fa-fw fa-external-link-alt"></i>
+        </button>
+    </form>
+</div>

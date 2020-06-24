@@ -261,6 +261,42 @@ class RechercheController extends AbstractController
     }
 
     /**
+     * @Route("/search/results/webmapping", name="search_results_webmapping")
+     */
+    public function searchResultsWebmapping(Request $request)
+    {
+        if (!$request->isMethod('POST')) {
+            return $this->redirect(
+                $this->get('router')->generate('search')
+            );
+        }
+
+        $type = $request->request->get('type', '');
+        $ids = json_decode($request->request->get('ids', '[]'));
+
+        if (!in_array($type, ['source', 'attestation', 'element']) || !count($ids)) {
+            return $this->redirect(
+                $this->get('router')->generate('search')
+            );
+        }
+
+        return $this->render('search/webmapping.html.twig', [
+            'controller_name' => 'SourceController',
+            'title'           => 'search.results_webmapping',
+            'data'            => compact('type', 'ids'),
+            'webmapping'      => [
+                'app_url'     => $this->getParameter('geo.app_url_' . $request->getLocale()),
+                'function_id' => $this->getParameter('geo.function_' . $type . '_' . $request->getLocale())
+            ],
+            'breadcrumbs'     => [
+                ['label' => 'nav.home', 'url' => $this->generateUrl('home')],
+                ['label' => 'search.title', 'url' => $this->generateUrl('search')],
+                ['label' => 'search.results_webmapping']
+            ]
+        ]);
+    }
+
+    /**
      * @Route("/search/save", name="search_save")
      */
     public function searchSave(Request $request, TranslatorInterface $translator)

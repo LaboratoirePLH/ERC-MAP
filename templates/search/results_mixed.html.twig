@@ -76,6 +76,28 @@
         </thead>
         <tbody></tbody>
     </table>
+    <div class="text-center">
+        <form action="{{ url('search_results_webmapping') }}" target="_blank" method="post" class="webmapping-form d-inline">
+            <input type="hidden" name="type" value="source">
+            <input type="hidden" name="ids" value="[]">
+            <button class="btn btn-success" type="submit">
+                <i class="fas fa-map-marked-alt fa-fw"></i>
+                {{ 'search.results_webmapping'|trans }}
+                ({{'nav.source_list'|trans}})
+                <i class="fa fa-fw fa-external-link-alt"></i>
+            </button>
+        </form>
+        <form action="{{ url('search_results_webmapping') }}" target="_blank" method="post" class="webmapping-form d-inline">
+            <input type="hidden" name="type" value="attestation">
+            <input type="hidden" name="ids" value="[]">
+            <button class="btn btn-success" type="submit">
+                <i class="fas fa-map-marked-alt fa-fw"></i>
+                {{ 'search.results_webmapping'|trans }}
+                ({{'nav.attestation'|trans}})
+                <i class="fa fa-fw fa-external-link-alt"></i>
+            </button>
+        </form>
+    </div>
     <div id="template-link-source" class="d-none">
         {% include "partials/_entitylink.html.twig" with {
             'entity': 'source',
@@ -292,6 +314,14 @@
                     str = labelFiltered.replace(/%records%/g, displayed).replace(/%plural%/g, (displayed === 1 ? '' : 's')).replace(/%total%/g, total);
                 } counter.text(str);
             };
+            function updateWebmappingForms(dt) {
+                const filteredRows = dt.rows({filter: 'applied'}).data();
+                $('form.webmapping-form').each(function () {
+                    const type = $(this).find('input[type=hidden][name=type]').val();
+                    const ids = filteredRows.filter(r => r.linkType == type).map(r => r.linkId).toArray();
+                    $(this).find('input[type=hidden][name=ids]').val(JSON.stringify(ids));
+                })
+            }
 
             $('#search-results_wrapper select').removeClass('custom-select');
             dt.columns().every(function () {
@@ -303,6 +333,7 @@
                                 jQuery.fn.DataTable.ext.type.search.string(removeAccents(this.value))
                         ).draw();
                         updateCounter(dt.page.info());
+                        updateWebmappingForms(dt);
                     }
                 })
                 $('input', this.header()).on('click', function (e) {
@@ -315,6 +346,7 @@
                         jQuery.fn.DataTable.ext.type.search.string(removeAccents(this.value))
                 ).draw();
                 updateCounter(dt.page.info());
+                updateWebmappingForms(dt);
             });
             dt.buttons().container().appendTo('.table-buttons');
             $('.clear-filter-button').on('click', function (e) {
@@ -328,6 +360,7 @@
             dt.on('init', () => {
                 dt.buttons().container().appendTo('.table-buttons');
                 updateCounter(dt.page.info());
+                updateWebmappingForms(dt);
             })
 
             // Enable tooltips on table redraw

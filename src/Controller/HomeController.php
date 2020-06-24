@@ -62,9 +62,11 @@ class HomeController extends AbstractController
     /**
      * @Route("/legal", name="legal")
      */
-    public function legal()
+    public function legal(Request $request)
     {
-        return $this->render('home/legal.html.twig');
+        return $this->render('home/legal.html.twig', [
+            'locale' => $request->getLocale()
+        ]);
     }
 
     /**

@@ -38,3 +38,7 @@ doctrine:
                 dir: '%kernel.project_dir%/src/Entity'
                 prefix: 'App\Entity'
                 alias: App
+        dql:
+            string_functions:
+                ST_Distance: Jsor\Doctrine\PostGIS\Functions\ST_Distance
+                unaccent: App\Utils\Doctrine\UnaccentString

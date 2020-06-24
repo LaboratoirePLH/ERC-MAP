@@ -303,19 +303,18 @@
 
             $('form#attestation').watchFormDirty({message: "{{ 'modals.confirm_exit_dirty.body'|trans }}", modal: $(".modal#confirm_exit_dirty"), exitLink: $('.exit-form-link')});
 
+            const deleteLabel = '{{ "generic.delete"|trans }}';
+
             // Gestion des champs collection
             $('div#attestation_traductions').collectionField({
+                deleteLink: deleteLabel,
                 addLink: $('#link-add-traduction'),
                 confirmationModal: $('#confirm_remove_item'),
-                deleteLinkGenerator: function () {
-                    const deleteText = '{{ "generic.delete"|trans }}';
-                    return $('<a href="#" class="btn btn-danger ml-2 mb-1" title="' + deleteText + '"><i class="fas fa-trash fa-fw"></i></a>')
-                },
                 inline: true
             });
             $('div#attestation_attestationOccasions').collectionField({
                 blockTitle: '{{ "attestation.fields.occasion_n"|trans }}',
-                deleteLink: '{{ "generic.delete"|trans }}',
+                deleteLink: deleteLabel,
                 confirmationModal: $('#confirm_remove_item'),
                 setupListener: function (el) {
                     $(el).find('.typeCategorieOccasion').dependentSelects({data_url: "{{ url('data_type_occasion') }}"});
@@ -324,7 +323,7 @@
             });
             $('div#attestation_attestationMateriels').collectionField({
                 blockTitle: '{{ "attestation.fields.materiel_n"|trans }}',
-                deleteLink: '{{ "generic.delete"|trans }}',
+                deleteLink: deleteLabel,
                 confirmationModal: $('#confirm_remove_item'),
                 setupListener: function (el) {
                     $(el).find('.typeCategorieMateriel').dependentSelects({data_url: "{{ url('data_materiel') }}"});
@@ -334,7 +333,7 @@
 
             $('div#attestation_agents').collectionField({
                 blockTitle: '{{ "attestation.fields.agent_n"|trans }}',
-                deleteLink: '{{ "generic.delete"|trans }}',
+                deleteLink: deleteLabel,
                 confirmationModal: $('#confirm_remove_item'),
                 setupListener: function (el) {
                     $.fn.dependentFields(dependentFieldsSettings);
@@ -355,7 +354,7 @@
 
             $('div#attestation_contientElements').collectionField({
                 blockTitle: '{{ "attestation.fields.element_n"|trans }}',
-                deleteLink: '{{ "generic.delete"|trans }}',
+                deleteLink: deleteLabel,
                 confirmationModal: $('#confirm_remove_item'),
                 autoAdd: false,
                 setupListener: function (el) {
@@ -373,10 +372,7 @@
                         addLink: $(el).find('.link-add-traduction'),
                         blockTitle: "#",
                         confirmationModal: $('#confirm_remove_item'),
-                        deleteLinkGenerator: function () {
-                            const deleteText = '{{ "generic.delete"|trans }}';
-                            return $('<a href="#" class="btn btn-danger ml-2 mb-1" title="' + deleteText + '"><i class="fas fa-trash fa-fw"></i></a>')
-                        },
+                        deleteLink: deleteLabel,
                         inline: true
                     });
                     $(el).find('.quill').quill();
@@ -419,8 +415,8 @@
                     confirmationModal: $('#confirm_remove_item'),
                     deleteLinkGenerator: function (el) {
                         if ($(el).find("input[name$='[createurId]']").val() == "{{ app.user.id }}" || $(el).find("input[name$='[id]']").val() == "") {
-                            const deleteLink = '{{ "generic.delete"|trans }}';
-                            return $('<a href="#" class="btn btn-danger ml-2 mb-1" title="' + deleteLink + '"><i class="fas fa-trash fa-fw"></i></a>')
+                            const deleteLink = deleteLabel;
+                            return $('<a href="#" class="btn btn-danger ml-2 mb-1" title="' + deleteLabel + '"><i class="fas fa-trash fa-fw"></i></a>')
                         }
                         return '<span class="text-center">' + $(el).find("input[name$='[createur]']").val() + '</span>';
                     },

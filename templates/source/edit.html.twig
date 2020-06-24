@@ -194,11 +194,11 @@
 
             $('form#source').watchFormDirty({message: "{{ 'modals.confirm_exit_dirty.body'|trans }}", modal: $(".modal#confirm_exit_dirty"), exitLink: $('.exit-form-link')});
 
+            const deleteLabel = '{{ "generic.delete"| trans }}';
+
             $('div#source_sourceBiblios').collectionField({
                 blockTitle: '{{ "source.fields.source_biblio_n"|trans }}',
-                deleteLinkGenerator: function () {
-                    return $('<a href="#" class="btn btn-sm btn-danger ml-2 mb-1">             {{ "generic.delete"| trans }}</a>')
-                },
+                deleteLink: deleteLabel,
                 confirmationModal: $('#confirm_remove_item'),
                 setupListener: function (el) {
                     $(el).find('.selectorcreate_selection option').each(function () {
@@ -248,7 +248,7 @@
                         // (meaning it's already persisted in the database)
                         return "";
                     }
-                    return $('<a href="#" class="btn btn-sm btn-danger ml-2 mb-1">             {{ "generic.delete"| trans }}</a>')
+                    return $('<a href="#" class="btn btn-sm btn-danger ml-2 mb-1">' + deleteLabel + '</a>')
                 },
                 confirmationModal: $('#confirm_remove_item'),
                 viewLinkGenerator: function (entry) {
@@ -258,7 +258,7 @@
                     if (!$.isNumeric(entryId)) {
                         return "";
                     }
-                    return $('<a href="' + url.replace('-ID-', entryId) + '" class="btn btn-sm btn-success ml-2 mb-1" target="_blank" rel="noopener"><i class="fa fa-fw              {{ icons.attestation }}"></i>' + entryName + '</a >');
+                    return $('<a href="' + url.replace('-ID-', entryId) + '" class="btn btn-sm btn-success ml-2 mb-1" target="_blank" rel="noopener"><i class="fa fa-fw                  {{ icons.attestation }}"></i>' + entryName + '</a >');
                 },
                 addListener: function (newEl, idx) {
                     $('#counter-attestations').text(parseInt($('#counter-attestations').text(), 10) + 1);

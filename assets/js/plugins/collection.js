@@ -4,9 +4,11 @@
         var settings = $.extend({
             // These are the defaults.
             blockTitle: "#",
-            deleteLinkGenerator: function () {
+            deleteLink: "Delete",
+            deleteLinkGenerator: function (prototype, label, inline) {
+                const linkText = inline ? '<i class="fas fa-trash fa-fw"></i>' : label;
                 return $(
-                    '<a href="#" class="btn btn-sm btn-danger ml-2 mb-1">Delete</a>'
+                    '<a href="#" class="btn btn-sm btn-danger ml-2 mb-1" title="'+label+'">'+linkText+'</a>'
                 )
             },
             toggleButtonGenerator: function (childId, collapsed) {
@@ -34,7 +36,7 @@
 
         var setupLinks = function (prototype, container, collapsed) {
             var me = this;
-            var deleteLink = settings.deleteLinkGenerator.call(this, prototype);
+            var deleteLink = settings.deleteLinkGenerator.call(this, prototype, settings.deleteLink, settings.inline);
             if (deleteLink !== "" && $(deleteLink).prop('tagName') == 'A') {
                 deleteLink.click(function (e) {
                     e.preventDefault();

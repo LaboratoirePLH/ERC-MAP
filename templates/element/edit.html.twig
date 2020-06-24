@@ -185,12 +185,18 @@
 
             $('form#element').watchFormDirty({message: "{{ 'modals.confirm_exit_dirty.body'|trans }}", modal: $(".modal#confirm_exit_dirty"), exitLink: $('.exit-form-link')});
 
+            const addTranslationLabel = '{{ "element.add_traduction"| trans }}';
+            const viewElementLabel = '{{ "attestation.view_element"|trans }}';
+            const deleteLabel = '{{ "generic.delete"|trans }}';
+
+            const smallDeleteLinkGenerator = function () {
+                return $('<a href="#" class="btn btn-danger btn-sm ml-2 mb-1" title="' + deleteLabel + '"><i class="fas fa-trash fa-fw"></i></a>')
+            };
+
             // Gestion des champs collection
             $('div#element_elementBiblios').collectionField({
                 blockTitle: '{{ "element.fields.element_biblio_n"|trans }}',
-                deleteLinkGenerator: function () {
-                    return $('<a href="#" class="btn btn-sm btn-danger ml-2 mb-1">           {{ "generic.delete"| trans }}</a>')
-                },
+                deleteLink: deleteLabel,
                 confirmationModal: $('#confirm_remove_item'),
                 setupListener: function (el) {
                     $(el).find('.selectorcreate_selection option').each(function () {
@@ -222,31 +228,20 @@
             $('div#element_traductions').collectionField({
                 addLink: $('#link-add-traduction'),
                 confirmationModal: $('#confirm_remove_item'),
-                deleteLinkGenerator: function () {
-                    return $('<a href="#" class="btn btn-danger ml-2 mb-1" title="           {{ "generic.delete"|trans }}"><i class="fas fa-trash fa-fw"></i></a>')
-                },
+                deleteLink: deleteLabel,
                 inline: true
             });
             $('div#element_theonymesImplicites').collectionField({
                 addLink: $('#link-add-theonyme-implicite'),
                 confirmationModal: $('#confirm_remove_item'),
-                deleteLinkGenerator: function () {
-                    return $('<a href="#" class="btn btn-danger ml-2 mb-1" title="           {{ "generic.delete"|trans }}"><i class="fas fa-trash fa-fw"></i></a>')
-                },
+                deleteLink: deleteLabel,
                 inline: true,
                 setupListener: function (el) {
                     $(el).find('.selectorcreate_selection option').each(function () {
                         $(this).html(decodeEntities($(this).html()));
                     })
-                    $(el).find('.element_traductions').after($('<div class="form-group row"><div class="col-sm-11 offset-sm-1"><a href="#" class="btn btn-primary collection-add-link"><i class="fa fa-plus"></i>&nbsp;           {{ "element.add_traduction"| trans }}</a></div></div>'));
-                    $(el).find('.element_traductions').collectionField({
-                        addLink: $(el).find('.collection-add-link'),
-                        confirmationModal: $('#confirm_remove_item'),
-                        deleteLinkGenerator: function () {
-                            return $('<a href="#" class="btn btn-danger ml-2 mb-1" title="           {{ "generic.delete"|trans }}"><i class="fas fa-trash fa-fw"></i></a>')
-                        },
-                        inline: true
-                    });
+                    $(el).find('.element_traductions').after($('<div class="form-group row"><div class="col-sm-11 offset-sm-1"><a href="#" class="btn btn-primary collection-add-link"><i class="fa fa-plus"></i>&nbsp;' + addTranslationLabel + '</a></div></div>'));
+                    $(el).find('.element_traductions').collectionField({addLink: $(el).find('.collection-add-link'), confirmationModal: $('#confirm_remove_item'), deleteLinkGenerator: smallDeleteLinkGenerator, inline: true});
                     $(el).find('.selectorcreate_selection').find('select.autocomplete').on('chosen:ready', function () {
                         $(this).parent().find('.chosen-container:not(.chosen-container-single-nosearch)').find('input.chosen-search-input').semiticKeyboard($(this).parent().find('div.chosen-drop'), 'right top', 'right top', true);
                     });
@@ -261,7 +256,7 @@
                     if (!$.isNumeric(entryId)) {
                         return "";
                     }
-                    return $('<a href="' + url.replace('-ID-', entryId) + '" class="btn btn-primary ml-2 mb-1" target="_blank" rel="noopener" title="           {{ "attestation.view_element"|trans }}"><i class="fas fa-external-link-alt fa-fw"></i></a>');
+                    return $('<a href="' + url.replace('-ID-', entryId) + '" class="btn btn-primary ml-2 mb-1" target="_blank" rel="noopener" title="' + viewElementLabel + '"><i class="fas fa-external-link-alt fa-fw"></i></a>');
                 },
                 addListener: function (newEl, idx) {
                     $('#counter-references').text(parseInt($('#counter-references').text(), 10) + 1);
@@ -273,20 +268,18 @@
             $('div#element_theonymesConstruits').collectionField({
                 addLink: $('#link-add-theonyme-construit'),
                 confirmationModal: $('#confirm_remove_item'),
-                deleteLinkGenerator: function () {
-                    return $('<a href="#" class="btn btn-danger ml-2 mb-1" title="           {{ "generic.delete"|trans }}"><i class="fas fa-trash fa-fw"></i></a>')
-                },
+                deleteLink: deleteLabel,
                 inline: true,
                 setupListener: function (el) {
                     $(el).find('.selectorcreate_selection option').each(function () {
                         $(this).html(decodeEntities($(this).html()));
                     })
-                    $(el).find('.element_traductions').after($('<div class="form-group row"><div class="col-sm-11 offset-sm-1"><a href="#" class="btn btn-primary collection-add-link"><i class="fa fa-plus"></i>&nbsp;           {{ "element.add_traduction"| trans }}</a></div></div>'));
+                    $(el).find('.element_traductions').after($('<div class="form-group row"><div class="col-sm-11 offset-sm-1"><a href="#" class="btn btn-primary collection-add-link"><i class="fa fa-plus"></i>&nbsp;' + addTranslationLabel + '</a></div></div>'));
                     $(el).find('.element_traductions').collectionField({
                         addLink: $(el).find('.collection-add-link'),
                         confirmationModal: $('#confirm_remove_item'),
                         deleteLinkGenerator: function () {
-                            return $('<a href="#" class="btn btn-danger ml-2 mb-1" title="           {{ "generic.delete"|trans }}"><i class="fas fa-trash fa-fw"></i></a>')
+                            return $('<a href="#" class="btn btn-danger ml-2 mb-1" title="' + deleteLabel + '"><i class="fas fa-trash fa-fw"></i></a>')
                         },
                         inline: true
                     });
@@ -304,7 +297,7 @@
                     if (!$.isNumeric(entryId)) {
                         return "";
                     }
-                    return $('<a href="' + url.replace('-ID-', entryId) + '" class="btn btn-primary ml-2 mb-1" target="_blank" rel="noopener" title="           {{ "attestation.view_element"|trans }}"><i class="fas fa-external-link-alt fa-fw"></i></a>');
+                    return $('<a href="' + url.replace('-ID-', entryId) + '" class="btn btn-primary ml-2 mb-1" target="_blank" rel="noopener" title="' + viewElementLabel + '"><i class="fas fa-external-link-alt fa-fw"></i></a>');
                 },
                 addListener: function (newEl, idx) {
                     $('#counter-references').text(parseInt($('#counter-references').text(), 10) + 1);

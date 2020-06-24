@@ -343,14 +343,16 @@ class HomeController extends AbstractController
                 if ($a['icon'] != $b['icon']) {
                     return $b['icon'] <=> $a['icon'];
                 }
-                return $a['text'] <=> $b['text'];
+                return \App\Utils\StringHelper::removeAccents($a['text'])
+                    <=> \App\Utils\StringHelper::removeAccents($b['text']);
             });
 
             $tree[] = $tree_r;
         }
 
         usort($tree, function ($a, $b) {
-            return $a['text'] <=> $b['text'];
+            return \App\Utils\StringHelper::removeAccents($a['text'])
+                <=> \App\Utils\StringHelper::removeAccents($b['text']);
         });
 
         return new JsonResponse($tree);

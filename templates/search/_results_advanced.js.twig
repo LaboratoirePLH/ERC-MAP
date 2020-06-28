@@ -219,6 +219,7 @@
             $('form.webmapping-form').each(function () {
                 const type = $(this).find('input[type=hidden][name=type]').val();
                 $(this).find('input[type=hidden][name=ids]').val(JSON.stringify(filteredRows.map(r => r[type].link.id).toArray()));
+                $(this).find('button').prop('disabled', false);
             })
         }
 

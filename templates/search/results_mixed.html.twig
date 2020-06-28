@@ -44,7 +44,7 @@
                 <form action="{{ url('search_results_webmapping') }}" target="_blank" method="post" class="webmapping-form d-inline mx-1">
                     <input type="hidden" name="type" value="source">
                     <input type="hidden" name="ids" value="[]">
-                    <button class="btn btn-primary btn-sm" type="submit">
+                    <button class="btn btn-primary btn-sm" type="submit" disabled>
                         {{'nav.source_list'|trans}}
                         <i class="fa fa-fw fa-external-link-alt"></i>
                     </button>
@@ -52,7 +52,7 @@
                 <form action="{{ url('search_results_webmapping') }}" target="_blank" method="post" class="webmapping-form d-inline mx-1">
                     <input type="hidden" name="type" value="attestation">
                     <input type="hidden" name="ids" value="[]">
-                    <button class="btn btn-success btn-sm" type="submit">
+                    <button class="btn btn-success btn-sm" type="submit" disabled>
                         {{'nav.attestation'|trans}}
                         <i class="fa fa-fw fa-external-link-alt"></i>
                     </button>
@@ -323,6 +323,7 @@
                     const type = $(this).find('input[type=hidden][name=type]').val();
                     const ids = filteredRows.filter(r => r.linkType == type).map(r => r.linkId).toArray();
                     $(this).find('input[type=hidden][name=ids]').val(JSON.stringify(ids));
+                    $(this).find('button').prop('disabled', false);
                 })
             }
 

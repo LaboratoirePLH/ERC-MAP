@@ -87,7 +87,7 @@
             <form action="{{ url('search_results_webmapping') }}" target="_blank" method="post" class="webmapping-form d-inline mx-1">
                 <input type="hidden" name="type" value="{{resultsType}}">
                 <input type="hidden" name="ids" value="[]">
-                <button class="btn btn-{{color}} btn-sm" type="submit">
+                <button class="btn btn-{{color}} btn-sm" type="submit" disabled>
                     {{text|trans}}
                     <i class="fa fa-fw fa-external-link-alt"></i>
                 </button>

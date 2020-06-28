@@ -35,6 +35,31 @@
         'width': 10
     } %}
     </div>
+    <div class="row">
+        <div class="col-4 offset-4">
+            <div class="alert alert-dark background-map-grey text-light text-center" role="alert">
+                <i class="fas fa-map-marked-alt fa-fw"></i>
+                <strong>{{ 'search.results_webmapping'|trans }}</strong>
+                :
+                <form action="{{ url('search_results_webmapping') }}" target="_blank" method="post" class="webmapping-form d-inline mx-1">
+                    <input type="hidden" name="type" value="source">
+                    <input type="hidden" name="ids" value="[]">
+                    <button class="btn btn-primary btn-sm" type="submit">
+                        {{'nav.source_list'|trans}}
+                        <i class="fa fa-fw fa-external-link-alt"></i>
+                    </button>
+                </form>
+                <form action="{{ url('search_results_webmapping') }}" target="_blank" method="post" class="webmapping-form d-inline mx-1">
+                    <input type="hidden" name="type" value="attestation">
+                    <input type="hidden" name="ids" value="[]">
+                    <button class="btn btn-success btn-sm" type="submit">
+                        {{'nav.attestation'|trans}}
+                        <i class="fa fa-fw fa-external-link-alt"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
     <table class="table table-striped table-hover table-bordered w-100 text-center list_table" id="search-results">
         <thead>
             <tr>
@@ -76,28 +101,6 @@
         </thead>
         <tbody></tbody>
     </table>
-    <div class="text-center">
-        <form action="{{ url('search_results_webmapping') }}" target="_blank" method="post" class="webmapping-form d-inline">
-            <input type="hidden" name="type" value="source">
-            <input type="hidden" name="ids" value="[]">
-            <button class="btn btn-success" type="submit">
-                <i class="fas fa-map-marked-alt fa-fw"></i>
-                {{ 'search.results_webmapping'|trans }}
-                ({{'nav.source_list'|trans}})
-                <i class="fa fa-fw fa-external-link-alt"></i>
-            </button>
-        </form>
-        <form action="{{ url('search_results_webmapping') }}" target="_blank" method="post" class="webmapping-form d-inline">
-            <input type="hidden" name="type" value="attestation">
-            <input type="hidden" name="ids" value="[]">
-            <button class="btn btn-success" type="submit">
-                <i class="fas fa-map-marked-alt fa-fw"></i>
-                {{ 'search.results_webmapping'|trans }}
-                ({{'nav.attestation'|trans}})
-                <i class="fa fa-fw fa-external-link-alt"></i>
-            </button>
-        </form>
-    </div>
     <div id="template-link-source" class="d-none">
         {% include "partials/_entitylink.html.twig" with {
             'entity': 'source',

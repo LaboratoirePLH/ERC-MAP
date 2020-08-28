@@ -408,6 +408,7 @@ class Localisation extends AbstractEntity
 
     private function _affichage($lang)
     {
+
         $base = [
             $this->grandeRegion !== null ? $this->grandeRegion->getNom($lang) : '',
             $this->sousRegion !== null ? $this->sousRegion->getNom($lang) : ''
@@ -425,25 +426,27 @@ class Localisation extends AbstractEntity
         if (strlen($base) > 0 && !is_null($this->entitePolitique)) {
             $base = $base . ' - ' . $this->entitePolitique->getAffichage($lang);
         }
-        if (strlen($base) == 0) {
+        if ($this->grandeRegion !== null && $this->grandeRegion->getId() === 18) {
             $topographies = $this->topographies->map(function ($t) use ($lang) {
                 return $t->getNom($lang);
             })->toArray();
             $fonctions = $this->fonctions->map(function ($t) use ($lang) {
                 return $t->getNom($lang);
             })->toArray();
-            $base = '{ ' . implode(
-                ' || ',
-                array_map(
-                    function ($arr) {
-                        return implode(', ', $arr);
-                    },
-                    array_filter([
-                        $topographies,
-                        $fonctions
-                    ])
-                )
-            ) . ' }';
+            if (!empty($topographies) || !empty($fonctions)) {
+                $base .= ' { ' . implode(
+                    ' || ',
+                    array_map(
+                        function ($arr) {
+                            return implode(', ', $arr);
+                        },
+                        array_filter([
+                            $topographies,
+                            $fonctions
+                        ])
+                    )
+                ) . ' }';
+            }
         }
 
         return  $base . ' [#' . $this->id . ']';

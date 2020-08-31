@@ -1,16 +1,17 @@
 <?php
 
-namespace App\Migrations\Traits;
+namespace DoctrineMigrations\Traits;
 
 use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\Exception\MigrationException;
 
-trait ResetsViews {
+trait ResetsViews
+{
     /**
      * @throws MigrationException|DBALException
      */
-    public function preUp(Schema $schema) : void
+    public function preUp(Schema $schema): void
     {
         // Drop views
         $this->connection->exec(
@@ -28,7 +29,7 @@ trait ResetsViews {
     /**
      * @throws MigrationException|DBALException
      */
-    public function preDown(Schema $schema) : void
+    public function preDown(Schema $schema): void
     {
         // Drop views
         $this->connection->exec(
@@ -46,7 +47,7 @@ trait ResetsViews {
     /**
      * @throws MigrationException|DBALException
      */
-    public function postUp(Schema $schema) : void
+    public function postUp(Schema $schema): void
     {
         // Create views
         $this->connection->exec(
@@ -64,7 +65,7 @@ trait ResetsViews {
     /**
      * @throws MigrationException|DBALException
      */
-    public function postDown(Schema $schema) : void
+    public function postDown(Schema $schema): void
     {
         // Create views
         $this->connection->exec(

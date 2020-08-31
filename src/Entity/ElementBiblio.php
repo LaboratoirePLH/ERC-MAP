@@ -37,7 +37,7 @@ class ElementBiblio extends AbstractEntity
     /**
      * @var string|null
      *
-     * @ORM\Column(name="reference_element", type="string", length=255, nullable=true)
+     * @ORM\Column(name="reference_element", type="string", length=1000, nullable=true)
      */
     private $referenceElement;
 
@@ -78,5 +78,4 @@ class ElementBiblio extends AbstractEntity
     {
         return "Elément #" . $this->getElement()->getId() . " / Biblio #" . $this->getBiblio()->getId();
     }
-
 }

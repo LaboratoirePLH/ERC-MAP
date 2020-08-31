@@ -44,7 +44,7 @@ class SourceBiblio extends AbstractEntity
     /**
      * @var string|null
      *
-     * @ORM\Column(name="reference_source", type="string", length=255, nullable=true)
+     * @ORM\Column(name="reference_source", type="string", length=1000, nullable=true)
      */
     private $referenceSource;
 

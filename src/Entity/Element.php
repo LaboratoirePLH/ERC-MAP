@@ -181,7 +181,7 @@ class Element extends AbstractEntity implements Interfaces\Located
     }
 
     // Hack for elementMini form
-    public function setId(int $id): self
+    public function setId(?int $id): self
     {
         return $this;
     }

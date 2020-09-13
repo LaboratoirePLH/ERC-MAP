@@ -266,7 +266,7 @@ class Attestation extends AbstractEntity implements Interfaces\Located
     }
 
     // Hack for attestationSource form
-    public function setId(int $id): self
+    public function setId(?int $id): self
     {
         return $this;
     }

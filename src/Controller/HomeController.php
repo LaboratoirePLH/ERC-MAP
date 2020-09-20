@@ -9,9 +9,11 @@ use App\Form\ChercheurType;
 use App\Form\ChangePasswordType;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Asset\Packages;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -361,11 +363,43 @@ class HomeController extends AbstractController
     }
 
     /**
-     * @Route("/help", name="help")
+     * @Route("/help/{section}", name="help")
      */
-    public function help(Request $request, TranslatorInterface $translator)
+    public function help(string $section, Request $request, TranslatorInterface $translator)
     {
-        echo "Help PDF";
-        die;
+        $help_files = [
+            'search_simple' => [
+                'fr' => 'MAP_Guide_Recherche_simple_FR.pdf',
+                'en' => 'MAP_Guidelines_Simple_Research_EN.pdf',
+            ],
+            'search_guided' => [
+                'fr' => 'MAP_Guide_Recherche_guidee_FR.pdf',
+                'en' => 'MAP_Guidelines_Guided_Research_EN.pdf',
+            ],
+            'search_advanced' => [
+                'fr' => 'MAP_Guide_Recherche_avancee_FR.pdf',
+                'en' => 'MAP_Guidelines_Advanced_Research_EN.pdf',
+            ],
+            'search_formulae' => [
+                'fr' => 'MAP_Guide_Recherche_formule_FR.pdf',
+                'en' => 'MAP_Guidelines_Formulae_Research_EN.pdf',
+            ]
+        ];
+
+        $locale = $request->getLocale();
+
+        if (
+            !array_key_exists($section, $help_files)
+            || !array_key_exists($locale, $help_files[$section])
+            || !file_exists($this->getParameter('pdf_path') . '/' . $help_files[$section][$locale])
+        ) {
+            $request->getSession()->getFlashBag()->add(
+                'error',
+                $translator->trans('pages.messages.missing_help_file', ['%section%' => $section])
+            );
+            return $this->redirectToRoute('home');
+        }
+
+        return $this->file($this->getParameter('pdf_path') . '/' . $help_files[$section][$locale], null, ResponseHeaderBag::DISPOSITION_INLINE);
     }
 }

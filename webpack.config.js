@@ -43,6 +43,12 @@ Encore
         pattern: /\.(png|jpg|jpeg)$/
     })
 
+    .copyFiles({
+        from: './assets/files',
+        to: 'files/[path][name].[ext]',
+        pattern: /\.(pdf)$/
+    })
+
     /*
      * FEATURE CONFIG
      *

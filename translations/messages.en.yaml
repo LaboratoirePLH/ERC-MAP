@@ -514,6 +514,7 @@ pages:
         subject_mandatory: "Please enter the subject of your message"
         message_mandatory: "Please enter your message"
         invalid_email: "The e-mail address does not match with the one from your account"
+        missing_help_file: "The help file for the section '%section%' could not be found"
     error:
         404:
             title: "Page not found"

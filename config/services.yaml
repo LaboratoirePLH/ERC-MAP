@@ -18,6 +18,7 @@ parameters:
     geo.function_attestation_en: "f8241cf7-b252-11ea-999a-b1f174524d4a"
     geo.function_element_fr: "d7d0e69f-7014-11ea-aeaa-a31c099aad1e"
     geo.function_element_en: "aae3160d-b253-11ea-999a-b1f174524d4a"
+    pdf_path: "%kernel.project_dir%/public/build/files"
 
 services:
     # default configuration for services in *this* file

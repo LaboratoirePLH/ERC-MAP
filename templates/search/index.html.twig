@@ -46,7 +46,7 @@
                             <i class="fas fa-search fa-fw"></i>
                             {{ 'generic.search'|trans }}
                         </button>
-                        {% include 'partials/_help.html.twig' %}
+                        {% include 'partials/_help.html.twig' with {'section': 'search_simple'} %}
                     </form>
                 </div>
                 <div class="tab-pane fade p-3" id="guided" role="tabpanel" aria-labelledby="guided-tab">
@@ -130,7 +130,7 @@
                                     <i class="fas fa-search fa-fw"></i>
                                     {{ 'generic.search'|trans }}
                                 </button>
-                                {% include 'partials/_help.html.twig' %}
+                                {% include 'partials/_help.html.twig' with {'section': 'search_guided'} %}
                             </div>
                         </div>
                     </form>
@@ -183,7 +183,7 @@
                                     <i class="fas fa-search fa-fw"></i>
                                     {{ 'generic.search'|trans }}
                                 </button>
-                                {% include 'partials/_help.html.twig' %}
+                                {% include 'partials/_help.html.twig' with {'section': 'search_advanced'} %}
                             </div>
                         </div>
                     </form>
@@ -342,7 +342,7 @@
                                     <i class="fas fa-search fa-fw"></i>
                                     {{ 'generic.search'|trans }}
                                 </button>
-                                {% include 'partials/_help.html.twig' %}
+                                {% include 'partials/_help.html.twig' with {'section': 'search_formulae'} %}
                             </div>
                         </div>
                     </form>

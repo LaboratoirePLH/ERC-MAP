@@ -513,6 +513,7 @@ pages:
         subject_mandatory: "Merci de saisir l'objet de votre message"
         message_mandatory: "Merci de saisir votre message"
         invalid_email: "L'adresse e-mail ne correspond pas à celle de votre compte"
+        missing_help_file: "Le fichier d'aide pour la section '%section%' n'a pas pu être trouvé"
     error:
         404:
             title: "Page introuvable"

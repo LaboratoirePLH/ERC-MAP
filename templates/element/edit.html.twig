@@ -44,7 +44,8 @@
         {% include 'partials/_sectiontitle.html.twig' with {
         'title'         : 'element.sections.description_element',
         'collapseTarget': '#section-description',
-        'expanded'      : true
+        'expanded'      : true,
+        'help_section'  : 'element_form_description'
     } only %}
         <div class="collapse show" id="section-description">
             {{ form_row(form.etatAbsolu) }}
@@ -69,7 +70,8 @@
         'collapseTarget': '#section-references',
         'expanded'      : true,
         'counterId'     : 'references',
-        'counter'       : (element.theonymesImplicites.count()|default(0)+element.theonymesConstruits.count()|default(0))
+        'counter'       : (element.theonymesImplicites.count()|default(0)+element.theonymesConstruits.count()|default(0)),
+        'help_section'  : 'element_form_references'
     } only %}
         <div class="collapse show" id="section-references">
             {{ form_row(form.aReference) }}
@@ -100,9 +102,10 @@
 
     <section>
         {% include 'partials/_sectiontitle.html.twig' with {
-        'title'             : 'element.sections.localisation',
-        'collapseTarget'    : '#section-localisation',
-        'expanded'          : true
+        'title'         : 'element.sections.localisation',
+        'collapseTarget': '#section-localisation',
+        'expanded'      : true,
+        'help_section'  : 'element_form_location'
     } only %}
         <div class="collapse show" id="section-localisation">
             {{ form_row(form.localisation) }}
@@ -115,7 +118,8 @@
         'collapseTarget': '#section-bibliographie',
         'expanded'      : true,
         'counterId'     : 'biblio',
-        'counter'       : element.elementBiblios.count()|default(0)
+        'counter'       : element.elementBiblios.count()|default(0),
+        'help_section'  : 'element_form_bibliography'
     } only %}
         <div class="collapse show" id="section-bibliographie">
             {{ form_errors(form.elementBiblios) }}
@@ -134,7 +138,8 @@
     <section>
         {% include 'partials/_sectiontitle.html.twig' with {
         'title'         : 'element.sections.commentaires',
-        'collapseTarget': '#section-commentaires'
+        'collapseTarget': '#section-commentaires',
+        'help_section'  : 'element_form_commentary'
     } only %}
         <div class="collapse" id="section-commentaires">
             {{ form_row(form.commentaireFr) }}
@@ -225,12 +230,7 @@
                     $('#counter-biblio').text(parseInt($('#counter-biblio').text(), 10) - 1);
                 }
             });
-            $('div#element_traductions').collectionField({
-                addLink: $('#link-add-traduction'),
-                confirmationModal: $('#confirm_remove_item'),
-                deleteLink: deleteLabel,
-                inline: true
-            });
+            $('div#element_traductions').collectionField({addLink: $('#link-add-traduction'), confirmationModal: $('#confirm_remove_item'), deleteLink: deleteLabel, inline: true});
             $('div#element_theonymesImplicites').collectionField({
                 addLink: $('#link-add-theonyme-implicite'),
                 confirmationModal: $('#confirm_remove_item'),

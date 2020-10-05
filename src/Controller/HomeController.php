@@ -376,13 +376,97 @@ class HomeController extends AbstractController
                 'fr' => 'MAP_Guide_Saisie_FR_liste_sources.pdf',
                 'en' => 'MAP_Guidelines_Registration_EN_sources_list.pdf'
             ],
+            'source_form_information' => [
+                'fr' => 'MAP_Guide_Saisie_FR_01.pdf',
+                'en' => 'MAP_Guidelines_Registration_EN_01.pdf'
+            ],
+            'source_form_bibliography' => [
+                'fr' => 'MAP_Guide_Saisie_FR_02.pdf',
+                'en' => 'MAP_Guidelines_Registration_EN_02.pdf'
+            ],
+            'source_form_datation' => [
+                'fr' => 'MAP_Guide_Saisie_FR_03.pdf',
+                'en' => 'MAP_Guidelines_Registration_EN_03.pdf'
+            ],
+            'source_form_location' => [
+                'fr' => 'MAP_Guide_Saisie_FR_04.pdf',
+                'en' => 'MAP_Guidelines_Registration_EN_04.pdf'
+            ],
+            'source_form_commentary' => [
+                'fr' => 'MAP_Guide_Saisie_FR_05.pdf',
+                'en' => 'MAP_Guidelines_Registration_EN_05.pdf'
+            ],
+            'source_form_testimonies' => [
+                'fr' => 'MAP_Guide_Saisie_FR_06.pdf',
+                'en' => 'MAP_Guidelines_Registration_EN_06.pdf'
+            ],
             'attestation_list' => [
                 'fr' => 'MAP_Guide_Saisie_FR_liste_attestations.pdf',
                 'en' => 'MAP_Guidelines_Registration_EN_testimonies_list.pdf'
             ],
+            'attestation_form_source' => [
+                'fr' => 'MAP_Guide_Saisie_FR_07.pdf',
+                'en' => 'MAP_Guidelines_Registration_EN_07.pdf'
+            ],
+            'attestation_form_text' => [
+                'fr' => 'MAP_Guide_Saisie_FR_08.pdf',
+                'en' => 'MAP_Guidelines_Registration_EN_08.pdf'
+            ],
+            'attestation_form_context' => [
+                'fr' => 'MAP_Guide_Saisie_FR_09.pdf',
+                'en' => 'MAP_Guidelines_Registration_EN_09.pdf'
+            ],
+            'attestation_form_agents' => [
+                'fr' => 'MAP_Guide_Saisie_FR_10.pdf',
+                'en' => 'MAP_Guidelines_Registration_EN_10.pdf'
+            ],
+            'attestation_form_datation' => [
+                'fr' => 'MAP_Guide_Saisie_FR_11.pdf',
+                'en' => 'MAP_Guidelines_Registration_EN_11.pdf'
+            ],
+            'attestation_form_location' => [
+                'fr' => 'MAP_Guide_Saisie_FR_12.pdf',
+                'en' => 'MAP_Guidelines_Registration_EN_12.pdf'
+            ],
+            'attestation_form_commentary' => [
+                'fr' => 'MAP_Guide_Saisie_FR_13.pdf',
+                'en' => 'MAP_Guidelines_Registration_EN_13.pdf'
+            ],
+            'attestation_form_elements' => [
+                'fr' => 'MAP_Guide_Saisie_FR_14.pdf',
+                'en' => 'MAP_Guidelines_Registration_EN_14.pdf'
+            ],
+            'attestation_form_formulae' => [
+                'fr' => 'MAP_Guide_Saisie_FR_15.pdf',
+                'en' => 'MAP_Guidelines_Registration_EN_15.pdf'
+            ],
             'element_list' => [
                 'fr' => 'MAP_Guide_Saisie_FR_liste_elements.pdf',
                 'en' => 'MAP_Guidelines_Registration_EN_elements_list.pdf'
+            ],
+            'element_form_description' => [
+                'fr' => 'MAP_Guide_Saisie_FR_16.pdf',
+                'en' => 'MAP_Guidelines_Registration_EN_16.pdf'
+            ],
+            'element_form_references' => [
+                'fr' => 'MAP_Guide_Saisie_FR_17.pdf',
+                'en' => 'MAP_Guidelines_Registration_EN_17.pdf'
+            ],
+            'element_form_location' => [
+                'fr' => 'MAP_Guide_Saisie_FR_18.pdf',
+                'en' => 'MAP_Guidelines_Registration_EN_18.pdf'
+            ],
+            'element_form_bibliography' => [
+                'fr' => 'MAP_Guide_Saisie_FR_19.pdf',
+                'en' => 'MAP_Guidelines_Registration_EN_19.pdf'
+            ],
+            'element_form_commentary' => [
+                'fr' => 'MAP_Guide_Saisie_FR_20.pdf',
+                'en' => 'MAP_Guidelines_Registration_EN_20.pdf'
+            ],
+            'bibliography_form' => [
+                'fr' => 'MAP_Guide_Saisie_FR_21.pdf',
+                'en' => 'MAP_Guidelines_Registration_EN_21.pdf'
             ],
             'search_simple' => [
                 'fr' => 'MAP_Guide_Recherche_simple_FR.pdf',

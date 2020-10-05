@@ -1,7 +1,7 @@
 {% set small = small is defined ? small : true %}
 {% set buttonblock = buttonblock is defined ? buttonblock : false %}
 {% set text = text is defined ? text : 'generic.help_button' %}
-{% set section = section is defined ? section : 'unknown' %}
+{% set section = (section is defined and section != null) ? section : 'unknown' %}
 
 {% set class = "help-btn btn btn-link font-weight-bold " ~ (small ? 'btn-sm' : '') ~ ' ' ~ (buttonblock ? 'btn-block' : '') %}
 

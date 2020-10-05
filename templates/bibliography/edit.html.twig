@@ -19,7 +19,7 @@
     <div class="form-group row">
         <div class="col-sm-12 text-center">
             {% include "partials/_formbuttons.html.twig" with {'exitUrl' : url('bibliography_list')} %}
-            {% include 'partials/_help.html.twig' %}
+            {% include 'partials/_help.html.twig' with {'section': 'bibliography_form'} %}
         </div>
     </div>
     {{ form_end(form) }}

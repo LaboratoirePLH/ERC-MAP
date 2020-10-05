@@ -1,4 +1,5 @@
 {% set expanded = expanded|default(false) %}
+{% set help_section = help_section|default(null) %}
 <h3 class="form-section-title row px-0">
     <div class="d-inline-block col-2 px-0">
         <button class="btn btn-sm btn-outline-secondary expand-button float-left" title="{{ 'generic.toggle_section'|trans }}" type="button" data-toggle="collapse" data-target="{{ collapseTarget }}" aria-expanded="{{ expanded ? 'true' : 'false'}}" onclick="$(this).children('i.fas').toggleClass('fa-rotate-90');">
@@ -16,7 +17,7 @@
             {% include 'partials/_precision.html.twig' %}
         {% endif %}
         <span class="float-right mr-1" style="margin-top:-2px;">
-            {% include 'partials/_help.html.twig' %}
+            {% include 'partials/_help.html.twig' with {'section': help_section} %}
         </span>
 
     </div>

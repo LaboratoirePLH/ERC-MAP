@@ -55,7 +55,8 @@
         {% include 'partials/_sectiontitle.html.twig' with {
         'title'         : 'attestation.sections.informations_source',
         'collapseTarget': '#section-infos',
-        'expanded'      : true
+        'expanded'      : true,
+        'help_section'  : 'attestation_form_source'
     } only %}
         <div class="collapse show" id="section-infos">
             {{ form_row(form.sourceId) }}
@@ -71,7 +72,8 @@
         {% include 'partials/_sectiontitle.html.twig' with {
         'title'         : 'attestation.sections.texte_attestation',
         'collapseTarget': '#section-texte-attestation',
-        'expanded'      : true
+        'expanded'      : true,
+        'help_section'  : 'attestation_form_text'
     } only %}
         <div class="collapse show" id="section-texte-attestation">
             {{ form_row(form.extraitAvecRestitution) }}
@@ -94,7 +96,8 @@
         {% include 'partials/_sectiontitle.html.twig' with {
         'title'         : 'attestation.sections.contexte',
         'collapseTarget': '#section-contexte',
-        'expanded'      : true
+        'expanded'      : true,
+        'help_section'  : 'attestation_form_context'
     } only %}
         <div class="collapse show" id="section-contexte">
             {{ form_row(form.pratiques) }}
@@ -127,7 +130,8 @@
         'collapseTarget': '#section-agents',
         'expanded'      : true,
         'counterId'     : 'agents',
-        'counter'       : attestation.agents.count()|default(0)
+        'counter'       : attestation.agents.count()|default(0),
+        'help_section'  : 'attestation_form_agents'
     } only %}
         <div class="collapse show" id="section-agents">
             {{ form_errors(form.agents) }}
@@ -145,9 +149,10 @@
 
     <section>
         {% include 'partials/_sectiontitle.html.twig' with {
-        'title'             : 'attestation.sections.datation',
-        'collapseTarget'    : '#section-datation',
-        'expanded'          : true
+        'title'         : 'attestation.sections.datation',
+        'collapseTarget': '#section-datation',
+        'expanded'      : true,
+        'help_section'  : 'attestation_form_datation'
     } only %}
         <div class="collapse show" id="section-datation">
             {{ form_row(form.estDatee) }}
@@ -162,9 +167,10 @@
 
     <section>
         {% include 'partials/_sectiontitle.html.twig' with {
-        'title'             : 'attestation.sections.localisation',
-        'collapseTarget'    : '#section-localisation',
-        'expanded'          : true
+        'title'         : 'attestation.sections.localisation',
+        'collapseTarget': '#section-localisation',
+        'expanded'      : true,
+        'help_section'  : 'attestation_form_location'
     } only %}
         <div class="collapse show" id="section-localisation">
             {{ form_row(form.localisation) }}
@@ -174,7 +180,8 @@
     <section>
         {% include 'partials/_sectiontitle.html.twig' with {
         'title'         : 'attestation.sections.commentaires',
-        'collapseTarget': '#section-commentaires'
+        'collapseTarget': '#section-commentaires',
+        'help_section'  : 'attestation_form_commentary'
     } only %}
         <div class="collapse" id="section-commentaires">
             {{ form_row(form.commentaireFr) }}
@@ -186,7 +193,8 @@
         'title'         : 'attestation.sections.elements',
         'collapseTarget': '#section-elements',
         'counterId'     : 'elements',
-        'counter'       : attestation.contientElements.count()|default(0)
+        'counter'       : attestation.contientElements.count()|default(0),
+        'help_section'  : 'attestation_form_elements'
     } only %}
         <div class="collapse" id="section-elements">
             {{ form_errors(form.contientElements) }}
@@ -208,7 +216,8 @@
         'collapseTarget': '#section-formules',
         'counterId'     : 'formules',
         'counter'       : attestation.formules.count()|default(0),
-        'help'          : 'formule.help'
+        'help'          : 'formule.help',
+        'help_section'  : 'attestation_form_formulae'
     } only %}
         <div class="collapse" id="section-formules">
             {{ form_errors(form.formules) }}
@@ -306,12 +315,7 @@
             const deleteLabel = '{{ "generic.delete"|trans }}';
 
             // Gestion des champs collection
-            $('div#attestation_traductions').collectionField({
-                deleteLink: deleteLabel,
-                addLink: $('#link-add-traduction'),
-                confirmationModal: $('#confirm_remove_item'),
-                inline: true
-            });
+            $('div#attestation_traductions').collectionField({deleteLink: deleteLabel, addLink: $('#link-add-traduction'), confirmationModal: $('#confirm_remove_item'), inline: true});
             $('div#attestation_attestationOccasions').collectionField({
                 blockTitle: '{{ "attestation.fields.occasion_n"|trans }}',
                 deleteLink: deleteLabel,

@@ -156,7 +156,12 @@ jQuery.fn.dataTable.ext.type.order['id-pre'] = function (d) {
 
         // Wait for data being laoded before adding table buttons
         tableRef.on('init', () => {
-            tableRef.buttons().container().appendTo('.table-buttons');
+            var target = $('.table-buttons').find('.help-btn');
+            if(target){
+                tableRef.buttons().container().insertBefore(target);
+            } else {
+                tableRef.buttons().container().appendTo('.table-buttons');
+            }
         })
 
         // Setup event for clear filter button

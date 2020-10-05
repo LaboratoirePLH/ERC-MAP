@@ -368,6 +368,22 @@ class HomeController extends AbstractController
     public function help(string $section, Request $request, TranslatorInterface $translator)
     {
         $help_files = [
+            'home' => [
+                'fr' => 'MAP_Guide_Saisie_FR_accueil.pdf',
+                'en' => 'MAP_Guidelines_Registration_EN_homepage.pdf'
+            ],
+            'source_list' => [
+                'fr' => 'MAP_Guide_Saisie_FR_liste_sources.pdf',
+                'en' => 'MAP_Guidelines_Registration_EN_sources_list.pdf'
+            ],
+            'attestation_list' => [
+                'fr' => 'MAP_Guide_Saisie_FR_liste_attestations.pdf',
+                'en' => 'MAP_Guidelines_Registration_EN_testimonies_list.pdf'
+            ],
+            'element_list' => [
+                'fr' => 'MAP_Guide_Saisie_FR_liste_elements.pdf',
+                'en' => 'MAP_Guidelines_Registration_EN_elements_list.pdf'
+            ],
             'search_simple' => [
                 'fr' => 'MAP_Guide_Recherche_simple_FR.pdf',
                 'en' => 'MAP_Guidelines_Simple_Research_EN.pdf',

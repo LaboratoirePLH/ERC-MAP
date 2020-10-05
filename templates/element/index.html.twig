@@ -15,6 +15,7 @@
                 <button type="button" class="btn btn-warning clear-filter-button">
                     {{ 'generic.clear_filters'|trans }}
                 </button>
+                {% include 'partials/_help.html.twig' with {'section': 'element_list'} %}
             </div>
         </div>
     {% endif %}

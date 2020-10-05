@@ -16,6 +16,7 @@
             <button type="button" class="btn btn-warning clear-filter-button">
                 {{ 'generic.clear_filters'|trans }}
             </button>
+            {% include 'partials/_help.html.twig' with {'section': 'attestation_list'} %}
         </div>
     </div>
     <table class="table table-striped table-hover table-bordered w-100 text-center list_table" id="attestation_list">

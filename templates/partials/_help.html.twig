@@ -3,7 +3,7 @@
 {% set text = text is defined ? text : 'generic.help_button' %}
 {% set section = section is defined ? section : 'unknown' %}
 
-{% set class = "btn btn-link font-weight-bold " ~ (small ? 'btn-sm' : '') ~ ' ' ~ (buttonblock ? 'btn-block' : '') %}
+{% set class = "help-btn btn btn-link font-weight-bold " ~ (small ? 'btn-sm' : '') ~ ' ' ~ (buttonblock ? 'btn-block' : '') %}
 
 <a href="{{ url('help', {'section': section}) }}" class="{{ class }}" style="font-size: 1.1rem;" role="button" target="_blank" rel="noopener noreferrer">
     {{ ('<i class="fas fa-fw fa-question"></i>' ~ text|trans|raw)|spaceless }}

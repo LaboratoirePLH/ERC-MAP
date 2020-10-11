@@ -130,9 +130,9 @@ class IndexRechercheRepository extends ServiceEntityRepository
                     $source = $entity->getSource();
                 }
                 $states = $source->getAttestations()->map(function ($att) {
-                    return $att->getEtatFiche()->getId();
+                    return $att->getEtatFiche()->getOpenAccess();
                 })->toArray();
-                $corpusReady = array_unique($states) === [3];
+                $corpusReady = array_unique($states) === [true];
 
                 // When rebuilding an Attestation, check if we need to update source and other attestations
                 if ($entityType === 'Attestation') {

@@ -136,6 +136,8 @@ easy_admin:
         EtatFiche:
             class: App\Entity\EtatFiche
             label: Etat Fiche
+            list:
+                fields: ['id' , 'nom_fr' , 'nom_en' , {property: 'open_access', label: 'Inclure en Open Access ?', type: 'toggle'}]
         Formule:
             class: App\Entity\Formule
             label: Formule

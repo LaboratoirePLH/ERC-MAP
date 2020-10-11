@@ -232,11 +232,11 @@ class HomeController extends AbstractController
         $data = [];
 
         foreach ($sources as $source) {
-            // Check that all attestations have the state "Relu/Revised"
+            // Check that all attestations have the state required for openAccess
             $states = $source->getAttestations()->map(function ($att) {
-                return $att->getEtatFiche()->getId();
+                return $att->getEtatFiche()->getOpenAccess();
             })->toArray();
-            if (array_unique($states) !== [3]) {
+            if (array_unique($states) !== [true]) {
                 continue;
             }
 

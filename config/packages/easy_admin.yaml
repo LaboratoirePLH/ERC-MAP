@@ -18,6 +18,7 @@ easy_admin:
          - Suivi
          - VerrouEntite
          - { label: 'Source' }
+         - SourceTraductions
          - Auteur
          - CategorieMateriau
          - CategorieSource
@@ -29,6 +30,7 @@ easy_admin:
          - TypeSupport
          - { label: 'Attestation' }
          - AttestationEtatFiche
+         - AttestationTraductions
          - Agent
          - CategorieMateriel
          - CategorieOccasion
@@ -44,6 +46,7 @@ easy_admin:
          - Nature
          - StatutAffiche
          - { label: 'Elément'}
+         - ElementTraductions
          - CategorieElement
          - GenreElement
          - NatureElement
@@ -287,13 +290,30 @@ easy_admin:
                  - { property: 'gestionnaireComptes'}
         AttestationEtatFiche:
             class: App\Entity\Attestation
-            label: Attestations (Etat Fiche / Traductions)
+            label: Attestations (Etat Fiche)
             list:
                 fields:
                  - 'source'
                  - 'id'
                  - 'affichage'
                  - 'etatFiche'
+                filters:
+                - property: 'id_source'
+                  label: 'ID Source'
+                  type: 'App\EasyAdmin\Filter\IdSource'
+                  mapped: false
+                actions: ['-new', '-delete']
+            edit:
+                fields:
+                 - { property: 'etatFiche', type_options: { required: true }}
+        AttestationTraductions:
+            class: App\Entity\Attestation
+            label: Attestations (Traductions)
+            list:
+                fields:
+                 - 'source'
+                 - 'id'
+                 - 'affichage'
                  - 'traduireFr'
                  - 'traduireEn'
                 filters:
@@ -301,7 +321,22 @@ easy_admin:
                   label: 'ID Source'
                   type: 'App\EasyAdmin\Filter\IdSource'
                   mapped: false
-                actions: ['-new']
-            edit:
+                actions: ['-new', '-edit', '-delete']
+        SourceTraductions:
+            class: App\Entity\Source
+            label: Sources (Traductions)
+            list:
                 fields:
-                 - { property: 'etatFiche', type_options: { required: true }}
+                 - 'id'
+                 - 'traduireFr'
+                 - 'traduireEn'
+                actions: ['-new', '-edit', '-delete']
+        ElementTraductions:
+            class: App\Entity\Element
+            label: Elements (Traductions)
+            list:
+                fields:
+                 - 'id'
+                 - 'traduireFr'
+                 - 'traduireEn'
+                actions: ['-new', '-edit', '-delete']

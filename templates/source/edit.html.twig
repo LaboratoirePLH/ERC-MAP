@@ -49,11 +49,11 @@
     <hr/>
     <section>
         {% include 'partials/_sectiontitle.html.twig' with {
-        'title'         : 'source.sections.informations_source',
-        'collapseTarget': '#section-infos',
-        'expanded'      : true,
-        'help_section'  : 'source_form_information'
-    } only %}
+            'title'         : 'source.sections.informations_source',
+            'collapseTarget': '#section-infos',
+            'expanded'      : true,
+            'help_section'  : 'source_form_information'
+        } %}
         <div class="collapse show" id="section-infos">
             {{ form_widget(form.typeCategorieSource) }}
             {{ form_row(form.langues) }}
@@ -69,13 +69,13 @@
 
     <section>
         {% include 'partials/_sectiontitle.html.twig' with {
-        'title'         : 'source.sections.bibliographie',
-        'collapseTarget': '#section-bibliographie',
-        'expanded'      : true,
-        'counterId'     : 'biblio',
-        'counter'       : source.sourceBiblios.count()|default(0),
-        'help_section'  : 'source_form_bibliography'
-    } only %}
+            'title'         : 'source.sections.bibliographie',
+            'collapseTarget': '#section-bibliographie',
+            'expanded'      : true,
+            'counterId'     : 'biblio',
+            'counter'       : source.sourceBiblios.count()|default(0),
+            'help_section'  : 'source_form_bibliography'
+        } %}
         <div class="collapse show" id="section-bibliographie">
             {{ form_errors(form.sourceBiblios) }}
             {{ form_widget(form.sourceBiblios) }}
@@ -92,12 +92,12 @@
 
     <section>
         {% include 'partials/_sectiontitle.html.twig' with {
-        'title'             : 'source.sections.datation',
-        'collapseTarget'    : '#section-datation',
-        'expanded'          : true,
-        'precisionIndicator': 'datation',
-        'help_section'      : 'source_form_datation'
-    } only %}
+            'title'             : 'source.sections.datation',
+            'collapseTarget'    : '#section-datation',
+            'expanded'          : true,
+            'precisionIndicator': 'datation',
+            'help_section'      : 'source_form_datation'
+        } %}
         <div class="collapse show" id="section-datation">
             {{ form_row(form.estDatee) }}
             <div class="row">
@@ -111,12 +111,12 @@
 
     <section>
         {% include 'partials/_sectiontitle.html.twig' with {
-        'title'             : 'source.sections.localisation',
-        'collapseTarget'    : '#section-localisation',
-        'expanded'          : true,
-        'precisionIndicator': 'localisation',
-        'help_section'      : 'source_form_location'
-    } only %}
+            'title'             : 'source.sections.localisation',
+            'collapseTarget'    : '#section-localisation',
+            'expanded'          : true,
+            'precisionIndicator': 'localisation',
+            'help_section'      : 'source_form_location'
+        } %}
         <div class="collapse show" id="section-localisation">
             {{ form_row(form.lieuDecouverte) }}
             {{ form_row(form.inSitu) }}
@@ -126,10 +126,10 @@
 
     <section>
         {% include 'partials/_sectiontitle.html.twig' with {
-        'title'         : 'source.sections.commentaires',
-        'collapseTarget': '#section-commentaires',
-        'help_section'  : 'source_form_commentary'
-    } only %}
+            'title'         : 'source.sections.commentaires',
+            'collapseTarget': '#section-commentaires',
+            'help_section'  : 'source_form_commentary'
+        } %}
         <div class="collapse" id="section-commentaires">
             {{ form_row(form.commentaireFr) }}
             {{ form_row(form.commentaireEn) }}
@@ -137,12 +137,12 @@
     </section>
     <section>
         {% include 'partials/_sectiontitle.html.twig' with {
-        'title'         : 'source.sections.attestations',
-        'collapseTarget': '#section-attestations',
-        'counterId'     : 'attestations',
-        'counter'       : source.attestations.count()|default(0),
-        'help_section'  : 'source_form_testimonies'
-    } only %}
+            'title'         : 'source.sections.attestations',
+            'collapseTarget': '#section-attestations',
+            'counterId'     : 'attestations',
+            'counter'       : source.attestations.count()|default(0),
+            'help_section'  : 'source_form_testimonies'
+        } %}
         <div class="collapse" id="section-attestations">
             {{ form_errors(form.attestations) }}
             {{ form_widget(form.attestations) }}
@@ -264,7 +264,7 @@
                     if (!$.isNumeric(entryId)) {
                         return "";
                     }
-                    return $('<a href="' + url.replace('-ID-', entryId) + '" class="btn btn-sm btn-success ml-2 mb-1" target="_blank" rel="noopener"><i class="fa fa-fw                    {{ icons.attestation }}"></i>' + entryName + '</a >');
+                    return $('<a href="' + url.replace('-ID-', entryId) + '" class="btn btn-sm btn-success ml-2 mb-1" target="_blank" rel="noopener"><i class="fa fa-fw                     {{ icons.attestation }}"></i>' + entryName + '</a >');
                 },
                 addListener: function (newEl, idx) {
                     $('#counter-attestations').text(parseInt($('#counter-attestations').text(), 10) + 1);

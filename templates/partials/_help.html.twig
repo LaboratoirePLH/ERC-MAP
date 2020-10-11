@@ -5,6 +5,6 @@
 
 {% set class = "help-btn btn btn-link font-weight-bold " ~ (small ? 'btn-sm' : '') ~ ' ' ~ (buttonblock ? 'btn-block' : '') %}
 
-<a href="{{ url('help', {'section': section}) }}" class="{{ class }}" style="font-size: 1.1rem;" role="button" target="_blank" rel="noopener noreferrer">
+<a href="{{ url('help', {'section': section, 'locale': locale}) }}" class="{{ class }}" style="font-size: 1.1rem;" role="button" target="_blank" rel="noopener noreferrer">
     {{ ('<i class="fas fa-fw fa-question"></i>' ~ text|trans|raw)|spaceless }}
 </a>

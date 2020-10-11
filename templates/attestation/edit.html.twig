@@ -53,11 +53,11 @@
     <hr/>
     <section>
         {% include 'partials/_sectiontitle.html.twig' with {
-        'title'         : 'attestation.sections.informations_source',
-        'collapseTarget': '#section-infos',
-        'expanded'      : true,
-        'help_section'  : 'attestation_form_source'
-    } only %}
+            'title'         : 'attestation.sections.informations_source',
+            'collapseTarget': '#section-infos',
+            'expanded'      : true,
+            'help_section'  : 'attestation_form_source'
+        } %}
         <div class="collapse show" id="section-infos">
             {{ form_row(form.sourceId) }}
             {{ form_row(form.sourceShortTitle) }}
@@ -70,11 +70,11 @@
 
     <section>
         {% include 'partials/_sectiontitle.html.twig' with {
-        'title'         : 'attestation.sections.texte_attestation',
-        'collapseTarget': '#section-texte-attestation',
-        'expanded'      : true,
-        'help_section'  : 'attestation_form_text'
-    } only %}
+            'title'         : 'attestation.sections.texte_attestation',
+            'collapseTarget': '#section-texte-attestation',
+            'expanded'      : true,
+            'help_section'  : 'attestation_form_text'
+        } %}
         <div class="collapse show" id="section-texte-attestation">
             {{ form_row(form.extraitAvecRestitution) }}
             {{ form_row(form.translitteration) }}
@@ -94,11 +94,11 @@
 
     <section>
         {% include 'partials/_sectiontitle.html.twig' with {
-        'title'         : 'attestation.sections.contexte',
-        'collapseTarget': '#section-contexte',
-        'expanded'      : true,
-        'help_section'  : 'attestation_form_context'
-    } only %}
+            'title'         : 'attestation.sections.contexte',
+            'collapseTarget': '#section-contexte',
+            'expanded'      : true,
+            'help_section'  : 'attestation_form_context'
+        } %}
         <div class="collapse show" id="section-contexte">
             {{ form_row(form.pratiques) }}
             {{ form_errors(form.attestationOccasions) }}
@@ -126,13 +126,13 @@
 
     <section>
         {% include 'partials/_sectiontitle.html.twig' with {
-        'title'         : 'attestation.sections.agents',
-        'collapseTarget': '#section-agents',
-        'expanded'      : true,
-        'counterId'     : 'agents',
-        'counter'       : attestation.agents.count()|default(0),
-        'help_section'  : 'attestation_form_agents'
-    } only %}
+            'title'         : 'attestation.sections.agents',
+            'collapseTarget': '#section-agents',
+            'expanded'      : true,
+            'counterId'     : 'agents',
+            'counter'       : attestation.agents.count()|default(0),
+            'help_section'  : 'attestation_form_agents'
+        } %}
         <div class="collapse show" id="section-agents">
             {{ form_errors(form.agents) }}
             {{ form_widget(form.agents) }}
@@ -149,11 +149,11 @@
 
     <section>
         {% include 'partials/_sectiontitle.html.twig' with {
-        'title'         : 'attestation.sections.datation',
-        'collapseTarget': '#section-datation',
-        'expanded'      : true,
-        'help_section'  : 'attestation_form_datation'
-    } only %}
+            'title'         : 'attestation.sections.datation',
+            'collapseTarget': '#section-datation',
+            'expanded'      : true,
+            'help_section'  : 'attestation_form_datation'
+        } %}
         <div class="collapse show" id="section-datation">
             {{ form_row(form.estDatee) }}
             <div class="row">
@@ -167,11 +167,11 @@
 
     <section>
         {% include 'partials/_sectiontitle.html.twig' with {
-        'title'         : 'attestation.sections.localisation',
-        'collapseTarget': '#section-localisation',
-        'expanded'      : true,
-        'help_section'  : 'attestation_form_location'
-    } only %}
+            'title'         : 'attestation.sections.localisation',
+            'collapseTarget': '#section-localisation',
+            'expanded'      : true,
+            'help_section'  : 'attestation_form_location'
+        } %}
         <div class="collapse show" id="section-localisation">
             {{ form_row(form.localisation) }}
         </div>
@@ -179,10 +179,10 @@
 
     <section>
         {% include 'partials/_sectiontitle.html.twig' with {
-        'title'         : 'attestation.sections.commentaires',
-        'collapseTarget': '#section-commentaires',
-        'help_section'  : 'attestation_form_commentary'
-    } only %}
+            'title'         : 'attestation.sections.commentaires',
+            'collapseTarget': '#section-commentaires',
+            'help_section'  : 'attestation_form_commentary'
+        } %}
         <div class="collapse" id="section-commentaires">
             {{ form_row(form.commentaireFr) }}
             {{ form_row(form.commentaireEn) }}
@@ -190,12 +190,12 @@
     </section>
     <section>
         {% include 'partials/_sectiontitle.html.twig' with {
-        'title'         : 'attestation.sections.elements',
-        'collapseTarget': '#section-elements',
-        'counterId'     : 'elements',
-        'counter'       : attestation.contientElements.count()|default(0),
-        'help_section'  : 'attestation_form_elements'
-    } only %}
+            'title'         : 'attestation.sections.elements',
+            'collapseTarget': '#section-elements',
+            'counterId'     : 'elements',
+            'counter'       : attestation.contientElements.count()|default(0),
+            'help_section'  : 'attestation_form_elements'
+        } %}
         <div class="collapse" id="section-elements">
             {{ form_errors(form.contientElements) }}
             {{ form_widget(form.contientElements) }}
@@ -212,13 +212,13 @@
 
     <section>
         {% include 'partials/_sectiontitle.html.twig' with {
-        'title'         : 'attestation.sections.formules',
-        'collapseTarget': '#section-formules',
-        'counterId'     : 'formules',
-        'counter'       : attestation.formules.count()|default(0),
-        'help'          : 'formule.help',
-        'help_section'  : 'attestation_form_formulae'
-    } only %}
+            'title'         : 'attestation.sections.formules',
+            'collapseTarget': '#section-formules',
+            'counterId'     : 'formules',
+            'counter'       : attestation.formules.count()|default(0),
+            'help'          : 'formule.help',
+            'help_section'  : 'attestation_form_formulae'
+        } %}
         <div class="collapse" id="section-formules">
             {{ form_errors(form.formules) }}
             {{ form_widget(form.formules) }}

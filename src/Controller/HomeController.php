@@ -363,9 +363,9 @@ class HomeController extends AbstractController
     }
 
     /**
-     * @Route("/help/{section}", name="help")
+     * @Route("/help/{locale}/{section}", name="help")
      */
-    public function help(string $section, Request $request, TranslatorInterface $translator)
+    public function help(string $locale, string $section, Request $request, TranslatorInterface $translator)
     {
         $help_files = [
             'home' => [
@@ -485,8 +485,6 @@ class HomeController extends AbstractController
                 'en' => 'MAP_Guidelines_Formulae_Research_EN.pdf',
             ]
         ];
-
-        $locale = $request->getLocale();
 
         if (
             !array_key_exists($section, $help_files)

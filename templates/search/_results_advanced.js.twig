@@ -100,10 +100,13 @@
                         if (Array.isArray(data)) {
                             if (type === 'display') {
                                 ret = data.join('<hr/>');
+                            } else {
+                                ret = data.join(' ; ');
                             }
-                            ret = data.join(' ; ');
+                        } else {
+                            ret = data;
                         }
-                        ret = data;
+
                         if (col.extraEncode === true) {
                             ret = ret.replace('<<', '&lt;&lt;').replace('>>', '&gt;&gt;');
                         }

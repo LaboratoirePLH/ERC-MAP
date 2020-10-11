@@ -28,6 +28,7 @@ easy_admin:
          - TypeSource
          - TypeSupport
          - { label: 'Attestation' }
+         - AttestationEtatFiche
          - Agent
          - CategorieMateriel
          - CategorieOccasion
@@ -282,3 +283,23 @@ easy_admin:
                  - { property: 'projets', type_options: { required: false, by_reference: false }}
                  - { property: 'actif'}
                  - { property: 'gestionnaireComptes'}
+        AttestationEtatFiche:
+            class: App\Entity\Attestation
+            label: Attestations (Etat Fiche / Traductions)
+            list:
+                fields:
+                 - 'source'
+                 - 'id'
+                 - 'affichage'
+                 - 'etatFiche'
+                 - 'traduireFr'
+                 - 'traduireEn'
+                filters:
+                - property: 'id_source'
+                  label: 'ID Source'
+                  type: 'App\EasyAdmin\Filter\IdSource'
+                  mapped: false
+                actions: ['-new']
+            edit:
+                fields:
+                 - { property: 'etatFiche', type_options: { required: true }}

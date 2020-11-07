@@ -54,8 +54,11 @@
                 allow_single_deselect: true,
                 display_selected_options: false,
                 search_contains: true,
-                normalize_search_text: function (search_text) {
-                    return removeAccents(search_text);
+                normalize_search_text: function (search_text) { // return removeAccents(search_text);
+                    return search_text + '|' + removeAccents(search_text);
+                },
+                normalize_query_text: function (query_text) {
+                    return query_text;
                 }
             };
         </script>

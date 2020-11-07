@@ -28,7 +28,7 @@ trait Dated
     }
 
     /**
-     * @var \Datation
+     * @var Datation
      *
      * @ORM\OneToOne(targetEntity="Datation", cascade={"persist"}, fetch="EAGER", orphanRemoval=true)
      * @ORM\JoinColumn(name="datation_id", referencedColumnName="id", nullable=true)
@@ -51,8 +51,9 @@ trait Dated
      * @ORM\PrePersist
      * @ORM\PreUpdate
      */
-    public function _clearOrphanDatation(){
-        if(!$this->getEstDatee()){
+    public function _clearOrphanDatation()
+    {
+        if (!$this->getEstDatee()) {
             $this->setDatation(null);
         }
     }

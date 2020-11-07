@@ -42,6 +42,11 @@ class ListController extends AbstractController
         } else {
             $sources = $repository->findAll();
         }
+        $languages = [
+            'fr' => $translator->trans('languages.fr'),
+            'en' => $translator->trans('languages.en'),
+        ];
+        $datetimeFormat = $translator->trans('locale_datetime');
 
         // If user is not a contributor, filter to keep only corpus ready entities
         if (!$this->isGranted('ROLE_CONTRIBUTOR')) {
@@ -51,7 +56,7 @@ class ListController extends AbstractController
             }));
         }
 
-        $data = array_map(function ($source) use ($locale, $user, $translator) {
+        $data = array_map(function ($source) use ($locale, $user, $datetimeFormat, $languages) {
             $lieu = $source->getInSitu() ? $source->getLieuDecouverte() : $source->getLieuOrigine();
             $region = ($lieu !== null && $lieu->getGrandeRegion() !== null) ? $lieu->getGrandeRegion()->getNom($locale) : '';
 
@@ -71,11 +76,11 @@ class ListController extends AbstractController
                 'titre_abrege'  => $source->getEditionPrincipaleBiblio()->getBiblio()->getTitreAbrege(),
                 'reference'     => $source->getEditionPrincipaleBiblio()->getReferenceSource(),
                 'date_creation' => [
-                    'display'   => $source->getDateCreation()->format($translator->trans('locale_datetime')),
+                    'display'   => $source->getDateCreation()->format($datetimeFormat),
                     'timestamp' => $source->getDateCreation()->getTimestamp(),
                 ],
                 'date_modification' => [
-                    'display'   => $source->getDateModification()->format($translator->trans('locale_datetime')),
+                    'display'   => $source->getDateModification()->format($datetimeFormat),
                     'timestamp' => $source->getDateModification()->getTimestamp(),
                 ],
                 'createur_id' => $source->getCreateur()->getId(),
@@ -88,10 +93,14 @@ class ListController extends AbstractController
                     'display' => $source->getDernierEditeur()->getInitials()
                 ],
                 'traduire' => array_values(array_filter([
-                    $source->getTraduireFr() ? $translator->trans('languages.fr') : null,
-                    $source->getTraduireEn() ? $translator->trans('languages.en') : null
+                    $source->getTraduireFr() ? $languages['fr'] : null,
+                    $source->getTraduireEn() ? $languages['en'] : null
                 ])),
-                'verrou' => ($this->isGranted('ROLE_USER') && $source->getVerrou() !== null && !$source->getVerrou()->isWritable($user)) ? $source->getVerrou()->toArray($translator->trans('locale_datetime')) : false
+                'verrou' => ($this->isGranted('ROLE_USER')
+                    && $source->getVerrou() !== null
+                    && !$source->getVerrou()->isWritable($user))
+                    ? $source->getVerrou()->toArray($datetimeFormat)
+                    : false
             ];
         }, $sources);
 
@@ -137,20 +146,27 @@ class ListController extends AbstractController
             }));
         }
 
-        $data = array_map(function ($attestation) use ($locale, $user, $translator) {
+        $languages = [
+            'fr' => $translator->trans('languages.fr'),
+            'en' => $translator->trans('languages.en'),
+        ];
+        $datetimeFormat = $translator->trans('locale_datetime');
+
+        $data = array_map(function ($attestation) use ($locale, $user, $datetimeFormat, $languages) {
             $translitteration = strlen($attestation->getTranslitteration()) > 0 ? $attestation->getTranslitteration() : $attestation->getExtraitAvecRestitution();
             $etat_fiche = [
                 'id'      => $attestation->getEtatFiche() === null ? 0 : $attestation->getEtatFiche()->getId(),
                 'display' => $attestation->getEtatFiche() === null ? '' : $attestation->getEtatFiche()->getNom($locale)
             ];
+            $source = $attestation->getSource();
 
             return [
                 'id'               => $attestation->getId(),
-                'source'           => $attestation->getSource()->getId(),
-                'projet'           => $attestation->getSource()->getProjet()->getNom($locale),
+                'source'           => $source->getId(),
+                'projet'           => $source->getProjet()->getNom($locale),
                 'version'          => $attestation->getVersion(),
-                'titre_abrege'     => $attestation->getSource()->getEditionPrincipaleBiblio()->getBiblio()->getTitreAbrege(),
-                'reference'        => $attestation->getSource()->getEditionPrincipaleBiblio()->getReferenceSource(),
+                'titre_abrege'     => $source->getEditionPrincipaleBiblio()->getBiblio()->getTitreAbrege(),
+                'reference'        => $source->getEditionPrincipaleBiblio()->getReferenceSource(),
                 'passage'          => $attestation->getPassage(),
                 'translitteration' => [
                     "display" => \App\Utils\StringHelper::ellipsis($translitteration, 200),
@@ -158,11 +174,11 @@ class ListController extends AbstractController
                 ],
                 'etat_fiche'       => $etat_fiche,
                 'date_creation'    => [
-                    'display'   => $attestation->getDateCreation()->format($translator->trans('locale_datetime')),
+                    'display'   => $attestation->getDateCreation()->format($datetimeFormat),
                     'timestamp' => $attestation->getDateCreation()->getTimestamp(),
                 ],
                 'date_modification' => [
-                    'display'   => $attestation->getDateModification()->format($translator->trans('locale_datetime')),
+                    'display'   => $attestation->getDateModification()->format($datetimeFormat),
                     'timestamp' => $attestation->getDateModification()->getTimestamp(),
                 ],
                 'createur_id' => $attestation->getCreateur()->getId(),
@@ -175,13 +191,13 @@ class ListController extends AbstractController
                     'display' => $attestation->getDernierEditeur()->getInitials()
                 ],
                 'traduire' => array_values(array_filter([
-                    $attestation->getTraduireFr() ? $translator->trans('languages.fr') : null,
-                    $attestation->getTraduireEn() ? $translator->trans('languages.en') : null
+                    $attestation->getTraduireFr() ? $languages['fr'] : null,
+                    $attestation->getTraduireEn() ? $languages['en'] : null
                 ])),
                 'verrou' => ($this->isGranted('ROLE_USER')
-                    && $attestation->getSource()->getVerrou() !== null
-                    && !$attestation->getSource()->getVerrou()->isWritable($user))
-                    ? $attestation->getSource()->getVerrou()->toArray($translator->trans('locale_datetime'))
+                    && $source->getVerrou() !== null
+                    && !$source->getVerrou()->isWritable($user))
+                    ? $source->getVerrou()->toArray($datetimeFormat)
                     : false
             ];
         }, $attestations);

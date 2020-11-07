@@ -20,11 +20,6 @@ class VerrouEntite extends AbstractEntity
     private $sources;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Attestation", mappedBy="verrou", fetch="EAGER")
-     */
-    private $attestations;
-
-    /**
      * @ORM\OneToMany(targetEntity="App\Entity\Element", mappedBy="verrou", fetch="EAGER")
      */
     private $elements;
@@ -40,7 +35,7 @@ class VerrouEntite extends AbstractEntity
     private $date_fin;
 
     /**
-     * @var \Chercheur
+     * @var Chercheur
      *
      * @ORM\ManyToOne(targetEntity="Chercheur", fetch="EAGER", inversedBy="verrous")
      * @ORM\JoinColumns({
@@ -52,7 +47,6 @@ class VerrouEntite extends AbstractEntity
     public function __construct()
     {
         $this->sources = new ArrayCollection();
-        $this->attestations = new ArrayCollection();
         $this->elements = new ArrayCollection();
         $this->biblios = new ArrayCollection();
     }
@@ -82,37 +76,6 @@ class VerrouEntite extends AbstractEntity
             // set the owning side to null (unless already changed)
             if ($source->getVerrou() === $this) {
                 $source->setVerrou(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Attestation[]
-     */
-    public function getAttestations(): Collection
-    {
-        return $this->attestations;
-    }
-
-    public function addAttestation(Attestation $attestation): self
-    {
-        if (!$this->attestations->contains($attestation)) {
-            $this->attestations[] = $attestation;
-            $attestation->setVerrou($this);
-        }
-
-        return $this;
-    }
-
-    public function removeAttestation(Attestation $attestation): self
-    {
-        if ($this->attestations->contains($attestation)) {
-            $this->attestations->removeElement($attestation);
-            // set the owning side to null (unless already changed)
-            if ($attestation->getVerrou() === $this) {
-                $attestation->setVerrou(null);
             }
         }
 
@@ -186,9 +149,6 @@ class VerrouEntite extends AbstractEntity
     {
         foreach ($this->getSources() as $source) {
             $this->removeSource($source);
-        }
-        foreach ($this->getAttestations() as $attestation) {
-            $this->removeAttestation($attestation);
         }
         foreach ($this->getElements() as $element) {
             $this->removeElement($element);

@@ -24,17 +24,19 @@ class VerrouEntiteRepository extends ServiceEntityRepository
         parent::__construct($registry, VerrouEntite::class);
     }
 
-    public function fetch($entite){
+    public function fetch($entite)
+    {
         $this->purge();
         $qb = $this->createQueryBuilder('verrou')
-                   ->from('App\Entity\VerrouEntite', 'v');
+            ->from('App\Entity\VerrouEntite', 'v');
 
-        switch(true){
+        $e = $entite;
+
+        switch (true) {
+            case $entite instanceof Attestation:
+                $e = $entite->getSource();
             case $entite instanceof Source:
                 $qb = $qb->where(":e MEMBER OF v.sources");
-                break;
-            case $entite instanceof Attestation:
-                $qb = $qb->where(":e MEMBER OF v.attestations");
                 break;
             case $entite instanceof Element:
                 $qb = $qb->where(":e MEMBER OF v.elements");
@@ -43,43 +45,38 @@ class VerrouEntiteRepository extends ServiceEntityRepository
                 $qb = $qb->where(":e MEMBER OF v.biblios");
                 break;
         }
-        $qb = $qb->setParameter('e', $entite)
-                 ->setMaxResults(1);
+        $qb = $qb->setParameter('e', $e)
+            ->setMaxResults(1);
         $verrou = $qb->getQuery()
-                     ->getOneOrNullResult();
+            ->getOneOrNullResult();
 
         return $verrou;
     }
 
-    public function create($entite, Chercheur $user, $minutes){
+    public function create($entite, Chercheur $user, $minutes)
+    {
         $date = new \DateTime();
-        date_add($date, new \DateInterval("PT".$minutes."M"));
+        date_add($date, new \DateInterval("PT" . $minutes . "M"));
 
         $v = $this->fetch($entite);
 
-        if($v !== null){
+        if ($v !== null) {
             return $v;
         }
         $verrou = new VerrouEntite();
         $verrou->setDateFin($date);
         $verrou->setCreateur($user);
 
-        if($entite instanceof Source || $entite instanceof Attestation) {
-            if($entite instanceof Source) {
+        if ($entite instanceof Source || $entite instanceof Attestation) {
+            if ($entite instanceof Source) {
                 $source = $entite;
-            }
-            else {
+            } else {
                 $source = $entite->getSource();
             }
             $verrou->addSource($source);
-            foreach($source->getAttestations() as $att){
-                $verrou->addAttestation($att);
-            }
-        }
-        else if($entite instanceof Element) {
+        } else if ($entite instanceof Element) {
             $verrou->addElement($entite);
-        }
-        else if($entite instanceof Biblio) {
+        } else if ($entite instanceof Biblio) {
             $verrou->addBiblio($entite);
         }
 
@@ -88,19 +85,21 @@ class VerrouEntiteRepository extends ServiceEntityRepository
         return $verrou;
     }
 
-    public function remove(VerrouEntite $verrou) {
+    public function remove(VerrouEntite $verrou)
+    {
         $this->getEntityManager()->remove($verrou);
         $this->getEntityManager()->flush();
         $this->purge();
     }
 
-    public function purge(){
+    public function purge()
+    {
         $this->createQueryBuilder('verrou')
-             ->delete('App\Entity\VerrouEntite', 'v')
-             ->where('v.date_fin < :date')
-             ->setParameter(':date', new \DateTime())
-             ->getQuery()
-             ->getResult();
+            ->delete('App\Entity\VerrouEntite', 'v')
+            ->where('v.date_fin < :date')
+            ->setParameter(':date', new \DateTime())
+            ->getQuery()
+            ->getResult();
         $this->getEntityManager()->flush();
     }
 }

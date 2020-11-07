@@ -25,7 +25,7 @@ class Attestation extends AbstractEntity implements Interfaces\Located
     use Traits\TranslatedComment;
 
     /**
-     * @var \Source
+     * @var Source
      *
      * @ORM\ManyToOne(targetEntity="Source", inversedBy="attestations")
      * @ORM\JoinColumns({
@@ -90,7 +90,7 @@ class Attestation extends AbstractEntity implements Interfaces\Located
     private $poesie = false;
 
     /**
-     * @var \EtatFiche
+     * @var EtatFiche
      *
      * @ORM\ManyToOne(targetEntity="EtatFiche")
      * @ORM\JoinColumns({
@@ -169,14 +169,6 @@ class Attestation extends AbstractEntity implements Interfaces\Located
      * )
      */
     private $attestationsLiees;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\VerrouEntite", inversedBy="attestations", fetch="EAGER")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="verrou_id", referencedColumnName="id", nullable=true, onDelete="SET NULL")
-     * })
-     */
-    private $verrou;
 
     public function __construct()
     {
@@ -522,18 +514,6 @@ class Attestation extends AbstractEntity implements Interfaces\Located
                 $contientElement->setAttestation(null);
             }
         }
-        return $this;
-    }
-
-    public function getVerrou(): ?VerrouEntite
-    {
-        return $this->verrou;
-    }
-
-    public function setVerrou(?VerrouEntite $verrou): self
-    {
-        $this->verrou = $verrou;
-
         return $this;
     }
 

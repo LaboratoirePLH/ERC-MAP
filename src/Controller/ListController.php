@@ -178,7 +178,11 @@ class ListController extends AbstractController
                     $attestation->getTraduireFr() ? $translator->trans('languages.fr') : null,
                     $attestation->getTraduireEn() ? $translator->trans('languages.en') : null
                 ])),
-                'verrou' => ($this->isGranted('ROLE_USER') && $attestation->getVerrou() !== null && !$attestation->getVerrou()->isWritable($user)) ? $attestation->getVerrou()->toArray($translator->trans('locale_datetime')) : false
+                'verrou' => ($this->isGranted('ROLE_USER')
+                    && $attestation->getSource()->getVerrou() !== null
+                    && !$attestation->getSource()->getVerrou()->isWritable($user))
+                    ? $attestation->getSource()->getVerrou()->toArray($translator->trans('locale_datetime'))
+                    : false
             ];
         }, $attestations);
 

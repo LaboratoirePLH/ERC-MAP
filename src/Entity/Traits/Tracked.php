@@ -46,7 +46,7 @@ trait Tracked
     }
 
     /**
-     * @var \Chercheur
+     * @var Chercheur
      *
      * @ORM\ManyToOne(targetEntity="Chercheur", fetch="EAGER")
      * @ORM\JoinColumns({
@@ -67,7 +67,7 @@ trait Tracked
     }
 
     /**
-     * @var \Chercheur|null
+     * @var Chercheur|null
      *
      * @ORM\ManyToOne(targetEntity="Chercheur", fetch="EAGER")
      * @ORM\JoinColumns({

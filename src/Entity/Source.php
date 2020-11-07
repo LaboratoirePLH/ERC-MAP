@@ -24,7 +24,7 @@ class Source extends AbstractEntity
     use Traits\TranslatedComment;
 
     /**
-     * @var \Titre|null
+     * @var Titre|null
      *
      * @ORM\ManyToOne(targetEntity="Titre", fetch="EAGER", cascade={"persist"})
      * @ORM\JoinColumn(name="titre_principal_id", referencedColumnName="id", nullable=true)
@@ -67,7 +67,7 @@ class Source extends AbstractEntity
     private $fiabiliteLocalisation;
 
     /**
-     * @var \TypeSupport|null
+     * @var TypeSupport|null
      *
      * @ORM\ManyToOne(targetEntity="TypeSupport", fetch="EAGER")
      * @ORM\JoinColumns({
@@ -77,7 +77,7 @@ class Source extends AbstractEntity
     private $typeSupport;
 
     /**
-     * @var \CategorieSupport|null
+     * @var CategorieSupport|null
      *
      * @ORM\ManyToOne(targetEntity="CategorieSupport")
      * @ORM\JoinColumns({
@@ -87,7 +87,7 @@ class Source extends AbstractEntity
     private $categorieSupport;
 
     /**
-     * @var \Materiau|null
+     * @var Materiau|null
      *
      * @ORM\ManyToOne(targetEntity="Materiau", fetch="EAGER")
      * @ORM\JoinColumns({
@@ -97,7 +97,7 @@ class Source extends AbstractEntity
     private $materiau;
 
     /**
-     * @var \CategorieMateriau|null
+     * @var CategorieMateriau|null
      *
      * @ORM\ManyToOne(targetEntity="CategorieMateriau")
      * @ORM\JoinColumns({
@@ -107,7 +107,7 @@ class Source extends AbstractEntity
     private $categorieMateriau;
 
     /**
-     * @var \TypeSource
+     * @var \Doctrine\Common\Collections\Collection
      *
      * @ORM\ManyToMany(targetEntity="TypeSource")
      * @ORM\JoinTable(name="source_type_source",
@@ -122,7 +122,7 @@ class Source extends AbstractEntity
     private $typeSources;
 
     /**
-     * @var \CategorieSource|null
+     * @var CategorieSource|null
      *
      * @Assert\NotBlank
      * @ORM\ManyToOne(targetEntity="CategorieSource")
@@ -133,7 +133,7 @@ class Source extends AbstractEntity
     private $categorieSource;
 
     /**
-     * @var \Localisation|null
+     * @var Localisation|null
      *
      * @ORM\ManyToOne(targetEntity="Localisation", cascade={"persist"}, fetch="EAGER")
      * @ORM\JoinColumn(name="localisation_decouverte_id", referencedColumnName="id", nullable=true)
@@ -141,7 +141,7 @@ class Source extends AbstractEntity
     private $lieuDecouverte;
 
     /**
-     * @var \Localisation|null
+     * @var Localisation|null
      *
      * @ORM\ManyToOne(targetEntity="Localisation", cascade={"persist"}, fetch="EAGER")
      * @ORM\JoinColumn(name="localisation_origine_id", referencedColumnName="id", nullable=true)
@@ -200,7 +200,7 @@ class Source extends AbstractEntity
     private $editionPrincipaleBiblio;
 
     /**
-     * @var \Projet|null
+     * @var Projet|null
      *
      * @ORM\ManyToOne(targetEntity="Projet")
      * @ORM\JoinColumns({

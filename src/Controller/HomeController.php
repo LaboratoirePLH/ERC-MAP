@@ -77,49 +77,21 @@ class HomeController extends AbstractController
     public function contact(Request $request, \Swift_Mailer $mailer, TranslatorInterface $translator)
     {
         if ($request->isMethod('POST')) {
-            $user = $this->get('security.token_storage')->getToken()->getUser();
-            $name = $request->request->get('name', '');
-            $email = $request->request->get('email', '');
-            $message = $request->request->get('message', '');
-            $subject = $request->request->get('subject', '');
-
-            if (!$this->isGranted('ROLE_USER') && !strlen($name)) {
-                $request->getSession()->getFlashBag()->add('error', 'pages.messages.name_mandatory');
-                return $this->redirectToRoute('contact');
-            }
-            if (!$this->isGranted('ROLE_USER') && !strlen($email)) {
-                $request->getSession()->getFlashBag()->add('error', 'pages.messages.email_mandatory');
-                return $this->redirectToRoute('contact');
-            }
-            if (!strlen($message)) {
-                $request->getSession()->getFlashBag()->add('error', 'pages.messages.message_mandatory');
-                return $this->redirectToRoute('contact');
-            }
-            if (!strlen($subject)) {
-                $request->getSession()->getFlashBag()->add('error', 'pages.messages.subject_mandatory');
-                return $this->redirectToRoute('contact');
-            }
-
-            if ($this->isGranted('ROLE_USER')) {
-                $name = $user->getPrenomNom();
-                $email = $user->getMail();
-            }
-
-            $admins = $this->getDoctrine()
-                ->getRepository(Chercheur::class)
-                ->findBy(["role" => "admin"]);
-            $emails = array_map(function ($u) {
-                return $u->getMail();
-            }, $admins);
+            $name = $request->request->get("name");
+            $email = $request->request->get("email");
+            $object = $request->request->get("object");
+            $refers_to = $request->request->get("refers_to");
+            $refers_to_id = $request->request->get("refers_to_id");
+            $message = $request->request->get("message");
 
             $mail = (new \Swift_Message($translator->trans('mails.contact.title')))
                 ->setFrom([$this->fromEmail => $this->fromName])
-                ->setTo($emails)
+                ->setTo($this->fromEmail)
                 ->setReplyTo($email)
                 ->setBody(
                     $this->renderView(
                         'email/contact.html.twig',
-                        compact('name', 'email', 'subject', 'message')
+                        compact("name", "email", "object", "refers_to", "refers_to_id", "message")
                     ),
                     'text/html'
                 );

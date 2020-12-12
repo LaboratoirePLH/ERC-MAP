@@ -16,22 +16,38 @@
                 <table border="1px solid black" border-collapse="collapse">
                     <tbody>
                         <tr>
-                            <th width="200">{{ "chercheur.fields.nom"|trans }}</th>
-                            <td width="500">{{ name }}</td>
+                            <th style="padding: 10px;">{{ "chercheur.fields.nom"|trans }}</th>
+                            <td style="padding: 10px;">{{ name }}</td>
                         </tr>
                         <tr>
-                            <th width="200">{{ "chercheur.fields.mail"|trans }}</th>
-                            <td width="500">
+                            <th style="padding: 10px;">{{ "chercheur.fields.mail"|trans }}</th>
+                            <td style="padding: 10px;">
                                 <a href="mailto:{{ email }}">{{ email }}</a>
                             </td>
                         </tr>
                         <tr>
-                            <th width="200">{{ "mails.contact.subject"|trans }}</th>
-                            <td width="500">{{ subject }}</td>
+                            <th style="padding: 10px;">{{ "contact.fields.object"|trans }}</th>
+                            <td style="padding: 10px;">{{ ("contact.object."~object)|trans }}</td>
                         </tr>
                         <tr>
-                            <th width="200">{{ "mails.contact.message"|trans }}</th>
-                            <td width="500">{{ message|nl2br }}</td>
+                            <th style="padding: 10px;">{{ "contact.fields.refers_to"|trans }}</th>
+                            <td style="padding: 10px;">
+                                {{ ("contact.refers_to."~refers_to)|trans }}
+                                {% if (0 + refers_to_id) > 0 %}
+                                    :
+                                    {{ refers_to_id }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th style="padding: 10px;">{{ "generic.fields.message"|trans }}</th>
+                            <td style="padding: 10px;">
+                                {% if message != "" %}
+                                    {{ message }}
+                                {% else %}
+                                    <em>Aucun message</em>
+                                {% endif %}
+                            </td>
                         </tr>
                     </tbody>
                 </table>

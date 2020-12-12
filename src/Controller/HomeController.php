@@ -40,19 +40,19 @@ class HomeController extends AbstractController
     {
         $user = $this->get('security.token_storage')->getToken()->getUser();
         $sourceCount = $this->getDoctrine()
-        ->getRepository(Source::class)
+            ->getRepository(Source::class)
             ->createQueryBuilder('s')
             ->select('count(s.id)')
             ->getQuery()
             ->getSingleScalarResult();
         $attestationCount = $this->getDoctrine()
-        ->getRepository(Attestation::class)
+            ->getRepository(Attestation::class)
             ->createQueryBuilder('a')
             ->select('count(a.id)')
             ->getQuery()
             ->getSingleScalarResult();
         $elementCount = $this->getDoctrine()
-        ->getRepository(Element::class)
+            ->getRepository(Element::class)
             ->createQueryBuilder('e')
             ->select('count(e.id)')
             ->getQuery()
@@ -73,24 +73,22 @@ class HomeController extends AbstractController
      */
     public function contact(Request $request, \Swift_Mailer $mailer, TranslatorInterface $translator)
     {
-        if ($request->isMethod('POST'))
-        {
-            $user = $this->get('security.token_storage')->getToken()->getUser();
-            $message = $request->request->get('message');
-
-            $admins = $this->getDoctrine()
-                        ->getRepository(Chercheur::class)
-                        ->findBy(["role" => "admin"]);
-            $emails = array_map(function($u){ return $u->getMail();}, $admins);
+        if ($request->isMethod('POST')) {
+            $name = $request->request->get("name");
+            $email = $request->request->get("email");
+            $object = $request->request->get("object");
+            $refers_to = $request->request->get("refers_to");
+            $refers_to_id = $request->request->get("refers_to_id");
+            $message = $request->request->get("message");
 
             $mail = (new \Swift_Message($translator->trans('mails.contact.title')))
                 ->setFrom([$this->fromEmail => $this->fromName])
-                ->setTo($emails)
-                ->setReplyTo($user->getMail())
+                ->setTo($this->fromEmail)
+                ->setReplyTo($email)
                 ->setBody(
-                     $this->renderView(
+                    $this->renderView(
                         'email/contact.html.twig',
-                        compact('user', 'message')
+                        compact("name", "email", "object", "refers_to", "refers_to_id", "message")
                     ),
                     'text/html'
                 );
@@ -116,10 +114,9 @@ class HomeController extends AbstractController
      */
     public function language($lang, Request $request)
     {
-        if(!in_array($lang, ["fr", "en"])){
+        if (!in_array($lang, ["fr", "en"])) {
             $request->getSession()->getFlashBag()->add('error', 'generic.messages.invalid_locale');
-        }
-        else {
+        } else {
             $user = $this->get('security.token_storage')->getToken()->getUser();
             $user->setPreferenceLangue($lang);
             $this->getDoctrine()->getManager()->flush();
@@ -148,17 +145,16 @@ class HomeController extends AbstractController
         ]);
         $passwordForm->handleRequest($request);
 
-        if ($request->isMethod('POST')){
-            if($accountForm->isSubmitted() && $accountForm->isValid()){
+        if ($request->isMethod('POST')) {
+            if ($accountForm->isSubmitted() && $accountForm->isValid()) {
                 $this->getDoctrine()->getManager()->flush();
 
                 // Message de confirmation
                 $request->getSession()->getFlashBag()->add('success', 'chercheur.profile_edited');
                 return $this->redirectToRoute('home');
             }
-            if($passwordForm->isSubmitted() && $passwordForm->isValid()){
-                if (password_verify($passwordForm['password']->getData(), $user->getPassword()))
-                {
+            if ($passwordForm->isSubmitted() && $passwordForm->isValid()) {
+                if (password_verify($passwordForm['password']->getData(), $user->getPassword())) {
                     $newPassword = password_hash(
                         $passwordForm['new_password']->getData(),
                         PASSWORD_BCRYPT,
@@ -169,13 +165,11 @@ class HomeController extends AbstractController
 
                     $request->getSession()->getFlashBag()->add('success', 'chercheur.password_edited');
                     return $this->redirectToRoute('home');
-                }
-                else
-                {
+                } else {
                     $passwordForm->get('password')
-                                 ->addError(
-                                     new FormError($translator->trans('chercheur.incorrect_password'))
-                                );
+                        ->addError(
+                            new FormError($translator->trans('chercheur.incorrect_password'))
+                        );
                     $request->getSession()->getFlashBag()->add('error', 'chercheur.incorrect_password_error');
                 }
             }

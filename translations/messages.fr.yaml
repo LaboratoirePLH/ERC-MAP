@@ -385,7 +385,7 @@ chercheur:
         username: "Nom d'utilisateur"
         nom: "Nom complet"
         institution: "Institution"
-        mail: "Addresse e-mail"
+        mail: "Adresse e-mail"
         langue: "Préférence de langue"
         old_password: "Ancien mot de passe"
         new_password: "Nouveau mot de passe"
@@ -566,3 +566,23 @@ maintenance:
     messages:
         invalid_char: "Caractère(s) invalide(s)"
         invalid_length: "Différence de longueur"
+
+contact:
+    intro: "Contactez-nous ou signalez-nous un manque ou une erreur dans la base de données ou l'interface de Webmapping. Nous vous rappelons que, si la base envisage l'exhaustivité dans l'enregistrement des noms divins attestés dans l'épigraphie, elle n'a pas vocation à reproduire tous les détails offerts par un corpus épigraphique."
+    fields:
+        name: "Prénom Nom"
+        object: "Objet"
+        refers_to: "Se rapporte à"
+        message: "Votre message"
+    object:
+        missing: "Signaler une inscription manquante"
+        extra: "Signaler un complément bibliographique"
+        error: "Signaler une erreur"
+        hypertext: "Signaler un problème d'hypertexte"
+        location: "Signaler un problème de localisation"
+        search: "Signaler un problème avec les interfaces de requêtes"
+    refers_to:
+        source: "Numéro/ID de la Source"
+        attestation: "Numéro/ID de l'Attestation"
+        element: "Numéro/ID de l'Élément"
+        nothing: "Sans ID (signaler un manque)"

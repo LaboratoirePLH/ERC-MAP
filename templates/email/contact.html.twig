@@ -1,18 +1,14 @@
-<table width="100%"
-    style="margin:0;padding:0;width:100%;box-sizing:border-box;background-color:#f5f8fa;font-family:Arial, Helvetica, sans-serif;font-size:19px;">
+<table width="100%" style="margin:0;padding:0;width:100%;box-sizing:border-box;background-color:#f5f8fa;font-family:Arial, Helvetica, sans-serif;font-size:19px;">
     <tbody>
         <tr>
-            <td
-                style="padding:25px 0;text-align:center;background:url({{ absolute_url(asset('build/images/bkg-ercmap.jpg')) }});">
+            <td style="padding:25px 0;text-align:center;background:url({{ absolute_url(asset('build/images/bkg-ercmap.jpg')) }});">
                 <a href="{{ absolute_url(url('home')) }}" style="display:block;padding:10px;">
-                    <img src="{{ absolute_url(asset('build/images/logo-ercmap.png')) }}" alt="{{ 'app_name'|trans }}"
-                        title="{{ 'app_name'|trans }}">
+                    <img src="{{ absolute_url(asset('build/images/logo-ercmap.png')) }}" alt="{{ 'app_name'|trans }}" title="{{ 'app_name'|trans }}">
                 </a>
             </td>
         </tr>
         <tr>
-            <td
-                style="border-top: 1px solid #edeff2;border-bottom: 1px solid #edeff2;box-sizing:border-box;background-color:#ffffff;padding: 25px;">
+            <td style="border-top: 1px solid #edeff2;border-bottom: 1px solid #edeff2;box-sizing:border-box;background-color:#ffffff;padding: 25px;">
                 <h3>{{ "mails.contact.title"|trans }}</h3>
 
                 <p>{{ "mails.contact.text"|trans }}</p>
@@ -20,16 +16,38 @@
                 <table>
                     <tbody>
                         <tr>
-                            <th>{{ "chercheur.fields.nom"|trans }}</th>
-                            <td>{{ user.prenomNom }}</td>
+                            <th style="padding: 10px;">{{ "chercheur.fields.nom"|trans }}</th>
+                            <td style="padding: 10px;">{{ name }}</td>
                         </tr>
                         <tr>
-                            <th>{{ "chercheur.fields.mail"|trans }}</th>
-                            <td><a href="mailto:{{ user.mail }}">{{ user.mail }}</a></td>
+                            <th style="padding: 10px;">{{ "chercheur.fields.mail"|trans }}</th>
+                            <td style="padding: 10px;">
+                                <a href="mailto:{{ email }}">{{ email }}</a>
+                            </td>
                         </tr>
                         <tr>
-                            <th>{{ "generic.fields.message"|trans }}</th>
-                            <td>{{ message }}</td>
+                            <th style="padding: 10px;">{{ "contact.fields.object"|trans }}</th>
+                            <td style="padding: 10px;">{{ ("contact.object."~object)|trans }}</td>
+                        </tr>
+                        <tr>
+                            <th style="padding: 10px;">{{ "contact.fields.refers_to"|trans }}</th>
+                            <td style="padding: 10px;">
+                                {{ ("contact.refers_to."~refers_to)|trans }}
+                                {% if (0 + refers_to_id) > 0 %}
+                                    :
+                                    {{ refers_to_id }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th style="padding: 10px;">{{ "generic.fields.message"|trans }}</th>
+                            <td style="padding: 10px;">
+                                {% if message != "" %}
+                                    {{ message }}
+                                {% else %}
+                                    <em>Aucun message</em>
+                                {% endif %}
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -37,8 +55,9 @@
         </tr>
         <tr>
             <td style="padding:25px 0;text-align:center;">
-                &copy; {{ 'misc.copyright'|trans }}
+                &copy;
+                {{ 'misc.copyright'|trans }}
             </td>
         </tr>
     </tbody>
-    </div>
+</div>

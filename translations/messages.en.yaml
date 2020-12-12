@@ -566,3 +566,23 @@ maintenance:
     messages:
         invalid_char: "Invalid character(s)"
         invalid_length: "Length difference"
+
+contact:
+    intro: "Contact us or report to us missing or incorrect data in the database or the Webmapping interface. We remind you that even though the database aims for exhaustivity in the recording of divine names, it is not meant to reproduce every detail offered by an epigraphic corpus."
+    fields:
+        name: "Name"
+        object: "Subject"
+        refers_to: "Refers to"
+        message: "Your message"
+    object:
+        missing: "Report a missing entry"
+        extra: "Report an extra biliographic entry"
+        error: "Report an error"
+        hypertext: "Report a hypertext problem"
+        location: "Report a location problem"
+        search: "Report a problem with the search interface"
+    refers_to:
+        source: "Source Number/ID"
+        attestation: "Testimony Number/ID"
+        element: "Element Number/ID"
+        nothing: "No ID (report a missing entry)"

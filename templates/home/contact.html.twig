@@ -1,24 +1,83 @@
 {% extends 'page.html.twig' %}
 {% block title %}
-{{ ('nav.contact')|trans }}
+    {{ ('nav.contact')|trans }}
 {% endblock %}
 {% block content %}
-<div class="col-12 col-xl-6 offset-xl-3">
-    <form action="" method="post" id="contact">
-        <div class="form-group row">
-            <label class="col-form-label col-2 text-right" for="source_datation_postQuem">
-                {{"generic.fields.message"|trans}}
-            </label>
-            <textarea name="message" id="message" rows="5" class="col-10"></textarea>
-        </div>
-        <div class="form-group row">
-            <div class="col-12 text-center">
-                <button class="btn btn-primary" type="submit" name="send">
-                    <i class="fas fa-paper-plane fa-fw"></i>
-                    {{ 'generic.send'|trans }}
-                </button>
+    <div class="col-12 col-xl-8 offset-xl-2">
+        <p class="my-3 text-justify">
+            {{"contact.intro"|trans}}
+        </p>
+        <form action="" method="post" id="contact">
+            <div class="form-group row">
+                <label class="col-form-label col-3 text-right" for="name">
+                    {{"contact.fields.name"|trans}}
+                    <span class="text-danger text-bold">*</span>
+                </label>
+                <input type="text" name="name" id="name" class="col-9 form-control" required/>
             </div>
-        </div>
-    </form>
-</div>
+            <div class="form-group row">
+                <label class="col-form-label col-3 text-right" for="email">
+                    {{"chercheur.fields.mail"|trans}}
+                    <span class="text-danger text-bold">*</span>
+                </label>
+                <input type="email" name="email" id="email" class="col-9 form-control" required/>
+            </div>
+            <div class="form-group row">
+                <label class="col-form-label col-3 text-right" for="object">
+                    {{"contact.fields.object"|trans}}
+                    <span class="text-danger text-bold">*</span>
+                </label>
+                <select name="object" id="object" class="col-9 form-control" required>
+                    <option></option>
+                    {% for key in [ 'missing', 'extra', 'error', 'hypertext', 'location', 'search' ] %}
+                        <option value="{{ key }}">{{ ("contact.object."~key)|trans }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group row">
+                <label class="col-form-label col-3 text-right" for="refers_to">
+                    {{"contact.fields.refers_to"|trans}}
+                    <span class="text-danger text-bold">*</span>
+                </label>
+                <select name="refers_to" id="refers_to" class="col-6 form-control" required>
+                    <option></option>
+                    {% for key in [ 'source', 'attestation', 'element', 'nothing' ] %}
+                        <option value="{{ key }}">{{ ("contact.refers_to."~key)|trans }}</option>
+                    {% endfor %}
+                </select>
+                <input type="number" name="refers_to_id" id="refers_to_id" class="col-3 form-control" min="0" step="1"/>
+            </div>
+            <div class="form-group row">
+                <label class="col-form-label col-3 text-right" for="message">
+                    {{"contact.fields.message"|trans}}
+                </label>
+                <textarea name="message" id="message" rows="5" class="col-9 form-control"></textarea>
+            </div>
+            <div class="form-group row">
+                <div class="col-12 text-center">
+                    <button class="btn btn-primary" type="submit" name="send">
+                        <i class="fas fa-paper-plane fa-fw"></i>
+                        {{ 'generic.send'|trans }}
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ encore_entry_script_tags('page') }}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            const toggleRefersToId = () => {
+                const val = $('select#refers_to').val();
+                $('input#refers_to_id').prop('disabled', !['source', 'attestation', 'element'].includes(val));
+                if (val === 'nothing') {
+                    $('input#refers_to_id').val("");
+                }
+            };
+
+            $('select#refers_to').on('change', toggleRefersToId);
+            toggleRefersToId();
+        });
+    </script>
 {% endblock %}

@@ -33,7 +33,7 @@
                             <th style="padding: 10px;">{{ "contact.fields.refers_to"|trans }}</th>
                             <td style="padding: 10px;">
                                 {{ ("contact.refers_to."~refers_to)|trans }}
-                                {% if (0 + refers_to_id) > 0 %}
+                                {% if (refers_to_id|default(0)) > 0 %}
                                     :
                                     {{ refers_to_id }}
                                 {% endif %}

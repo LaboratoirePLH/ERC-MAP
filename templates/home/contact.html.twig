@@ -71,6 +71,7 @@
             const toggleRefersToId = () => {
                 const val = $('select#refers_to').val();
                 $('input#refers_to_id').prop('disabled', !['source', 'attestation', 'element'].includes(val));
+                $('input#refers_to_id').prop('required', ['source', 'attestation', 'element'].includes(val));
                 if (val === 'nothing') {
                     $('input#refers_to_id').val("");
                 }

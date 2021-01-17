@@ -58,6 +58,12 @@ class CriteriaList
                         'semitic' => false,
                     ],
                     [
+                        'key'     => 'elementSemitic',
+                        'label'   => $translator->trans('search.criteria_labels.element_semitique'),
+                        'type'    => 'elementsemitic',
+                        'semitic' => false,
+                    ],
+                    [
                         'key'      => 'attestationFiability',
                         'label'    => $translator->trans('search.criteria_labels.fiabilite_lecture'),
                         'type'     => 'range',

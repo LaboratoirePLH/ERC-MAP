@@ -580,6 +580,7 @@ search:
         formules_all: "Formules (Toutes)"
         element_en_contexte: "Nom(s) en contexte"
         fiabilite_lecture: "Qualité de lecture du nom"
+        element_semitique: "Langue Sémitique ?"
     element_labels:
         added: "Éléments ajoutés"
         add_new: "Ajouter un nouvel élément"

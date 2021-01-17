@@ -149,7 +149,7 @@ class Criteria
             if ($key === 'new_criteria' || $key === 'search' || $key === 'queryName') {
                 continue;
             }
-            if ($key === "locationReal") {
+            if ($key === "locationReal" || $key === "elementSemitic") {
                 $value = array_unique(array_filter($value));
             }
             if (is_array($value) && is_array($value[0])) {
@@ -285,6 +285,7 @@ class Criteria
                         }, $value);
                         break;
                     case 'locationreal':
+                    case 'elementsemitic':
                         $criteriaValues = array_map(function ($v) {
                             return $this->translator->trans('generic.choices.' . $v);
                         }, $value);

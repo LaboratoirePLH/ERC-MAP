@@ -582,6 +582,7 @@ search:
         formules_all: "Formulae (All)"
         element_en_contexte: "Name(s) in context"
         fiabilite_lecture: "Name quality of reading"
+        element_semitique: "Semitic Language ?"
     element_labels:
         added: "Added elements"
         add_new: "Add a new element"

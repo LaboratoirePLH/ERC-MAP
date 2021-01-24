@@ -14,7 +14,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class ContientElement extends AbstractEntity
 {
     /**
-     * @var \Attestation
+     * @var Attestation
      *
      * @ORM\Id
      * @ORM\ManyToOne(targetEntity="Attestation", inversedBy="contientElements", fetch="EXTRA_LAZY")
@@ -25,7 +25,7 @@ class ContientElement extends AbstractEntity
     private $attestation;
 
     /**
-     * @var \Element
+     * @var Element
      *
      * @ORM\Id
      * @ORM\ManyToOne(targetEntity="Element", inversedBy="contientElements", fetch="EXTRA_LAZY")
@@ -68,7 +68,7 @@ class ContientElement extends AbstractEntity
     protected $enContexte;
 
     /**
-     * @var \CategorieElement
+     * @var CategorieElement
      *
      * @ORM\ManyToOne(targetEntity="CategorieElement")
      * @ORM\JoinColumns({
@@ -78,7 +78,7 @@ class ContientElement extends AbstractEntity
     private $categorieElement;
 
     /**
-     * @var \GenreElement
+     * @var GenreElement
      *
      * @ORM\ManyToOne(targetEntity="GenreElement")
      * @ORM\JoinColumns({
@@ -88,7 +88,7 @@ class ContientElement extends AbstractEntity
     private $genreElement;
 
     /**
-     * @var \NombreElement
+     * @var NombreElement
      *
      * @ORM\ManyToOne(targetEntity="NombreElement")
      * @ORM\JoinColumns({

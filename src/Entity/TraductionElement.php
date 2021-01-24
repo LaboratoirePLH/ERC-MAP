@@ -16,7 +16,7 @@ class TraductionElement extends AbstractEntity
     use Traits\TranslatedName;
 
     /**
-     * @var \Element
+     * @var Element
      *
      * @ORM\ManyToOne(targetEntity="Element", inversedBy="traductions")
      * @ORM\JoinColumns({
@@ -46,7 +46,7 @@ class TraductionElement extends AbstractEntity
      */
     public function __clone()
     {
-        if($this->id !== null){
+        if ($this->id !== null) {
             $this->id = null;
         }
     }

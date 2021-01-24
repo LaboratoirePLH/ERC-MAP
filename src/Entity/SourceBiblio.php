@@ -13,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
 class SourceBiblio extends AbstractEntity
 {
     /**
-     * @var \Source
+     * @var Source
      *
      * @ORM\Id
      * @ORM\ManyToOne(targetEntity="Source", inversedBy="sourceBiblios", fetch="EXTRA_LAZY")
@@ -24,7 +24,7 @@ class SourceBiblio extends AbstractEntity
     private $source;
 
     /**
-     * @var \Biblio
+     * @var Biblio
      *
      * @ORM\Id
      * @ORM\ManyToOne(targetEntity="Biblio", inversedBy="sourceBiblios", cascade={"persist"}, fetch="EAGER")

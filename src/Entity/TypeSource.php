@@ -16,7 +16,7 @@ class TypeSource extends AbstractEntity
     use Traits\TranslatedName;
 
     /**
-     * @var \CategorieSource|null
+     * @var CategorieSource|null
      *
      * @ORM\ManyToOne(targetEntity="CategorieSource", fetch="EAGER")
      * @ORM\JoinColumns({

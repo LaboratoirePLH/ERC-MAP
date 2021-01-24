@@ -15,7 +15,7 @@ class TraductionAttestation extends AbstractEntity
     use Traits\EntityId;
 
     /**
-     * @var \Attestation
+     * @var Attestation
      *
      * @ORM\ManyToOne(targetEntity="Attestation", inversedBy="traductions")
      * @ORM\JoinColumns({
@@ -73,7 +73,7 @@ class TraductionAttestation extends AbstractEntity
 
     public function getNom(?string $lang): ?string
     {
-        if($lang == 'fr'){
+        if ($lang == 'fr') {
             return $this->nomFr;
         } else {
             return $this->nomEn;
@@ -105,7 +105,7 @@ class TraductionAttestation extends AbstractEntity
      */
     public function __clone()
     {
-        if($this->id !== null){
+        if ($this->id !== null) {
             $this->id = null;
         }
     }

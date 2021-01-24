@@ -16,7 +16,7 @@ class Occasion extends AbstractEntity
     use Traits\TranslatedName;
 
     /**
-     * @var \CategorieOccasion
+     * @var CategorieOccasion
      *
      * @ORM\ManyToOne(targetEntity="CategorieOccasion", fetch="EAGER")
      * @ORM\JoinColumns({

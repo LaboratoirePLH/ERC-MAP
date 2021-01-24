@@ -37,7 +37,7 @@ class Formule extends AbstractEntity
     private $puissancesDivines = 1;
 
     /**
-     * @var \Attestation
+     * @var Attestation
      *
      * @ORM\ManyToOne(targetEntity="Attestation", inversedBy="formules")
      * @ORM\JoinColumns({

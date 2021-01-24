@@ -16,7 +16,7 @@ class TypeSupport extends AbstractEntity
     use Traits\TranslatedName;
 
     /**
-     * @var \CategorieSupport
+     * @var CategorieSupport
      *
      * @ORM\ManyToOne(targetEntity="CategorieSupport", fetch="EAGER")
      * @ORM\JoinColumns({

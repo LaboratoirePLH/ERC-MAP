@@ -27,7 +27,7 @@ class Agent extends AbstractEntity implements Interfaces\Located
     private $designation;
 
     /**
-     * @var \Attestation
+     * @var Attestation
      *
      * @ORM\ManyToOne(targetEntity="Attestation", inversedBy="agents")
      * @ORM\JoinColumns({

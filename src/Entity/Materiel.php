@@ -16,7 +16,7 @@ class Materiel extends AbstractEntity
     use Traits\TranslatedName;
 
     /**
-     * @var \CategorieMateriel
+     * @var CategorieMateriel
      *
      * @ORM\ManyToOne(targetEntity="CategorieMateriel", fetch="EAGER")
      * @ORM\JoinColumns({

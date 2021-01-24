@@ -75,7 +75,7 @@ class Localisation extends AbstractEntity
     private $geom;
 
     /**
-     * @var \EntitePolitique
+     * @var EntitePolitique
      *
      * @ORM\ManyToOne(targetEntity="EntitePolitique")
      * @ORM\JoinColumns({
@@ -85,7 +85,7 @@ class Localisation extends AbstractEntity
     private $entitePolitique;
 
     /**
-     * @var \grandeRegion
+     * @var GrandeRegion
      *
      * @ORM\ManyToOne(targetEntity="GrandeRegion")
      * @ORM\JoinColumns({
@@ -95,7 +95,7 @@ class Localisation extends AbstractEntity
     private $grandeRegion;
 
     /**
-     * @var \SousRegion
+     * @var SousRegion
      *
      * @ORM\ManyToOne(targetEntity="SousRegion")
      * @ORM\JoinColumns({

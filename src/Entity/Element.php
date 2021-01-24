@@ -38,7 +38,7 @@ class Element extends AbstractEntity implements Interfaces\Located
     private $betaCode;
 
     /**
-     * @var \NatureElement
+     * @var NatureElement
      *
      * @ORM\ManyToOne(targetEntity="NatureElement")
      * @ORM\JoinColumns({

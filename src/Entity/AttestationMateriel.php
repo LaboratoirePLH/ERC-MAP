@@ -15,7 +15,7 @@ class AttestationMateriel extends AbstractEntity
     use Traits\EntityId;
 
     /**
-     * @var \Attestation
+     * @var Attestation
      *
      * @ORM\ManyToOne(targetEntity="Attestation", inversedBy="attestationMateriels", fetch="EXTRA_LAZY")
      * @ORM\JoinColumns({
@@ -25,7 +25,7 @@ class AttestationMateriel extends AbstractEntity
     private $attestation;
 
     /**
-     * @var \Materiel
+     * @var Materiel
      *
      * @ORM\ManyToOne(targetEntity="Materiel")
      * @ORM\JoinColumns({
@@ -35,7 +35,7 @@ class AttestationMateriel extends AbstractEntity
     private $materiel;
 
     /**
-     * @var \CategorieMateriel
+     * @var CategorieMateriel
      *
      * @ORM\ManyToOne(targetEntity="CategorieMateriel")
      * @ORM\JoinColumns({
@@ -124,7 +124,7 @@ class AttestationMateriel extends AbstractEntity
      */
     public function __clone()
     {
-        if($this->id !== null){
+        if ($this->id !== null) {
             $this->id = null;
         }
     }

@@ -23,7 +23,7 @@ class SousRegion extends AbstractEntity
     private $geom;
 
     /**
-     * @var \GrandeRegion
+     * @var GrandeRegion
      *
      * @ORM\ManyToOne(targetEntity="GrandeRegion")
      * @ORM\JoinColumns({

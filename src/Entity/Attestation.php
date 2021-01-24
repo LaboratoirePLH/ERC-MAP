@@ -112,7 +112,7 @@ class Attestation extends AbstractEntity implements Interfaces\Located
      *   }
      * )
      */
-    private $pratiques;
+    protected $pratiques;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
@@ -254,6 +254,11 @@ class Attestation extends AbstractEntity implements Interfaces\Located
             // Do not clone Attestations Liées or Formules
             $this->attestationsLiees = new ArrayCollection();
             $this->formules          = new ArrayCollection();
+
+            // Reapply relations
+            $this->reapplyRelations([
+                ['pratiques', 'getPratiques', 'addPratique']
+            ]);
         }
     }
 

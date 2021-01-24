@@ -64,7 +64,7 @@ class Element extends AbstractEntity implements Interfaces\Located
      *      message="categories_count"
      * )
      */
-    private $categories;
+    protected $categories;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
@@ -177,6 +177,11 @@ class Element extends AbstractEntity implements Interfaces\Located
             $this->contientElements    = new ArrayCollection();
             $this->theonymesImplicites = new ArrayCollection();
             $this->theonymesConstruits = new ArrayCollection();
+
+            // Reapply relations
+            $this->reapplyRelations([
+                ['categories', 'getCategories', 'addCategorie']
+            ]);
         }
     }
 

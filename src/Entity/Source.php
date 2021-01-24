@@ -119,7 +119,7 @@ class Source extends AbstractEntity
      *   }
      * )
      */
-    private $typeSources;
+    protected $typeSources;
 
     /**
      * @var CategorieSource|null
@@ -161,7 +161,7 @@ class Source extends AbstractEntity
      *   }
      * )
      */
-    private $auteurs;
+    protected $auteurs;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
@@ -176,7 +176,7 @@ class Source extends AbstractEntity
      *   }
      * )
      */
-    private $langues;
+    protected $langues;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
@@ -269,6 +269,13 @@ class Source extends AbstractEntity
 
             // Do not clone Attestations
             $this->attestations = new ArrayCollection();
+
+            // Reapply relations
+            $this->reapplyRelations([
+                ['auteurs', 'getAuteurs', 'addAuteur'],
+                ['langues', 'getLangues', 'addLangue'],
+                ['typeSources', 'getTypeSources', 'addTypeSource'],
+            ]);
         }
     }
 

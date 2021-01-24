@@ -49,7 +49,7 @@ class Agent extends AbstractEntity implements Interfaces\Located
      *   }
      * )
      */
-    private $statutAffiches;
+    protected $statutAffiches;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
@@ -64,7 +64,7 @@ class Agent extends AbstractEntity implements Interfaces\Located
      *   }
      * )
      */
-    private $natures;
+    protected $natures;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
@@ -79,7 +79,7 @@ class Agent extends AbstractEntity implements Interfaces\Located
      *   }
      * )
      */
-    private $genres;
+    protected $genres;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
@@ -94,7 +94,7 @@ class Agent extends AbstractEntity implements Interfaces\Located
      *   }
      * )
      */
-    private $activites;
+    protected $activites;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
@@ -109,7 +109,7 @@ class Agent extends AbstractEntity implements Interfaces\Located
      *   }
      * )
      */
-    private $agentivites;
+    protected $agentivites;
 
     /**
      * Constructor
@@ -130,6 +130,15 @@ class Agent extends AbstractEntity implements Interfaces\Located
     {
         if ($this->id !== null) {
             $this->id = null;
+
+            // Reapply relations
+            $this->reapplyRelations([
+                ['statutAffiches', 'getStatutAffiches', 'addStatutAffich'],
+                ['natures', 'getNatures', 'addNature'],
+                ['genres', 'getGenres', 'addGenre'],
+                ['activites', 'getActivites', 'addActivite'],
+                ['agentivites', 'getAgentivites', 'addAgentivite']
+            ]);
         }
     }
 

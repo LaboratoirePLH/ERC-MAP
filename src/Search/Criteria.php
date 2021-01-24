@@ -285,9 +285,13 @@ class Criteria
                         }, $value);
                         break;
                     case 'locationreal':
-                    case 'elementsemitic':
                         $criteriaValues = array_map(function ($v) {
                             return $this->translator->trans('generic.choices.' . $v);
+                        }, $value);
+                        break;
+                    case 'elementsemitic':
+                        $criteriaValues = array_map(function ($v) {
+                            return $this->translator->trans('generic.languages.' . ($v === 'yes' ? 'semitic' : 'greek'));
                         }, $value);
                         break;
                     case 'datation':

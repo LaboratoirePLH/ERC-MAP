@@ -136,6 +136,9 @@ generic:
         yes: "Yes"
         non: "No"
         no: "No"
+    languages:
+        greek: "Greek"
+        semitic: "Semitic"
     messages:
         failed_csrf: "Failure, invalid CSRF Token"
         deletion_failed_csrf: "Deletion failed, invalid CSRF Token"
@@ -582,7 +585,7 @@ search:
         formules_all: "Formulae (All)"
         element_en_contexte: "Name(s) in context"
         fiabilite_lecture: "Name quality of reading"
-        element_semitique: "Semitic Language ?"
+        element_semitique: "Element in Greek or Semitic ?"
     element_labels:
         added: "Added elements"
         add_new: "Add a new element"

@@ -31,32 +31,31 @@ class AttestationOccasionType extends AbstractType // implements DataMapperInter
                     'label'        => 'attestation.fields.categorie_occasion',
                     'required'     => false,
                     'class'        => CategorieOccasion::class,
-                    'choice_label' => 'nom'.ucfirst($locale),
+                    'choice_label' => 'nom' . ucfirst($locale),
                     'attr'         => [
                         'class' => 'autocomplete',
                         'data-placeholder' => $options['translations']['autocomplete.select_element']
                     ],
                     'query_builder' => function (EntityRepository $er) use ($locale) {
                         return $er->createQueryBuilder('e')
-                            ->orderBy('e.nom'.ucfirst($locale), 'ASC');
+                            ->orderBy('e.nom' . ucfirst($locale), 'ASC');
                     }
                 ],
                 'secondary_field_options' => [
                     'label'        => 'attestation.fields.occasion',
-                    'required'     => true,
+                    'required'     => false,
                     'class'        => Occasion::class,
-                    'choice_label' => 'nom'.ucfirst($locale),
+                    'choice_label' => 'nom' . ucfirst($locale),
                     'attr'         => [
                         'class' => 'autocomplete',
                         'data-placeholder' => $options['translations']['autocomplete.select_element']
                     ],
                     'query_builder' => function (EntityRepository $er) use ($locale) {
                         return $er->createQueryBuilder('e')
-                            ->orderBy('e.nom'.ucfirst($locale), 'ASC');
+                            ->orderBy('e.nom' . ucfirst($locale), 'ASC');
                     }
                 ]
-            ])
-        ;
+            ]);
         // $builder->setDataMapper($this);
     }
 

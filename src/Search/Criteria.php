@@ -285,6 +285,7 @@ class Criteria
                         }, $value);
                         break;
                     case 'locationreal':
+                    case 'iconography':
                         $criteriaValues = array_map(function ($v) {
                             return $this->translator->trans('generic.choices.' . $v);
                         }, $value);

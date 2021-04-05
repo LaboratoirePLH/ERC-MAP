@@ -548,6 +548,9 @@
                                     case 'locationreal':
                                         $('#advanced').find('input[name="locationReal[]"][value=' + value + ']').attr('checked', true);
                                         break;
+                                    case 'iconography':
+                                        $('#advanced').find('input[name="iconography[]"][value=' + value + ']').attr('checked', true);
+                                        break;
                                     case 'elementsemitic':
                                         $('#advanced').find('input[name="elementSemitic[]"][value=' + value + ']').attr('checked', true);
                                         break;
@@ -562,7 +565,7 @@
                     setTimeout(() => {
                         Object.entries(data).forEach(([criteriaName, values]) => {
                             if (criteriaName != 'resultsType') {
-                                const len = (criteriaName === 'locationReal' || criteriaName === 'elementSemitic') ? 1 : Object.values(values).length;
+                                const len = (criteriaName === 'locationReal' || criteriaName === 'iconography' || criteriaName === 'elementSemitic') ? 1 : Object.values(values).length;
                                 for (i = 1; i <= len; i ++) {
                                     addNewCriteria(criteriaName);
                                 }
@@ -802,6 +805,7 @@
                     case 'datation':
                     case 'prosepoetry':
                     case 'locationreal':
+                    case 'iconography':
                     case 'elementsemitic':
                         // Compute an index based on the number of same type templates already added
                         var index = $("#advanced").find('.' + criteria.type + '-template').length;

@@ -740,6 +740,7 @@ class Source extends AbstractEntity
             'attestations'  => $this->attestations->map(function ($att) {
                 return $att->getId();
             })->toArray(),
+            'iconographie'  => $this->iconographie,
             'commentaireFr' => $this->commentaireFr,
             'commentaireEn' => $this->commentaireEn
         ];

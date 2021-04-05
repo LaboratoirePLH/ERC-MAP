@@ -208,6 +208,12 @@ class CriteriaList
                         'type'    => 'select',
                         'semitic' => false,
                     ],
+                    [
+                        'key'     => 'iconography',
+                        'label'   => $translator->trans('source.fields.iconographie'),
+                        'type'    => 'iconography',
+                        'semitic' => false,
+                    ],
                 ]
             ],
             [

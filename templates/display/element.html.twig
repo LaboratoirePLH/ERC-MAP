@@ -72,7 +72,7 @@
                         {% include "partials/_entitylink.html.twig" with {
                             'entity': 'element',
                             'link': url('element_show', {'id': e.id}),
-                            'text': '#' ~ e.id ~ " " ~ (e.etatAbsolu|raw|striptags),
+                            'text': '#' ~ e.id ~ " " ~ (e.etatAbsolu|raw|striptags('<span><sup><sub>')),
                             'buttonblock': false
                         } %}
                     {% endfor %}
@@ -87,7 +87,7 @@
                         {% include "partials/_entitylink.html.twig" with {
                             'entity': 'element',
                             'link': url('element_show', {'id': e.id}),
-                            'text': '#' ~ e.id ~ " " ~ (e.etatAbsolu|raw|striptags),
+                            'text': '#' ~ e.id ~ " " ~ (e.etatAbsolu|raw|striptags('<span><sup><sub>')),
                             'buttonblock': false
                         } %}
                     {% endfor %}
@@ -126,7 +126,7 @@
                                         {% include "partials/_entitylink.html.twig" with {
                                             'entity': 'biblio',
                                             'link': url('bibliography_show', {'id': elementBiblio.biblio.id}),
-                                            'text': '#' ~ elementBiblio.biblio.id ~ " " ~ (elementBiblio.biblio.titreAbrege|raw|striptags),
+                                            'text': '#' ~ elementBiblio.biblio.id ~ " " ~ (elementBiblio.biblio.titreAbrege|raw|striptags('<span><sup><sub>')),
                                             'buttonblock': false
                                         } %}
                                     </td>

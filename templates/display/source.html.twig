@@ -133,7 +133,7 @@
                                         {% include "partials/_entitylink.html.twig" with {
                                             'entity': 'biblio',
                                             'link': url('bibliography_show', {'id': sourceBiblio.biblio.id}),
-                                            'text': '#' ~ sourceBiblio.biblio.id ~ " " ~ (sourceBiblio.biblio.titreAbrege|raw|striptags('<span>')),
+                                            'text': '#' ~ sourceBiblio.biblio.id ~ " " ~ (sourceBiblio.biblio.titreAbrege|raw|striptags('<span><sup><sub>')),
                                             'buttonblock': false
                                         } %}
                                     </td>

@@ -99,7 +99,7 @@
                                         {% include "partials/_entitylink.html.twig" with {
                                             'entity': 'element',
                                             'link': url('element_show', {'id': elementBiblio.element.id}),
-                                            'text': '#' ~ elementBiblio.element.id ~ " " ~ (elementBiblio.element.etatAbsolu|raw|striptags('<span>')),
+                                            'text': '#' ~ elementBiblio.element.id ~ " " ~ (elementBiblio.element.etatAbsolu|raw|striptags('<span><sup><sub>')),
                                             'buttonblock': false
                                         } %}
                                     </td>

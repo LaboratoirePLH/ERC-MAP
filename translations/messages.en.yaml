@@ -508,6 +508,7 @@ pages:
         online_resources: "Online Resources"
         display: "Display"
         network_analysis: "Network Analysis"
+        tutorials: "Tutorials"
         webmapping: "Webmapping"
         corpus_state: "Corpus counting state"
         corpus_state_filter: "Type text to filter bibliographic references"

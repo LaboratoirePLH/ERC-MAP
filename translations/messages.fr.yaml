@@ -508,6 +508,7 @@ pages:
         display: "Afficher"
         network_analysis: "Analyse de Réseaux"
         webmapping: "Webmapping"
+        tutorials: "Tutoriels"
         corpus_state: "Etat de dépouillement des corpus"
         corpus_state_filter: "Tapez du texte pour filtrer les Références Bibliographiques"
     messages:

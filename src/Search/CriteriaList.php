@@ -79,6 +79,18 @@ class CriteriaList
                         'type'    => 'text',
                         'semitic' => false,
                     ],
+                    [
+                        'key'     => 'implicitTheonyms',
+                        'label'   => $translator->trans('element.fields.theonymes_implicites'),
+                        'type'    => 'select',
+                        'semitic' => true,
+                    ],
+                    [
+                        'key'     => 'builtTheonyms',
+                        'label'   => $translator->trans('element.fields.theonymes_construits'),
+                        'type'    => 'select',
+                        'semitic' => true,
+                    ],
                 ]
             ],
             [

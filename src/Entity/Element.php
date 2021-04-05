@@ -474,6 +474,12 @@ class Element extends AbstractEntity implements Interfaces\Located
                     'reference'         => $eb->getReferenceElement()
                 ]);
             })->getValues(),
+            'theonymesImplicites' => $this->theonymesImplicites->map(function ($ti) {
+                return $ti->getId();
+            })->toArray(),
+            'theonymesConstruits' => $this->theonymesConstruits->map(function ($tc) {
+                return $tc->getId();
+            })->toArray(),
             'commentaireFr' => $this->commentaireFr,
             'commentaireEn' => $this->commentaireEn
         ];

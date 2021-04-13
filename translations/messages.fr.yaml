@@ -288,7 +288,7 @@ attestation:
     add_agent: "Ajouter un Agent"
     add_element: "Ajouter un Élément"
     add_occasion: "Ajouter une Occasion"
-    add_materiel: "Ajouter une Matériel Associé"
+    add_materiel: "Ajouter un Matériel Associé"
     add_formule: "Ajouter une Formule"
     choose_source: "Choisir la Source pour laquelle créer une Attestation"
     messages:

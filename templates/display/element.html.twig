@@ -112,7 +112,7 @@
             </th>
             <td class="p-0">
                 {% if element.elementBiblios is not empty %}
-                    <table class="table table-sm text-center mb-0">
+                    <table class="table table-sm text-center mb-0 sortable">
                         <thead>
                             <tr>
                                 <th scope="col">{{ 'source.fields.reference_bibliographique'|trans }}</th>
@@ -122,7 +122,7 @@
                         <tbody>
                             {% for elementBiblio in element.elementBiblios %}
                                 <tr>
-                                    <td>
+                                    <td sorttable_customkey="{{ elementBiblio.biblio.id }}">
                                         {% include "partials/_entitylink.html.twig" with {
                                             'entity': 'biblio',
                                             'link': url('bibliography_show', {'id': elementBiblio.biblio.id}),
@@ -158,7 +158,7 @@
             </th>
             <td>
                 {% if contientElements is not empty %}
-                    <table class="table table-sm text-center mb-0">
+                    <table class="table table-sm text-center mb-0 sortable">
                         <thead>
                             <tr>
                                 <th scope="col">{{ 'attestation.name'|trans }}</th>
@@ -170,7 +170,7 @@
                         <tbody>
                             {% for ce in contientElements %}
                                 <tr>
-                                    <td>
+                                    <td sorttable_customkey="{{ ce.attestation.id }}">
                                         {% include "partials/_entitylink.html.twig" with {
                                             'entity': 'attestation',
                                             'link': url('attestation_show', {'id': ce.attestation.id}),

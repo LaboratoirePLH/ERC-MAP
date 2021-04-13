@@ -118,7 +118,7 @@
             </th>
             <td class="p-0">
                 {% if source.sourceBiblios is not empty %}
-                    <table class="table table-sm text-center mb-0">
+                    <table class="table table-sm text-center mb-0 sortable">
                         <thead>
                             <tr>
                                 <th scope="col">{{ 'source.fields.reference_bibliographique'|trans }}</th>
@@ -129,7 +129,7 @@
                         <tbody>
                             {% for sourceBiblio in source.sourceBiblios %}
                                 <tr>
-                                    <td>
+                                    <td sorttable_customkey="{{ sourceBiblio.biblio.id }}">
                                         {% include "partials/_entitylink.html.twig" with {
                                             'entity': 'biblio',
                                             'link': url('bibliography_show', {'id': sourceBiblio.biblio.id}),
@@ -221,7 +221,7 @@
             </th>
             <td class="p-0">
                 {% if source.attestations is not empty %}
-                    <table class="table table-sm text-center mb-0">
+                    <table class="table table-sm text-center mb-0 sortable">
                         <thead>
                             <tr>
                                 <th scope="col">{{ 'attestation.name'|trans }}</th>
@@ -231,7 +231,7 @@
                         <tbody>
                             {% for attestation in source.attestations %}
                                 <tr>
-                                    <td>
+                                    <td sorttable_customkey="{{ attestation.id }}">
                                         {% include "partials/_entitylink.html.twig" with {
                                             'entity': 'attestation',
                                             'link': url('attestation_show', {'id': attestation.id}),

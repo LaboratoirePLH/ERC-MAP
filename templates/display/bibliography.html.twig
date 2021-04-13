@@ -50,7 +50,7 @@
             </th>
             <td class="p-0">
                 {% if sourceBiblios is not empty %}
-                    <table class="table table-sm text-center mb-0">
+                    <table class="table table-sm text-center mb-0 sortable">
                         <thead>
                             <tr>
                                 <th scope="col">{{ 'source.name'|trans }}</th>
@@ -60,7 +60,7 @@
                         <tbody>
                             {% for sourceBiblio in sourceBiblios %}
                                 <tr>
-                                    <td>
+                                    <td sorttable_customkey="{{ sourceBiblio.source.id }}">
                                         {% include "partials/_entitylink.html.twig" with {
                                             'entity': 'source',
                                             'link': url('source_show', {'id': sourceBiblio.source.id}),
@@ -85,7 +85,7 @@
             </th>
             <td class="p-0">
                 {% if bibliography.elementBiblios is not empty %}
-                    <table class="table table-sm text-center mb-0">
+                    <table class="table table-sm text-center mb-0 sortable">
                         <thead>
                             <tr>
                                 <th scope="col">{{ 'element.name'|trans }}</th>
@@ -95,7 +95,7 @@
                         <tbody>
                             {% for elementBiblio in bibliography.elementBiblios %}
                                 <tr>
-                                    <td>
+                                    <td sorttable_customkey="{{ elementBiblio.element.id }}">
                                         {% include "partials/_entitylink.html.twig" with {
                                             'entity': 'element',
                                             'link': url('element_show', {'id': elementBiblio.element.id}),

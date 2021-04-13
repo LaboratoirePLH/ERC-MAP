@@ -119,6 +119,15 @@ body {
             }
         }
 
+        table.sortable {
+            th:not(.sorttable_sorted):not(.sorttable_sorted_reverse):not(.sorttable_nosort):after {
+                content: " \25B4\25BE"
+            }
+            th {
+                cursor: pointer;
+            }
+        }
+
         form {
             .form-section-title {
                 border: 1px solid desaturate($map-yellow, 10%);

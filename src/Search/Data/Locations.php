@@ -4,7 +4,8 @@ namespace App\Search\Data;
 
 use \Doctrine\ORM\EntityManager;
 
-class Locations implements CriteriaDataInterface {
+class Locations implements CriteriaDataInterface
+{
 
     public static function compute(EntityManager $entityManager, string $locale): array
     {
@@ -26,26 +27,25 @@ class Locations implements CriteriaDataInterface {
         );
         $lieux = $query->getArrayResult();
         $locations = [];
-        foreach($grandeRegions as $gr){
+        foreach ($grandeRegions as $gr) {
             $id = json_encode([$gr['id']]);
             $locations[$id] = $gr[$nameField];
         }
-        foreach($sousRegions as $sr){
+        foreach ($sousRegions as $sr) {
             $id = json_encode([$sr['grandeRegion']['id'], $sr['id']]);
-            $locations[$id] = $sr['grandeRegion'][$nameField].' > '.$sr[$nameField];
+            $locations[$id] = $sr['grandeRegion'][$nameField] . ' > ' . $sr[$nameField];
         }
-        foreach($lieux as $l){
-            // TODO : Manage case where we have 2 nomVille with identical grandeRegion & sousRegion, but no pleiades ID
+        foreach ($lieux as $l) {
             $id = json_encode([
                 $l['grandeRegion']['id'] ?? 0,
                 $l['sousRegion']['id'] ?? 0,
-                $l['pleiadesVille']
+                $l['pleiadesVille'] ?? $l['nomVille']
             ]);
-            $value = ($l['grandeRegion'][$nameField] ?? '').' > '.($l['sousRegion'][$nameField] ?? '').' > '.$l['nomVille'];
+            $value = ($l['grandeRegion'][$nameField] ?? '') . ' > ' . ($l['sousRegion'][$nameField] ?? '') . ' > ' . $l['nomVille'];
             $value = str_replace('>  >', '>>', $value);
             $locations[$id] = $value;
         }
-        uasort($locations, function($a, $b){
+        uasort($locations, function ($a, $b) {
             return \App\Utils\StringHelper::removeAccents($a)
                 <=> \App\Utils\StringHelper::removeAccents($b);
         });
@@ -59,6 +59,6 @@ class Locations implements CriteriaDataInterface {
 
     public static function getCacheLifetime(): int
     {
-        return 3600*24; // 1 day
+        return 3600 * 24; // 1 day
     }
 }

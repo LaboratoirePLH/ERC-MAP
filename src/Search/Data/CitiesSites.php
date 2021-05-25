@@ -25,7 +25,7 @@ class CitiesSites implements CriteriaDataInterface
                 $locations[json_encode([$cityId])] = trim($cityName);
             }
             if (strlen($l['nomSite'] ?? '') > 0) {
-                $siteId = $l['pleiadesSite'] ?? $l['nomSite'];
+                $siteId = ($l['pleiadesSite'] ?? '') . '-' . ($l['nomSite'] ?? '');
                 $siteName = $l['nomSite'] . ($l['pleiadesSite'] ? ' (' . $l['pleiadesSite'] . ')' : '');
                 $locations[json_encode([$cityId, $siteId])] = trim($cityName . ' > ' . $siteName);
             }

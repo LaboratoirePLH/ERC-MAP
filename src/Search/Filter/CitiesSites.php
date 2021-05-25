@@ -16,7 +16,7 @@ class CitiesSites extends AbstractFilter
 
         // We get the ID (or name if no ID set) of the pleiades City and pleiades Site of each location
         $data = array_filter(array_map(function ($l) {
-            return [$l['pleiadesVille'] ?? $l['nomVille'] ?? null, $l['pleiadesSite'] ?? $l['nomSite'] ?? null];
+            return [$l['pleiadesVille'] ?? $l['nomVille'] ?? null, ($l['pleiadesSite'] ?? '') . '-' . ($l['nomSite'] ?? '')];
         }, $localisations));
 
         // For each criteria entry, we will get a boolean result of whether the entry is valid against the data

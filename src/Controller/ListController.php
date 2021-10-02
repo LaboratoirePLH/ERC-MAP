@@ -62,7 +62,7 @@ class ListController extends AbstractController
 
             return [
                 'id'        => $source->getId(),
-                'projet'    => $source->getProjet()->getNom($locale),
+                'projet'    => $source->getProjet() !== null ? $source->getProjet()->getNom($locale) : "",
                 'version'   => $source->getVersion(),
                 'categorie' => $source->getCategorieSource()->getNom($locale),
                 'types'     => $source->getTypeSources()->map(function ($ts) use ($locale) {
@@ -163,7 +163,7 @@ class ListController extends AbstractController
             return [
                 'id'               => $attestation->getId(),
                 'source'           => $source->getId(),
-                'projet'           => $source->getProjet()->getNom($locale),
+                'projet'           => $source->getProjet() !== null ? $source->getProjet()->getNom($locale) : "",
                 'version'          => $attestation->getVersion(),
                 'titre_abrege'     => $source->getEditionPrincipaleBiblio()->getBiblio()->getTitreAbrege(),
                 'reference'        => $source->getEditionPrincipaleBiblio()->getReferenceSource(),

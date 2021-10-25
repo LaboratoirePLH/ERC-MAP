@@ -425,6 +425,7 @@ class MaintenanceController extends AbstractController
 
             $em = $this->getDoctrine()->getManager();
 
+
             $delete = array_reduce($delete, function ($total, $carry) {
                 array_push($total, json_decode($carry, true));
                 return $total;
@@ -440,6 +441,10 @@ class MaintenanceController extends AbstractController
 
             $total_deleted = 0;
             $total_merged = 0;
+
+            /**************************************
+             *************** DELETE ***************
+             **************************************/
 
             foreach ($delete as $d) {
                 // Fetch linked records and remove Localisation
@@ -457,21 +462,32 @@ class MaintenanceController extends AbstractController
                 $total_deleted++;
             }
 
+            /*************************************
+             *************** MERGE ***************
+             *************************************/
+
             foreach ($merge as $m_group) {
-                usort($m_group, function ($a, $b) {
-                    return $a['location_id'] <=> $b['location_id'];
-                });
-                $master = array_shift($m_group);
-                $master_location = $em->getRepository(Localisation::class)->find($master['location_id']);
+                // usort($m_group, function ($a, $b) {
+                //     return $a['location_id'] <=> $b['location_id'];
+                // });
+                // $master = array_shift($m_group);
+                $master_location_id = min(array_column($m_group, 'location_id'));
+                $master_location = $em->getRepository(Localisation::class)->find($master_location_id);
                 $commentaireFr = [$master_location->getCommentaireFr()];
                 $commentaireEn = [$master_location->getCommentaireEn()];
 
-                foreach ($m_group as $m) {
+                // Filter out all entries where location_id equals master_location_id
+                // because sometimes the master location is mapped to several entities
+                //
+                $m_group_filtered = array_filter($m_group, function ($m) use ($master_location_id) {
+                    return $m['location_id'] !== $master_location_id;
+                });
+
+                foreach ($m_group_filtered as $m) {
                     // Do not merge locations with the same ID as the master location
-                    // This cas happens when the location when the master location is mapped to several entities
-                    if ($m['location_id'] == $master['location_id']) {
-                        continue;
-                    }
+                    // if ($m['location_id'] == $master['location_id']) {
+                    //     continue;
+                    // }
                     // Update linked record
                     $record = $em->getRepository("\App\Entity\\" . $m['entity'])->find($m['id']);
                     $method = "set" . ucfirst($m['field']);

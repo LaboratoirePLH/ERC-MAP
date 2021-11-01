@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Localisation
@@ -133,6 +134,7 @@ class Localisation extends AbstractEntity
      * )
      */
     private $fonctions;
+
     /**
      * Constructor
      */
@@ -446,6 +448,13 @@ class Localisation extends AbstractEntity
                         ])
                     )
                 ) . ' }';
+            }
+            if ($this->getReel() !== null) {
+                $trans = [
+                    'fr' => ["Non Réel", "Réel"],
+                    'en' => ["Unreal", "Real"]
+                ];
+                $base .= ' [' . $trans[$lang][intval($this->getReel())] . ']';
             }
         }
 

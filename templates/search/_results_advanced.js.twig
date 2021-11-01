@@ -162,8 +162,9 @@
                             return indexes;
                         }, []);
 
-                        linkIndexes.forEach((idx) => {
-                            data[0][idx] = "{{ 'generic.link'|trans|raw }}";
+                        linkIndexes.forEach((idx, i) => {
+                            data[0][idx + i] = "{{ 'generic.link'|trans|raw }}";
+                            data[0].splice(idx + i + 1, 0, "{{ 'generic.fields.id'|trans|raw }}");
                         });
 
                         // If we have more than one groupe, insert a new first row containing group names
@@ -172,11 +173,17 @@
                             const groupHeaders = Object.entries(groups).map(([label, size]) => Array(size).fill(label)).flat();
                             data.unshift(groupHeaders);
                             hasGroups = true;
+                            // Add group headers on ID Columns
+                            linkIndexes.forEach((idx, i) => {
+                                data[0].splice(idx + i + 1, 0, data[0][idx + i]);
+                            });
                         }
                         data = data.map((row, index) => {
                             if (index > (hasGroups ? 1 : 0)) { // Prepare Links
-                                linkIndexes.forEach((linkIdx) => {
-                                    row[linkIdx] = $("<div />").html(row[linkIdx]).find("a").attr("href");
+                                linkIndexes.forEach((linkIdx,i) => {
+                                    const oldLink = row[linkIdx + i];
+                                    row[linkIdx + i] = $("<div />").html(row[linkIdx + i]).find("a").attr("href");
+                                    row.splice(linkIdx + i + 1, 0, $("<div />").html(oldLink).text().trim().replace('#', ''));
                                 });
 
                                 // Replace <br> and <hr> with CSV accepted fallback
@@ -186,7 +193,13 @@
                         });
 
                         // Now remove all hidden columns
-                        data = data.map(row => row.filter((v, i) => table.column(i).visible()));
+                        data = data.map(function (row) {
+                                return row.filter(function (v, i) {
+                                        const j = i - (linkIndexes.filter(k => k<i).length);
+                                return table.column(j).visible();
+                            });
+                        });
+
 
                         // Adds copyright on the first row
                         var copyright_row = new Array(data[0].length).fill('');

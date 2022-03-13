@@ -540,7 +540,9 @@ class Attestation extends AbstractEntity implements Interfaces\Located
         $elements = [];
         foreach ($this->getContientElements() as $ce) {
             $el = $ce->getElement();
-            $elements[$el->getId()] = $el->getEtatAbsolu();
+            if ($el !== null) {
+                $elements[$el->getId()] = $el->getEtatAbsolu();
+            }
         }
         return $elements;
     }

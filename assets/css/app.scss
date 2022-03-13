@@ -287,3 +287,14 @@ tfoot { display:table-footer-group }
     bottom: 5px;
     left: 25%;
 }
+
+.flex-grow {
+    flex-grow: 1;
+}
+
+.bg-success-faded {
+    background-color: rgba(40,167,69,0.4);
+}
+.bg-warning-faded {
+    background-color: rgba(255,193,7,0.4)
+}

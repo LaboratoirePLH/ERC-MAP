@@ -168,22 +168,57 @@
                                 </div>
                             </div>
                         </div>
-                        <hr/>
-                        <div class="form-group row no-criteria">
-                            <div class="col text-center">
-                                <h5>{{ 'search.messages.no_criteria'|trans }}</h5>
+
+                        <div class="d-flex border-top border-bottom align-items-stretch">
+                            <div
+                                class="d-flex justify-content-center align-items-center p-1 font-weight-bold h5 m-0 bg-success text-white"
+                                data-toggle="tooltip" data-placement="left"
+                                data-html="true" title="{{ 'search.inclusive_criteria'|trans|replace({' ': '<br/>'}) }}"
+                            >
+                                <i class="fas fa-plus fa-fw"></i>
+                            </div>
+                            <div class="flex-grow d-flex flex-column align-items-stretch justify-content-around"
+                                id="advanced-inclusive">
+                                <div class="form-group row no-criteria my-1">
+                                    <div class="col text-center">
+                                        <h5 class="mb-0">{{ 'search.messages.no_inclusive_criteria'|trans }}</h5>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <hr/>
-                        <div class="form-group row last-row">
+
+                        <div class="d-flex border-bottom align-items-stretch">
+                            <div
+                                class="d-flex justify-content-center align-items-center p-1 font-weight-bold h5 m-0 bg-warning text-white"
+                                data-toggle="tooltip" data-placement="left"
+                                data-html="true" title="{{ 'search.exclusive_criteria'|trans|replace({' ': '<br/>'}) }}"
+                            >
+                                <i class="fas fa-minus fa-fw"></i>
+                            </div>
+                            <div class="flex-grow d-flex flex-column align-items-stretch justify-content-around"
+                                id="advanced-exclusive">
+                                <div class="form-group row no-criteria my-1">
+                                    <div class="col text-center">
+                                        <h6 class="mb-0">{{ 'search.messages.no_exclusive_criteria'|trans }}</h6>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row last-row mt-4">
                             <div class="col-sm-12">
-                                <button class="btn btn-secondary btn-sm mx-2" type="reset" name="reset" class="reset-button">
+                                <button class="btn btn-secondary btn-sm mx-2" type="reset" name="reset"
+                                    class="reset-button">
                                     <i class="fas fa-eraser fa-fw"></i>
                                     {{ 'generic.clear'|trans }}
                                 </button>
-                                <button class="btn btn-success mx-2" type="button" id="add-criteria">
+                                <button class="btn btn-success mx-2" type="button" id="add-inclusive-criteria">
                                     <i class="fas fa-plus fa-fw"></i>
-                                    {{ 'search.add_criteria'|trans }}
+                                    {{ 'search.add_inclusive_criteria'|trans }}
+                                </button>
+                                <button class="btn btn-warning mx-2" type="button" id="add-exclusive-criteria">
+                                    <i class="fas fa-minus fa-fw"></i>
+                                    {{ 'search.add_exclusive_criteria'|trans }}
                                 </button>
                                 <button class="btn btn-primary mx-2" type="submit" name="search">
                                     <i class="fas fa-search fa-fw"></i>
@@ -451,9 +486,9 @@
 
                 // Show directly the add criteria select list if we're showing the advanced tab
                 if (mode == "advanced") {
-                    chooseNewCriteria();
+                    chooseNewCriteria('inclusive');
                 }
-            };
+        };
 
             function adjustSavedQueriesHeight() {
                 var height = $('div.tab-pane#' + CURRENT_MODE).outerHeight();
@@ -579,8 +614,8 @@
                         Object.entries(data).forEach(([criteriaName, values]) => {
                             if (criteriaName != 'resultsType') {
                                 const len = (criteriaName === 'locationReal' || criteriaName === 'iconography' || criteriaName === 'elementSemitic') ? 1 : Object.values(values).length;
-                                for (i = 1; i <= len; i ++) {
-                                    addNewCriteria(criteriaName);
+                                for (i = 0; i < len; i++) {
+                                    addNewCriteria(criteriaName, values[i]['type'] ?? 'inclusive');
                                 }
                             }
                         });
@@ -704,12 +739,12 @@
                     // Display spinner on field being loaded
                     target.parent().append($('<div class="spinner-border chosen-spinner" role="status"></div>'));
 
-                    if (! loadingCriteria.hasOwnProperty(criteriaName)) { // Criteria is not currently being loaded, so we start the request and store the promise
+                    if (!loadingCriteria.hasOwnProperty(criteriaName)) { // Criteria is not currently being loaded, so we start the request and store the promise
                         var url = "{{ url('search_criteria', {'criteriaName': '_crit_'})|raw }}".replace('_crit_', criteriaName);
                         loadingCriteria[criteriaName] = $.get(url);
                     }
                     loadingCriteria[criteriaName].done(function (response) {
-                        if (! loadedCriteria.hasOwnProperty(criteriaName)) {
+                        if (!loadedCriteria.hasOwnProperty(criteriaName)) {
                             loadedCriteria[criteriaName] = response.data;
                         }
                         criteriaLoading--;
@@ -723,36 +758,36 @@
                 }
             }
 
-            function chooseNewCriteria() { // Disable feature if current tab is not advanced search
+            function chooseNewCriteria(type) { // Disable feature if current tab is not advanced search
                 if (CURRENT_MODE != "advanced") {
                     return;
                 }
 
                 // Do not do anything if new criteria selection is already displayed
-                if ($('#advanced .new-criteria').length > 0) {
+                if ($(`#advanced-${type} .new-criteria`).length > 0) {
                     return;
                 }
 
-                $('#advanced .no-criteria').hide();
+                $(`#advanced-${type} .no-criteria`).hide();
 
-                $('#form-templates > #new-criteria-template').clone().removeProp('id').insertBefore($('#advanced hr').last());
+                $('#form-templates > #new-criteria-template').clone().removeProp('id').appendTo($(`#advanced-${type}`));
 
-                $('#advanced .new-criteria select').chosen(CHOSEN_SETTINGS);
+                $(`#advanced-${type} .new-criteria select`).chosen(CHOSEN_SETTINGS);
 
-                $('#advanced .new-criteria').find('button').one('click', function (e) {
+                $(`#advanced-${type} .new-criteria`).find('button').one('click', function (e) {
                     e.preventDefault();
                     var criteria = $(this).parents('.new-criteria').find('select#inputNewCriteria').val();
                     $(this).parents('.new-criteria').remove();
                     if ($(this).attr('name') == 'confirm') {
-                        addNewCriteria(criteria);
-                    } else if ($('#advanced .criteria-row').length == 0) {
-                        $('#advanced .no-criteria').show();
+                        addNewCriteria(criteria, type);
+                    } else if ($(`#advanced-${type} .criteria-row`).length == 0) {
+                        $(`#advanced-${type} .no-criteria`).show();
                     }
                 })
             };
 
-            function addNewCriteria(criteriaName) {
-                $('#advanced .no-criteria').hide();
+            function addNewCriteria(criteriaName, type) {
+                $(`#advanced-${type} .no-criteria`).hide();
 
                 // Find properties in SEARCH_CRITERIA
                 var criteria = SEARCH_CRITERIA.reduce((found, item) => {
@@ -806,7 +841,7 @@
 
                         // Build datalist
                         var datalist = Object.entries(criteria.datalist).map(([value, label]) => $('<option />').attr('value', value).html(label));
-                        template.find('select').last().append(... datalist);
+                        template.find('select').last().append(...datalist);
 
                         // Setup Chosen
                         template.find('select').chosen(SINGLE_CHOSEN_SETTINGS);
@@ -840,17 +875,20 @@
                         break;
                 }
 
+                var fieldType = $('<input type="hidden" />').attr('name', criteria.key + '[' + index + '][type]').val(type);
+                fieldType.insertBefore(template.find('button.remove-criteria-button'));
+
                 // Add listener on remove button
                 template.find('button.remove-criteria-button').one('click', function (e) {
                     e.preventDefault();
                     $(this).parents('.criteria-row').remove();
-                    if ($('#advanced .criteria-row').length == 0) {
-                        $('#advanced .no-criteria').show();
+                    if ($(`#advanced-${type} .criteria-row`).length == 0) {
+                        $(`#advanced-${type} .no-criteria`).show();
                     }
                 });
 
                 // Add to DOM
-                template.insertBefore($('#advanced hr').last());
+                template.appendTo($(`#advanced-${type}`));
 
                 adjustSavedQueriesHeight();
             };
@@ -873,9 +911,14 @@
 
 
             // Setup events for advanced mode
-            $("#advanced button#add-criteria").on('click', function (e) {
+            $("#advanced button#add-inclusive-criteria").on('click', function (e) {
                 e.preventDefault();
-                chooseNewCriteria();
+                chooseNewCriteria('inclusive');
+            });
+            // Setup events for advanced mode
+            $("#advanced button#add-exclusive-criteria").on('click', function (e) {
+                e.preventDefault();
+                chooseNewCriteria('exclusive');
             });
 
             // Setup events for elements mode

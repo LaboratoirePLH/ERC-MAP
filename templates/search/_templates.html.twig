@@ -10,10 +10,11 @@
 {% endset %}
 
 <div id="form-templates" class="d-none">
-    <div class="form-group row new-criteria" id="new-criteria-template">
+    <div class="form-group my-1 row align-items-center new-criteria" id="new-criteria-template">
         <label for="inputNewCriteria" class="col-sm-3 col-form-label">{{ 'search.choose_criteria'|trans }}</label>
         <div class="col">
-            <select class="form-control autocomplete" name="new_criteria" id="inputNewCriteria" data-placeholder="{{('autocomplete.select_element')|trans}}">
+            <select class="form-control autocomplete" name="new_criteria" id="inputNewCriteria"
+                data-placeholder="{{('autocomplete.select_element')|trans}}">
                 <option value></option>
                 {% for criteria in criteria_list %}
                     {% if criteria.children is defined %}
@@ -42,57 +43,60 @@
             </button>
         </div>
     </div>
-    <div class="form-group row" id="select-template">
+    <div class="form-group my-1 row align-items-center" id="select-template">
         <label class="col-sm-3 col-form-label" for="inputNameSelect"></label>
         <div class="col">
-            <select class="form-control autocomplete" name="name" id="inputNameSelect" size="1" multiple data-placeholder="{{('autocomplete.select_multiple')|trans}}">
+            <select class="form-control autocomplete" name="name" id="inputNameSelect" size="1" multiple
+                data-placeholder="{{('autocomplete.select_multiple')|trans}}">
                 <option value></option>
             </select>
         </div>
-        <div class="col-sm-2 select-strict">
-            <div class="custom-control custom-switch pt-2">
+        <div class="col-sm-2 select-strict d-flex flex-column justify-content-around align-items-center">
+            <div class="custom-control custom-switch">
                 <input type="checkbox" class="custom-control-input" id="name_mode" name="name_mode" value="all">
                 <label class="custom-control-label" for="name_mode">{{ 'generic.fields.require_all'|trans }}</label>
             </div>
         </div>
         {{ removeCriteriaButton }}
     </div>
-    <div class="form-group row align-items-center" id="locationselect-template">
+    <div class="form-group my-1 row align-items-center" id="locationselect-template">
         <label class="col-sm-3 col-form-label" for="inputNameSelect"></label>
         <div class="col">
-            <select class="form-control autocomplete" name="name" id="inputNameSelect" size="1" multiple data-placeholder="{{('autocomplete.select_multiple')|trans}}">
+            <select class="form-control autocomplete" name="name" id="inputNameSelect" size="1" multiple
+                data-placeholder="{{('autocomplete.select_multiple')|trans}}">
                 <option value></option>
             </select>
         </div>
-        <div class="col-sm-2">
-            <div class="custom-control custom-switch pt-2 select-strict">
+        <div class="col-sm-2 d-flex flex-column justify-content-around align-items-center">
+            <div class="custom-control custom-switch select-strict">
                 <input type="checkbox" class="custom-control-input" id="name_mode" name="name_mode" value="all">
                 <label class="custom-control-label" for="name_mode">{{ 'generic.fields.require_all'|trans }}</label>
             </div>
-            <div class="custom-control custom-switch pt-2 locationselect-direct">
+            <div class="custom-control custom-switch locationselect-direct">
                 <input type="checkbox" class="custom-control-input" id="name_direct" name="name_direct" value="direct">
                 <label class="custom-control-label" for="name_direct">{{ ('generic.fields.direct')|trans }}</label>
             </div>
         </div>
         {{ removeCriteriaButton }}
     </div>
-    <div class="form-group row" id="text-template">
+    <div class="form-group my-1 row align-items-center" id="text-template">
         <label class="col-sm-3 col-form-label" for="inputNameText"></label>
         <div class="col">
-            <input class="form-control flex-grow-1" type="text" name="name" id="inputNameText"/>
+            <input class="form-control flex-grow-1" type="text" name="name" id="inputNameText" />
         </div>
-        <div class="col-sm-2 text-strict">
-            <div class="custom-control custom-switch pt-2">
+        <div class="col-sm-2 text-strict d-flex flex-column justify-content-around align-items-center">
+            <div class="custom-control custom-switch">
                 <input type="checkbox" class="custom-control-input" id="name_mode" name="name_mode" value="strict">
                 <label class="custom-control-label" for="name_mode">{{ ('generic.fields.strict')|trans }}</label>
             </div>
         </div>
         {{ removeCriteriaButton }}
     </div>
-    <div class="form-group row" id="range-template">
+    <div class="form-group my-1 row align-items-center" id="range-template">
         <label class="col-sm-3 col-form-label" for="inputNameRange"></label>
         <div class="col">
-            <select class="form-control autocomplete-single" name="name" id="inputNameOperator" size="1" data-placeholder="{{('autocomplete.select_single')|trans}}">
+            <select class="form-control autocomplete-single" name="name" id="inputNameOperator" size="1"
+                data-placeholder="{{('autocomplete.select_single')|trans}}">
                 <option value=""></option>
                 <option value="eq">=</option>
                 <option value="neq">&ne;</option>
@@ -103,16 +107,18 @@
             </select>
         </div>
         <div class="col">
-            <select class="form-control autocomplete" name="name" id="inputNameValue" size="1" data-placeholder="{{('autocomplete.select_single')|trans}}">
+            <select class="form-control autocomplete" name="name" id="inputNameValue" size="1"
+                data-placeholder="{{('autocomplete.select_single')|trans}}">
                 <option value></option>
             </select>
         </div>
         {{ removeCriteriaButton }}
     </div>
-    <div class="form-group row" id="operation-template">
+    <div class="form-group my-1 row align-items-center" id="operation-template">
         <label class="col-sm-3 col-form-label" for="inputNameOperation"></label>
         <div class="col">
-            <select class="form-control autocomplete-single" name="name" id="inputNameOperator" size="1" data-placeholder="{{('autocomplete.select_single')|trans}}">
+            <select class="form-control autocomplete-single" name="name" id="inputNameOperator" size="1"
+                data-placeholder="{{('autocomplete.select_single')|trans}}">
                 <option value=""></option>
                 <option value="eq">=</option>
                 <option value="neq">&ne;</option>
@@ -127,17 +133,20 @@
         </div>
         {{ removeCriteriaButton }}
     </div>
-    <div class="form-group row" id="datation-template">
+    <div class="form-group my-1 row align-items-center" id="datation-template">
         <label class="col-sm-3 col-form-label" for="inputPostQuem#X#">{{ ('generic.fields.datation')|trans }}</label>
         <div class="col">
-            <input type="number" step="1" class="form-control" name="datation[#X#][post_quem]" id="inputPostQuem#X#" placeholder="{{('datation.fields.post_quem')|trans}}">
+            <input type="number" step="1" class="form-control" name="datation[#X#][post_quem]" id="inputPostQuem#X#"
+                placeholder="{{('datation.fields.post_quem')|trans}}">
         </div>
         <div class="col">
-            <input type="number" step="1" class="form-control" name="datation[#X#][ante_quem]" id="inputAnteQuem#X#" placeholder="{{('datation.fields.ante_quem')|trans}}">
+            <input type="number" step="1" class="form-control" name="datation[#X#][ante_quem]" id="inputAnteQuem#X#"
+                placeholder="{{('datation.fields.ante_quem')|trans}}">
         </div>
-        <div class="col-sm-2">
-            <div class="custom-control custom-switch pt-2">
-                <input type="checkbox" class="custom-control-input" id="inputDatationExact#X#" name="datation[#X#][exact]" value="datation_exact" checked>
+        <div class="col-sm-2 d-flex flex-column justify-content-around align-items-center">
+            <div class="custom-control custom-switch">
+                <input type="checkbox" class="custom-control-input" id="inputDatationExact#X#"
+                    name="datation[#X#][exact]" value="datation_exact" checked>
                 <label class="custom-control-label" for="inputDatationExact#X#">
                     {{ ('generic.fields.strict')|trans }}
                 </label>
@@ -145,19 +154,21 @@
         </div>
         {{ removeCriteriaButton }}
     </div>
-    <div class="form-group row" id="prosepoetry-template">
+    <div class="form-group my-1 row align-items-center" id="prosepoetry-template">
         <label class="col-sm-3 col-form-label">{{ 'attestation.fields.prose_poesie'|trans }}</label>
-        <div class="col-sm-2">
-            <div class="custom-control custom-switch pt-2 mr-2">
-                <input type="checkbox" class="custom-control-input" id="inputProse#X#" name="prosePoetry[#X#][]" value="prose">
+        <div class="col-sm-2 d-flex flex-column justify-content-around align-items-center">
+            <div class="custom-control custom-switch mr-2">
+                <input type="checkbox" class="custom-control-input" id="inputProse#X#" name="prosePoetry[#X#][]"
+                    value="prose">
                 <label class="custom-control-label" for="inputProse#X#">
                     {{ ('attestation.fields.prose')|trans }}
                 </label>
             </div>
         </div>
-        <div class="col-sm-2">
-            <div class="custom-control custom-switch pt-2 mr-2">
-                <input type="checkbox" class="custom-control-input" id="inputPoetry#X#" name="prosePoetry[#X#][]" value="poesie">
+        <div class="col-sm-2 d-flex flex-column justify-content-around align-items-center">
+            <div class="custom-control custom-switch mr-2">
+                <input type="checkbox" class="custom-control-input" id="inputPoetry#X#" name="prosePoetry[#X#][]"
+                    value="poesie">
                 <label class="custom-control-label" for="inputPoetry#X#">
                     {{ ('attestation.fields.poesie')|trans }}
                 </label>
@@ -166,19 +177,21 @@
         <div class="col">&nbsp;</div>
         {{ removeCriteriaButton }}
     </div>
-    <div class="form-group row" id="locationreal-template">
+    <div class="form-group my-1 row align-items-center" id="locationreal-template">
         <label class="col-sm-3 col-form-label">{{ 'generic.fields.localisation_reelle'|trans }}</label>
-        <div class="col-sm-2">
-            <div class="custom-control custom-switch pt-2 mr-2">
-                <input type="checkbox" class="custom-control-input" id="inputRealYes#X#" name="locationReal[]" value="yes">
+        <div class="col-sm-2 d-flex flex-column justify-content-around align-items-center">
+            <div class="custom-control custom-switch mr-2">
+                <input type="checkbox" class="custom-control-input" id="inputRealYes#X#" name="locationReal[]"
+                    value="yes">
                 <label class="custom-control-label" for="inputRealYes#X#">
                     {{ ('generic.choices.oui')|trans }}
                 </label>
             </div>
         </div>
-        <div class="col-sm-2">
-            <div class="custom-control custom-switch pt-2 mr-2">
-                <input type="checkbox" class="custom-control-input" id="inputRealNo#X#" name="locationReal[]" value="no">
+        <div class="col-sm-2 d-flex flex-column justify-content-around align-items-center">
+            <div class="custom-control custom-switch mr-2">
+                <input type="checkbox" class="custom-control-input" id="inputRealNo#X#" name="locationReal[]"
+                    value="no">
                 <label class="custom-control-label" for="inputRealNo#X#">
                     {{ ('generic.choices.non')|trans }}
                 </label>
@@ -187,18 +200,19 @@
         <div class="col">&nbsp;</div>
         {{ removeCriteriaButton }}
     </div>
-    <div class="form-group row" id="iconography-template">
+    <div class="form-group my-1 row align-items-center" id="iconography-template">
         <label class="col-sm-3 col-form-label">{{ 'source.fields.iconographie'|trans }}</label>
-        <div class="col-sm-2">
-            <div class="custom-control custom-switch pt-2 mr-2">
-                <input type="checkbox" class="custom-control-input" id="inputRealYes#X#" name="iconography[]" value="yes">
+        <div class="col-sm-2 d-flex flex-column justify-content-around align-items-center">
+            <div class="custom-control custom-switch mr-2">
+                <input type="checkbox" class="custom-control-input" id="inputRealYes#X#" name="iconography[]"
+                    value="yes">
                 <label class="custom-control-label" for="inputRealYes#X#">
                     {{ ('generic.choices.oui')|trans }}
                 </label>
             </div>
         </div>
-        <div class="col-sm-2">
-            <div class="custom-control custom-switch pt-2 mr-2">
+        <div class="col-sm-2 d-flex flex-column justify-content-around align-items-center">
+            <div class="custom-control custom-switch mr-2">
                 <input type="checkbox" class="custom-control-input" id="inputRealNo#X#" name="iconography[]" value="no">
                 <label class="custom-control-label" for="inputRealNo#X#">
                     {{ ('generic.choices.non')|trans }}
@@ -208,19 +222,21 @@
         <div class="col">&nbsp;</div>
         {{ removeCriteriaButton }}
     </div>
-    <div class="form-group row" id="elementsemitic-template">
+    <div class="form-group my-1 row align-items-center" id="elementsemitic-template">
         <label class="col-sm-3 col-form-label">{{ 'search.criteria_labels.element_semitique'|trans }}</label>
-        <div class="col-sm-2">
-            <div class="custom-control custom-switch pt-2 mr-2">
-                <input type="checkbox" class="custom-control-input" id="inputRealNo#X#" name="elementSemitic[]" value="no">
+        <div class="col-sm-2 d-flex flex-column justify-content-around align-items-center">
+            <div class="custom-control custom-switch mr-2">
+                <input type="checkbox" class="custom-control-input" id="inputRealNo#X#" name="elementSemitic[]"
+                    value="no">
                 <label class="custom-control-label" for="inputRealNo#X#">
                     {{ ('generic.languages.greek')|trans }}
                 </label>
             </div>
         </div>
-        <div class="col-sm-2">
-            <div class="custom-control custom-switch pt-2 mr-2">
-                <input type="checkbox" class="custom-control-input" id="inputRealYes#X#" name="elementSemitic[]" value="yes">
+        <div class="col-sm-2 d-flex flex-column justify-content-around align-items-center">
+            <div class="custom-control custom-switch mr-2">
+                <input type="checkbox" class="custom-control-input" id="inputRealYes#X#" name="elementSemitic[]"
+                    value="yes">
                 <label class="custom-control-label" for="inputRealYes#X#">
                     {{ ('generic.languages.semitic')|trans }}
                 </label>

@@ -42,7 +42,7 @@
                                 </li>
                                 {% for subvalue in value %}
                                     {% if subvalue is iterable and subvalue.values is defined %}
-                                        <li class="list-group-item">
+                                        <li class="list-group-item {{ subvalue.type|default('inclusive') == 'inclusive' ? 'bg-success-faded' : 'bg-warning-faded' }}">
                                             <strong>
                                                 <em>
                                                     {{ loop.index }}
@@ -56,13 +56,13 @@
                                             </strong>
                                         </li>
                                         {% for subsubvalue in subvalue.values %}
-                                            <li class="list-group-item">
+                                            <li class="list-group-item {{ subvalue.type|default('inclusive') == 'inclusive' ? 'bg-success-faded' : 'bg-warning-faded' }}">
                                                 &rarr;
                                                 {{ subsubvalue|raw }}
                                             </li>
                                         {% endfor %}
                                     {% elseif subvalue is iterable and subvalue.value is defined %}
-                                        <li class="list-group-item">
+                                        <li class="list-group-item {{ subvalue.type|default('inclusive') == 'inclusive' ? 'bg-success-faded' : 'bg-warning-faded' }}">
                                             {{ subvalue.value|raw }}
                                             {% if subvalue.mode|default('') == 'strict' %}
                                                 <strong>
@@ -72,13 +72,13 @@
                                         </li>
                                     {% elseif subvalue is iterable %}
                                         {% for subsubvalue in subvalue %}
-                                            <li class="list-group-item">
+                                            <li class="list-group-item {{ subvalue.type|default('inclusive') == 'inclusive' ? 'bg-success-faded' : 'bg-warning-faded' }}">
                                                 {{ subsubvalue|raw }}
                                             </li>
                                         {% endfor %}
                                     {% else %}
                                         {# If subvalue is not iterable #}
-                                        <li class="list-group-item">
+                                        <li class="list-group-item {{ subvalue.type|default('inclusive') == 'inclusive' ? 'bg-success-faded' : 'bg-warning-faded' }}">
                                             {{ subvalue|raw }}
                                         </li>
                                     {% endif %}

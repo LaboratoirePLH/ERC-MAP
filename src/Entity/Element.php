@@ -85,6 +85,10 @@ class Element extends AbstractEntity implements Interfaces\Located
      * @var \Doctrine\Common\Collections\Collection
      *
      * @ORM\OneToMany(targetEntity="ElementBiblio", mappedBy="element", orphanRemoval=true)
+     * @Assert\Expression(
+     *      "this.hasUniqueBiblio()",
+     *      message="unique_biblio"
+     * )
      */
     private $elementBiblios;
 
@@ -293,6 +297,17 @@ class Element extends AbstractEntity implements Interfaces\Located
             }
         }
         return $this;
+    }
+
+    public function hasUniqueBiblio(): bool
+    {
+        $biblios = [];
+        foreach ($this->getElementBiblios() as $eb) {
+            if ($eb->getBiblio() != null && $eb->getBiblio()->getId()) {
+                $biblios[] = $eb->getBiblio()->getId();
+            }
+        }
+        return count(array_unique($biblios)) == count($biblios);
     }
 
     /**

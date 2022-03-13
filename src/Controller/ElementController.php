@@ -109,7 +109,7 @@ class ElementController extends AbstractController
                 }
             }
             foreach ($element->getTheonymesImplicites() as $ti) {
-                if (!$em->contains($ti)) {
+                if ($ti !== null && !$em->contains($ti)) {
                     if ($ti->getEtatAbsolu() !== null) {
                         $ti->setCreateur($user);
                         $ti->setDernierEditeur($user);
@@ -120,7 +120,7 @@ class ElementController extends AbstractController
                 }
             }
             foreach ($element->getTheonymesConstruits() as $tc) {
-                if (!$em->contains($tc)) {
+                if ($tc !== null && !$em->contains($tc)) {
                     if ($tc->getEtatAbsolu() !== null) {
                         $tc->setCreateur($user);
                         $tc->setDernierEditeur($user);

@@ -317,6 +317,12 @@ class CriteriaList
                         'type'    => 'text',
                         'semitic' => true,
                     ],
+                    [
+                        'key'     => 'freeText',
+                        'label'   => $translator->trans('generic.fields.texte_libre'),
+                        'type'    => 'text',
+                        'semitic' => true,
+                    ],
                 ]
             ]
         ];

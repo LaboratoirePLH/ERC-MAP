@@ -71,8 +71,11 @@ class Criteria
         return $data;
     }
 
-    public function getDisplay(string $criteriaName, array $values, string $locale): array
+    public function getDisplay(string $criteriaName, $values, string $locale): array
     {
+        if ($criteriaName == 'freeText') {
+            return [$values];
+        }
         if ($criteriaName == 'datation') {
             return array_filter([
                 ((!is_null($values['post_quem']) && $values['post_quem'] !== "")
@@ -123,7 +126,8 @@ class Criteria
                         'names', 'names_mode',
                         'languages', 'languages_mode',
                         'datation', 'locations',
-                        'sourceTypes', 'agents'
+                        'sourceTypes', 'agents',
+                        'freeText'
                     ]
                 ) && !empty($value);
             },

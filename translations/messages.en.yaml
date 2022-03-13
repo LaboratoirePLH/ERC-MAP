@@ -128,6 +128,7 @@ generic:
         divers: "Miscellaneous"
         indetermine: "Undetermined"
         lien_direct: "Direct link"
+        texte_libre: "Free text"
     choices :
         new: "New"
         existing: "Existing"
@@ -587,6 +588,7 @@ search:
         element_en_contexte: "Name(s) in context"
         fiabilite_lecture: "Name quality of reading"
         element_semitique: "Element in Greek or Semitic ?"
+        freeText: "Free text"
     element_labels:
         added: "Added elements"
         add_new: "Add a new element"

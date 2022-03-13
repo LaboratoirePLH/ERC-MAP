@@ -13,22 +13,37 @@ class Advanced extends AbstractFilterSet
         $resultsType = $criteria['resultsType'];
         unset($criteria['resultsType']);
 
-        foreach($this->data as $e){
+        // Ensure comments criteria is at the end to improve performance
+        if (array_key_exists('comments', $criteria)) {
+            $commentsCriteria = $criteria['comments'];
+            unset($criteria['comments']);
+            $criteria['comments'] = $commentsCriteria;
+        }
+        // Ensure freeText criteria is at the end to improve performance
+        if (array_key_exists('freeText', $criteria)) {
+            $freeTextCriteria = $criteria['freeText'];
+            unset($criteria['freeText']);
+            $criteria['freeText'] = $freeTextCriteria;
+        }
+
+        foreach ($this->data as $e) {
 
             // Only examine data of the requested type
-            if(strtolower($e->getEntite()) != $resultsType) { continue; }
+            if (strtolower($e->getEntite()) != $resultsType) {
+                continue;
+            }
 
-            foreach($criteria as $criteriaName => $criteriaValues){
+            foreach ($criteria as $criteriaName => $criteriaValues) {
                 // Compute fully qualified classname from criteria name
                 $cls = '\\App\\Search\\Filter\\' . ucfirst($criteriaName);
 
                 // If class is not found, return empty array with default lifetime and default tag
-                if(!class_exists($cls)){
+                if (!class_exists($cls)) {
                     throw new \InvalidArgumentException("Could not find class '$cls' to process criteria $criteriaName");
                 }
 
                 $criteriaAccepted = $cls::filter($e, $criteriaValues, $this->sortedData);
-                if(!$criteriaAccepted){
+                if (!$criteriaAccepted) {
                     continue 2; // Ignore current record, because it did not match the filter
                 }
             }

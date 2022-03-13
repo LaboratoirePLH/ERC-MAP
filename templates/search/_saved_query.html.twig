@@ -45,6 +45,13 @@
                                 {{ values|length }}
                             </span>
                         </div>
+                    {% elseif label == 'freeText' %}
+                    <div class="border border-color-map-yellow rounded p-2 mr-1 my-1">
+                        {{ ('generic.fields.texte_libre')|trans }}
+                        <span class="badge badge-primary">
+                            {{ values|join(' ; ') }}
+                        </span>
+                    </div>
                     {% endif %}
                 {% endfor %}
 

@@ -62,6 +62,15 @@ class Guided extends AbstractFilterSet
                     continue;
                 }
             }
+            if (array_key_exists('freeText', $criteria) && !empty($criteria['freeText'])) {
+                $crit = [[
+                    "value" => $criteria['freeText'],
+                    "mode"  => "loose"
+                ]];
+                if (!\App\Search\Filter\FreeText::filter($e, $crit, $this->sortedData)) {
+                    continue;
+                }
+            }
 
             $filtered[] = $e;
         }

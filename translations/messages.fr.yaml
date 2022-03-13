@@ -284,6 +284,7 @@ attestation:
     list_for_source: "Attestations de la Source #%id%"
     list_for_element: "Attestations liées à l'Élément #%id%"
     view: "Visualiser l'Attestation #%id%"
+    view_element: "Visualiser l'Élément"
     create: "Créer une Attestation"
     create_for_source: "Créer une Attestation pour la Source #%id%"
     edit: "Modifier l'Attestation #%id%"

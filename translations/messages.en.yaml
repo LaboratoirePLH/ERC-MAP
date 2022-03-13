@@ -285,6 +285,7 @@ attestation:
     list_for_source: "Testimonies of Source #%id%"
     list_for_element: "Testimonies linked to Element #%id%"
     view: "View Testimony #%id%"
+    view_element: "View Element"
     create: "Create Testimony"
     create_for_source: "Create Testimony for Source #%id%"
     edit: "Edit Testimony #%id%"

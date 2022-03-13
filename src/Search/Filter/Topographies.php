@@ -13,21 +13,30 @@ class Topographies extends AbstractFilter
 
         // We get all the resolved locations
         $localisations = self::resolveLocalisations($entity, $sortedData);
+        // If we have at least one criteria with the direct flag, we compute the direct locations
+        $hasDirectFilter = !!count(array_column($criteria, "direct"));
+        $directLocalisations = $hasDirectFilter ? self::resolveLocalisations($entity, $sortedData, false) : [];
 
         // For each location, we get its topographies IDs
         $data = array_map(function ($l) {
             return array_column($l['topographies'] ?? [], 'id');
         }, $localisations);
+        $directData = array_map(function ($l) {
+            return array_column($l['topographies'] ?? [], 'id');
+        }, $directLocalisations);
 
         // For each criteria entry, we will get a boolean result of whether the entry is valid against the data
         // We need at least one truthy value to accept the data
-        return !!count(array_filter(array_map(function ($crit) use ($data) {
+        return !!count(array_filter(array_map(function ($crit) use ($data, $directData) {
             $requireAll = ($crit['mode'] ?? 'one') === 'all';
+            $isDirect = ($crit['direct'] ?? 'indirect') === 'direct';
+            $filterData = $isDirect ? $directData : $data;
+
             $crit = array_filter($crit['values']);
 
             // We count the matched criteria values
             $matched = 0;
-            foreach ($data as $d) {
+            foreach ($filterData as $d) {
                 // $d contains all the topographies linked to a single location
                 // If we require all values to be matched we must find at least as many as the criteria values
                 // Else we only need one

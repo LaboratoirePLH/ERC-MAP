@@ -525,6 +525,10 @@
 
                             Object.values(values).forEach((value, index) => {
                                 switch (criteria.type) {
+                                    case 'locationselect':
+                                        if (value.hasOwnProperty('direct') && value.direct === "direct") {
+                                            $('#advanced').find('input[name="' + criteriaName + '[' + index + '][direct]"]').attr('checked', true);
+                                        }
                                     case 'select':
                                         $('#advanced').find('select[name="' + criteriaName + '[' + index + '][values][]"]').val(value.values).trigger('chosen:updated');
                                         if (value.hasOwnProperty('mode') && value.mode === "all") {
@@ -765,6 +769,12 @@
 
                 // Set required properties depending on input type
                 switch (criteria.type) {
+                    case 'locationselect':
+                        var index = $("#advanced").find('select[name^="' + criteria.key + '"]').length;
+                        var inputId = 'input' + criteria.key.charAt(0).toUpperCase() + criteria.key.slice(1);
+                        var inputName = criteria.key + '[' + index + '][values][]';
+                        template.find('.locationselect-direct').find('label').prop('for', inputId + 'Direct_' + index);
+                        template.find('.locationselect-direct').find('input').prop('id', inputId + 'Direct_' + index).prop('name', criteria.key + '[' + index + '][direct]');
                     case 'select':
                         // Compute an index based on the number of same name selects already added
                         var index = $("#advanced").find('select[name^="' + criteria.key + '"]').length;

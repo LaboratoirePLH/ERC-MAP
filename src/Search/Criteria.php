@@ -311,6 +311,14 @@ class Criteria
                             return $v;
                         }, $value);
                         break;
+                    case 'locationselect':
+                        $criteriaValues = array_map(function ($v) use ($key, $locale) {
+                            $v['values'] = $this->getDisplay($key, $v['values'], $locale);
+                            $v['mode'] = $v['mode'] ?? 'one';
+                            $v['direct'] = $v['direct'] ?? 'indirect';
+                            return $v;
+                        }, $value);
+                        break;
                     default:
                         throw new \InvalidArgumentException("Criteria $key (with value '" . json_encode($value) . "') is not of an accepted type ('{$criteriaSettings['type']}')");
                 }

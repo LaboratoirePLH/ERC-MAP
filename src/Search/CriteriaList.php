@@ -128,7 +128,7 @@ class CriteriaList
             [
                 'key'      => 'locations',
                 'label'    => $translator->trans('generic.fields.localisation'),
-                'type'     => 'select',
+                'type'     => 'locationselect',
                 'semitic'  => false,
                 'children' => [
                     // [
@@ -140,13 +140,13 @@ class CriteriaList
                     [
                         'key'     => 'politicalEntities',
                         'label'   => $translator->trans('localisation.fields.entite_politique'),
-                        'type'    => 'select',
+                        'type'    => 'locationselect',
                         'semitic' => false,
                     ],
                     [
                         'key'     => 'citiesSites',
                         'label'   => $translator->trans('localisation.fields.ville') . ' / ' . $translator->trans('localisation.fields.site'),
-                        'type'    => 'select',
+                        'type'    => 'locationselect',
                         'semitic' => false,
                     ],
                     // [
@@ -175,13 +175,13 @@ class CriteriaList
                     [
                         'key'     => 'topographies',
                         'label'   => $translator->trans('localisation.fields.topographie'),
-                        'type'    => 'select',
+                        'type'    => 'locationselect',
                         'semitic' => false,
                     ],
                     [
                         'key'     => 'functions',
                         'label'   => $translator->trans('localisation.fields.fonction'),
-                        'type'    => 'select',
+                        'type'    => 'locationselect',
                         'semitic' => false,
                     ],
                     [

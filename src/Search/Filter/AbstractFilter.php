@@ -143,13 +143,13 @@ abstract class AbstractFilter
         return [];
     }
 
-    public static function resolveLocalisations(IndexRecherche $e, array $sortedData): array
+    public static function resolveLocalisations(IndexRecherche $e, array $sortedData, bool $allowIndirect = true): array
     {
         $eData = $e->getData();
         if ($e->getEntite() === 'Element') {
 
             return array_filter(array_reduce(
-                self::resolveAttestations($e, $sortedData),
+                $allowIndirect ? self::resolveAttestations($e, $sortedData) : [],
                 function ($result, $attestation) use ($sortedData) {
                     return array_merge($result, self::resolveLocalisations($attestation, $sortedData));
                 },
@@ -158,7 +158,7 @@ abstract class AbstractFilter
         } else if ($e->getEntite() === 'Attestation') {
             // Get own localisation and the ones from the sources
             return array_filter(array_reduce(
-                self::resolveSources($e, $sortedData),
+                $allowIndirect ? self::resolveSources($e, $sortedData) : [],
                 function ($result, $source) use ($sortedData) {
                     return array_merge($result, self::resolveLocalisations($source, $sortedData));
                 },

@@ -13,18 +13,24 @@ class Locations extends AbstractFilter
 
         // We get all the resolved locations
         $data = self::resolveLocalisations($entity, $sortedData);
+        // If we have at least one criteria with the direct flag, we compute the direct locations
+        $hasDirectFilter = !!count(array_column($criteria, "direct"));
+        $directData = $hasDirectFilter ? self::resolveLocalisations($entity, $sortedData, false) : [];
 
         // For each criteria entry, we will get a boolean result of whether the entry is valid against the data
         // We need at least one truthy value to accept the data
-        return !!count(array_filter(array_map(function ($crit) use ($data) {
+        return !!count(array_filter(array_map(function ($crit) use ($data, $directData) {
             $requireAll = ($crit['mode'] ?? 'one') === 'all';
+            $isDirect = ($crit['direct'] ?? 'indirect') === 'direct';
+            $filterData = $isDirect ? $directData : $data;
+
             // Each criteria entry value is a json encoded array
             $crit = array_map('json_decode', array_filter($crit['values']));
 
             // We count the matched criteria values
             $matched = 0;
             foreach ($crit as $c) {
-                foreach ($data as $d) {
+                foreach ($filterData as $d) {
                     switch (count($c)) {
                         case 1: // Single ID is greater region
                             if (array_key_exists('grandeRegion', $d) && $c[0] === ($d['grandeRegion']['id'] ?? null)) {

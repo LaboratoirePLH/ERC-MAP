@@ -49,6 +49,9 @@
                                                     {% if subvalue.mode == "all" %}
                                                         {{ 'search.criteria_labels.all'|trans }}
                                                     {% endif %}
+                                                    {% if subvalue.direct == "direct" %}
+                                                        {{ 'search.criteria_labels.direct'|trans }}
+                                                    {% endif %}
                                                 </em>
                                             </strong>
                                         </li>

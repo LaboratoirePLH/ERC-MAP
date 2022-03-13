@@ -73,8 +73,9 @@ class ListController extends AbstractController
                 })->toArray(),
                 'region'        => $region,
                 'datation'      => $source->getEstDatee() ? implode(' / ', [$source->getDatation()->getPostQuem() ?? '?', $source->getDatation()->getAnteQuem() ?? '?']) : '',
-                'titre_abrege'  => $source->getEditionPrincipaleBiblio()->getBiblio()->getTitreAbrege(),
-                'reference'     => $source->getEditionPrincipaleBiblio()->getReferenceSource(),
+                'titre_abrege'  => ($source->getEditionPrincipaleBiblio() !== null && $source->getEditionPrincipaleBiblio()->getBiblio() !== null)
+                    ? $source->getEditionPrincipaleBiblio()->getBiblio()->getTitreAbrege() : '',
+                'reference'     => $source->getEditionPrincipaleBiblio() !== null ? $source->getEditionPrincipaleBiblio()->getReferenceSource() : '',
                 'date_creation' => [
                     'display'   => $source->getDateCreation()->format($datetimeFormat),
                     'timestamp' => $source->getDateCreation()->getTimestamp(),

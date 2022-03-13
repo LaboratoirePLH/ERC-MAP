@@ -46,10 +46,10 @@
                                             <strong>
                                                 <em>
                                                     {{ loop.index }}
-                                                    {% if subvalue.mode == "all" %}
+                                                    {% if (subvalue.mode|default('')) == "all" %}
                                                         {{ 'search.criteria_labels.all'|trans }}
                                                     {% endif %}
-                                                    {% if subvalue.direct == "direct" %}
+                                                    {% if (subvalue.direct|default('')) == "direct" %}
                                                         {{ 'search.criteria_labels.direct'|trans }}
                                                     {% endif %}
                                                 </em>

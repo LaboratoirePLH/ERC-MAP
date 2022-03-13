@@ -197,6 +197,12 @@ class CriteriaList
                 'type'     => null,
                 'children' => [
                     [
+                        'key'     => 'sourceBibliography',
+                        'label'   => $translator->trans('source.fields.reference_bibliographique'),
+                        'type'    => 'select',
+                        'semitic' => false,
+                    ],
+                    [
                         'key'     => 'sourceTypes',
                         'label'   => $translator->trans('source.fields.type_source'),
                         'type'    => 'select',

@@ -593,6 +593,8 @@ search:
         fiabilite_lecture: "Qualité de lecture du nom"
         element_semitique: "Élément en Grec ou Sémitique ?"
         freeText: "Texte libre"
+        source_id: "ID de Source"
+        attestation_id: "ID d'Attestation"
     element_labels:
         added: "Éléments ajoutés"
         add_new: "Ajouter un nouvel élément"

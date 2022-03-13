@@ -595,6 +595,8 @@ search:
         fiabilite_lecture: "Name quality of reading"
         element_semitique: "Element in Greek or Semitic ?"
         freeText: "Free text"
+        source_id: "Source ID"
+        attestation_id: "Testimony ID"
     element_labels:
         added: "Added elements"
         add_new: "Add a new element"

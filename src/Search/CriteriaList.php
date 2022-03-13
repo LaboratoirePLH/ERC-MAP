@@ -226,6 +226,12 @@ class CriteriaList
                         'type'    => 'iconography',
                         'semitic' => false,
                     ],
+                    [
+                        'key'     => 'sourceIds',
+                        'label'   => $translator->trans('search.criteria_labels.source_id'),
+                        'type'    => 'select',
+                        'semitic' => false,
+                    ],
                 ]
             ],
             [
@@ -303,6 +309,12 @@ class CriteriaList
                         'key'   => 'divinePowersCount',
                         'label' => $translator->trans('formule.fields.compte_puissances_divines'),
                         'type'  => 'operation',
+                    ],
+                    [
+                        'key'     => 'testimonyIds',
+                        'label'   => $translator->trans('search.criteria_labels.attestation_id'),
+                        'type'    => 'select',
+                        'semitic' => false,
                     ],
                 ]
             ],

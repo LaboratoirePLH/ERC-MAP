@@ -44,13 +44,13 @@ class AttestationController extends AbstractController
     }
 
     /**
-     * @Route("/attestation/source/{source_id}", name="attestation_source")
+     * @Route("/attestation/source/{source_id}", name="attestation_source", requirements={"source_id"="\d+"})
      */
     public function indexSource($source_id, Request $request, TranslatorInterface $translator)
     {
         $source = $this->getDoctrine()
             ->getRepository(Source::class)
-            ->find($source_id);
+            ->find(intval($source_id));
         if (is_null($source)) {
             $request->getSession()->getFlashBag()->add(
                 'error',
@@ -73,13 +73,13 @@ class AttestationController extends AbstractController
     }
 
     /**
-     * @Route("/attestation/element/{element_id}", name="attestation_element")
+     * @Route("/attestation/element/{element_id}", name="attestation_element", requirements={"element_id"="\d+"})
      */
     public function indexForElement($element_id, Request $request, TranslatorInterface $translator)
     {
         $element = $this->getDoctrine()
             ->getRepository(Element::class)
-            ->find($element_id);
+            ->find(intval($element_id));
         if (is_null($element)) {
             $request->getSession()->getFlashBag()->add(
                 'error',
@@ -128,7 +128,7 @@ class AttestationController extends AbstractController
     }
 
     /**
-     * @Route("/attestation/create/{source_id}", name="attestation_create_source")
+     * @Route("/attestation/create/{source_id}", name="attestation_create_source", requirements={"source_id"="\d+"})
      */
     public function createForSource($source_id, Request $request, TranslatorInterface $translator)
     {
@@ -138,7 +138,7 @@ class AttestationController extends AbstractController
 
         $source = $this->getDoctrine()
             ->getRepository(Source::class)
-            ->find($source_id);
+            ->find(intval($source_id));
         if (is_null($source)) {
             $request->getSession()->getFlashBag()->add(
                 'error',
@@ -150,7 +150,7 @@ class AttestationController extends AbstractController
         if (($cloneId = $request->query->get('cloneFrom', null)) !== null) {
             $attestation = $this->getDoctrine()
                 ->getRepository(Attestation::class)
-                ->find($cloneId);
+                ->find(intval($cloneId));
 
             if (is_null($attestation)) {
                 $request->getSession()->getFlashBag()->add(
@@ -275,7 +275,7 @@ class AttestationController extends AbstractController
     }
 
     /**
-     * @Route("/attestation/cancelcreate/{source_id}", name="attestation_cancelcreate")
+     * @Route("/attestation/cancelcreate/{source_id}", name="attestation_cancelcreate", requirements={"source_id"="\d+"})
      */
     public function cancelcreate($source_id, Request $request)
     {
@@ -284,7 +284,7 @@ class AttestationController extends AbstractController
         $user = $this->get('security.token_storage')->getToken()->getUser();
         $source = $this->getDoctrine()
             ->getRepository(Source::class)
-            ->find($source_id);
+            ->find(intval($source_id));
         $verrou = $source->getVerrou();
         if ($verrou !== null && $verrou->isWritable($user)) {
             $this->getDoctrine()->getRepository(VerrouEntite::class)->remove($verrou);
@@ -294,13 +294,13 @@ class AttestationController extends AbstractController
 
 
     /**
-     * @Route("/attestation/{id}", name="attestation_show")
+     * @Route("/attestation/{id}", name="attestation_show", requirements={"id"="\d+"})
      */
     public function show($id, Request $request, TranslatorInterface $translator)
     {
         $attestation = $this->getDoctrine()
             ->getRepository(Attestation::class)
-            ->find($id);
+            ->find(intval($id));
         if (is_null($attestation)) {
             $request->getSession()->getFlashBag()->add(
                 'error',
@@ -325,7 +325,7 @@ class AttestationController extends AbstractController
     }
 
     /**
-     * @Route("/attestation/{id}/edit", name="attestation_edit")
+     * @Route("/attestation/{id}/edit", name="attestation_edit", requirements={"id"="\d+"})
      */
     public function edit($id, Request $request, TranslatorInterface $translator)
     {
@@ -335,7 +335,7 @@ class AttestationController extends AbstractController
 
         $attestation = $this->getDoctrine()
             ->getRepository(Attestation::class)
-            ->find($id);
+            ->find(intval($id));
 
         if (is_null($attestation)) {
             $request->getSession()->getFlashBag()->add(
@@ -483,7 +483,7 @@ class AttestationController extends AbstractController
     }
 
     /**
-     * @Route("/attestation/{id}/canceledit", name="attestation_canceledit")
+     * @Route("/attestation/{id}/canceledit", name="attestation_canceledit", requirements={"id"="\d+"})
      */
     public function canceledit($id, Request $request)
     {
@@ -492,7 +492,7 @@ class AttestationController extends AbstractController
         $user = $this->get('security.token_storage')->getToken()->getUser();
         $attestation = $this->getDoctrine()
             ->getRepository(Attestation::class)
-            ->find($id);
+            ->find(intval($id));
         $verrou = $attestation->getSource()->getVerrou();
         if ($verrou !== null && $verrou->isWritable($user)) {
             $this->getDoctrine()->getRepository(VerrouEntite::class)->remove($verrou);
@@ -501,7 +501,7 @@ class AttestationController extends AbstractController
     }
 
     /**
-     * @Route("/attestation/{id}/delete", name="attestation_delete")
+     * @Route("/attestation/{id}/delete", name="attestation_delete", requirements={"id"="\d+"})
      */
     public function delete($id, Request $request, TranslatorInterface $translator)
     {
@@ -512,7 +512,7 @@ class AttestationController extends AbstractController
 
         if ($this->isCsrfTokenValid('delete_attestation', $submittedToken)) {
             $repository = $this->getDoctrine()->getRepository(Attestation::class);
-            $attestation = $repository->find($id);
+            $attestation = $repository->find(intval($id));
             if ($attestation instanceof Attestation) {
                 if ($this->isGranted('ROLE_ADMIN')) {
                     $user = $this->get('security.token_storage')->getToken()->getUser();

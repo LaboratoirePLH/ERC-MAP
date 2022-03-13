@@ -41,13 +41,13 @@ class ElementController extends AbstractController
     }
 
     /**
-     * @Route("/element/attestation/{attestation_id}", name="element_attestation")
+     * @Route("/element/attestation/{attestation_id}", name="element_attestation", requirements={"attestation_id"="\d+"})
      */
     public function indexAttestation($attestation_id, Request $request, TranslatorInterface $translator)
     {
         $attestation = $this->getDoctrine()
             ->getRepository(Attestation::class)
-            ->find($attestation_id);
+            ->find(intval($attestation_id));
         if (is_null($attestation)) {
             $request->getSession()->getFlashBag()->add(
                 'error',
@@ -156,13 +156,13 @@ class ElementController extends AbstractController
     }
 
     /**
-     * @Route("/element/{id}", name="element_show")
+     * @Route("/element/{id}", name="element_show", requirements={"id"="\d+"})
      */
     public function show($id, Request $request, TranslatorInterface $translator)
     {
         $element = $this->getDoctrine()
             ->getRepository(Element::class)
-            ->find($id);
+            ->find(intval($id));
 
         if (is_null($element)) {
             $request->getSession()->getFlashBag()->add(
@@ -188,7 +188,7 @@ class ElementController extends AbstractController
     }
 
     /**
-     * @Route("/element/{id}/edit", name="element_edit")
+     * @Route("/element/{id}/edit", name="element_edit", requirements={"id"="\d+"})
      */
     public function edit($id, Request $request, TranslatorInterface $translator)
     {
@@ -197,7 +197,7 @@ class ElementController extends AbstractController
         $user = $this->get('security.token_storage')->getToken()->getUser();
         $element = $this->getDoctrine()
             ->getRepository(Element::class)
-            ->find($id);
+            ->find(intval($id));
         if (is_null($element)) {
             $request->getSession()->getFlashBag()->add(
                 'error',
@@ -301,7 +301,7 @@ class ElementController extends AbstractController
     }
 
     /**
-     * @Route("/element/{id}/canceledit", name="element_canceledit")
+     * @Route("/element/{id}/canceledit", name="element_canceledit", requirements={"id"="\d+"})
      */
     public function canceledit($id, Request $request)
     {
@@ -310,7 +310,7 @@ class ElementController extends AbstractController
         $user = $this->get('security.token_storage')->getToken()->getUser();
         $element = $this->getDoctrine()
             ->getRepository(Element::class)
-            ->find($id);
+            ->find(intval($id));
         $verrou = $this->getDoctrine()->getRepository(VerrouEntite::class)->fetch($element);
         if ($verrou !== null && $verrou->isWritable($user)) {
             $this->getDoctrine()->getRepository(VerrouEntite::class)->remove($verrou);
@@ -319,7 +319,7 @@ class ElementController extends AbstractController
     }
 
     /**
-     * @Route("/element/{id}/delete", name="element_delete")
+     * @Route("/element/{id}/delete", name="element_delete", requirements={"id"="\d+"})
      */
     public function delete($id, Request $request, TranslatorInterface $translator)
     {
@@ -330,7 +330,7 @@ class ElementController extends AbstractController
 
         if ($this->isCsrfTokenValid('delete_element', $submittedToken)) {
             $repository = $this->getDoctrine()->getRepository(Element::class);
-            $element = $repository->find($id);
+            $element = $repository->find(intval($id));
             if ($element instanceof Element) {
                 if ($this->isGranted('ROLE_ADMIN')) {
                     $verrou = $element->getVerrou();

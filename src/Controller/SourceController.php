@@ -41,13 +41,13 @@ class SourceController extends AbstractController
     }
 
     /**
-     * @Route("/source/element/{element_id}", name="source_element")
+     * @Route("/source/element/{element_id}", name="source_element", requirements={"element_id"="\d+"})
      */
     public function indexForElement($element_id, Request $request, TranslatorInterface $translator)
     {
         $element = $this->getDoctrine()
             ->getRepository(Element::class)
-            ->find($element_id);
+            ->find(intval($element_id));
         if (is_null($element)) {
             $request->getSession()->getFlashBag()->add(
                 'error',
@@ -68,13 +68,13 @@ class SourceController extends AbstractController
     }
 
     /**
-     * @Route("/source/element/{element_id}/webmapping", name="source_element_webmapping")
+     * @Route("/source/element/{element_id}/webmapping", name="source_element_webmapping", requirements={"element_id"="\d+"})
      */
     public function indexForElementWebmapping($element_id, Request $request, TranslatorInterface $translator)
     {
         $element = $this->getDoctrine()
             ->getRepository(Element::class)
-            ->find($element_id);
+            ->find(intval($element_id));
         if (is_null($element)) {
             $request->getSession()->getFlashBag()->add(
                 'error',
@@ -111,7 +111,7 @@ class SourceController extends AbstractController
         if (($cloneId = $request->query->get('cloneFrom', null)) !== null) {
             $source = $this->getDoctrine()
                 ->getRepository(Source::class)
-                ->find($cloneId);
+                ->find(intval($cloneId));
 
             if (is_null($source)) {
                 $request->getSession()->getFlashBag()->add(
@@ -201,13 +201,13 @@ class SourceController extends AbstractController
     }
 
     /**
-     * @Route("/source/{id}", name="source_show")
+     * @Route("/source/{id}", name="source_show", requirements={"id"="\d+"})
      */
     public function show($id, Request $request, TranslatorInterface $translator)
     {
         $source = $this->getDoctrine()
             ->getRepository(Source::class)
-            ->find($id);
+            ->find(intval($id));
         if (is_null($source)) {
             $request->getSession()->getFlashBag()->add(
                 'error',
@@ -229,7 +229,7 @@ class SourceController extends AbstractController
     }
 
     /**
-     * @Route("/source/{id}/edit", name="source_edit")
+     * @Route("/source/{id}/edit", name="source_edit", requirements={"id"="\d+"})
      */
     public function edit($id, Request $request, TranslatorInterface $translator)
     {
@@ -239,7 +239,7 @@ class SourceController extends AbstractController
 
         $source = $this->getDoctrine()
             ->getRepository(Source::class)
-            ->find($id);
+            ->find(intval($id));
 
         if (is_null($source)) {
             $request->getSession()->getFlashBag()->add(
@@ -345,7 +345,7 @@ class SourceController extends AbstractController
     }
 
     /**
-     * @Route("/source/{id}/canceledit", name="source_canceledit")
+     * @Route("/source/{id}/canceledit", name="source_canceledit", requirements={"id"="\d+"})
      */
     public function canceledit($id, Request $request)
     {
@@ -354,7 +354,7 @@ class SourceController extends AbstractController
         $user = $this->get('security.token_storage')->getToken()->getUser();
         $source = $this->getDoctrine()
             ->getRepository(Source::class)
-            ->find($id);
+            ->find(intval($id));
         $verrou = $this->getDoctrine()->getRepository(VerrouEntite::class)->fetch($source);
         if ($verrou !== null && $verrou->isWritable($user)) {
             $this->getDoctrine()->getRepository(VerrouEntite::class)->remove($verrou);
@@ -363,7 +363,7 @@ class SourceController extends AbstractController
     }
 
     /**
-     * @Route("/source/{id}/delete", name="source_delete")
+     * @Route("/source/{id}/delete", name="source_delete", requirements={"id"="\d+"})
      */
     public function delete($id, Request $request, TranslatorInterface $translator)
     {
@@ -375,7 +375,7 @@ class SourceController extends AbstractController
         if ($this->isCsrfTokenValid('delete_source', $submittedToken)) {
             $user = $this->get('security.token_storage')->getToken()->getUser();
             $repository = $this->getDoctrine()->getRepository(Source::class);
-            $source = $repository->find($id);
+            $source = $repository->find(intval($id));
             if ($source instanceof Source) {
                 if ($this->isGranted('ROLE_ADMIN')) {
                     $verrou = $source->getVerrou();

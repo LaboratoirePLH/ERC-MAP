@@ -41,7 +41,7 @@ class ElementController extends AbstractController
     }
 
     /**
-     * @Route("/element/attestation/{attestation_id}", name="element_attestation", requirements={"attestation_id"="\d+"})
+     * @Route("/element/attestation/{attestation_id}", name="element_attestation")
      */
     public function indexAttestation($attestation_id, Request $request, TranslatorInterface $translator)
     {
@@ -156,7 +156,7 @@ class ElementController extends AbstractController
     }
 
     /**
-     * @Route("/element/{id}", name="element_show", requirements={"id"="\d+"})
+     * @Route("/element/{id}", name="element_show")
      */
     public function show($id, Request $request, TranslatorInterface $translator)
     {
@@ -188,7 +188,7 @@ class ElementController extends AbstractController
     }
 
     /**
-     * @Route("/element/{id}/edit", name="element_edit", requirements={"id"="\d+"})
+     * @Route("/element/{id}/edit", name="element_edit")
      */
     public function edit($id, Request $request, TranslatorInterface $translator)
     {
@@ -301,7 +301,7 @@ class ElementController extends AbstractController
     }
 
     /**
-     * @Route("/element/{id}/canceledit", name="element_canceledit", requirements={"id"="\d+"})
+     * @Route("/element/{id}/canceledit", name="element_canceledit")
      */
     public function canceledit($id, Request $request)
     {
@@ -319,7 +319,7 @@ class ElementController extends AbstractController
     }
 
     /**
-     * @Route("/element/{id}/delete", name="element_delete", requirements={"id"="\d+"})
+     * @Route("/element/{id}/delete", name="element_delete")
      */
     public function delete($id, Request $request, TranslatorInterface $translator)
     {

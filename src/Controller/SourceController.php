@@ -41,7 +41,7 @@ class SourceController extends AbstractController
     }
 
     /**
-     * @Route("/source/element/{element_id}", name="source_element", requirements={"element_id"="\d+"})
+     * @Route("/source/element/{element_id}", name="source_element")
      */
     public function indexForElement($element_id, Request $request, TranslatorInterface $translator)
     {
@@ -68,7 +68,7 @@ class SourceController extends AbstractController
     }
 
     /**
-     * @Route("/source/element/{element_id}/webmapping", name="source_element_webmapping", requirements={"element_id"="\d+"})
+     * @Route("/source/element/{element_id}/webmapping", name="source_element_webmapping")
      */
     public function indexForElementWebmapping($element_id, Request $request, TranslatorInterface $translator)
     {
@@ -201,7 +201,7 @@ class SourceController extends AbstractController
     }
 
     /**
-     * @Route("/source/{id}", name="source_show", requirements={"id"="\d+"})
+     * @Route("/source/{id}", name="source_show")
      */
     public function show($id, Request $request, TranslatorInterface $translator)
     {
@@ -229,7 +229,7 @@ class SourceController extends AbstractController
     }
 
     /**
-     * @Route("/source/{id}/edit", name="source_edit", requirements={"id"="\d+"})
+     * @Route("/source/{id}/edit", name="source_edit")
      */
     public function edit($id, Request $request, TranslatorInterface $translator)
     {
@@ -345,7 +345,7 @@ class SourceController extends AbstractController
     }
 
     /**
-     * @Route("/source/{id}/canceledit", name="source_canceledit", requirements={"id"="\d+"})
+     * @Route("/source/{id}/canceledit", name="source_canceledit")
      */
     public function canceledit($id, Request $request)
     {
@@ -363,7 +363,7 @@ class SourceController extends AbstractController
     }
 
     /**
-     * @Route("/source/{id}/delete", name="source_delete", requirements={"id"="\d+"})
+     * @Route("/source/{id}/delete", name="source_delete")
      */
     public function delete($id, Request $request, TranslatorInterface $translator)
     {

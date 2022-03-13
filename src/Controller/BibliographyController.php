@@ -87,7 +87,7 @@ class BibliographyController extends AbstractController
     }
 
     /**
-     * @Route("/bibliography/{id}", name="bibliography_show", requirements={"id"="\d+"})
+     * @Route("/bibliography/{id}", name="bibliography_show")
      */
     public function show($id, Request $request, TranslatorInterface $translator)
     {
@@ -118,7 +118,7 @@ class BibliographyController extends AbstractController
     }
 
     /**
-     * @Route("/bibliography/{id}/edit", name="bibliography_edit", requirements={"id"="\d+"})
+     * @Route("/bibliography/{id}/edit", name="bibliography_edit")
      */
     public function edit($id, Request $request, TranslatorInterface $translator)
     {
@@ -190,7 +190,7 @@ class BibliographyController extends AbstractController
     }
 
     /**
-     * @Route("/biblio/{id}/canceledit", name="biblio_canceledit", requirements={"id"="\d+"})
+     * @Route("/biblio/{id}/canceledit", name="biblio_canceledit")
      */
     public function canceledit($id, Request $request)
     {
@@ -208,7 +208,7 @@ class BibliographyController extends AbstractController
     }
 
     /**
-     * @Route("/bibliography/{id}/delete", name="bibliography_delete", requirements={"id"="\d+"})
+     * @Route("/bibliography/{id}/delete", name="bibliography_delete")
      */
     public function delete($id, Request $request, TranslatorInterface $translator)
     {

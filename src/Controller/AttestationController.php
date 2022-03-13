@@ -44,7 +44,7 @@ class AttestationController extends AbstractController
     }
 
     /**
-     * @Route("/attestation/source/{source_id}", name="attestation_source", requirements={"source_id"="\d+"})
+     * @Route("/attestation/source/{source_id}", name="attestation_source")
      */
     public function indexSource($source_id, Request $request, TranslatorInterface $translator)
     {
@@ -73,7 +73,7 @@ class AttestationController extends AbstractController
     }
 
     /**
-     * @Route("/attestation/element/{element_id}", name="attestation_element", requirements={"element_id"="\d+"})
+     * @Route("/attestation/element/{element_id}", name="attestation_element")
      */
     public function indexForElement($element_id, Request $request, TranslatorInterface $translator)
     {
@@ -128,7 +128,7 @@ class AttestationController extends AbstractController
     }
 
     /**
-     * @Route("/attestation/create/{source_id}", name="attestation_create_source", requirements={"source_id"="\d+"})
+     * @Route("/attestation/create/{source_id}", name="attestation_create_source")
      */
     public function createForSource($source_id, Request $request, TranslatorInterface $translator)
     {
@@ -275,7 +275,7 @@ class AttestationController extends AbstractController
     }
 
     /**
-     * @Route("/attestation/cancelcreate/{source_id}", name="attestation_cancelcreate", requirements={"source_id"="\d+"})
+     * @Route("/attestation/cancelcreate/{source_id}", name="attestation_cancelcreate")
      */
     public function cancelcreate($source_id, Request $request)
     {
@@ -294,7 +294,7 @@ class AttestationController extends AbstractController
 
 
     /**
-     * @Route("/attestation/{id}", name="attestation_show", requirements={"id"="\d+"})
+     * @Route("/attestation/{id}", name="attestation_show")
      */
     public function show($id, Request $request, TranslatorInterface $translator)
     {
@@ -325,7 +325,7 @@ class AttestationController extends AbstractController
     }
 
     /**
-     * @Route("/attestation/{id}/edit", name="attestation_edit", requirements={"id"="\d+"})
+     * @Route("/attestation/{id}/edit", name="attestation_edit")
      */
     public function edit($id, Request $request, TranslatorInterface $translator)
     {
@@ -483,7 +483,7 @@ class AttestationController extends AbstractController
     }
 
     /**
-     * @Route("/attestation/{id}/canceledit", name="attestation_canceledit", requirements={"id"="\d+"})
+     * @Route("/attestation/{id}/canceledit", name="attestation_canceledit")
      */
     public function canceledit($id, Request $request)
     {
@@ -501,7 +501,7 @@ class AttestationController extends AbstractController
     }
 
     /**
-     * @Route("/attestation/{id}/delete", name="attestation_delete", requirements={"id"="\d+"})
+     * @Route("/attestation/{id}/delete", name="attestation_delete")
      */
     public function delete($id, Request $request, TranslatorInterface $translator)
     {

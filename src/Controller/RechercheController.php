@@ -441,7 +441,7 @@ class RechercheController extends AbstractController
             if ($cacheItem->isHit()) {
                 // If if exists, checkes that the TTL has not expired
                 $rebuildData = $cacheItem->get();
-                if (time() - $rebuildData['startTime'] > 3600) {
+                if (time() - $rebuildData['startTime'] > 7200) {
                     // If TTL has expired, remove item from cache
                     $cache->deleteItem($rebuildKey);
                     $rebuildData = [];

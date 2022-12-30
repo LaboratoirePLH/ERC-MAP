@@ -162,7 +162,15 @@ abstract class AbstractFilter
                 function ($result, $source) use ($sortedData) {
                     return array_merge($result, self::resolveLocalisations($source, $sortedData));
                 },
-                [$eData['localisation'] ?? null]
+                array_merge(
+                    [$eData['localisation'] ?? null],
+                    array_map(
+                        function ($agent) {
+                            return $agent['localisation'] ?? [];
+                        },
+                        self::resolveAgents($e, $sortedData)
+                    )
+                )
             ));
         } else if ($e->getEntite() === 'Source') {
             return array_filter([

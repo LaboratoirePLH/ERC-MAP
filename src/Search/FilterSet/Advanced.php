@@ -23,7 +23,12 @@ class Advanced extends AbstractFilterSet
         if (array_key_exists('freeText', $criteria)) {
             $freeTextCriteria = $criteria['freeText'];
             unset($criteria['freeText']);
-            $criteria['freeText'] = $freeTextCriteria;
+            // normalize search value
+            $criteria['freeText'] = strtolower(
+                \App\Utils\StringHelper::removeAccents(
+                    strip_tags($freeTextCriteria)
+                )
+            );
         }
 
         foreach ($this->data as $e) {

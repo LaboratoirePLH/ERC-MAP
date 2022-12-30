@@ -1,263 +1,264 @@
 {% extends 'list_page.html.twig' %}
 {% set title = title|default('attestation.'~action) %}
 {% block title %}
-    {{ title|trans }}
+{{ title|trans }}
 {% endblock %}
 {% block content %}
-    {% set createUrl = url('attestation_create') %}
-    {% if source is defined %}
-        {% set createUrl = url('attestation_create_source', { 'source_id' : source }) %}
-    {% endif %}
-    <div class="row">
-        <div class="col-12 table-buttons">
-            {% if is_granted('ROLE_CONTRIBUTOR') %}
-                <a href=" {{ createUrl }}" class="btn btn-primary">{{ 'attestation.create'|trans }}</a>
-            {% endif %}
-            <button type="button" class="btn btn-warning clear-filter-button">
-                {{ 'generic.clear_filters'|trans }}
-            </button>
-            {% include 'partials/_help.html.twig' with {'section': 'attestation_list'} %}
-        </div>
+{% set createUrl = url('attestation_create') %}
+{% if source is defined %}
+{% set createUrl = url('attestation_create_source', { 'source_id' : source }) %}
+{% endif %}
+<div class="row">
+    <div class="col-12 table-buttons">
+        {% if is_granted('ROLE_CONTRIBUTOR') %}
+        <a href=" {{ createUrl }}" class="btn btn-primary">{{ 'attestation.create'|trans }}</a>
+        {% endif %}
+        <button type="button" class="btn btn-warning clear-filter-button">
+            {{ 'generic.clear_filters'|trans }}
+        </button>
+        {% include 'partials/_help.html.twig' with {'section': 'attestation_list'} %}
     </div>
-    <table class="table table-striped table-hover table-bordered w-100 text-center list_table" id="attestation_list">
-        <thead>
-            <tr>
-                <th scope="col">
-                    {{ 'generic.fields.id'|trans }}
-                </th>
-                <th scope="col">
-                    {{ 'source.fields.edition'|trans }}
-                </th>
-                <th scope="col">
-                    {{ 'source.fields.source_biblio'|trans }}
-                </th>
-                <th scope="col">
-                    {{ 'attestation.fields.passage'|trans }}
-                </th>
-                <th scope="col">
-                    {{ 'attestation.fields.translitteration'|trans }}
-                </th>
-                <th scope="col">
-                    {{ 'attestation.fields.etat_fiche'|trans }}
-                </th>
-                <th scope="col">
-                    {{ 'generic.fields.cree'|trans }}
-                </th>
-                <th scope="col">
-                    {{ 'generic.fields.modifie'|trans }}
-                </th>
-                <th scope="col">
-                    {{ 'generic.fields.to_translate'|trans }}
-                </th>
-                <th scope="col">
-                    {{ 'generic.actions'|trans }}
-                </th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-        <tfoot>
-            <tr>
-                <th>{{ 'generic.fields.id'|trans }}</th>
-                <th>{{ 'source.fields.edition'|trans }}</th>
-                <th>{{ 'source.fields.source_biblio'|trans }}</th>
-                <th>{{ 'attestation.fields.passage'|trans }}</th>
-                <th>{{ 'attestation.fields.translitteration'|trans }}</th>
-                <th>{{ 'attestation.fields.etat_fiche'|trans }}</th>
-                <th data-value="{{ is_granted('ROLE_CONTRIBUTOR') ? app.user.prenomNom : '' }}">{{ 'generic.fields.cree'|trans }}</th>
-                <th>{{ 'generic.fields.modifie'|trans }}</th>
-                <th>{{ 'generic.fields.to_translate'|trans }}</th>
-                <th></th>
-            </tr>
-        </tfoot>
-    </table>
-    <div class="row">
-        <div class="col-12 table-buttons">
-            {% if is_granted('ROLE_CONTRIBUTOR') %}
-                <a href=" {{ createUrl }}" class="btn btn-primary">{{ 'attestation.create'|trans }}</a>
-            {% endif %}
-            <button type="button" class="btn btn-warning clear-filter-button">
-                {{ 'generic.clear_filters'|trans }}
-            </button>
-        </div>
+</div>
+<table class="table table-striped table-hover table-bordered w-100 text-center list_table" id="attestation_list">
+    <thead>
+        <tr>
+            <th scope="col">
+                {{ 'generic.fields.id'|trans }}
+            </th>
+            <th scope="col">
+                {{ 'source.fields.edition'|trans }}
+            </th>
+            <th scope="col">
+                {{ 'source.fields.source_biblio'|trans }}
+            </th>
+            <th scope="col">
+                {{ 'attestation.fields.passage'|trans }}
+            </th>
+            <th scope="col">
+                {{ 'attestation.fields.translitteration'|trans }}
+            </th>
+            <th scope="col">
+                {{ 'attestation.fields.etat_fiche'|trans }}
+            </th>
+            <th scope="col">
+                {{ 'generic.fields.cree'|trans }}
+            </th>
+            <th scope="col">
+                {{ 'generic.fields.modifie'|trans }}
+            </th>
+            <th scope="col">
+                {{ 'generic.fields.to_translate'|trans }}
+            </th>
+            <th scope="col">
+                {{ 'generic.actions'|trans }}
+            </th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+    <tfoot>
+        <tr>
+            <th>{{ 'generic.fields.id'|trans }}</th>
+            <th>{{ 'source.fields.edition'|trans }}</th>
+            <th>{{ 'source.fields.source_biblio'|trans }}</th>
+            <th>{{ 'attestation.fields.passage'|trans }}</th>
+            <th>{{ 'attestation.fields.translitteration'|trans }}</th>
+            <th>{{ 'attestation.fields.etat_fiche'|trans }}</th>
+            <th data-value="{{ is_granted('ROLE_CONTRIBUTOR') ? app.user.getInitials() : '' }}">{{
+                'generic.fields.cree'|trans }}</th>
+            <th>{{ 'generic.fields.modifie'|trans }}</th>
+            <th>{{ 'generic.fields.to_translate'|trans }}</th>
+            <th></th>
+        </tr>
+    </tfoot>
+</table>
+<div class="row">
+    <div class="col-12 table-buttons">
+        {% if is_granted('ROLE_CONTRIBUTOR') %}
+        <a href=" {{ createUrl }}" class="btn btn-primary">{{ 'attestation.create'|trans }}</a>
+        {% endif %}
+        <button type="button" class="btn btn-warning clear-filter-button">
+            {{ 'generic.clear_filters'|trans }}
+        </button>
     </div>
-    {% include "modals/confirmation.html.twig" with {
-        'modalName': 'confirm_deletion',
-        'uuid': 'confirm-deletion-modal',
-        'targetUrl': url('attestation_delete', {'id' : '__ID__'}),
-        'confirmationLabel': 'generic.delete',
-        'csrfToken': 'delete_attestation',
-    } %}
+</div>
+{% include "modals/confirmation.html.twig" with {
+'modalName': 'confirm_deletion',
+'uuid': 'confirm-deletion-modal',
+'targetUrl': url('attestation_delete', {'id' : '__ID__'}),
+'confirmationLabel': 'generic.delete',
+'csrfToken': 'delete_attestation',
+} %}
 {% endblock %}
 
 {% block javascripts %}
-    {{ parent() }}
-    <script type="text/javascript">
-        $(document).ready(function () {
-            //
-            // Store Source or Element ID in variable
-            const sourceId = "{{ source is defined ? source : '' }}";
-            const elementId = "{{ element is defined ? element : '' }}";
+{{ parent() }}
+<script type="text/javascript">
+    $(document).ready(function () {
+        //
+        // Store Source or Element ID in variable
+        const sourceId = "{{ source is defined ? source : '' }}";
+        const elementId = "{{ element is defined ? element : '' }}";
 
-            // Prepare AJAX URL depending on filters
-            var ajax = {
-                url: "{{ url('json_attestation_list') }}",
-                type: "GET"
+        // Prepare AJAX URL depending on filters
+        var ajax = {
+            url: "{{ url('json_attestation_list') }}",
+            type: "GET"
+        };
+        if (sourceId !== "") {
+            ajax.data = {
+                filter: "source:" + sourceId
             };
-            if (sourceId !== "") {
-                ajax.data = {
-                    filter: "source:" + sourceId
-                };
-            } else if (elementId !== "") {
-                ajax.data = {
-                    filter: "element:" + elementId
-                };
-            }
+        } else if (elementId !== "") {
+            ajax.data = {
+                filter: "element:" + elementId
+            };
+        }
 
-            // Routes
-            var elementsRoute = "{{ url('element_attestation', {'attestation_id': '__ID__'}) }}";
-            var showRoute = "{{ url('attestation_show', {'id': '__ID__'}) }}";
-            var editRoute = "{{ url('attestation_edit', {'id': '__ID__'}) }}";
-            var deleteRoute = "{{ url('attestation_delete', {'id': '__ID__'}) }}";
-            var cloneRoute = "{{ source is defined ? url('attestation_create_source', { 'source_id' : source, 'cloneFrom': '__ID__' }) : url('attestation_create', {'cloneFrom': '__ID__'}) }}";
+        // Routes
+        var elementsRoute = "{{ url('element_attestation', {'attestation_id': '__ID__'}) }}";
+        var showRoute = "{{ url('attestation_show', {'id': '__ID__'}) }}";
+        var editRoute = "{{ url('attestation_edit', {'id': '__ID__'}) }}";
+        var deleteRoute = "{{ url('attestation_delete', {'id': '__ID__'}) }}";
+        var cloneRoute = "{{ source is defined ? url('attestation_create_source', { 'source_id' : source, 'cloneFrom': '__ID__' }) : url('attestation_create', {'cloneFrom': '__ID__'}) }}";
 
-            // Error message for locks
-            var lockError = "{{ 'generic.messages.error_locked'|trans({'%type%': 'attestation.name'|trans}) }}";
+        // Error message for locks
+        var lockError = "{{ 'generic.messages.error_locked'|trans({'%type%': 'attestation.name'|trans}) }}";
 
-            // Role management
-            var isContributor = "{{ is_granted('ROLE_CONTRIBUTOR') ? 1 : 0 }}" === "1";
-            var isModerator = "{{ is_granted('ROLE_MODERATOR') ? 1 : 0 }}" === "1";
-            var isAdmin = "{{ is_granted('ROLE_ADMIN') ? 1 : 0 }}" === "1";
-            var currentUser = parseInt("{{ app.user.id|default(-1) }}", 10);
+        // Role management
+        var isContributor = "{{ is_granted('ROLE_CONTRIBUTOR') ? 1 : 0 }}" === "1";
+        var isModerator = "{{ is_granted('ROLE_MODERATOR') ? 1 : 0 }}" === "1";
+        var isAdmin = "{{ is_granted('ROLE_ADMIN') ? 1 : 0 }}" === "1";
+        var currentUser = parseInt("{{ app.user.id|default(-1) }}", 10);
 
-            const tableOptions = {
-                ajax: ajax,
-                columns: [
-                    {
-                        responsivePriority: 1,
-                        data: 'id',
-                        render: function (data, type, row) {
-                            if (type === 'filter') {
-                                return row.projet + ' #' + data + ' s#' + row.source;
-                            }
-                            if (type === 'sort' || type === 'type') {
-                                return data;
-                            }
-                            const sourceLabel = "S";
-                            return row.projet + '<br/>#' + data + ' <small>(v' + (
-                                row.version || '?'
-                            ) + ')<br/><i>(' + sourceLabel + '#' + row.source + ')</i></small>';
+        const tableOptions = {
+            ajax: ajax,
+            columns: [
+                {
+                    responsivePriority: 1,
+                    data: 'id',
+                    render: function (data, type, row) {
+                        if (type === 'filter') {
+                            return row.projet + ' #' + data + ' s#' + row.source;
                         }
-                    },
-                    {
-                        data: 'titre_abrege'
-                    },
-                    {
-                        data: 'reference'
-                    },
-                    {
-                        data: 'passage'
-                    }, {
-                        data: 'translitteration',
-                        render: function (data, type, row) {
-                            if (type === 'display') {
-                                return data.display;
-                            }
-                            return data.full
+                        if (type === 'sort' || type === 'type') {
+                            return data;
                         }
-                    }, {
-                        data: 'etat_fiche',
-                        visible: isContributor,
-                        render: function (data, type, row) {
-                            if (type === 'sort') {
-                                return data.id;
-                            }
+                        const sourceLabel = "S";
+                        return row.projet + '<br/>#' + data + ' <small>(v' + (
+                            row.version || '?'
+                        ) + ')<br/><i>(' + sourceLabel + '#' + row.source + ')</i></small>';
+                    }
+                },
+                {
+                    data: 'titre_abrege'
+                },
+                {
+                    data: 'reference'
+                },
+                {
+                    data: 'passage'
+                }, {
+                    data: 'translitteration',
+                    render: function (data, type, row) {
+                        if (type === 'display') {
                             return data.display;
                         }
-                    },
-                    $.fn.datatablesTemplateColumn('date_creation', isContributor),
-                    $.fn.datatablesTemplateColumn('date_modification', isContributor), {
-                        data: 'traduire',
-                        visible: isContributor,
-                        render: function (data, type, row) {
-                            return data.join('<br/>');
+                        return data.full
+                    }
+                }, {
+                    data: 'etat_fiche',
+                    visible: isContributor,
+                    render: function (data, type, row) {
+                        if (type === 'sort') {
+                            return data.id;
                         }
-                    }, {
-                        data: null,
-                        searchable: false,
-                        orderable: false,
-                        width: 110,
-                        responsivePriority: 1,
-                        render: function (data, type, row) {
-                            var verrou = false;
-                            var buttons = [];
-                            if (row.verrou !== false) {
-                                let texteVerrou = lockError.replace('%id%', row.id).replace('%user%', row.verrou.createur).replace('%time%', row.verrou.date_fin);
-                                texteVerrou = $('<div>').html(texteVerrou).text();
-                                verrou = $.fn.createListButton('button', 'danger', 'lock', "{{ 'generic.locked'|trans }}");
-                                verrou.attr('data-toggle', 'tooltip').attr('data-placement', 'left').attr('title', texteVerrou).addClass('disabled');
+                        return data.display;
+                    }
+                },
+                $.fn.datatablesTemplateColumn('date_creation', isContributor),
+                $.fn.datatablesTemplateColumn('date_modification', isContributor), {
+                    data: 'traduire',
+                    visible: isContributor,
+                    render: function (data, type, row) {
+                        return data.join('<br/>');
+                    }
+                }, {
+                    data: null,
+                    searchable: false,
+                    orderable: false,
+                    width: 110,
+                    responsivePriority: 1,
+                    render: function (data, type, row) {
+                        var verrou = false;
+                        var buttons = [];
+                        if (row.verrou !== false) {
+                            let texteVerrou = lockError.replace('%id%', row.id).replace('%user%', row.verrou.createur).replace('%time%', row.verrou.date_fin);
+                            texteVerrou = $('<div>').html(texteVerrou).text();
+                            verrou = $.fn.createListButton('button', 'danger', 'lock', "{{ 'generic.locked'|trans }}");
+                            verrou.attr('data-toggle', 'tooltip').attr('data-placement', 'left').attr('title', texteVerrou).addClass('disabled');
+                        }
+                        buttons.push($.fn.createListButton('a', 'success', '{{ icons.element }}'.replace('fa-', ''), "{{ 'attestation.sections.elements'|trans }}", elementsRoute.replace('__ID__', row.id)));
+                        buttons.push($.fn.createListButton('a', 'primary', 'eye', "{{ 'generic.view'|trans }}", showRoute.replace('__ID__', row.id)));
+                        if (verrou === false) {
+                            if (isModerator || row.createur_id === currentUser) {
+                                buttons.push($.fn.createListButton('a', 'warning', 'edit', "{{ 'generic.edit'|trans }}", editRoute.replace('__ID__', row.id)));
                             }
-                            buttons.push($.fn.createListButton('a', 'success', '{{ icons.element }}'.replace('fa-', ''), "{{ 'attestation.sections.elements'|trans }}", elementsRoute.replace('__ID__', row.id)));
-                            buttons.push($.fn.createListButton('a', 'primary', 'eye', "{{ 'generic.view'|trans }}", showRoute.replace('__ID__', row.id)));
-                            if (verrou === false) {
-                                if (isModerator || row.createur_id === currentUser) {
-                                    buttons.push($.fn.createListButton('a', 'warning', 'edit', "{{ 'generic.edit'|trans }}", editRoute.replace('__ID__', row.id)));
-                                }
-                                if (isAdmin || row.createur_id === currentUser) {
-                                    buttons.push($.fn.createDeleteButton("{{ 'generic.delete'|trans }}", row.id));
-                                }
-                            } else {
-                                buttons.push(verrou);
+                            if (isAdmin || row.createur_id === currentUser) {
+                                buttons.push($.fn.createDeleteButton("{{ 'generic.delete'|trans }}", row.id));
                             }
-                            //
-                            if (isContributor) {
-                                buttons.push($.fn.createListButton('a', 'secondary', 'copy', "{{ 'generic.clone'|trans }}", cloneRoute.replace('__ID__', row.id)));
-                            }
+                        } else {
+                            buttons.push(verrou);
+                        }
+                        //
+                        if (isContributor) {
+                            buttons.push($.fn.createListButton('a', 'secondary', 'copy', "{{ 'generic.clone'|trans }}", cloneRoute.replace('__ID__', row.id)));
+                        }
 
-                            return buttons.map(btn => btn[0].outerHTML).join("\n");
-                        }
+                        return buttons.map(btn => btn[0].outerHTML).join("\n");
                     }
-                ],
-                order: [
-                    [
-                        isContributor ? 7 : 0,
-                        'desc'
-                    ]
-                ],
-                language: $.parseJSON('{{ "datatable.language"|trans|raw }}'),
-                pageLength: 10,
-                lengthMenu: [
-                    [
-                        10, 25, 50, -1
-                    ],
-                    [
-                        10, 25, 50, "{{ 'datatable.all'|trans }}"
-                    ]
-                ],
-                buttons: [
-                    {
-                        extend: 'csv',
-                        filename: "{{ 'app_name'|trans }}-{{ 'attestation.list'|trans }}",
-                        text: "{{ 'generic.export_csv'|trans }}",
-                        customize: function (document) {
-                            return document.replace(/(\s)\s+/g, "$1");
-                        },
-                        exportOptions: {
-                            columns: [
-                                0,
-                                1,
-                                2,
-                                3,
-                                4,
-                                5,
-                                6,
-                                7,
-                                8
-                            ]
-                        }
-                    }
+                }
+            ],
+            order: [
+                [
+                    isContributor ? 7 : 0,
+                    'desc'
                 ]
-            };
-            $.fn.setupList('attestation_list', tableOptions, "{{ 'generic.search'|trans }}");
-        });
-    </script>
+            ],
+            language: $.parseJSON('{{ "datatable.language"|trans|raw }}'),
+            pageLength: 10,
+            lengthMenu: [
+                [
+                    10, 25, 50, -1
+                ],
+                [
+                    10, 25, 50, "{{ 'datatable.all'|trans }}"
+                ]
+            ],
+            buttons: [
+                {
+                    extend: 'csv',
+                    filename: "{{ 'app_name'|trans }}-{{ 'attestation.list'|trans }}",
+                    text: "{{ 'generic.export_csv'|trans }}",
+                    customize: function (document) {
+                        return document.replace(/(\s)\s+/g, "$1");
+                    },
+                    exportOptions: {
+                        columns: [
+                            0,
+                            1,
+                            2,
+                            3,
+                            4,
+                            5,
+                            6,
+                            7,
+                            8
+                        ]
+                    }
+                }
+            ]
+        };
+        $.fn.setupList('attestation_list', tableOptions, "{{ 'generic.search'|trans }}");
+    });
+</script>
 {% endblock %}

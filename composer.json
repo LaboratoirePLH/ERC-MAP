@@ -8,6 +8,9 @@
         "php": ">=7.1.3",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "doctrine/doctrine-bundle": "^2.3",
+        "doctrine/doctrine-migrations-bundle": "^3.2",
+        "doctrine/orm": "^2.14",
         "easycorp/easyadmin-bundle": "^2.0",
         "excelwebzone/recaptcha-bundle": "^1.5",
         "jsor/doctrine-postgis": "^1.7",
@@ -22,20 +25,23 @@
         "symfony/framework-bundle": "5.1.*",
         "symfony/mime": "5.1.*",
         "symfony/monolog-bundle": "^3.5",
-        "symfony/orm-pack": "^1.0",
         "symfony/swiftmailer-bundle": "^3.2",
         "symfony/translation": "5.1.*",
         "symfony/twig-bundle": "5.1.*",
-        "symfony/twig-pack": "^1.0",
         "symfony/validator": "5.1.*",
         "symfony/webpack-encore-bundle": "^1.0",
-        "symfony/yaml": "5.1.*"
+        "symfony/yaml": "5.1.*",
+        "twig/extra-bundle": "^2.12|^3.0",
+        "twig/twig": "^2.12|^3.0"
     },
     "config": {
         "preferred-install": {
             "*": "dist"
         },
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "symfony/flex": true
+        }
     },
     "autoload": {
         "psr-4": {
@@ -79,6 +85,7 @@
     "require-dev": {
         "symfony/maker-bundle": "^1.11",
         "symfony/phpunit-bridge": "^5.0",
-        "symfony/profiler-pack": "^1.0"
+        "symfony/stopwatch": "5.1.*",
+        "symfony/web-profiler-bundle": "5.1.*"
     }
 }

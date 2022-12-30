@@ -20,6 +20,7 @@ yarn-error.log
 
 /logs/
 /*.sql
+/*.psql
 ###> symfony/phpunit-bridge ###
 .phpunit
 .phpunit.result.cache

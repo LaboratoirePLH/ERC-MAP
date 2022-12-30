@@ -1,1219 +1,1275 @@
 {% extends 'page.html.twig' %}
 {% block title %}
-    {{ ('search.title')|trans }}
+{{ ('search.title')|trans }}
 {% endblock %}
 {% block stylesheets %}
-    {{ encore_entry_link_tags('search_page') }}
+{{ encore_entry_link_tags('search_page') }}
 {% endblock %}
 {% block content %}
-    {% if not indexStatus.upToDate %}
-        <div class="row justify-content-center">
-            <div class="col-sm-6 alert alert-danger font-weight-bold" role="alert" id="index-not-up-to-date">
-                {{ 'search.messages.not_up_to_date'|trans }}
-            </div>
-        </div>
-    {% endif %}
-    <div class="row my-3">
-
-        <div class="col-sm-12 {{ is_granted('ROLE_USER') ? 'col-xl-8' : 'col-xl-12' }} text-center mb-3 mb-xl-0" id="search-panel">
-            <ul class="nav nav-pills nav-fill" id="searchTabLinks" role="tablist">
-                <li class="nav-item">
-                    <a class="nav-link font-weight-bolder active" id="simple-tab" data-toggle="tab" href="#simple" role="tab" aria-controls="simple" aria-selected="true">
-                        {{ ('search.simple')|trans }}
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link font-weight-bolder" id="guided-tab" data-toggle="tab" href="#guided" role="tab" aria-controls="guided" aria-selected="false">
-                        {{ ('search.guided')|trans }}
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link font-weight-bolder" id="advanced-tab" data-toggle="tab" href="#advanced" role="tab" aria-controls="advanced" aria-selected="false">
-                        {{ ('search.advanced')|trans }}
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link font-weight-bolder" id="elements-tab" data-toggle="tab" href="#elements" role="tab" aria-controls="elements" aria-selected="false">
-                        {{ ('search.elements')|trans }}
-                    </a>
-                </li>
-            </ul>
-            <div class="tab-content" id="searchTabs">
-                <div class="tab-pane fade p-3 show active" id="simple" role="tabpanel" aria-labelledby="simple-tab">
-                    <form action="{{ url('search_simple') }}" class="form-inline" method="post">
-                        <input class="form-control form-control-lg mx-2 flex-grow-1" type="text" name="search_value" placeholder=""/>
-                        <button class="btn btn-primary mx-2" type="submit" name="search">
-                            <i class="fas fa-search fa-fw"></i>
-                            {{ 'generic.search'|trans }}
-                        </button>
-                        {% include 'partials/_help.html.twig' with {'section': 'search_simple'} %}
-                    </form>
-                </div>
-                <div class="tab-pane fade p-3" id="guided" role="tabpanel" aria-labelledby="guided-tab">
-                    <form action="{{ url('search_guided') }}" method="post">
-                        <div class="form-group row">
-                            <label for="inputName" class="col-sm-2 col-form-label">{{ ('search.criteria_labels.names')|trans }}</label>
-                            <div class="col-sm-8">
-                                <select class="form-control autocomplete" name="names[]" id="inputName" size="1" multiple data-placeholder="{{('autocomplete.select_multiple')|trans}}">
-                                    <option value></option>
-                                </select>
-                            </div>
-                            <div class="col-sm-2">
-                                <div class="custom-control custom-switch pt-2">
-                                    <input type="checkbox" class="custom-control-input" id="names_mode" name="names_mode" value="all">
-                                    <label class="custom-control-label" for="names_mode">{{ 'generic.fields.require_all'|trans }}</label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="inputLanguage" class="col-sm-2 col-form-label">{{ ('search.criteria_labels.languages')|trans }}</label>
-                            <div class="col-sm-8">
-                                <select class="form-control autocomplete" name="languages[]" id="inputLanguage" size="1" multiple data-placeholder="{{('autocomplete.select_multiple')|trans}}">
-                                    <option value></option>
-                                </select>
-                            </div>
-                            <div class="col-sm-2">
-                                <div class="custom-control custom-switch pt-2">
-                                    <input type="checkbox" class="custom-control-input" id="languages_mode" name="languages_mode" value="all">
-                                    <label class="custom-control-label" for="languages_mode">{{ 'generic.fields.require_all'|trans }}</label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-sm-2 col-form-label">{{ ('search.criteria_labels.datation')|trans }}</label>
-                            <div class="col">
-                                <input type="number" step="1" class="form-control" name="datation[post_quem]" id="inputPostQuem" placeholder="{{('datation.fields.post_quem')|trans}}">
-                            </div>
-                            <div class="col">
-                                <input type="number" step="1" class="form-control" name="datation[ante_quem]" id="inputAnteQuem" placeholder="{{('datation.fields.ante_quem')|trans}}">
-                            </div>
-                            <div class="col-sm-2">
-                                <div class="custom-control custom-switch pt-2">
-                                    <input type="checkbox" class="custom-control-input" id="inputDatationExact" name="datation[exact]" value="datation_exact" checked>
-                                    <label class="custom-control-label" for="inputDatationExact">
-                                        {{ ('generic.fields.strict')|trans }}
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="inputLocation" class="col-sm-2 col-form-label">{{ ('search.criteria_labels.locations')|trans }}</label>
-                            <div class="col-sm-10">
-                                <select class="form-control autocomplete" name="locations[]" id="inputLocation" size="1" multiple data-placeholder="{{('autocomplete.select_multiple')|trans}}">
-                                    <option value></option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="inputSourceType" class="col-sm-2 col-form-label">{{ ('search.criteria_labels.sourceTypes')|trans }}</label>
-                            <div class="col-sm-10">
-                                <select class="form-control autocomplete" name="sourceTypes[]" id="inputSourceType" size="1" multiple data-placeholder="{{('autocomplete.select_multiple')|trans}}">
-                                    <option value></option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="inputAgents" class="col-sm-2 col-form-label">{{ ('search.criteria_labels.agents')|trans }}</label>
-                            <div class="col-sm-10">
-                                <select class="form-control autocomplete" name="agents[]" id="inputAgents" size="1" multiple data-placeholder="{{('autocomplete.select_multiple')|trans}}">
-                                    <option value></option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="inputFreeText" class="col-sm-2 col-form-label">{{ ('generic.fields.texte_libre')|trans }}</label>
-                            <div class="col-sm-10">
-                                <input class="form-control" type="text" name="freeText" id="inputFreeText"/>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <div class="col-sm-12">
-                                <button class="btn btn-secondary btn-sm mx-2" type="reset" name="reset" class="reset-button">
-                                    <i class="fas fa-eraser fa-fw"></i>
-                                    {{ 'generic.clear'|trans }}
-                                </button>
-                                <button class="btn btn-primary mx-2" type="submit" name="search">
-                                    <i class="fas fa-search fa-fw"></i>
-                                    {{ 'generic.search'|trans }}
-                                </button>
-                                {% include 'partials/_help.html.twig' with {'section': 'search_guided'} %}
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="tab-pane fade p-3" id="advanced" role="tabpanel" aria-labelledby="advanced-tab">
-                    <form action="{{ url('search_advanced') }}" method="post">
-                        <div class="form-group row first-row">
-                            <div class="col text-center">
-                                <label class="col-form-label">
-                                    {{ 'search.results_type'|trans }}
-                                    :
-                                </label>
-                                <div class="btn-group ml-2" data-toggle="buttons">
-                                    <label class="btn btn-primary active" for="resultsType_source">
-                                        <input type="radio" id="resultsType_source" name="resultsType" value="source" autocomplete="off" checked>
-                                        <i class="fas fa-fw {{ icons.source }}"></i>
-                                        {{ 'source.name'|trans }}
-                                    </label>
-                                    <label class="btn btn-success" for="resultsType_attestation">
-                                        <input type="radio" id="resultsType_attestation" name="resultsType" value="attestation" autocomplete="off">
-                                        <i class="fas fa-fw {{ icons.attestation }}"></i>
-                                        {{ 'attestation.name'|trans }}
-                                    </label>
-                                    <label class="btn btn-warning" for="resultsType_element">
-                                        <input type="radio" id="resultsType_element" name="resultsType" value="element" autocomplete="off">
-                                        <i class="fas fa-fw {{ icons.element }}"></i>
-                                        {{ 'element.name'|trans }}
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="d-flex border-top border-bottom align-items-stretch">
-                            <div
-                                class="d-flex justify-content-center align-items-center p-1 font-weight-bold h5 m-0 bg-success text-white"
-                                data-toggle="tooltip" data-placement="left"
-                                data-html="true" title="{{ 'search.inclusive_criteria'|trans|replace({' ': '<br/>'}) }}"
-                            >
-                                <i class="fas fa-plus fa-fw"></i>
-                            </div>
-                            <div class="flex-grow d-flex flex-column align-items-stretch justify-content-around"
-                                id="advanced-inclusive">
-                                <div class="form-group row no-criteria my-1">
-                                    <div class="col text-center">
-                                        <h5 class="mb-0">{{ 'search.messages.no_inclusive_criteria'|trans }}</h5>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="d-flex border-bottom align-items-stretch">
-                            <div
-                                class="d-flex justify-content-center align-items-center p-1 font-weight-bold h5 m-0 bg-warning text-white"
-                                data-toggle="tooltip" data-placement="left"
-                                data-html="true" title="{{ 'search.exclusive_criteria'|trans|replace({' ': '<br/>'}) }}"
-                            >
-                                <i class="fas fa-minus fa-fw"></i>
-                            </div>
-                            <div class="flex-grow d-flex flex-column align-items-stretch justify-content-around"
-                                id="advanced-exclusive">
-                                <div class="form-group row no-criteria my-1">
-                                    <div class="col text-center">
-                                        <h6 class="mb-0">{{ 'search.messages.no_exclusive_criteria'|trans }}</h6>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group row last-row mt-4">
-                            <div class="col-sm-12">
-                                <button class="btn btn-secondary btn-sm mx-2" type="reset" name="reset"
-                                    class="reset-button">
-                                    <i class="fas fa-eraser fa-fw"></i>
-                                    {{ 'generic.clear'|trans }}
-                                </button>
-                                <button class="btn btn-success mx-2" type="button" id="add-inclusive-criteria">
-                                    <i class="fas fa-plus fa-fw"></i>
-                                    {{ 'search.add_inclusive_criteria'|trans }}
-                                </button>
-                                <button class="btn btn-warning mx-2" type="button" id="add-exclusive-criteria">
-                                    <i class="fas fa-minus fa-fw"></i>
-                                    {{ 'search.add_exclusive_criteria'|trans }}
-                                </button>
-                                <button class="btn btn-primary mx-2" type="submit" name="search">
-                                    <i class="fas fa-search fa-fw"></i>
-                                    {{ 'generic.search'|trans }}
-                                </button>
-                                {% include 'partials/_help.html.twig' with {'section': 'search_advanced'} %}
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="tab-pane fade p-3" id="elements" role="tabpanel" aria-labelledby="elements-tab">
-                    <form action="{{ url('search_elements') }}" method="post">
-                        <div class="form-group row">
-                            <label class="col-sm-3 col-form-label">
-                                {{ 'attestation.fields.compte_element'|trans }}
-                            </label>
-                            <div class="col">
-                                <select class="form-control autocomplete-single" name="element_count[operator]" id="inputElementCountOperator" size="1" data-placeholder="{{('autocomplete.select_single')|trans}}">
-                                    <option value=""></option>
-                                    <option value="eq">=</option>
-                                    <option value="neq">&ne;</option>
-                                    <option value="lt">&lt;</option>
-                                    <option value="lte">&le;</option>
-                                    <option value="gt">&gt;</option>
-                                    <option value="gte">&ge;</option>
-                                </select>
-                            </div>
-                            <div class="col">
-                                <input type="number" min="0" step="1" class="form-control" name="element_count[value]" id="inputElementCountValue">
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-sm-3 col-form-label">
-                                {{ 'formule.fields.compte_puissances_divines'|trans }}
-                            </label>
-                            <div class="col">
-                                <select class="form-control autocomplete-single" name="divine_powers_count[operator]" id="inputDivinePowersCountOperator" size="1" data-placeholder="{{('autocomplete.select_single')|trans}}">
-                                    <option value=""></option>
-                                    <option value="eq">=</option>
-                                    <option value="neq">&ne;</option>
-                                    <option value="lt">&lt;</option>
-                                    <option value="lte">&le;</option>
-                                    <option value="gt">&gt;</option>
-                                    <option value="gte">&ge;</option>
-                                </select>
-                            </div>
-                            <div class="col">
-                                <input type="number" min="0" step="1" class="form-control" name="divine_powers_count[value]" id="inputDivinePowersCountValue">
-                            </div>
-                        </div>
-                        <hr/>
-                        <div class="form-group row d-none" id="added-elements-row">
-                            <label class="col-sm-3 col-form-label">{{ ('search.element_labels.added')|trans }}</label>
-                            <div class="col">
-                                <div class="row justify-content-start" id="added-elements"></div>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="inputName" class="col-sm-3 col-form-label">{{ ('search.element_labels.add_new')|trans }}</label>
-                            <div class="col">
-                                <select class="form-control autocomplete" name="names[]" id="inputElementName" size="1" data-placeholder="{{('autocomplete.select_element')|trans}}">
-                                    <option value></option>
-                                </select>
-                            </div>
-                            <div class="col-sm-1">
-                                <button class="btn btn-warning btn-sm mx-2 mt-1 add-element-button" type="button">
-                                    <i class="fas fa-plus fa-fw" aria-hidden="true"></i>
-                                    <span class="sr-only">
-                                        {{ 'generic.add'|trans }}
-                                    </span>
-                                </button>
-                            </div>
-                        </div>
-                        <hr/>
-                        <div class="form-group row">
-                            <label class="col-sm-3 col-form-label">
-                                {{ ('search.element_labels.formula')|trans }}
-                                <div class="custom-control custom-switch pt-2" id="formules-mode-wrapper" style="display: none;">
-                                    <input type="checkbox" class="custom-control-input" id="inputFormuleLanguageMode" name="formules_mode" value="all">
-                                    <label class="custom-control-label" for="inputFormuleLanguageMode" style="font-weight: initial;">{{ 'generic.fields.require_all'|trans }}</label>
-                                </div>
-                            </label>
-                            <div class="col">
-                                <div class="row">
-                                    <div class="col formula-search">
-                                        <input type="hidden" name="formule[]">
-                                    </div>
-                                    <div class="col-sm-auto pl-0 remove-formula-wrapper" style="display:none;">
-                                        <button type="button" class="btn btn-sm btn-warning remove-formula-button">
-                                            <i class="fas fa-fw fa-times"></i>
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <button class="btn btn-warning btn-sm mx-2 mt-1 add-formula-button" type="button" style="display:none;">
-                                    <i class="fas fa-plus fa-fw" aria-hidden="true"></i>
-                                    {{ 'attestation.add_formule'|trans }}
-                                </button>
-                                <div class="row no-elements pt-2">
-                                    <div class="col">
-                                        {{ 'search.messages.no_elements'|trans }}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <hr/>
-                        <div class="form-group row">
-                            <label for="inputElementLanguage" class="col-sm-3 col-form-label">{{ ('generic.fields.langue')|trans }}</label>
-                            <div class="col">
-                                <select class="form-control autocomplete" name="languages[]" id="inputElementLanguage" size="1" multiple data-placeholder="{{('autocomplete.select_multiple')|trans}}">
-                                    <option value></option>
-                                </select>
-                            </div>
-                            <div class="col-sm-2">
-                                <div class="custom-control custom-switch pt-2">
-                                    <input type="checkbox" class="custom-control-input" id="inputElementLanguageMode" name="languages_mode" value="all">
-                                    <label class="custom-control-label" for="inputElementLanguageMode">{{ 'generic.fields.require_all'|trans }}</label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-sm-3 col-form-label">{{ ('generic.fields.datation')|trans }}</label>
-                            <div class="col">
-                                <input type="number" step="1" class="form-control" name="datation[post_quem]" id="inputElementPostQuem" placeholder="{{('datation.fields.post_quem')|trans}}">
-                            </div>
-                            <div class="col">
-                                <input type="number" step="1" class="form-control" name="datation[ante_quem]" id="inputElementAnteQuem" placeholder="{{('datation.fields.ante_quem')|trans}}">
-                            </div>
-                            <div class="col-sm-2">
-                                <div class="custom-control custom-switch pt-2">
-                                    <input type="checkbox" class="custom-control-input" id="inputElementDatationExact" name="datation[exact]" value="datation_exact" checked>
-                                    <label class="custom-control-label" for="inputElementDatationExact">
-                                        {{ ('generic.fields.strict')|trans }}
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="inputElementLocation" class="col-sm-3 col-form-label">{{ ('generic.fields.lieu')|trans }}</label>
-                            <div class="col">
-                                <select class="form-control autocomplete" name="locations[]" id="inputElementLocation" size="1" multiple data-placeholder="{{('autocomplete.select_multiple')|trans}}">
-                                    <option value></option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="inputElementSourceType" class="col-sm-3 col-form-label">{{ ('source.name')|trans }}</label>
-                            <div class="col">
-                                <select class="form-control autocomplete" name="sourceTypes[]" id="inputElementSourceType" size="1" multiple data-placeholder="{{('autocomplete.select_multiple')|trans}}">
-                                    <option value></option>
-                                </select>
-                            </div>
-                        </div>
-                        <hr/>
-                        <div class="form-group row last-row">
-                            <div class="col-sm-12">
-                                <button class="btn btn-secondary btn-sm mx-2" type="reset" name="reset" class="reset-button">
-                                    <i class="fas fa-eraser fa-fw"></i>
-                                    {{ 'generic.clear'|trans }}
-                                </button>
-                                <button class="btn btn-primary mx-2" type="submit" name="search">
-                                    <i class="fas fa-search fa-fw"></i>
-                                    {{ 'generic.search'|trans }}
-                                </button>
-                                {% include 'partials/_help.html.twig' with {'section': 'search_formulae'} %}
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-        {% if is_granted('ROLE_USER') %}
-            <div class="col-sm-12 col-xl-4">
-                <ul class="nav nav-pills nav-fill" id="myTab" role="tablist">
-                    <li class="nav-item">
-                        <a class="nav-link text-white background-map-grey" role="tab">
-                            {{ ('search.saved_queries')|trans }}
-                        </a>
-                    </li>
-                </ul>
-                <div class="tab-content overflow-auto" id="savedQueriesTab" style="max-height: 400px; ">
-                    <div class="tab-pane show active" role="tabpanel">
-                        <ul class="list-group list-group-flush">
-                            {% for query in saved_queries %}
-                                {% include "search/_saved_query.html.twig" with {'query': query, 'criteria_list': criteria_list} only %}
-                            {% endfor %}
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        {% endif %}
+{% if not indexStatus.upToDate %}
+<div class="row justify-content-center">
+    <div class="col-sm-6 alert alert-danger font-weight-bold" role="alert" id="index-not-up-to-date">
+        {{ 'search.messages.not_up_to_date'|trans }}
     </div>
-    {% include "search/_templates.html.twig" with {'criteria_list': criteria_list} only %}
-    {% if is_granted('ROLE_ADMIN') %}
-        <hr/>
-        <div class="row">
-            <div class="col-12 text-center">
-                <button type="button" class="btn my-1 btn-danger" id="search-reindex" data-toggle="modal" data-target="#search-reindex-modal">
-                    <i class="fas fa-fw fa-sync"></i>
-                    {{ 'search.reindex'|trans }}
-                </button>
-                {% include "modals/search_index.html.twig" %}
-                <a href="{{ url('search_clear_cache') }}" class="btn btn-danger">
-                    <i class="fas fa-fw fa-trash"></i>
-                    {{ 'search.clear_cache'|trans }}
+</div>
+{% endif %}
+<div class="row my-3">
+
+    <div class="col-sm-12 {{ is_granted('ROLE_USER') ? 'col-xl-8' : 'col-xl-12' }} text-center mb-3 mb-xl-0"
+        id="search-panel">
+        <ul class="nav nav-pills nav-fill" id="searchTabLinks" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link font-weight-bolder active" id="simple-tab" data-toggle="tab" href="#simple"
+                    role="tab" aria-controls="simple" aria-selected="true">
+                    {{ ('search.simple')|trans }}
                 </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link font-weight-bolder" id="guided-tab" data-toggle="tab" href="#guided" role="tab"
+                    aria-controls="guided" aria-selected="false">
+                    {{ ('search.guided')|trans }}
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link font-weight-bolder" id="advanced-tab" data-toggle="tab" href="#advanced" role="tab"
+                    aria-controls="advanced" aria-selected="false">
+                    {{ ('search.advanced')|trans }}
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link font-weight-bolder" id="elements-tab" data-toggle="tab" href="#elements" role="tab"
+                    aria-controls="elements" aria-selected="false">
+                    {{ ('search.elements')|trans }}
+                </a>
+            </li>
+        </ul>
+        <div class="tab-content" id="searchTabs">
+            <div class="tab-pane fade p-3 show active" id="simple" role="tabpanel" aria-labelledby="simple-tab">
+                <form action="{{ url('search_simple') }}" class="form-inline" method="post">
+                    <input class="form-control form-control-lg mx-2 flex-grow-1" type="text" name="search_value"
+                        placeholder="" />
+                    <button class="btn btn-primary mx-2" type="submit" name="search">
+                        <i class="fas fa-search fa-fw"></i>
+                        {{ 'generic.search'|trans }}
+                    </button>
+                    {% include 'partials/_help.html.twig' with {'section': 'search_simple'} %}
+                </form>
+            </div>
+            <div class="tab-pane fade p-3" id="guided" role="tabpanel" aria-labelledby="guided-tab">
+                <form action="{{ url('search_guided') }}" method="post">
+                    <div class="form-group row">
+                        <label for="inputName" class="col-sm-2 col-form-label">{{ ('search.criteria_labels.names')|trans
+                            }}</label>
+                        <div class="col-sm-8">
+                            <select class="form-control autocomplete" name="names[]" id="inputName" size="1" multiple
+                                data-placeholder="{{('autocomplete.select_multiple')|trans}}">
+                                <option value></option>
+                            </select>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="custom-control custom-switch pt-2">
+                                <input type="checkbox" class="custom-control-input" id="names_mode" name="names_mode"
+                                    value="all">
+                                <label class="custom-control-label" for="names_mode">{{
+                                    'generic.fields.require_all'|trans }}</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="inputLanguage" class="col-sm-2 col-form-label">{{
+                            ('search.criteria_labels.languages')|trans }}</label>
+                        <div class="col-sm-8">
+                            <select class="form-control autocomplete" name="languages[]" id="inputLanguage" size="1"
+                                multiple data-placeholder="{{('autocomplete.select_multiple')|trans}}">
+                                <option value></option>
+                            </select>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="custom-control custom-switch pt-2">
+                                <input type="checkbox" class="custom-control-input" id="languages_mode"
+                                    name="languages_mode" value="all">
+                                <label class="custom-control-label" for="languages_mode">{{
+                                    'generic.fields.require_all'|trans }}</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">{{ ('search.criteria_labels.datation')|trans }}</label>
+                        <div class="col">
+                            <input type="number" step="1" class="form-control" name="datation[post_quem]"
+                                id="inputPostQuem" placeholder="{{('datation.fields.post_quem')|trans}}">
+                        </div>
+                        <div class="col">
+                            <input type="number" step="1" class="form-control" name="datation[ante_quem]"
+                                id="inputAnteQuem" placeholder="{{('datation.fields.ante_quem')|trans}}">
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="custom-control custom-switch pt-2">
+                                <input type="checkbox" class="custom-control-input" id="inputDatationExact"
+                                    name="datation[exact]" value="datation_exact" checked>
+                                <label class="custom-control-label" for="inputDatationExact">
+                                    {{ ('generic.fields.strict')|trans }}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="inputLocation" class="col-sm-2 col-form-label">{{
+                            ('search.criteria_labels.locations')|trans }}</label>
+                        <div class="col-sm-10">
+                            <select class="form-control autocomplete" name="locations[]" id="inputLocation" size="1"
+                                multiple data-placeholder="{{('autocomplete.select_multiple')|trans}}">
+                                <option value></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="inputSourceType" class="col-sm-2 col-form-label">{{
+                            ('search.criteria_labels.sourceTypes')|trans }}</label>
+                        <div class="col-sm-10">
+                            <select class="form-control autocomplete" name="sourceTypes[]" id="inputSourceType" size="1"
+                                multiple data-placeholder="{{('autocomplete.select_multiple')|trans}}">
+                                <option value></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="inputAgents" class="col-sm-2 col-form-label">{{
+                            ('search.criteria_labels.agents')|trans }}</label>
+                        <div class="col-sm-10">
+                            <select class="form-control autocomplete" name="agents[]" id="inputAgents" size="1" multiple
+                                data-placeholder="{{('autocomplete.select_multiple')|trans}}">
+                                <option value></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="inputFreeText" class="col-sm-2 col-form-label">{{
+                            ('generic.fields.texte_libre')|trans }}</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" type="text" name="freeText" id="inputFreeText" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-12">
+                            <button class="btn btn-secondary btn-sm mx-2" type="reset" name="reset"
+                                class="reset-button">
+                                <i class="fas fa-eraser fa-fw"></i>
+                                {{ 'generic.clear'|trans }}
+                            </button>
+                            <button class="btn btn-primary mx-2" type="submit" name="search">
+                                <i class="fas fa-search fa-fw"></i>
+                                {{ 'generic.search'|trans }}
+                            </button>
+                            {% include 'partials/_help.html.twig' with {'section': 'search_guided'} %}
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="tab-pane fade p-3" id="advanced" role="tabpanel" aria-labelledby="advanced-tab">
+                <form action="{{ url('search_advanced') }}" method="post">
+                    <div class="form-group row first-row">
+                        <div class="col text-center">
+                            <label class="col-form-label">
+                                {{ 'search.results_type'|trans }}
+                                :
+                            </label>
+                            <div class="btn-group ml-2" data-toggle="buttons">
+                                <label class="btn btn-primary active" for="resultsType_source">
+                                    <input type="radio" id="resultsType_source" name="resultsType" value="source"
+                                        autocomplete="off" checked>
+                                    <i class="fas fa-fw {{ icons.source }}"></i>
+                                    {{ 'source.name'|trans }}
+                                </label>
+                                <label class="btn btn-success" for="resultsType_attestation">
+                                    <input type="radio" id="resultsType_attestation" name="resultsType"
+                                        value="attestation" autocomplete="off">
+                                    <i class="fas fa-fw {{ icons.attestation }}"></i>
+                                    {{ 'attestation.name'|trans }}
+                                </label>
+                                <label class="btn btn-warning" for="resultsType_element">
+                                    <input type="radio" id="resultsType_element" name="resultsType" value="element"
+                                        autocomplete="off">
+                                    <i class="fas fa-fw {{ icons.element }}"></i>
+                                    {{ 'element.name'|trans }}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex border-top border-bottom align-items-stretch">
+                        <div class="d-flex justify-content-center align-items-center p-1 font-weight-bold h5 m-0 bg-success text-white"
+                            data-toggle="tooltip" data-placement="left" data-html="true"
+                            title="{{ 'search.inclusive_criteria'|trans|replace({' ': '<br/>'}) }}">
+                            <i class="fas fa-plus fa-fw"></i>
+                        </div>
+                        <div class="flex-grow d-flex flex-column align-items-stretch justify-content-around"
+                            id="advanced-inclusive">
+                            <div class="form-group row no-criteria my-1">
+                                <div class="col text-center">
+                                    <h5 class="mb-0">{{ 'search.messages.no_inclusive_criteria'|trans }}</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex border-bottom align-items-stretch">
+                        <div class="d-flex justify-content-center align-items-center p-1 font-weight-bold h5 m-0 bg-warning text-white"
+                            data-toggle="tooltip" data-placement="left" data-html="true"
+                            title="{{ 'search.exclusive_criteria'|trans|replace({' ': '<br/>'}) }}">
+                            <i class="fas fa-minus fa-fw"></i>
+                        </div>
+                        <div class="flex-grow d-flex flex-column align-items-stretch justify-content-around"
+                            id="advanced-exclusive">
+                            <div class="form-group row no-criteria my-1">
+                                <div class="col text-center">
+                                    <h6 class="mb-0">{{ 'search.messages.no_exclusive_criteria'|trans }}</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row last-row mt-4">
+                        <div class="col-sm-12">
+                            <button class="btn btn-secondary btn-sm mx-2" type="reset" name="reset"
+                                class="reset-button">
+                                <i class="fas fa-eraser fa-fw"></i>
+                                {{ 'generic.clear'|trans }}
+                            </button>
+                            <button class="btn btn-success mx-2" type="button" id="add-inclusive-criteria">
+                                <i class="fas fa-plus fa-fw"></i>
+                                {{ 'search.add_inclusive_criteria'|trans }}
+                            </button>
+                            <button class="btn btn-warning mx-2" type="button" id="add-exclusive-criteria">
+                                <i class="fas fa-minus fa-fw"></i>
+                                {{ 'search.add_exclusive_criteria'|trans }}
+                            </button>
+                            <button class="btn btn-primary mx-2" type="submit" name="search">
+                                <i class="fas fa-search fa-fw"></i>
+                                {{ 'generic.search'|trans }}
+                            </button>
+                            {% include 'partials/_help.html.twig' with {'section': 'search_advanced'} %}
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="tab-pane fade p-3" id="elements" role="tabpanel" aria-labelledby="elements-tab">
+                <form action="{{ url('search_elements') }}" method="post">
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">
+                            {{ 'attestation.fields.compte_element'|trans }}
+                        </label>
+                        <div class="col">
+                            <select class="form-control autocomplete-single" name="element_count[operator]"
+                                id="inputElementCountOperator" size="1"
+                                data-placeholder="{{('autocomplete.select_single')|trans}}">
+                                <option value=""></option>
+                                <option value="eq">=</option>
+                                <option value="neq">&ne;</option>
+                                <option value="lt">&lt;</option>
+                                <option value="lte">&le;</option>
+                                <option value="gt">&gt;</option>
+                                <option value="gte">&ge;</option>
+                            </select>
+                        </div>
+                        <div class="col">
+                            <input type="number" min="0" step="1" class="form-control" name="element_count[value]"
+                                id="inputElementCountValue">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">
+                            {{ 'formule.fields.compte_puissances_divines'|trans }}
+                        </label>
+                        <div class="col">
+                            <select class="form-control autocomplete-single" name="divine_powers_count[operator]"
+                                id="inputDivinePowersCountOperator" size="1"
+                                data-placeholder="{{('autocomplete.select_single')|trans}}">
+                                <option value=""></option>
+                                <option value="eq">=</option>
+                                <option value="neq">&ne;</option>
+                                <option value="lt">&lt;</option>
+                                <option value="lte">&le;</option>
+                                <option value="gt">&gt;</option>
+                                <option value="gte">&ge;</option>
+                            </select>
+                        </div>
+                        <div class="col">
+                            <input type="number" min="0" step="1" class="form-control" name="divine_powers_count[value]"
+                                id="inputDivinePowersCountValue">
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="form-group row d-none" id="added-elements-row">
+                        <label class="col-sm-3 col-form-label">{{ ('search.element_labels.added')|trans }}</label>
+                        <div class="col">
+                            <div class="row justify-content-start" id="added-elements"></div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="inputName" class="col-sm-3 col-form-label">{{
+                            ('search.element_labels.add_new')|trans }}</label>
+                        <div class="col">
+                            <select class="form-control autocomplete" name="names[]" id="inputElementName" size="1"
+                                data-placeholder="{{('autocomplete.select_element')|trans}}">
+                                <option value></option>
+                            </select>
+                        </div>
+                        <div class="col-sm-1">
+                            <button class="btn btn-warning btn-sm mx-2 mt-1 add-element-button" type="button">
+                                <i class="fas fa-plus fa-fw" aria-hidden="true"></i>
+                                <span class="sr-only">
+                                    {{ 'generic.add'|trans }}
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">
+                            {{ ('search.element_labels.formula')|trans }}
+                            <div class="custom-control custom-switch pt-2" id="formules-mode-wrapper"
+                                style="display: none;">
+                                <input type="checkbox" class="custom-control-input" id="inputFormuleLanguageMode"
+                                    name="formules_mode" value="all">
+                                <label class="custom-control-label" for="inputFormuleLanguageMode"
+                                    style="font-weight: initial;">{{ 'generic.fields.require_all'|trans }}</label>
+                            </div>
+                        </label>
+                        <div class="col">
+                            <div class="row">
+                                <div class="col formula-search">
+                                    <input type="hidden" name="formule[]">
+                                </div>
+                                <div class="col-sm-auto pl-0 remove-formula-wrapper" style="display:none;">
+                                    <button type="button" class="btn btn-sm btn-warning remove-formula-button">
+                                        <i class="fas fa-fw fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <button class="btn btn-warning btn-sm mx-2 mt-1 add-formula-button" type="button"
+                                style="display:none;">
+                                <i class="fas fa-plus fa-fw" aria-hidden="true"></i>
+                                {{ 'attestation.add_formule'|trans }}
+                            </button>
+                            <div class="row no-elements pt-2">
+                                <div class="col">
+                                    {{ 'search.messages.no_elements'|trans }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="form-group row">
+                        <label for="inputElementLanguage" class="col-sm-3 col-form-label">{{
+                            ('generic.fields.langue')|trans }}</label>
+                        <div class="col">
+                            <select class="form-control autocomplete" name="languages[]" id="inputElementLanguage"
+                                size="1" multiple data-placeholder="{{('autocomplete.select_multiple')|trans}}">
+                                <option value></option>
+                            </select>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="custom-control custom-switch pt-2">
+                                <input type="checkbox" class="custom-control-input" id="inputElementLanguageMode"
+                                    name="languages_mode" value="all">
+                                <label class="custom-control-label" for="inputElementLanguageMode">{{
+                                    'generic.fields.require_all'|trans }}</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">{{ ('generic.fields.datation')|trans }}</label>
+                        <div class="col">
+                            <input type="number" step="1" class="form-control" name="datation[post_quem]"
+                                id="inputElementPostQuem" placeholder="{{('datation.fields.post_quem')|trans}}">
+                        </div>
+                        <div class="col">
+                            <input type="number" step="1" class="form-control" name="datation[ante_quem]"
+                                id="inputElementAnteQuem" placeholder="{{('datation.fields.ante_quem')|trans}}">
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="custom-control custom-switch pt-2">
+                                <input type="checkbox" class="custom-control-input" id="inputElementDatationExact"
+                                    name="datation[exact]" value="datation_exact" checked>
+                                <label class="custom-control-label" for="inputElementDatationExact">
+                                    {{ ('generic.fields.strict')|trans }}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="inputElementLocation" class="col-sm-3 col-form-label">{{
+                            ('generic.fields.lieu')|trans }}</label>
+                        <div class="col">
+                            <select class="form-control autocomplete" name="locations[]" id="inputElementLocation"
+                                size="1" multiple data-placeholder="{{('autocomplete.select_multiple')|trans}}">
+                                <option value></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="inputElementSourceType" class="col-sm-3 col-form-label">{{ ('source.name')|trans
+                            }}</label>
+                        <div class="col">
+                            <select class="form-control autocomplete" name="sourceTypes[]" id="inputElementSourceType"
+                                size="1" multiple data-placeholder="{{('autocomplete.select_multiple')|trans}}">
+                                <option value></option>
+                            </select>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="form-group row last-row">
+                        <div class="col-sm-12">
+                            <button class="btn btn-secondary btn-sm mx-2" type="reset" name="reset"
+                                class="reset-button">
+                                <i class="fas fa-eraser fa-fw"></i>
+                                {{ 'generic.clear'|trans }}
+                            </button>
+                            <button class="btn btn-primary mx-2" type="submit" name="search">
+                                <i class="fas fa-search fa-fw"></i>
+                                {{ 'generic.search'|trans }}
+                            </button>
+                            {% include 'partials/_help.html.twig' with {'section': 'search_formulae'} %}
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
+    </div>
+    {% if is_granted('ROLE_USER') %}
+    <div class="col-sm-12 col-xl-4">
+        <ul class="nav nav-pills nav-fill" id="myTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link text-white background-map-grey" role="tab">
+                    {{ ('search.saved_queries')|trans }}
+                </a>
+            </li>
+        </ul>
+        <div class="tab-content overflow-auto" id="savedQueriesTab" style="max-height: 400px; ">
+            <div class="tab-pane show active" role="tabpanel">
+                <ul class="list-group list-group-flush">
+                    {% for query in saved_queries %}
+                    {% include "search/_saved_query.html.twig" with {'query': query, 'criteria_list': criteria_list}
+                    only %}
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
     {% endif %}
+</div>
+{% include "search/_templates.html.twig" with {'criteria_list': criteria_list} only %}
+{% if is_granted('ROLE_ADMIN') %}
+<hr />
+<div class="row">
+    <div class="col-12 text-center">
+        <button type="button" class="btn my-1 btn-danger" id="search-reindex" data-toggle="modal"
+            data-target="#search-reindex-modal">
+            <i class="fas fa-fw fa-sync"></i>
+            {{ 'search.reindex'|trans }}
+        </button>
+        {% include "modals/search_index.html.twig" %}
+        <a href="{{ url('search_clear_cache') }}" class="btn btn-danger">
+            <i class="fas fa-fw fa-trash"></i>
+            {{ 'search.clear_cache'|trans }}
+        </a>
+    </div>
+</div>
+{% endif %}
 {% endblock %}
 {% block javascripts %}
-    {% set elementButtonTemplate %}
-    <div class="input-group">
-        <div class="input-group-prepend">
-            {% include "partials/_entitylink.html.twig" with {
-                'entity': 'element',
-                'link': url('element_show', {'id': '#ID#'}),
-                'text': '##ID# #LABEL#',
-                'small': false
-            } %}
-        </div>
-        <input type="hidden" name="element_position[#INDEX#][id]" value="#ID#">
-        <select class="form-control autocomplete-single" name="element_position[#INDEX#][position]" size="1" data-placeholder="{{('search.element_labels.position')|trans|raw ~ ' '}}">
-            <option value=""></option>
-            <option value="any">{{ 'search.element_labels.position_values.any'|trans }}</option>
-            <option value="start">{{ 'search.element_labels.position_values.start'|trans }}</option>
-            <option value="end">{{ 'search.element_labels.position_values.end'|trans }}</option>
-            <option value="other">{{ 'search.element_labels.position_values.other'|trans }}</option>
-        </select>
-        <div class="input-group-append">
-            <button type="button" class="btn btn-secondary remove-button">
-                <i class="fas fa-fw fa-times"></i>
-            </button>
-        </div>
+{% set elementButtonTemplate %}
+<div class="input-group">
+    <div class="input-group-prepend">
+        {% include "partials/_entitylink.html.twig" with {
+        'entity': 'element',
+        'link': url('element_show', {'id': '#ID#'}),
+        'text': '##ID# #LABEL#',
+        'small': false
+        } %}
     </div>
-    {% endset %}
-    {{ parent() }}
-    {{ encore_entry_script_tags('search_page') }}
-    <script type="text/javascript">
-        $(document).ready(function () {
-            //
-            // Object to store the list of criteria available for advanced search
-            SEARCH_CRITERIA = $.parseJSON('{{ criteria_list|json_encode|e("js")|raw }}');
+    <input type="hidden" name="element_position[#INDEX#][id]" value="#ID#">
+    <select class="form-control autocomplete-single" name="element_position[#INDEX#][position]" size="1"
+        data-placeholder="{{('search.element_labels.position')|trans|raw ~ ' '}}">
+        <option value=""></option>
+        <option value="any">{{ 'search.element_labels.position_values.any'|trans }}</option>
+        <option value="start">{{ 'search.element_labels.position_values.start'|trans }}</option>
+        <option value="end">{{ 'search.element_labels.position_values.end'|trans }}</option>
+        <option value="other">{{ 'search.element_labels.position_values.other'|trans }}</option>
+    </select>
+    <div class="input-group-append">
+        <button type="button" class="btn btn-secondary remove-button">
+            <i class="fas fa-fw fa-times"></i>
+        </button>
+    </div>
+</div>
+{% endset %}
+{{ parent() }}
+{{ encore_entry_script_tags('search_page') }}
+<script type="text/javascript">
+    $(document).ready(function () {
+        //
+        // Object to store the list of criteria available for advanced search
+        SEARCH_CRITERIA = $.parseJSON('{{ criteria_list|json_encode|e("js")|raw }}');
 
-            // Store current search mode in a variable
-            CURRENT_MODE = "";
+        // Store current search mode in a variable
+        CURRENT_MODE = "";
 
-            // Chosen settings for selects with single selection and deselection allowed
-            SINGLE_CHOSEN_SETTINGS = $.extend(CHOSEN_SETTINGS, {
-                disable_search_threshold: 10,
-                allow_single_deselect: true
-            });
+        // Chosen settings for selects with single selection and deselection allowed
+        SINGLE_CHOSEN_SETTINGS = $.extend(CHOSEN_SETTINGS, {
+            disable_search_threshold: 10,
+            allow_single_deselect: true
+        });
 
-            // Store elements selected for formula search
-            SEARCH_ELEMENTS = {};
+        // Store elements selected for formula search
+        SEARCH_ELEMENTS = {};
 
-            function changeMode(mode) { // Save in variable
-                CURRENT_MODE = mode;
-                // Show given tab
-                $('#searchTabLinks a[href="#' + mode + '"]').tab('show');
-                // Update current URL hash
-                window.location.hash = '#' + mode;
-                // Adjust height of saved queries block
-                adjustSavedQueriesHeight();
+        function changeMode(mode) { // Save in variable
+            CURRENT_MODE = mode;
+            // Show given tab
+            $('#searchTabLinks a[href="#' + mode + '"]').tab('show');
+            // Update current URL hash
+            window.location.hash = '#' + mode;
+            // Adjust height of saved queries block
+            adjustSavedQueriesHeight();
 
-                // Show directly the add criteria select list if we're showing the advanced tab
-                if (mode == "advanced") {
-                    chooseNewCriteria('inclusive');
-                }
+            // Show directly the add criteria select list if we're showing the advanced tab
+            if (mode == "advanced") {
+                chooseNewCriteria('inclusive');
+            }
         };
 
-            function adjustSavedQueriesHeight() {
-                var height = $('div.tab-pane#' + CURRENT_MODE).outerHeight();
-                $("#savedQueriesTab").animate({
-                    maxHeight: Math.max(400, height) + 'px'
-                }, 500);
-            };
+        function adjustSavedQueriesHeight() {
+            var height = $('div.tab-pane#' + CURRENT_MODE).outerHeight();
+            $("#savedQueriesTab").animate({
+                maxHeight: Math.max(400, height) + 'px'
+            }, 500);
+        };
 
-            function searchCriteria(criteriaName) { // Find properties in SEARCH_CRITERIA
-                return SEARCH_CRITERIA.reduce((found, item) => {
-                    return found || (item.key === criteriaName ? item : item.children.reduce((carry, subitem) => {
-                        return subitem.key === criteriaName ? subitem : carry;
-                    }, null));
-                }, null);
-            };
+        function reloadTooltips() {
+            $('#search-panel [data-toggle="tooltip"]').tooltip();
+        }
 
-            function populateCriteriaData(mode, data, callback) {
-                if (mode === "simple") {
-                    $('#simple').find('input[name="search_value"]').val(data[0]);
+        function searchCriteria(criteriaName) { // Find properties in SEARCH_CRITERIA
+            return SEARCH_CRITERIA.reduce((found, item) => {
+                return found || (item.key === criteriaName ? item : item.children.reduce((carry, subitem) => {
+                    return subitem.key === criteriaName ? subitem : carry;
+                }, null));
+            }, null);
+        };
+
+        function populateCriteriaData(mode, data, callback) {
+            if (mode === "simple") {
+                $('#simple').find('input[name="search_value"]').val(data[0]);
+                if (callback !== undefined) {
+                    callback.apply(null);
+                }
+            } else if (mode === "guided") { // Guided form will be populated when all its data has been loaded
+                $('#search-panel').on('async-form-ready', function () {
+                    $('#guided').find('button[type=reset]').click();
+                    $.each(data, function (criteria, value) {
+                        switch (criteria) {
+                            case 'names':
+                            case 'languages':
+                            case 'locations':
+                            case 'sourceTypes':
+                            case 'agents':
+                                $('#guided').find('select[name="' + criteria + '[]"]').val(value).trigger('chosen:updated');
+                                break;
+                            case 'datation':
+                                $('#guided').find('input[name="datation[post_quem]"]').val(value.post_quem);
+                                $('#guided').find('input[name="datation[ante_quem]"]').val(value.ante_quem);
+                                $('#guided').find('input[name="datation[exact]"]').attr('checked', value.exact === "datation_exact");
+                                break;
+                            case 'names_mode':
+                            case 'languages_mode':
+                                if (value === "all") {
+                                    $('#guided').find('input[name="' + criteria + '"]').attr('checked', true);
+                                }
+                                break;
+                            case 'freeText':
+                                $('#guided').find('input[name="freeText"]').val(value);
+                                break;
+                        }
+                    });
                     if (callback !== undefined) {
                         callback.apply(null);
                     }
-                } else if (mode === "guided") { // Guided form will be populated when all its data has been loaded
-                    $('#search-panel').on('async-form-ready', function () {
-                        $('#guided').find('button[type=reset]').click();
-                        $.each(data, function (criteria, value) {
-                            switch (criteria) {
-                                case 'names':
-                                case 'languages':
-                                case 'locations':
-                                case 'sourceTypes':
-                                case 'agents':
-                                    $('#guided').find('select[name="' + criteria + '[]"]').val(value).trigger('chosen:updated');
-                                    break;
-                                case 'datation':
-                                    $('#guided').find('input[name="datation[post_quem]"]').val(value.post_quem);
-                                    $('#guided').find('input[name="datation[ante_quem]"]').val(value.ante_quem);
-                                    $('#guided').find('input[name="datation[exact]"]').attr('checked', value.exact === "datation_exact");
-                                    break;
-                                case 'names_mode':
-                                case 'languages_mode':
-                                    if (value === "all") {
-                                        $('#guided').find('input[name="' + criteria + '"]').attr('checked', true);
+                });
+                // In case criteria are already loaded (ie loading a saved query),
+                // we manually trigger the event
+                if (criteriaLoading == 0) {
+                    $('#search-panel').trigger('async-form-ready');
+                }
+            } else if (mode == "advanced") { // Set the results type
+                $('#advanced').find('button[type=reset]').click();
+
+                // Advanced form will be populated when all its data has been loaded
+                $('#search-panel').on('async-form-ready', function () {
+                    $('#advanced input[name=resultsType]').filter('[value=' + data.resultsType + ']').prop('checked', true);
+                    delete data.resultsType;
+                    Object.entries(data).forEach(([criteriaName, values]) => {
+                        var criteria = searchCriteria(criteriaName);
+
+                        Object.values(values).forEach((value, index) => {
+                            switch (criteria.type) {
+                                case 'locationselect':
+                                    if (value.hasOwnProperty('direct') && value.direct === "direct") {
+                                        $('#advanced').find('input[name="' + criteriaName + '[' + index + '][direct]"]').attr('checked', true);
+                                    }
+                                case 'select':
+                                    $('#advanced').find('select[name="' + criteriaName + '[' + index + '][values][]"]').val(value.values).trigger('chosen:updated');
+                                    if (value.hasOwnProperty('mode') && value.mode === "all") {
+                                        $('#advanced').find('input[name="' + criteriaName + '[' + index + '][mode]"]').attr('checked', true);
                                     }
                                     break;
-                                case 'freeText':
-                                    $('#guided').find('input[name="freeText"]').val(value);
+                                case 'text':
+                                    $('#advanced').find('input[name="' + criteriaName + '[' + index + '][value]"]').val(value.value).trigger('input');
+                                    if (value.hasOwnProperty('mode') && value.mode === "strict") {
+                                        $('#advanced').find('input[name="' + criteriaName + '[' + index + '][mode]"]').attr('checked', true);
+                                    }
+                                    break;
+                                case 'range':
+                                    $('#advanced').find('select[name="' + criteriaName + '[' + index + '][operator]"]').val(value.operator).trigger('chosen:updated');
+                                    $('#advanced').find('select[name="' + criteriaName + '[' + index + '][value]"]').val(value.value).trigger('chosen:updated');
+                                    break;
+                                case 'operation':
+                                    $('#advanced').find('select[name="' + criteriaName + '[' + index + '][operator]"]').val(value.operator).trigger('chosen:updated');
+                                    $('#advanced').find('input[name="' + criteriaName + '[' + index + '][value]"]').val(value.value);
+                                    break;
+                                case 'datation':
+                                    $('#advanced').find('input[name="datation[' + index + '][post_quem]"]').val(value.post_quem);
+                                    $('#advanced').find('input[name="datation[' + index + '][ante_quem]"]').val(value.ante_quem);
+                                    $('#advanced').find('input[name="datation[' + index + '][exact]"]').attr('checked', value.exact === "datation_exact");
+                                    break;
+                                case 'prosepoetry':
+                                    $('#advanced').find('input[name="prosePoetry[' + index + '][]"][value=prose]').attr('checked', value.includes('prose'));
+                                    $('#advanced').find('input[name="prosePoetry[' + index + '][]"][value=poesie]').attr('checked', value.includes('poesie'));
+                                    break;
+                                case 'locationreal':
+                                    $('#advanced').find('input[name="locationReal[]"][value=' + value + ']').attr('checked', true);
+                                    break;
+                                case 'iconography':
+                                    $('#advanced').find('input[name="iconography[]"][value=' + value + ']').attr('checked', true);
+                                    break;
+                                case 'elementsemitic':
+                                    $('#advanced').find('input[name="elementSemitic[]"][value=' + value + ']').attr('checked', true);
                                     break;
                             }
-                        });
-                        if (callback !== undefined) {
-                            callback.apply(null);
+                        })
+                    });
+                    if (callback !== undefined) {
+                        callback.apply(null);
+                    }
+                });
+
+                setTimeout(() => {
+                    Object.entries(data).forEach(([criteriaName, values]) => {
+                        if (criteriaName != 'resultsType') {
+                            const len = (criteriaName === 'locationReal' || criteriaName === 'iconography' || criteriaName === 'elementSemitic') ? 1 : Object.values(values).length;
+                            for (i = 0; i < len; i++) {
+                                addNewCriteria(criteriaName, values[i]['type'] ?? 'inclusive');
+                            }
                         }
                     });
+
+                    // In case criteria are already loaded,
+                    // we manually trigger the event
+                    if (criteriaLoading == 0) {
+                        $('#advanced > form').trigger('async-form-ready');
+                    }
+                }, 100);
+            } else if (mode == 'elements') { // Elements form will be populated when all its data has been loaded
+                $('#elements').find('button[type=reset]').click();
+                $('#search-panel').one('async-form-ready', function () {
+                    $.each(data, function (criteria, value) {
+                        switch (criteria) {
+                            case 'element_count':
+                            case 'divine_powers_count':
+                                $('#elements').find('select[name="' + criteria + '[operator]"]').val(value.operator).trigger('chosen:updated');
+                                $('#elements').find('input[name="' + criteria + '[value]"]').val(value.value);
+                            case 'languages':
+                            case 'locations':
+                            case 'sourceTypes':
+                            case 'agents':
+                                $('#elements').find('select[name="' + criteria + '[]"]').val(value).trigger('chosen:updated');
+                                break;
+                            case 'datation':
+                                $('#elements').find('input[name="datation[post_quem]"]').val(value.post_quem);
+                                $('#elements').find('input[name="datation[ante_quem]"]').val(value.ante_quem);
+                                $('#elements').find('input[name="datation[exact]"]').attr('checked', value.exact === "datation_exact");
+                                break;
+                            case 'languages_mode':
+                            case 'formules_mode':
+                                if (value === "all") {
+                                    setTimeout(() => {
+                                        $('#elements').find('input[name="' + criteria + '"]').attr('checked', true);
+                                    }, 10);
+                                }
+                                break;
+                            case 'element_position':
+                                //
+                                Object.values(value).forEach(v => {
+                                    addElement(v.id, v.position, false);
+                                });
+                                break;
+                            case 'formule':
+                                //
+                                Object.values(value).forEach((f, i) => {
+                                    if (i > 0) {
+                                        addFormula(false);
+                                    }
+                                    $('#elements').find('input[name="formule[]"]').last().val(f);
+                                });
+                                break;
+                        }
+                    });
+                    setupFormulaEditors();
+                    if (callback !== undefined) {
+                        callback.apply(null);
+                    }
+                });
+
+                setTimeout(() => {
                     // In case criteria are already loaded (ie loading a saved query),
                     // we manually trigger the event
                     if (criteriaLoading == 0) {
                         $('#search-panel').trigger('async-form-ready');
                     }
-                } else if (mode == "advanced") { // Set the results type
-                    $('#advanced').find('button[type=reset]').click();
-
-                    // Advanced form will be populated when all its data has been loaded
-                    $('#search-panel').on('async-form-ready', function () {
-                        $('#advanced input[name=resultsType]').filter('[value=' + data.resultsType + ']').prop('checked', true);
-                        delete data.resultsType;
-                        Object.entries(data).forEach(([criteriaName, values]) => {
-                            var criteria = searchCriteria(criteriaName);
-
-                            Object.values(values).forEach((value, index) => {
-                                switch (criteria.type) {
-                                    case 'locationselect':
-                                        if (value.hasOwnProperty('direct') && value.direct === "direct") {
-                                            $('#advanced').find('input[name="' + criteriaName + '[' + index + '][direct]"]').attr('checked', true);
-                                        }
-                                    case 'select':
-                                        $('#advanced').find('select[name="' + criteriaName + '[' + index + '][values][]"]').val(value.values).trigger('chosen:updated');
-                                        if (value.hasOwnProperty('mode') && value.mode === "all") {
-                                            $('#advanced').find('input[name="' + criteriaName + '[' + index + '][mode]"]').attr('checked', true);
-                                        }
-                                        break;
-                                    case 'text':
-                                        $('#advanced').find('input[name="' + criteriaName + '[' + index + '][value]"]').val(value.value).trigger('input');
-                                        if (value.hasOwnProperty('mode') && value.mode === "strict") {
-                                            $('#advanced').find('input[name="' + criteriaName + '[' + index + '][mode]"]').attr('checked', true);
-                                        }
-                                        break;
-                                    case 'range':
-                                        $('#advanced').find('select[name="' + criteriaName + '[' + index + '][operator]"]').val(value.operator).trigger('chosen:updated');
-                                        $('#advanced').find('select[name="' + criteriaName + '[' + index + '][value]"]').val(value.value).trigger('chosen:updated');
-                                        break;
-                                    case 'operation':
-                                        $('#advanced').find('select[name="' + criteriaName + '[' + index + '][operator]"]').val(value.operator).trigger('chosen:updated');
-                                        $('#advanced').find('input[name="' + criteriaName + '[' + index + '][value]"]').val(value.value);
-                                        break;
-                                    case 'datation':
-                                        $('#advanced').find('input[name="datation[' + index + '][post_quem]"]').val(value.post_quem);
-                                        $('#advanced').find('input[name="datation[' + index + '][ante_quem]"]').val(value.ante_quem);
-                                        $('#advanced').find('input[name="datation[' + index + '][exact]"]').attr('checked', value.exact === "datation_exact");
-                                        break;
-                                    case 'prosepoetry':
-                                        $('#advanced').find('input[name="prosePoetry[' + index + '][]"][value=prose]').attr('checked', value.includes('prose'));
-                                        $('#advanced').find('input[name="prosePoetry[' + index + '][]"][value=poesie]').attr('checked', value.includes('poesie'));
-                                        break;
-                                    case 'locationreal':
-                                        $('#advanced').find('input[name="locationReal[]"][value=' + value + ']').attr('checked', true);
-                                        break;
-                                    case 'iconography':
-                                        $('#advanced').find('input[name="iconography[]"][value=' + value + ']').attr('checked', true);
-                                        break;
-                                    case 'elementsemitic':
-                                        $('#advanced').find('input[name="elementSemitic[]"][value=' + value + ']').attr('checked', true);
-                                        break;
-                                }
-                            })
-                        });
-                        if (callback !== undefined) {
-                            callback.apply(null);
-                        }
-                    });
-
-                    setTimeout(() => {
-                        Object.entries(data).forEach(([criteriaName, values]) => {
-                            if (criteriaName != 'resultsType') {
-                                const len = (criteriaName === 'locationReal' || criteriaName === 'iconography' || criteriaName === 'elementSemitic') ? 1 : Object.values(values).length;
-                                for (i = 0; i < len; i++) {
-                                    addNewCriteria(criteriaName, values[i]['type'] ?? 'inclusive');
-                                }
-                            }
-                        });
-
-                        // In case criteria are already loaded,
-                        // we manually trigger the event
-                        if (criteriaLoading == 0) {
-                            $('#advanced > form').trigger('async-form-ready');
-                        }
-                    }, 100);
-                } else if (mode == 'elements') { // Elements form will be populated when all its data has been loaded
-                    $('#elements').find('button[type=reset]').click();
-                    $('#search-panel').one('async-form-ready', function () {
-                        $.each(data, function (criteria, value) {
-                            switch (criteria) {
-                                case 'element_count':
-                                case 'divine_powers_count':
-                                    $('#elements').find('select[name="' + criteria + '[operator]"]').val(value.operator).trigger('chosen:updated');
-                                    $('#elements').find('input[name="' + criteria + '[value]"]').val(value.value);
-                                case 'languages':
-                                case 'locations':
-                                case 'sourceTypes':
-                                case 'agents':
-                                    $('#elements').find('select[name="' + criteria + '[]"]').val(value).trigger('chosen:updated');
-                                    break;
-                                case 'datation':
-                                    $('#elements').find('input[name="datation[post_quem]"]').val(value.post_quem);
-                                    $('#elements').find('input[name="datation[ante_quem]"]').val(value.ante_quem);
-                                    $('#elements').find('input[name="datation[exact]"]').attr('checked', value.exact === "datation_exact");
-                                    break;
-                                case 'languages_mode':
-                                case 'formules_mode':
-                                    if (value === "all") {
-                                        setTimeout(() => {
-                                            $('#elements').find('input[name="' + criteria + '"]').attr('checked', true);
-                                        }, 10);
-                                    }
-                                    break;
-                                case 'element_position':
-                                    //
-                                    Object.values(value).forEach(v => {
-                                        addElement(v.id, v.position, false);
-                                    });
-                                    break;
-                                case 'formule':
-                                    //
-                                    Object.values(value).forEach((f, i) => {
-                                        if (i > 0) {
-                                            addFormula(false);
-                                        }
-                                        $('#elements').find('input[name="formule[]"]').last().val(f);
-                                    });
-                                    break;
-                            }
-                        });
-                        setupFormulaEditors();
-                        if (callback !== undefined) {
-                            callback.apply(null);
-                        }
-                    });
-
-                    setTimeout(() => {
-                        // In case criteria are already loaded (ie loading a saved query),
-                        // we manually trigger the event
-                        if (criteriaLoading == 0) {
-                            $('#search-panel').trigger('async-form-ready');
-                        }
-                    }, 100);
-                }
+                }, 100);
             }
+        }
 
-            // Keep track of the number of criteria that need to be loaded
-            var criteriaLoading = 0;
+        // Keep track of the number of criteria that need to be loaded
+        var criteriaLoading = 0;
 
-            // Store criteria that have already been loaded
-            var loadedCriteria = {};
-            // Store criteria that are still loading with their promise
-            var loadingCriteria = {};
+        // Store criteria that have already been loaded
+        var loadedCriteria = {};
+        // Store criteria that are still loading with their promise
+        var loadingCriteria = {};
 
-            function loadCriteriaData(criteriaName, target, optgroups, disableSemiticKeyboard) {
-                var createOptions = function (data, select) {
-                    Object.entries(data)
-                        .sort((a, b) => a[1].match(/#\d+/) && b[1].match(/#\d+/)
-                            ? (a[1].replace('#', '') - b[1].replace('#', ''))
-                            : (removeAccents(a[1])
-                                .localeCompare(removeAccents(b[1]))
-                            )
+        function loadCriteriaData(criteriaName, target, optgroups, disableSemiticKeyboard) {
+            var createOptions = function (data, select) {
+                Object.entries(data)
+                    .sort((a, b) => a[1].match(/#\d+/) && b[1].match(/#\d+/)
+                        ? (a[1].replace('#', '') - b[1].replace('#', ''))
+                        : (removeAccents(a[1])
+                            .localeCompare(removeAccents(b[1]))
                         )
-                        .forEach(([value, label]) => {
-                            select.append($('<option />').attr('value', value).html(label));
-                        });
+                    )
+                    .forEach(([value, label]) => {
+                        select.append($('<option />').attr('value', value).html(label));
+                    });
+            }
+
+            var injectData = function (data) {
+                if (optgroups !== undefined && optgroups !== null) { // Display 2-level data using optgroups
+                    Object.entries(optgroups).forEach(([datakey, grouplabel]) => {
+                        if (data.hasOwnProperty(datakey)) {
+                            var optgroup = $('<optgroup/>').attr('label', grouplabel);
+                            createOptions(data[datakey], optgroup);
+                            target.append(optgroup);
+                        }
+                    })
+                } else { // Display single level data
+                    createOptions(data, target);
                 }
 
-                var injectData = function (data) {
-                    if (optgroups !== undefined && optgroups !== null) { // Display 2-level data using optgroups
-                        Object.entries(optgroups).forEach(([datakey, grouplabel]) => {
-                            if (data.hasOwnProperty(datakey)) {
-                                var optgroup = $('<optgroup/>').attr('label', grouplabel);
-                                createOptions(data[datakey], optgroup);
-                                target.append(optgroup);
-                            }
-                        })
-                    } else { // Display single level data
-                        createOptions(data, target);
-                    }
-
-                    // When chosen will be ready, set up the virtual keyboard (unless disabled)
-                    if (disableSemiticKeyboard !== true) {
-                        target.on('chosen:ready', function () {
-                            $(this).siblings('.chosen-container').find('input.chosen-search-input').semiticKeyboard($(this).siblings('.chosen-container'), 'left top', 'right top', true);
-                        });
-                    }
-                    // Set up Chosen autocomplete on field we just filled
-                    target.chosen(CHOSEN_SETTINGS);
-
-                    // Fire event if no more criteria need to be loaded
-                    if (criteriaLoading == 0) {
-                        target.parents('#search-panel').trigger('async-form-ready');
-                    }
+                // When chosen will be ready, set up the virtual keyboard (unless disabled)
+                if (disableSemiticKeyboard !== true) {
+                    target.on('chosen:ready', function () {
+                        $(this).siblings('.chosen-container').find('input.chosen-search-input').semiticKeyboard($(this).siblings('.chosen-container'), 'left top', 'right top', true);
+                    });
                 }
+                // Set up Chosen autocomplete on field we just filled
+                target.chosen(CHOSEN_SETTINGS);
 
-                // If criteria has already been loaded, just inject data
-                if (loadedCriteria.hasOwnProperty(criteriaName)) {
+                // Fire event if no more criteria need to be loaded
+                if (criteriaLoading == 0) {
+                    target.parents('#search-panel').trigger('async-form-ready');
+                }
+            }
+
+            // If criteria has already been loaded, just inject data
+            if (loadedCriteria.hasOwnProperty(criteriaName)) {
+                injectData(loadedCriteria[criteriaName]);
+            } else { // Add a unit to the number of criteria being loaded
+                criteriaLoading++;
+
+                // Display spinner on field being loaded
+                target.parent().append($('<div class="spinner-border chosen-spinner" role="status"></div>'));
+
+                if (!loadingCriteria.hasOwnProperty(criteriaName)) { // Criteria is not currently being loaded, so we start the request and store the promise
+                    var url = "{{ url('search_criteria', {'criteriaName': '_crit_'})|raw }}".replace('_crit_', criteriaName);
+                    loadingCriteria[criteriaName] = $.get(url);
+                }
+                loadingCriteria[criteriaName].done(function (response) {
+                    if (!loadedCriteria.hasOwnProperty(criteriaName)) {
+                        loadedCriteria[criteriaName] = response.data;
+                    }
+                    criteriaLoading--;
                     injectData(loadedCriteria[criteriaName]);
-                } else { // Add a unit to the number of criteria being loaded
-                    criteriaLoading++;
-
-                    // Display spinner on field being loaded
-                    target.parent().append($('<div class="spinner-border chosen-spinner" role="status"></div>'));
-
-                    if (!loadingCriteria.hasOwnProperty(criteriaName)) { // Criteria is not currently being loaded, so we start the request and store the promise
-                        var url = "{{ url('search_criteria', {'criteriaName': '_crit_'})|raw }}".replace('_crit_', criteriaName);
-                        loadingCriteria[criteriaName] = $.get(url);
-                    }
-                    loadingCriteria[criteriaName].done(function (response) {
-                        if (!loadedCriteria.hasOwnProperty(criteriaName)) {
-                            loadedCriteria[criteriaName] = response.data;
-                        }
-                        criteriaLoading--;
-                        injectData(loadedCriteria[criteriaName]);
-                    }).fail(function (response) {
-                        criteriaLoading--;
-                    }).always(function () {
-                        target.siblings('.chosen-spinner').remove();
-                        delete loadingCriteria[criteriaName];
-                    });
-                }
-            }
-
-            function chooseNewCriteria(type) { // Disable feature if current tab is not advanced search
-                if (CURRENT_MODE != "advanced") {
-                    return;
-                }
-
-                // Do not do anything if new criteria selection is already displayed
-                if ($(`#advanced-${type} .new-criteria`).length > 0) {
-                    return;
-                }
-
-                $(`#advanced-${type} .no-criteria`).hide();
-
-                $('#form-templates > #new-criteria-template').clone().removeProp('id').appendTo($(`#advanced-${type}`));
-
-                $(`#advanced-${type} .new-criteria select`).chosen(CHOSEN_SETTINGS);
-
-                $(`#advanced-${type} .new-criteria`).find('button').one('click', function (e) {
-                    e.preventDefault();
-                    var criteria = $(this).parents('.new-criteria').find('select#inputNewCriteria').val();
-                    $(this).parents('.new-criteria').remove();
-                    if ($(this).attr('name') == 'confirm') {
-                        addNewCriteria(criteria, type);
-                    } else if ($(`#advanced-${type} .criteria-row`).length == 0) {
-                        $(`#advanced-${type} .no-criteria`).show();
-                    }
-                })
-            };
-
-            function addNewCriteria(criteriaName, type) {
-                $(`#advanced-${type} .no-criteria`).hide();
-
-                // Find properties in SEARCH_CRITERIA
-                var criteria = SEARCH_CRITERIA.reduce((found, item) => {
-                    return found || (item.key === criteriaName ? item : item.children.reduce((carry, subitem) => {
-                        return subitem.key === criteriaName ? subitem : carry;
-                    }, null));
-                }, null);
-
-                // Clone template
-                var template = $('#form-templates > #' + criteria.type + '-template').clone();
-
-                // Move id as className
-                template.addClass(template.prop('id')).addClass('criteria-row').removeProp('id');
-
-                // Set required properties depending on input type
-                switch (criteria.type) {
-                    case 'locationselect':
-                        var index = $("#advanced").find('select[name^="' + criteria.key + '"]').length;
-                        var inputId = 'input' + criteria.key.charAt(0).toUpperCase() + criteria.key.slice(1);
-                        var inputName = criteria.key + '[' + index + '][values][]';
-                        template.find('.locationselect-direct').find('label').prop('for', inputId + 'Direct_' + index);
-                        template.find('.locationselect-direct').find('input').prop('id', inputId + 'Direct_' + index).prop('name', criteria.key + '[' + index + '][direct]');
-                    case 'select':
-                        // Compute an index based on the number of same name selects already added
-                        var index = $("#advanced").find('select[name^="' + criteria.key + '"]').length;
-                        var inputId = 'input' + criteria.key.charAt(0).toUpperCase() + criteria.key.slice(1);
-                        var inputName = criteria.key + '[' + index + '][values][]';
-                        template.find('label').first().prop('for', inputId).text(criteria.label);
-                        template.find('select').prop('id', inputId).prop('name', inputName);
-                        template.find('.select-strict').find('label').prop('for', inputId + 'Mode_' + index);
-                        template.find('.select-strict').find('input').prop('id', inputId + 'Mode_' + index).prop('name', criteria.key + '[' + index + '][mode]');
-                        loadCriteriaData(criteria.key, template.find('select'), null, criteria.semitic !== true);
-                        break;
-                    case 'text':
-                        var index = $("#advanced").find('input[type=text][name^="' + criteria.key + '"]').length;
-                        var inputId = 'input' + criteria.key.charAt(0).toUpperCase() + criteria.key.slice(1);
-                        template.find('label').first().prop('for', inputId + index).text(criteria.label);
-                        template.find('input').prop('id', inputId + index).prop('name', criteria.key + '[' + index + '][value]');
-                        template.find('.text-strict').find('label').prop('for', inputId + 'Mode_' + index);
-                        template.find('.text-strict').find('input').prop('id', inputId + 'Mode_' + index).prop('name', criteria.key + '[' + index + '][mode]');
-                        if (criteria.semitic === true) {
-                            template.find('input[type=text]').semiticKeyboard(null, 'right top', 'right top', true);
-                        }
-                        break;
-                    case 'range':
-                        var index = $("#advanced").find('input[name^="' + criteria.key + '"]').length;
-                        var inputId = 'input' + criteria.key.charAt(0).toUpperCase() + criteria.key.slice(1);
-                        template.find('label').prop('for', inputId + index + 'Operator').text(criteria.label);
-                        template.find('select').first().prop('id', inputId + index + 'Operator').prop('name', criteria.key + '[' + index + '][operator]');
-                        template.find('select').last().prop('id', inputId + index + 'Value').prop('name', criteria.key + '[' + index + '][value]');
-
-                        // Build datalist
-                        var datalist = Object.entries(criteria.datalist).map(([value, label]) => $('<option />').attr('value', value).html(label));
-                        template.find('select').last().append(...datalist);
-
-                        // Setup Chosen
-                        template.find('select').chosen(SINGLE_CHOSEN_SETTINGS);
-                        break;
-                    case 'operation':
-                        var index = $("#advanced").find('input[name^="' + criteria.key + '"]').length;
-                        var inputId = 'input' + criteria.key.charAt(0).toUpperCase() + criteria.key.slice(1);
-                        template.find('label').prop('for', inputId + index + 'Operator').text(criteria.label);
-                        template.find('select').prop('id', inputId + index + 'Operator').prop('name', criteria.key + '[' + index + '][operator]');
-                        template.find('input').prop('id', inputId + index + 'Value').prop('name', criteria.key + '[' + index + '][value]');
-
-                        // Setup Chosen
-                        template.find('select').chosen(SINGLE_CHOSEN_SETTINGS);
-                        break;
-                    case 'datation':
-                    case 'prosepoetry':
-                    case 'locationreal':
-                    case 'iconography':
-                    case 'elementsemitic':
-                        // Compute an index based on the number of same type templates already added
-                        var index = $("#advanced").find('.' + criteria.type + '-template').length;
-                        // Replace the "#X#" placeholder in the id and name properties of inputs
-                        template.find('input').each((i, el) => {
-                            $(el).prop('id', $(el).prop('id').replace('#X#', index));
-                            $(el).prop('name', $(el).prop('name').replace('#X#', index));
-                        });
-                        // Replace the "#X#" placeholder in the for property of labels
-                        template.find('label').each((i, el) => {
-                            $(el).prop('for', $(el).prop('for').replace('#X#', index));
-                        });
-                        break;
-                }
-
-                var fieldType = $('<input type="hidden" />').attr('name', criteria.key + '[' + index + '][type]').val(type);
-                fieldType.insertBefore(template.find('button.remove-criteria-button'));
-
-                // Add listener on remove button
-                template.find('button.remove-criteria-button').one('click', function (e) {
-                    e.preventDefault();
-                    $(this).parents('.criteria-row').remove();
-                    if ($(`#advanced-${type} .criteria-row`).length == 0) {
-                        $(`#advanced-${type} .no-criteria`).show();
-                    }
+                }).fail(function (response) {
+                    criteriaLoading--;
+                }).always(function () {
+                    target.siblings('.chosen-spinner').remove();
+                    delete loadingCriteria[criteriaName];
                 });
+            }
+        }
 
-                // Add to DOM
-                template.appendTo($(`#advanced-${type}`));
-
-                adjustSavedQueriesHeight();
-            };
-
-            // Show virtual keyboard on simple search field
-            $('#simple input').semiticKeyboard(null, 'right top', 'right top', true);
-
-            // Load criteria for guided mode
-            loadCriteriaData('names', $('#guided select[name="names[]"]'));
-            loadCriteriaData('languages', $('#guided select[name="languages[]"]'), null, true);
-            loadCriteriaData('locations', $('#guided select[name="locations[]"]'), null, true);
-            loadCriteriaData('sourceTypes', $('#guided select[name="sourceTypes[]"]'), null, true);
-            loadCriteriaData('agentivities', $('#guided select[name="agents[]"]'), null, true);
-
-            // Load criteria for elements mode
-            loadCriteriaData('names', $('#elements select[name="names[]"]'));
-            loadCriteriaData('languages', $('#elements select[name="languages[]"]'), null, true);
-            loadCriteriaData('locations', $('#elements select[name="locations[]"]'), null, true);
-            loadCriteriaData('sourceTypes', $('#elements select[name="sourceTypes[]"]'), null, true);
-
-
-            // Setup events for advanced mode
-            $("#advanced button#add-inclusive-criteria").on('click', function (e) {
-                e.preventDefault();
-                chooseNewCriteria('inclusive');
-            });
-            // Setup events for advanced mode
-            $("#advanced button#add-exclusive-criteria").on('click', function (e) {
-                e.preventDefault();
-                chooseNewCriteria('exclusive');
-            });
-
-            // Setup events for elements mode
-            $('#elements button.add-element-button').on('click', function (e) {
-                e.preventDefault();
-                // Get data from the selected option
-                var elementId = $('#elements #inputElementName').val();
-                if (elementId !== "" && elementId !== null) {
-                    addElement(elementId, null, true)
-                }
-            });
-            $('#elements #added-elements').on('click', '.remove-button', function (e) {
-                e.preventDefault();
-                e.stopImmediatePropagation();
-                // Get the ID from the element block
-                const elementId = $(this).attr('data-target');
-
-                removeElement(elementId, true);
-            });
-            $('#elements .add-formula-button').on('click', () => addFormula(true));
-            $('#elements').on('click', '.remove-formula-button', (e) => removeFormula(e.currentTarget));
-            $('#elements .autocomplete-single').chosen(SINGLE_CHOSEN_SETTINGS);
-
-            function addFormula(refreshEditors) {
-                const removeFormulaWrapper = '<div class="col-sm-auto pl-0 remove-formula-wrapper"><button type="button" class="btn btn-sm btn-warning remove-formula-button"><i class="fas fa-fw fa-times"></i></button></div>';
-                $('button.add-formula-button').before('<div class="row"><div class="col formula-search"><input type="hidden" name="formule[]"></div>' + removeFormulaWrapper + '</div>');
-
-                if (refreshEditors === true) {
-                    setupFormulaEditors();
-                }
-
-                // Show require all switch if we have more than 2 formula editors
-                if ($('#elements .formula-search').length > 1) {
-                    $('#formules-mode-wrapper').show();
-                }
+        function chooseNewCriteria(type) { // Disable feature if current tab is not advanced search
+            if (CURRENT_MODE != "advanced") {
+                return;
             }
 
-            function removeFormula(button) {
-                $(button).parents('.remove-formula-wrapper').parent().remove();
-                // Hide require all switch if we have less than 2 formula editors
-                if ($('#elements .formula-search').length < 2) {
-                    $('#formules-mode-wrapper').hide();
-                    $('#elements input[name="formules_mode"]').prop('checked', false);
-                }
-            }
-            var ELEMENT_INDEX = 0;
-            function addElement(elementId, position, refreshEditors) { // Get data from the selected option
-                var select = $('#elements #inputElementName');
-                const elementLabel = select.find('option[value="' + elementId + '"]').text();
-
-                var absoluteState = elementLabel.replace(/\[[^\]]*\]/g, "");
-                // Remove parentheses
-                do {
-                    absoluteState = absoluteState.replace(/\([^\)\()]*\)/, "");
-                } while (absoluteState.indexOf('(') !== -1);
-                absoluteState = absoluteState.trim();
-
-                // Store element data in object
-                SEARCH_ELEMENTS[elementId] = absoluteState;
-
-                // Show the "Added Elements" row
-                $('#added-elements-row').removeClass('d-none');
-
-                // Add the element button
-                var html = '{{ elementButtonTemplate|e("js") }}';
-                var button = $(html.replace(/(#|%23)ID(#|%23)/gi, elementId).replace(/(#|%23)LABEL(#|%23)/gi, absoluteState).replace(/(#|%23)INDEX(#|%23)/gi, ELEMENT_INDEX++));
-                button.find('.remove-button').attr('data-target', elementId);
-                $('#added-elements').append($('<div>').addClass('col-sm-auto pr-0 mr-1 mb-1 added-element-item').append(button));
-
-                // Set position value if we have one
-                if (position !== undefined && position !== null) {
-                    $('#added-elements').children().last().find('select').val(position);
-                }
-
-                // Start chosen
-                $('#added-elements').children().last().find('select').chosen(SINGLE_CHOSEN_SETTINGS);
-
-                // Disable the option we just chose
-                select.find('option[value="' + elementId + '"]').attr('disabled', true);
-                select.val('').trigger('chosen:updated');
-
-
-                // Setup/Update the formula editor
-                if (refreshEditors === true) {
-                    setupFormulaEditors();
-                }
-            }
-            function removeElement(elementId, refreshEditors) { // Remove element data from object
-                delete SEARCH_ELEMENTS[elementId];
-
-                // Reenable the corresponding option in the select
-                $('#elements #inputElementName').find('option[value="' + elementId + '"]').attr('disabled', false);
-                $('#elements #inputElementName').trigger('chosen:updated');
-
-                // Remove the element block
-                $('#added-elements').find('button[data-target="' + elementId + '"]').parents('div.added-element-item').remove();
-
-                // Setup/Update the formula editor
-                if (refreshEditors === true) {
-                    setupFormulaEditors();
-                }
+            // Do not do anything if new criteria selection is already displayed
+            if ($(`#advanced-${type} .new-criteria`).length > 0) {
+                return;
             }
 
-            // Setup formula interface for elements search
-            function setupFormulaEditors() {
-                if (Object.keys(SEARCH_ELEMENTS).length > 0) {
-                    $('#elements').find(".add-formula-button").show();
-                    $('#elements').find(".remove-formula-wrapper").show();
-                    $('#elements').find(".no-elements").hide();
-                    $('#elements .formula-search').formulaEditor({
-                        elements: SEARCH_ELEMENTS,
-                        labels: {
-                            formule: "{{ 'formule.fields.formule'|trans }}",
-                            elements: "{{ 'attestation.sections.elements'|trans }}",
-                            operateurs: "{{ 'formule.fields.operateurs'|trans }}"
-                        },
-                        errors: {
-                            valid: "{{ 'formule.errors.valid'|trans }}",
-                            unknown_element: "{{ 'formule.errors.unknown_element'|trans }}",
-                            no_element: "{{ 'formule.errors.no_element'|trans }}",
-                            not_all_elements: "{{ 'formule.errors.not_all_elements'|trans }}",
-                            element_twice: "{{ 'formule.errors.element_twice'|trans }}",
-                            brackets: "{{ 'formule.errors.brackets'|trans }}",
-                            parenthesis: "{{ 'formule.errors.parenthesis'|trans }}",
-                            brackets_parenthesis_imbrication: "{{ 'formule.errors.brackets_parenthesis_imbrication'|trans }}",
-                            operator_start: "{{ 'formule.errors.operator_start'|trans }}",
-                            operator_end: "{{ 'formule.errors.operator_end'|trans }}",
-                            operator_twice: "{{ 'formule.errors.operator_twice'|trans }}",
-                            operator_imbrication: "{{ 'formule.errors.operator_imbrication'|trans }}"
-                        },
-                        help: "{{ 'formule.help'|trans|replace({'\n': '', '\r\n': '', '\t': '', '\n\r': ''}) }}",
-                        searchMode: true,
-                        formulaInputSelector: "input[name='formule[]']"
+            $(`#advanced-${type} .no-criteria`).hide();
+
+            $('#form-templates > #new-criteria-template').clone().removeProp('id').appendTo($(`#advanced-${type}`));
+
+            $(`#advanced-${type} .new-criteria select`).chosen(CHOSEN_SETTINGS);
+
+            $(`#advanced-${type} .new-criteria`).find('button').one('click', function (e) {
+                e.preventDefault();
+                var criteria = $(this).parents('.new-criteria').find('select#inputNewCriteria').val();
+                $(this).parents('.new-criteria').remove();
+                if ($(this).attr('name') == 'confirm') {
+                    addNewCriteria(criteria, type);
+                } else if ($(`#advanced-${type} .criteria-row`).length == 0) {
+                    $(`#advanced-${type} .no-criteria`).show();
+                }
+            })
+        };
+
+        function addNewCriteria(criteriaName, type) {
+            $(`#advanced-${type} .no-criteria`).hide();
+
+            // Find properties in SEARCH_CRITERIA
+            var criteria = SEARCH_CRITERIA.reduce((found, item) => {
+                return found || (item.key === criteriaName ? item : item.children.reduce((carry, subitem) => {
+                    return subitem.key === criteriaName ? subitem : carry;
+                }, null));
+            }, null);
+
+            // Clone template
+            var template = $('#form-templates > #' + criteria.type + '-template').clone();
+
+            // Move id as className
+            template.addClass(template.prop('id')).addClass('criteria-row').removeProp('id');
+
+            // Set required properties depending on input type
+            switch (criteria.type) {
+                case 'locationselect':
+                    var index = $("#advanced").find('select[name^="' + criteria.key + '"]').length;
+                    var inputId = 'input' + criteria.key.charAt(0).toUpperCase() + criteria.key.slice(1);
+                    var inputName = criteria.key + '[' + index + '][values][]';
+                    template.find('.locationselect-direct').find('label').prop('for', inputId + 'Direct_' + index);
+                    template.find('.locationselect-direct').find('input').prop('id', inputId + 'Direct_' + index).prop('name', criteria.key + '[' + index + '][direct]');
+                case 'select':
+                    // Compute an index based on the number of same name selects already added
+                    var index = $("#advanced").find('select[name^="' + criteria.key + '"]').length;
+                    var inputId = 'input' + criteria.key.charAt(0).toUpperCase() + criteria.key.slice(1);
+                    var inputName = criteria.key + '[' + index + '][values][]';
+                    template.find('label').first().prop('for', inputId).text(criteria.label);
+                    template.find('select').prop('id', inputId).prop('name', inputName);
+                    template.find('.select-strict').find('label').prop('for', inputId + 'Mode_' + index);
+                    template.find('.select-strict').find('input').prop('id', inputId + 'Mode_' + index).prop('name', criteria.key + '[' + index + '][mode]');
+                    loadCriteriaData(criteria.key, template.find('select'), null, criteria.semitic !== true);
+                    break;
+                case 'text':
+                    var index = $("#advanced").find('input[type=text][name^="' + criteria.key + '"]').length;
+                    var inputId = 'input' + criteria.key.charAt(0).toUpperCase() + criteria.key.slice(1);
+                    template.find('label').first().prop('for', inputId + index).text(criteria.label);
+                    template.find('input').prop('id', inputId + index).prop('name', criteria.key + '[' + index + '][value]');
+                    template.find('.text-strict').find('label').prop('for', inputId + 'Mode_' + index);
+                    template.find('.text-strict').find('input').prop('id', inputId + 'Mode_' + index).prop('name', criteria.key + '[' + index + '][mode]');
+                    if (criteria.semitic === true) {
+                        template.find('input[type=text]').semiticKeyboard(null, 'right top', 'right top', true);
+                    }
+                    break;
+                case 'range':
+                    var index = $("#advanced").find('input[name^="' + criteria.key + '"]').length;
+                    var inputId = 'input' + criteria.key.charAt(0).toUpperCase() + criteria.key.slice(1);
+                    template.find('label').prop('for', inputId + index + 'Operator').text(criteria.label);
+                    template.find('select').first().prop('id', inputId + index + 'Operator').prop('name', criteria.key + '[' + index + '][operator]');
+                    template.find('select').last().prop('id', inputId + index + 'Value').prop('name', criteria.key + '[' + index + '][value]');
+
+                    // Build datalist
+                    var datalist = Object.entries(criteria.datalist).map(([value, label]) => $('<option />').attr('value', value).html(label));
+                    template.find('select').last().append(...datalist);
+
+                    // Setup Chosen
+                    template.find('select').chosen(SINGLE_CHOSEN_SETTINGS);
+                    break;
+                case 'operation':
+                    var index = $("#advanced").find('input[name^="' + criteria.key + '"]').length;
+                    var inputId = 'input' + criteria.key.charAt(0).toUpperCase() + criteria.key.slice(1);
+                    template.find('label').prop('for', inputId + index + 'Operator').text(criteria.label);
+                    template.find('select').prop('id', inputId + index + 'Operator').prop('name', criteria.key + '[' + index + '][operator]');
+                    template.find('input').prop('id', inputId + index + 'Value').prop('name', criteria.key + '[' + index + '][value]');
+
+                    // Setup Chosen
+                    template.find('select').chosen(SINGLE_CHOSEN_SETTINGS);
+                    break;
+                case 'datation':
+                case 'prosepoetry':
+                case 'locationreal':
+                case 'iconography':
+                case 'elementsemitic':
+                    // Compute an index based on the number of same type templates already added
+                    var index = $("#advanced").find('.' + criteria.type + '-template').length;
+                    // Replace the "#X#" placeholder in the id and name properties of inputs
+                    template.find('input').each((i, el) => {
+                        $(el).prop('id', $(el).prop('id').replace('#X#', index));
+                        $(el).prop('name', $(el).prop('name').replace('#X#', index));
                     });
-                } else {
-                    $('#elements #added-elements-row').addClass('d-none');
-                    $('#elements .formula-editor').remove();
-                    $('#elements').find("input[name='formule[]']").val("");
-                    $('#elements').find(".add-formula-button").siblings('.row').not('.no-elements').not(':first').remove();
-                    $('#elements').find(".remove-formula-wrapper").hide();
-                    $('#elements').find(".no-elements").show();
-                    $('#elements').find(".add-formula-button").hide();
-                    $('#formules-mode-wrapper').hide();
-                }
+                    // Replace the "#X#" placeholder in the for property of labels
+                    template.find('label').each((i, el) => {
+                        $(el).prop('for', $(el).prop('for').replace('#X#', index));
+                    });
+                    break;
             }
 
-            // Watch reset buttons
-            $('#guided').on('reset', function (e) {
-                var form = $(this);
+            var fieldType = $('<input type="hidden" />').attr('name', criteria.key + '[' + index + '][type]').val(type);
+            fieldType.insertBefore(template.find('button.remove-criteria-button'));
+
+            // Add listener on remove button
+            template.find('button.remove-criteria-button').one('click', function (e) {
+                e.preventDefault();
+                $(this).parents('.criteria-row').remove();
+                if ($(`#advanced-${type} .criteria-row`).length == 0) {
+                    $(`#advanced-${type} .no-criteria`).show();
+                }
+            });
+
+            // Add to DOM
+            template.appendTo($(`#advanced-${type}`));
+
+            adjustSavedQueriesHeight();
+            reloadTooltips();
+        };
+
+        // Show virtual keyboard on simple search field
+        $('#simple input').semiticKeyboard(null, 'right top', 'right top', true);
+
+        // Load criteria for guided mode
+        loadCriteriaData('names', $('#guided select[name="names[]"]'));
+        loadCriteriaData('languages', $('#guided select[name="languages[]"]'), null, true);
+        loadCriteriaData('locations', $('#guided select[name="locations[]"]'), null, true);
+        loadCriteriaData('sourceTypes', $('#guided select[name="sourceTypes[]"]'), null, true);
+        loadCriteriaData('agentivities', $('#guided select[name="agents[]"]'), null, true);
+
+        // Load criteria for elements mode
+        loadCriteriaData('names', $('#elements select[name="names[]"]'));
+        loadCriteriaData('languages', $('#elements select[name="languages[]"]'), null, true);
+        loadCriteriaData('locations', $('#elements select[name="locations[]"]'), null, true);
+        loadCriteriaData('sourceTypes', $('#elements select[name="sourceTypes[]"]'), null, true);
+
+
+        // Setup events for advanced mode
+        $("#advanced button#add-inclusive-criteria").on('click', function (e) {
+            e.preventDefault();
+            chooseNewCriteria('inclusive');
+        });
+        // Setup events for advanced mode
+        $("#advanced button#add-exclusive-criteria").on('click', function (e) {
+            e.preventDefault();
+            chooseNewCriteria('exclusive');
+        });
+
+        // Setup events for elements mode
+        $('#elements button.add-element-button').on('click', function (e) {
+            e.preventDefault();
+            // Get data from the selected option
+            var elementId = $('#elements #inputElementName').val();
+            if (elementId !== "" && elementId !== null) {
+                addElement(elementId, null, true)
+            }
+        });
+        $('#elements #added-elements').on('click', '.remove-button', function (e) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            // Get the ID from the element block
+            const elementId = $(this).attr('data-target');
+
+            removeElement(elementId, true);
+        });
+        $('#elements .add-formula-button').on('click', () => addFormula(true));
+        $('#elements').on('click', '.remove-formula-button', (e) => removeFormula(e.currentTarget));
+        $('#elements .autocomplete-single').chosen(SINGLE_CHOSEN_SETTINGS);
+
+        function addFormula(refreshEditors) {
+            const removeFormulaWrapper = '<div class="col-sm-auto pl-0 remove-formula-wrapper"><button type="button" class="btn btn-sm btn-warning remove-formula-button"><i class="fas fa-fw fa-times"></i></button></div>';
+            $('button.add-formula-button').before('<div class="row"><div class="col formula-search"><input type="hidden" name="formule[]"></div>' + removeFormulaWrapper + '</div>');
+
+            if (refreshEditors === true) {
+                setupFormulaEditors();
+            }
+
+            // Show require all switch if we have more than 2 formula editors
+            if ($('#elements .formula-search').length > 1) {
+                $('#formules-mode-wrapper').show();
+            }
+        }
+
+        function removeFormula(button) {
+            $(button).parents('.remove-formula-wrapper').parent().remove();
+            // Hide require all switch if we have less than 2 formula editors
+            if ($('#elements .formula-search').length < 2) {
+                $('#formules-mode-wrapper').hide();
+                $('#elements input[name="formules_mode"]').prop('checked', false);
+            }
+        }
+        var ELEMENT_INDEX = 0;
+        function addElement(elementId, position, refreshEditors) { // Get data from the selected option
+            var select = $('#elements #inputElementName');
+            const elementLabel = select.find('option[value="' + elementId + '"]').text();
+
+            var absoluteState = elementLabel.replace(/\[[^\]]*\]/g, "");
+            // Remove parentheses
+            do {
+                absoluteState = absoluteState.replace(/\([^\)\()]*\)/, "");
+            } while (absoluteState.indexOf('(') !== -1);
+            absoluteState = absoluteState.trim();
+
+            // Store element data in object
+            SEARCH_ELEMENTS[elementId] = absoluteState;
+
+            // Show the "Added Elements" row
+            $('#added-elements-row').removeClass('d-none');
+
+            // Add the element button
+            var html = '{{ elementButtonTemplate|e("js") }}';
+            var button = $(html.replace(/(#|%23)ID(#|%23)/gi, elementId).replace(/(#|%23)LABEL(#|%23)/gi, absoluteState).replace(/(#|%23)INDEX(#|%23)/gi, ELEMENT_INDEX++));
+            button.find('.remove-button').attr('data-target', elementId);
+            $('#added-elements').append($('<div>').addClass('col-sm-auto pr-0 mr-1 mb-1 added-element-item').append(button));
+
+            // Set position value if we have one
+            if (position !== undefined && position !== null) {
+                $('#added-elements').children().last().find('select').val(position);
+            }
+
+            // Start chosen
+            $('#added-elements').children().last().find('select').chosen(SINGLE_CHOSEN_SETTINGS);
+
+            // Disable the option we just chose
+            select.find('option[value="' + elementId + '"]').attr('disabled', true);
+            select.val('').trigger('chosen:updated');
+
+
+            // Setup/Update the formula editor
+            if (refreshEditors === true) {
+                setupFormulaEditors();
+            }
+        }
+        function removeElement(elementId, refreshEditors) { // Remove element data from object
+            delete SEARCH_ELEMENTS[elementId];
+
+            // Reenable the corresponding option in the select
+            $('#elements #inputElementName').find('option[value="' + elementId + '"]').attr('disabled', false);
+            $('#elements #inputElementName').trigger('chosen:updated');
+
+            // Remove the element block
+            $('#added-elements').find('button[data-target="' + elementId + '"]').parents('div.added-element-item').remove();
+
+            // Setup/Update the formula editor
+            if (refreshEditors === true) {
+                setupFormulaEditors();
+            }
+        }
+
+        // Setup formula interface for elements search
+        function setupFormulaEditors() {
+            if (Object.keys(SEARCH_ELEMENTS).length > 0) {
+                $('#elements').find(".add-formula-button").show();
+                $('#elements').find(".remove-formula-wrapper").show();
+                $('#elements').find(".no-elements").hide();
+                $('#elements .formula-search').formulaEditor({
+                    elements: SEARCH_ELEMENTS,
+                    labels: {
+                        formule: "{{ 'formule.fields.formule'|trans }}",
+                        elements: "{{ 'attestation.sections.elements'|trans }}",
+                        operateurs: "{{ 'formule.fields.operateurs'|trans }}"
+                    },
+                    errors: {
+                        valid: "{{ 'formule.errors.valid'|trans }}",
+                        unknown_element: "{{ 'formule.errors.unknown_element'|trans }}",
+                        no_element: "{{ 'formule.errors.no_element'|trans }}",
+                        not_all_elements: "{{ 'formule.errors.not_all_elements'|trans }}",
+                        element_twice: "{{ 'formule.errors.element_twice'|trans }}",
+                        brackets: "{{ 'formule.errors.brackets'|trans }}",
+                        parenthesis: "{{ 'formule.errors.parenthesis'|trans }}",
+                        brackets_parenthesis_imbrication: "{{ 'formule.errors.brackets_parenthesis_imbrication'|trans }}",
+                        operator_start: "{{ 'formule.errors.operator_start'|trans }}",
+                        operator_end: "{{ 'formule.errors.operator_end'|trans }}",
+                        operator_twice: "{{ 'formule.errors.operator_twice'|trans }}",
+                        operator_imbrication: "{{ 'formule.errors.operator_imbrication'|trans }}"
+                    },
+                    help: "{{ 'formule.help'|trans|replace({'\n': '', '\r\n': '', '\t': '', '\n\r': ''}) }}",
+                    searchMode: true,
+                    formulaInputSelector: "input[name='formule[]']"
+                });
+            } else {
+                $('#elements #added-elements-row').addClass('d-none');
+                $('#elements .formula-editor').remove();
+                $('#elements').find("input[name='formule[]']").val("");
+                $('#elements').find(".add-formula-button").siblings('.row').not('.no-elements').not(':first').remove();
+                $('#elements').find(".remove-formula-wrapper").hide();
+                $('#elements').find(".no-elements").show();
+                $('#elements').find(".add-formula-button").hide();
+                $('#formules-mode-wrapper').hide();
+            }
+        }
+
+        // Watch reset buttons
+        $('#guided').on('reset', function (e) {
+            var form = $(this);
+            form.find('input[name$="_mode"]').attr('checked', false);
+            form.find('input[name="datation[exact]"]').attr('checked', true);
+            setTimeout(() => {
+                form.find('select').trigger('chosen:updated');
+            }, 10);
+        });
+        $('#advanced').on('reset', function (e) {
+            var form = $(this);
+            form.find('input[name="resultsType"]').filter('[value=source]').prop('checked', true);
+            setTimeout(() => {
+                form.find('.criteria-row, .new-criteria').remove();
+                form.find('.row.no-criteria').show();
+            }, 10);
+        });
+        $('#elements').on('reset', function (e) {
+            var form = $(this);
+            Object.keys(SEARCH_ELEMENTS).forEach(id => removeElement(id, false));
+            setTimeout(() => {
+                form.find('select').trigger('chosen:updated');
                 form.find('input[name$="_mode"]').attr('checked', false);
                 form.find('input[name="datation[exact]"]').attr('checked', true);
-                setTimeout(() => {
-                    form.find('select').trigger('chosen:updated');
-                }, 10);
-            });
-            $('#advanced').on('reset', function (e) {
-                var form = $(this);
-                form.find('input[name="resultsType"]').filter('[value=source]').prop('checked', true);
-                setTimeout(() => {
-                    form.find('.criteria-row, .new-criteria').remove();
-                    form.find('.row.no-criteria').show();
-                }, 10);
-            });
-            $('#elements').on('reset', function (e) {
-                var form = $(this);
-                Object.keys(SEARCH_ELEMENTS).forEach(id => removeElement(id, false));
-                setTimeout(() => {
-                    form.find('select').trigger('chosen:updated');
-                    form.find('input[name$="_mode"]').attr('checked', false);
-                    form.find('input[name="datation[exact]"]').attr('checked', true);
-                    form.find('.no-elements').show();
-                    setupFormulaEditors();
-                }, 100);
-            });
+                form.find('.no-elements').show();
+                setupFormulaEditors();
+            }, 100);
+        });
 
-            // Change tab and populate data
-            var url = document.location.toString(),
-                populate_mode = "{{ populate.mode }}";
+        // Change tab and populate data
+        var url = document.location.toString(),
+            populate_mode = "{{ populate.mode }}";
 
-            if (populate_mode != "") { // Populate mode from POST parameters if any
-                changeMode(populate_mode);
+        if (populate_mode != "") { // Populate mode from POST parameters if any
+            changeMode(populate_mode);
 
-                // Populate criteria
-                var populate_criteria = "{{ populate.criteria|e('js') }}";
-                if (populate_criteria != "") {
-                    populateCriteriaData(populate_mode, $.parseJSON(populate_criteria));
-                }
-            } else if (url.match('#')) {
-                changeMode(url.split('#')[1]);
+            // Populate criteria
+            var populate_criteria = "{{ populate.criteria|e('js') }}";
+            if (populate_criteria != "") {
+                populateCriteriaData(populate_mode, $.parseJSON(populate_criteria));
+            }
+        } else if (url.match('#')) {
+            changeMode(url.split('#')[1]);
+        }
+
+        // React to click on tabs
+        $('#searchTabLinks a').on('click', function (e) {
+            changeMode(e.target.hash.replace('#', ''));
+        });
+
+        $('#advanced form').on('submit', function (e) {
+            e.preventDefault();
+            var formData = $(this).serializeObject();
+
+            // Prevent empty form submission
+            if (Object.keys(formData).filter(v => v !== "resultsType" && v !== "new_criteria").length == 0) {
+                console.warn("Trying to submit an empty form");
+                return false;
             }
 
-            // React to click on tabs
-            $('#searchTabLinks a').on('click', function (e) {
-                changeMode(e.target.hash.replace('#', ''));
-            });
+            for (var key in formData) {
+                if (formData.hasOwnProperty(key) && Array.isArray(formData[key])) { // Reset indexes of array values
+                    formData[key] = formData[key].filter(() => true);
 
-            $('#advanced form').on('submit', function (e) {
-                e.preventDefault();
-                var formData = $(this).serializeObject();
-
-                // Prevent empty form submission
-                if (Object.keys(formData).filter(v => v !== "resultsType" && v !== "new_criteria").length == 0) {
-                    console.warn("Trying to submit an empty form");
-                    return false;
-                }
-
-                for (var key in formData) {
-                    if (formData.hasOwnProperty(key) && Array.isArray(formData[key])) { // Reset indexes of array values
-                        formData[key] = formData[key].filter(() => true);
-
-                        // Clean empty array
-                        formData[key] = formData[key].filter((v) => v !== null && v !== "");
-                        if (formData[key].length == 0) {
-                            delete formData[key];
-                        }
-                    }
-                    // Clean empty datation
-                    if (key == "datation" && formData[key].post_quem == "" && formData[key].ante_quem == "") {
+                    // Clean empty array
+                    formData[key] = formData[key].filter((v) => v !== null && v !== "");
+                    if (formData[key].length == 0) {
                         delete formData[key];
                     }
                 }
-
-                this.submit();
-            });
-
-            // Watch query load buttons
-            $('button.query-load-button').on('click', function (e) { // Disable all query load buttons
-                $('button.query-load-button').attr('disabled', true);
-
-                // Show spinner on current button
-                var btn = $(this);
-                btn.children().hide();
-                btn.append($('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>'));
-
-                var data = btn.data();
-                if (CURRENT_MODE !== data.queryMode) {
-                    changeMode(data.queryMode);
+                // Clean empty datation
+                if (key == "datation" && formData[key].post_quem == "" && formData[key].ante_quem == "") {
+                    delete formData[key];
                 }
-                populateCriteriaData(data.queryMode, $.parseJSON(decodeURIComponent(data.queryCriteria)), function () {
-                    btn.find('span.spinner-border').remove();
-                    btn.children().show();
-                    $('button.query-load-button').attr('disabled', false);
+            }
 
-                    $('#' + data.queryMode).find('form').prepend($('<input>').prop('type', 'hidden').prop('name', 'queryName').attr('value', data.queryName));
-                });
-            });
-
-            // Search reindex management
-            $('#search-reindex-modal .modal-accept-button').on('click', function (e) {
-                e.preventDefault();
-                const modal = $('#search-reindex-modal');
-                const baseUrl = "{{ url('search_reindex') }}";
-
-                modal.on('hide.bs.modal', function () {
-                    return false;
-                });
-
-                modal.find('.before-element, .done-element').hide();
-                modal.find('.progress-element').show();
-
-                const progressBar = modal.find('.progress-bar');
-                progressBar.css('width', '100%').text('0%');
-
-                var rebuildKey;
-
-                function nextQuery() {
-                    $.get(baseUrl, {rebuildKey}).done(data => {
-                        const progress = Math.floor(100 * data.doneCount / data.totalCount);
-                        progressBar.css('width', progress + '%').text(progress + '%');
-                        if (data.rebuildKey != rebuildKey) {
-                            alert('Error');
-                        } else if (data.doneCount == data.totalCount) {
-                            progressBar.addClass('bg-success');
-                            modal.find('p.progress-element').hide();
-                            modal.find('.done-element').show();
-                            modal.off('hide.bs.modal');
-                            $('#index-not-up-to-date').hide();
-                        } else {
-                            nextQuery();
-                        }
-                    });
-                }
-
-                $.get(baseUrl).done(data => {
-                    rebuildKey = data.rebuildKey;
-                    nextQuery();
-                });
-            })
+            this.submit();
         });
-    </script>
+
+        // Watch query load buttons
+        $('button.query-load-button').on('click', function (e) { // Disable all query load buttons
+            $('button.query-load-button').attr('disabled', true);
+
+            // Show spinner on current button
+            var btn = $(this);
+            btn.children().hide();
+            btn.append($('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>'));
+
+            var data = btn.data();
+            if (CURRENT_MODE !== data.queryMode) {
+                changeMode(data.queryMode);
+            }
+            populateCriteriaData(data.queryMode, $.parseJSON(decodeURIComponent(data.queryCriteria)), function () {
+                btn.find('span.spinner-border').remove();
+                btn.children().show();
+                $('button.query-load-button').attr('disabled', false);
+
+                $('#' + data.queryMode).find('form').prepend($('<input>').prop('type', 'hidden').prop('name', 'queryName').attr('value', data.queryName));
+            });
+        });
+
+        // Search reindex management
+        $('#search-reindex-modal .modal-accept-button').on('click', function (e) {
+            e.preventDefault();
+            const modal = $('#search-reindex-modal');
+            const baseUrl = "{{ url('search_reindex') }}";
+
+            modal.on('hide.bs.modal', function () {
+                return false;
+            });
+
+            modal.find('.before-element, .done-element').hide();
+            modal.find('.progress-element').show();
+
+            const progressBar = modal.find('.progress-bar');
+            progressBar.css('width', '100%').text('0%');
+
+            var rebuildKey;
+
+            function nextQuery() {
+                $.get(baseUrl, { rebuildKey }).done(data => {
+                    const progress = Math.floor(100 * data.doneCount / data.totalCount);
+                    progressBar.css('width', progress + '%').text(progress + '%');
+                    if (data.rebuildKey != rebuildKey) {
+                        alert('Error');
+                    } else if (data.doneCount == data.totalCount) {
+                        progressBar.addClass('bg-success');
+                        modal.find('p.progress-element').hide();
+                        modal.find('.done-element').show();
+                        modal.off('hide.bs.modal');
+                        $('#index-not-up-to-date').hide();
+                    } else {
+                        nextQuery();
+                    }
+                });
+            }
+
+            $.get(baseUrl).done(data => {
+                rebuildKey = data.rebuildKey;
+                nextQuery();
+            });
+        })
+    });
+</script>
 {% endblock %}

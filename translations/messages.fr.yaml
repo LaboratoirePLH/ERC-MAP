@@ -619,6 +619,18 @@ search:
         no_inclusive_criteria: "Aucun critère incluant choisi. Ajoutez en avec le bouton ci-dessous"
         no_exclusive_criteria: "Aucun critère excluant choisi. Ajoutez en avec le bouton ci-dessous"
         no_elements: "Aucun élément choisi. Ajoutez en avec la liste ci-dessus"
+    help:
+        direct_locations: >
+            Les localisations <u>directes</u> sont : <br/>
+             - <strong>Source :</strong> Lieu de découverte et lieu d'origine<br/>
+             - <strong>Attestation :</strong> Localisation de l'attestation et des éventuels agents<br/>
+             - <strong>Élément :</strong> Localisation de l'élément<br/>
+             <br/>
+            Les localisations <u>indirectes</u> sont : <br/>
+             - <strong>Source :</strong> Localisations directes de la source<br/>
+             - <strong>Attestation :</strong> Localisations directes de l'attestation et de la source<br/>
+             - <strong>Élément :</strong> Localisations directes de l'élément, de ses attestations et de leurs sources
+
 
 maintenance:
     title: "Maintenance de la Base de Données"

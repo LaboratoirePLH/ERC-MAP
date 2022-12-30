@@ -17,18 +17,18 @@
                 data-placeholder="{{('autocomplete.select_element')|trans}}">
                 <option value></option>
                 {% for criteria in criteria_list %}
-                    {% if criteria.children is defined %}
-                        <optgroup label="{{criteria.label}}">
-                            {% if criteria.type != null %}
-                                <option value="{{criteria.key}}">{{criteria.label}}</option>
-                            {% endif %}
-                            {% for subcriteria in criteria.children %}
-                                <option value="{{subcriteria.key}}">{{subcriteria.label}}</option>
-                            {% endfor %}
-                        </optgroup>
-                    {% else %}
-                        <option value="{{criteria.key}}">{{criteria.label}}</option>
+                {% if criteria.children is defined %}
+                <optgroup label="{{criteria.label}}">
+                    {% if criteria.type != null %}
+                    <option value="{{criteria.key}}">{{criteria.label}}</option>
                     {% endif %}
+                    {% for subcriteria in criteria.children %}
+                    <option value="{{subcriteria.key}}">{{subcriteria.label}}</option>
+                    {% endfor %}
+                </optgroup>
+                {% else %}
+                <option value="{{criteria.key}}">{{criteria.label}}</option>
+                {% endif %}
                 {% endfor %}
             </select>
         </div>
@@ -75,6 +75,8 @@
             <div class="custom-control custom-switch locationselect-direct">
                 <input type="checkbox" class="custom-control-input" id="name_direct" name="name_direct" value="direct">
                 <label class="custom-control-label" for="name_direct">{{ ('generic.fields.direct')|trans }}</label>
+                <i class="fas fa-question-circle" data-toggle="tooltip" data-placement="top" data-html="true"
+                    title="{{ 'search.help.direct_locations'|trans|raw }}"></i>
             </div>
         </div>
         {{ removeCriteriaButton }}

@@ -621,6 +621,17 @@ search:
         no_inclusive_criteria: "No including criteria added. Add some using the button below"
         no_exclusive_criteria: "No excluding criteria added. Add some using the button below"
         no_elements: "No elements selected. Add some using the list above"
+    help:
+        direct_locations: >
+            <u>Directs</u> locations are : <br/>
+             - <strong>Source :</strong> Original location and Discovery location<br/>
+             - <strong>Testimony :</strong> Testimony and agents (if any) locations<br/>
+             - <strong>Element :</strong> Element location<br/>
+             <br/>
+            <u>Indirects</u> locations are : <br/>
+             - <strong>Source :</strong> Direct locations of the source<br/>
+             - <strong>Testimony :</strong> Direct locations of the testimony and its source<br/>
+             - <strong>Element :</strong> Direct locations of the element, its testimonies and their sources
 
 maintenance:
     title: "Database Maintenance"

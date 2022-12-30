@@ -479,6 +479,10 @@ class RechercheController extends AbstractController
                 // Update rebuild data array
                 $rebuildData['doneCount']++;
             } while (count($rebuildData['remaining']) > 0 && (time() - $start_request) <= $MAX_REQUEST_TIME);
+            if (count($rebuildData['remaining']) === 0) {
+                // Delete all index entries that do not exist in the original tables anymore
+                $repo->clean();
+            }
         }
 
         // Save data array in cache

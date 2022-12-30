@@ -182,6 +182,23 @@ class IndexRechercheRepository extends ServiceEntityRepository
         }
     }
 
+    public function clean()
+    {
+        $list = array_map(
+            function ($item) {
+                list($type, $id) = $item;
+                return "$type:$id";
+            },
+            $this->buildReindexList()
+        );
+        $this->createQueryBuilder('clean_index')
+            ->delete("App\Entity\IndexRecherche", "i")
+            ->where("CONCAT(i.entite, ':', i.id) NOT IN (:values)")
+            ->setParameter('values', $list)
+            ->getQuery()
+            ->execute();
+    }
+
     public function deleteAll()
     {
         // Remove all entries

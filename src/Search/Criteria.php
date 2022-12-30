@@ -285,18 +285,22 @@ class Criteria
                         $criteriaValues = array_map(function ($v) {
                             return array_map(function ($v_value) {
                                 return $this->translator->trans('attestation.fields.' . $v_value);
-                            }, $v);
+                            }, $v['values']);
                         }, $value);
                         break;
                     case 'locationreal':
                     case 'iconography':
                         $criteriaValues = array_map(function ($v) {
-                            return $this->translator->trans('generic.choices.' . $v);
+                            return array_map(function ($v_value) {
+                                return $this->translator->trans('generic.choices.' . $v_value);
+                            }, $v['values']);
                         }, $value);
                         break;
                     case 'elementsemitic':
                         $criteriaValues = array_map(function ($v) {
-                            return $this->translator->trans('generic.languages.' . ($v === 'yes' ? 'semitic' : 'greek'));
+                            return array_map(function ($v_value) {
+                                return $this->translator->trans('generic.languages.' . ($v_value === 'yes' ? 'semitic' : 'greek'));
+                            }, $v['values']);
                         }, $value);
                         break;
                     case 'datation':

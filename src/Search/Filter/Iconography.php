@@ -20,8 +20,11 @@ class Iconography extends AbstractFilter
             return boolval($source['iconographie'] ?? null) ? 'yes' : 'no';
         }, $sources));
 
-        // This criteria will only have a single entry with one or two values (duplicates and empty values are removed)
-        // We need to match all the criteria values against the data
-        return count(array_intersect($criteria, $data)) == count($criteria);
+
+        // For each criteria entry, we will get a boolean result of whether the entry is valid against the data
+        // We need at least one truthy value to accept the data
+        return !!count(array_filter(array_map(function ($crit) use ($data) {
+            return count(array_intersect($crit['values'], $data)) == count($crit['values']);
+        }, $criteria)));
     }
 }

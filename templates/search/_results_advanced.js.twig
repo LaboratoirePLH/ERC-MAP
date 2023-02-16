@@ -3,36 +3,37 @@
 {% set hiddenCols = [] %}
 {% set colIndex = 0 %}
 {% for group, cols in columns %}
-    {% set groups = groups|merge({((group~'.name')|trans): (cols|length)}) %}
-    {% for col in cols %}
-        {% set headers = headers|merge([col.label|trans]) %}
-        {% if not col.visible %}
-            {% set hiddenCols = hiddenCols|merge([colIndex]) %}
-        {% endif %}
-        {% set colIndex = colIndex + 1 %}
-    {% endfor %}
+{% set groups = groups|merge({((group~'.name')|trans): (cols|length)}) %}
+{% for col in cols %}
+{% set headers = headers|merge([col.label|trans]) %}
+{% if not col.visible %}
+{% set hiddenCols = hiddenCols|merge([colIndex]) %}
+{% endif %}
+{% set colIndex = colIndex + 1 %}
 {% endfor %}
-{% set exportName = ('app_name'|trans) ~ ' - ' ~ (queryName != "" ? queryName : (('search.results'|trans) ~ ' ' ~ ('search.'~mode)|trans)) %}
+{% endfor %}
+{% set exportName = ('app_name'|trans) ~ ' - ' ~ (queryName != "" ? queryName : (('search.results'|trans) ~ ' ' ~
+('search.'~mode)|trans)) %}
 
 <div id="template-link-source" class="d-none">
     {% include "partials/_entitylink.html.twig" with {
-        'entity': 'source',
-        'link': url('source_show', {'id': '__ID__'}),
-        'text': '#__ID__'
+    'entity': 'source',
+    'link': url('source_show', {'id': '__ID__'}),
+    'text': '#__ID__'
     } %}
 </div>
 <div id="template-link-attestation" class="d-none">
     {% include "partials/_entitylink.html.twig" with {
-        'entity': 'attestation',
-        'link': url('attestation_show', {'id': '__ID__'}),
-        'text': '#__ID__'
+    'entity': 'attestation',
+    'link': url('attestation_show', {'id': '__ID__'}),
+    'text': '#__ID__'
     } %}
 </div>
 <div id="template-link-element" class="d-none">
     {% include "partials/_entitylink.html.twig" with {
-        'entity': 'element',
-        'link': url('element_show', {'id': '__ID__'}),
-        'text': '#__ID__'
+    'entity': 'element',
+    'link': url('element_show', {'id': '__ID__'}),
+    'text': '#__ID__'
     } %}
 </div>
 <div id="template-link-usage" class="d-none">
@@ -82,14 +83,20 @@
                     data: [group_name, col.field].join('.'),
                     visible: col.visible,
                     render: function (data, type, row) {
-                        if (col.link === true) {
+                        if (col.ellipsis === true) {
                             if (type === 'display') {
+                                return data.length > 100 ? (data.substring(0, 100) + '...') : data;
+                            }
+                            return data;
+                        }
+                        if (col.link === true) {
+                            if (type === 'display' || type === 'export') {
                                 const html = $('#template-link-' + data.type).html();
                                 return html.replace(/__ID__/g, data.id);
                             }
                             return data.id;
                         } else if (typeof col.link === 'object' && col.link !== null) {
-                            if (type === 'display') {
+                            if (type === 'display' || type === 'export') {
                                 const html = $('#template-link-usage').html();
                                 const link = col.link.url.replace(/__ID__/g, row[group_name].link.id);
                                 return html.replace(/__LINK__/g, link).replace(/__TEXT__/g, col.link.text).replace(/__DATA__/g, data);
@@ -99,7 +106,7 @@
                         var ret;
                         if (Array.isArray(data)) {
                             data.sort();
-                            if (type === 'display') {
+                            if (type === 'display' || type === 'export') {
                                 ret = data.join('<hr/>');
                             } else {
                                 ret = data.join(' ; ');
@@ -180,7 +187,7 @@
                         }
                         data = data.map((row, index) => {
                             if (index > (hasGroups ? 1 : 0)) { // Prepare Links
-                                linkIndexes.forEach((linkIdx,i) => {
+                                linkIndexes.forEach((linkIdx, i) => {
                                     const oldLink = row[linkIdx + i];
                                     row[linkIdx + i] = $("<div />").html(row[linkIdx + i]).find("a").attr("href");
                                     row.splice(linkIdx + i + 1, 0, $("<div />").html(oldLink).text().trim().replace('#', ''));
@@ -194,8 +201,8 @@
 
                         // Now remove all hidden columns
                         data = data.map(function (row) {
-                                return row.filter(function (v, i) {
-                                        const j = i - (linkIndexes.filter(k => k<i).length);
+                            return row.filter(function (v, i) {
+                                const j = i - (linkIndexes.filter(k => k < i).length);
                                 return table.column(j).visible();
                             });
                         });
@@ -206,11 +213,12 @@
                         copyright_row[0] = "{{ 'misc.export_copyright'|trans({'%date%': 'now'|date('Y/m/d')}) }}";
                         data.unshift(copyright_row);
 
-                        return Papa.unparse(data, {quotes: true});
+                        return Papa.unparse(data, { quotes: true });
                     },
                     exportOptions: {
                         stripHtml: false,
-                        stripNewlines: false
+                        stripNewlines: false,
+                        orthogonal: 'export'
                     }
                 }
             ]
@@ -232,7 +240,7 @@
         };
 
         function updateWebmappingForms(dt) {
-            const filteredRows = dt.rows({filter: 'applied'}).data();
+            const filteredRows = dt.rows({ filter: 'applied' }).data();
             $('form.webmapping-form').each(function () {
                 const type = $(this).find('input[type=hidden][name=type]').val();
                 $(this).find('input[type=hidden][name=ids]').val(JSON.stringify(filteredRows.map(r => r[type].link.id).toArray()));
@@ -242,7 +250,7 @@
 
         function storeVisibleColumns() {
             var cols = Array.from(dt.columns().visible());
-            Cookie.set('search_' + mode + '_columns_' + '{{ resultsType }}', JSON.stringify(cols), {expires: 365});
+            Cookie.set('search_' + mode + '_columns_' + '{{ resultsType }}', JSON.stringify(cols), { expires: 365 });
         };
 
         function loadVisibleColumns() { // Get cookie (if missing will return undefined)
@@ -270,7 +278,7 @@
                 var group = $(this).attr('data-group');
                 // Get checked status of all checkboxes of this group
                 var checkStatus = $('input.toggle-column.checkbox-' + group + '-item').map((i, el) => el.checked).get();
-                if (! checkStatus.includes(true)) {
+                if (!checkStatus.includes(true)) {
                     this.checked = false;
                 }
             })
@@ -283,7 +291,7 @@
                 if (me.search() !== this.value) {
                     me.search(
                         // Remove accented characters from search string
-                            jQuery.fn.DataTable.ext.type.search.string(removeAccents(this.value))
+                        jQuery.fn.DataTable.ext.type.search.string(removeAccents(this.value))
                     ).draw();
                     updateCounter(dt.page.info());
                     updateWebmappingForms(dt);
@@ -317,7 +325,7 @@
         $('input.toggle-column, input.toggle-group-column').parent('.dropdown-item, .dropdown-header').on('click', function (e) {
             e.preventDefault();
             var cb = $(this).find('input').first();
-            cb.get(0).checked = ! cb.get(0).checked;
+            cb.get(0).checked = !cb.get(0).checked;
             cb.trigger('change');
             return false;
         });
@@ -325,7 +333,7 @@
         $('input[type=search]').on('keyup change', function () {
             dt.search(
                 // Remove accented characters from search string
-                    jQuery.fn.DataTable.ext.type.search.string(removeAccents(this.value))
+                jQuery.fn.DataTable.ext.type.search.string(removeAccents(this.value))
             ).draw();
             updateCounter(dt.page.info());
             updateWebmappingForms(dt);

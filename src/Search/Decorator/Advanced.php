@@ -29,7 +29,11 @@ class Advanced
 
         $data = $entity->getData();
 
-        $result = [];
+        $result = [
+            // "urlTexte"    => $data['urlTexte'],
+            // "urlImage"    => $data['urlImage'],
+            "commentaire" => $data['commentaire' . ucfirst(strtolower($locale))],
+        ];
 
         $mainEdition = array_reduce(
             $data['sourceBiblios'],
@@ -90,7 +94,8 @@ class Advanced
             "extraitAvecRestitution" => $data['extraitAvecRestitution'] ?? '',
             "translitteration"       => $data['translitteration'] ?? '',
             "compteElement"          => count($data['elementIds'] ?? []),
-            "fiabilite"              => array_key_exists('fiabilite', $data) ? self::$translator->trans('attestation.fiabilite.niveau_' . $data['fiabilite']) : ''
+            "fiabilite"              => array_key_exists('fiabilite', $data) ? self::$translator->trans('attestation.fiabilite.niveau_' . $data['fiabilite']) : '',
+            "commentaire"            => $data['commentaire' . ucfirst(strtolower($locale))],
         ];
 
         if (array_key_exists('traductions', $data)) {
@@ -156,9 +161,10 @@ class Advanced
         $data = $entity->getData();
 
         $result = [
-            "etatAbsolu" => $data['etatAbsolu'] ?? '',
-            "betaCode"   => $data['betaCode'] ?? '',
-            "natureElement" => ($data['natureElement'] ?? [])[$nameField] ?? ''
+            "etatAbsolu"    => $data['etatAbsolu'] ?? '',
+            "betaCode"      => $data['betaCode'] ?? '',
+            "natureElement" => ($data['natureElement'] ?? [])[$nameField] ?? '',
+            "commentaire"   => $data['commentaire' . ucfirst(strtolower($locale))],
         ];
 
         if (array_key_exists('traductions', $data)) {
@@ -178,7 +184,7 @@ class Advanced
 
         $result = array_merge($result, self::_decorateLocalisation($data['localisation'] ?? [], $locale));
 
-        // Add usage data 
+        // Add usage data
         $attestations = array_filter(
             $allData,
             function ($a) use ($entity) {

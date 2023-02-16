@@ -696,17 +696,20 @@
                                     $('#advanced').find('input[name="datation[' + index + '][exact]"]').attr('checked', value.exact === "datation_exact");
                                     break;
                                 case 'prosepoetry':
-                                    $('#advanced').find('input[name="prosePoetry[' + index + '][]"][value=prose]').attr('checked', value.includes('prose'));
-                                    $('#advanced').find('input[name="prosePoetry[' + index + '][]"][value=poesie]').attr('checked', value.includes('poesie'));
+                                    $('#advanced').find('input[name="prosePoetry[' + index + '][values][]"][value=prose]').attr('checked', value.values.includes('prose'));
+                                    $('#advanced').find('input[name="prosePoetry[' + index + '][values][]"][value=poesie]').attr('checked', value.values.includes('poesie'));
                                     break;
                                 case 'locationreal':
-                                    $('#advanced').find('input[name="locationReal[]"][value=' + value + ']').attr('checked', true);
+                                    $('#advanced').find('input[name="locationReal[' + index + '][values][]"][value=yes]').attr('checked', value.values.includes('yes'));
+                                    $('#advanced').find('input[name="locationReal[' + index + '][values][]"][value=no]').attr('checked', value.values.includes('no'));
                                     break;
                                 case 'iconography':
-                                    $('#advanced').find('input[name="iconography[]"][value=' + value + ']').attr('checked', true);
+                                    $('#advanced').find('input[name="iconography[' + index + '][values][]"][value=yes]').attr('checked', value.values.includes('yes'));
+                                    $('#advanced').find('input[name="iconography[' + index + '][values][]"][value=no]').attr('checked', value.values.includes('no'));
                                     break;
                                 case 'elementsemitic':
-                                    $('#advanced').find('input[name="elementSemitic[]"][value=' + value + ']').attr('checked', true);
+                                    $('#advanced').find('input[name="elementSemitic[' + index + '][values][]"][value=yes]').attr('checked', value.values.includes('yes'));
+                                    $('#advanced').find('input[name="elementSemitic[' + index + '][values][]"][value=no]').attr('checked', value.values.includes('no'));
                                     break;
                             }
                         })

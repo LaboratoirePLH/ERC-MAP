@@ -557,6 +557,7 @@ search:
     guided: "Guided"
     advanced: "Advanced"
     elements: "Formulae"
+    sql: "SQL"
     mode: "Search Type"
     criteria: "Search Criteria"
     inclusive_criteria: "Including Criteria"
@@ -570,6 +571,9 @@ search:
     new_query: "New Search"
     edit_query: "Edit Search"
     saved_queries: "Saved Searches"
+    sql_queries: "Available queries"
+    select_sql_query: "Select an available query"
+    confirm_sql_replacement: "You already have a SQL query typed, are you sure you want to replace it ?"
     add_inclusive_criteria: "Add an including criteria"
     add_exclusive_criteria: "Add an excluding criteria"
     remove_criteria: "Remove criteria"
@@ -597,6 +601,7 @@ search:
         freeText: "Free text"
         source_id: "Source ID"
         attestation_id: "Testimony ID"
+        query: "SQL Query"
     element_labels:
         added: "Added elements"
         add_new: "Add a new element"
@@ -621,6 +626,8 @@ search:
         no_inclusive_criteria: "No including criteria added. Add some using the button below"
         no_exclusive_criteria: "No excluding criteria added. Add some using the button below"
         no_elements: "No elements selected. Add some using the list above"
+        no_results: "SQL query has not produced any results"
+        sql_error: "Error during query execution : "
     help:
         direct_locations: >
             <u>Directs</u> locations are : <br/>
@@ -682,3 +689,8 @@ contact:
         attestation: "Testimony Number/ID"
         element: "Element Number/ID"
         nothing: "No ID (report a missing entry)"
+
+bags:
+    error: "Error"
+    warning: "Warning"
+    success: "Success"

@@ -3,8 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\RechercheEnregistree;
+use App\Entity\RequeteEnregistree;
 use App\Search\Criteria;
-
+use PDO;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -38,6 +39,9 @@ class RechercheController extends AbstractController
                 ->getRepository(RechercheEnregistree::class)
                 ->findAllByChercheur($user))
             : [];
+        $sql_queries = $this->getDoctrine()
+            ->getRepository(RequeteEnregistree::class)
+            ->findAll();
 
         return $this->render('search/index.html.twig', [
             'controller_name' => 'RechercheController',
@@ -48,6 +52,7 @@ class RechercheController extends AbstractController
                 'criteria' => $populate_criteria,
             ],
             'saved_queries' => $queries,
+            'sql_queries'   => $sql_queries,
             'criteria_list' => \App\Search\CriteriaList::get($translator),
             'breadcrumbs'   => [
                 ['label' => 'nav.home', 'url' => $this->generateUrl('home')],
@@ -225,6 +230,52 @@ class RechercheController extends AbstractController
                 ['label' => 'search.results']
             ]
         ]);
+    }
+
+    /**
+     * @Route("/search/sql", name="search_sql")
+     */
+    public function sqlSearch(Request $request, Criteria $searchCriteria, TranslatorInterface $translator)
+    {
+        $searchMode = 'sql';
+        $search     = $request->request->get('search_value', '');
+
+        if (!strlen($search)) {
+            return $this->_emptySearchResponse($request, $searchMode);
+        }
+
+        // TODO : check for invalid queries
+
+
+        $pdo = $this->getDoctrine()->getConnection();
+        $pdo->beginTransaction();
+
+        $stmt = $pdo->prepare($search);
+        try {
+            $stmt->execute();
+            $result = $stmt->fetchAll();
+        } catch (\Exception $e) {
+            return $this->_errorSqlResponse($request, $searchMode, $translator->trans('search.messages.sql_error') . '<pre>' . $e->getMessage() . '</pre>', $search);
+        }
+        if (count($result)) {
+            return $this->_errorSqlResponse($request, $searchMode, 'search.messages.no_results', $search);
+        }
+
+        $pdo->rollback();
+
+        $tmpFile = tmpfile();
+
+        fputcsv($tmpFile, array_keys($result[0]));
+        foreach ($result as $row) {
+            fputcsv($tmpFile, $row);
+        }
+
+        rewind($tmpFile);
+        $content = stream_get_contents($tmpFile);
+        $response = new Response($content);
+        $response->headers->set('Content-Type', 'text/csv');
+
+        return $response;
     }
 
     /**
@@ -496,9 +547,23 @@ class RechercheController extends AbstractController
 
     private function _emptySearchResponse(Request $request, string $mode)
     {
+        return $this->_errorSearchResponse($request, $mode, 'search.messages.no_empty_search');
+    }
+
+    private function _errorSqlResponse(Request $request, string $mode, string $error, string $sql)
+    {
+        $request->getSession()->getFlashBag()->add(
+            'sql',
+            $sql
+        );
+        return $this->_errorSearchResponse($request, $mode, $error);
+    }
+
+    private function _errorSearchResponse(Request $request, string $mode, string $error)
+    {
         $request->getSession()->getFlashBag()->add(
             'error',
-            'search.messages.no_empty_search'
+            $error
         );
         return $this->redirect(
             $this->get('router')->generate('search', ['_fragment' => $mode])

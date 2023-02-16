@@ -555,6 +555,7 @@ search:
     guided: "Guidée"
     advanced: "Avancée"
     elements: "Formules"
+    sql: "SQL"
     mode: "Type de Recherche"
     criteria: "Critères de la Recherche"
     inclusive_criteria: "Critères Incluants"
@@ -568,6 +569,9 @@ search:
     new_query: "Nouvelle Recherche"
     edit_query: "Modifier la Recherche"
     saved_queries: "Recherches enregistrées"
+    sql_queries: "Requêtes disponibles"
+    select_sql_query: "Choisir une requête disponible"
+    confirm_sql_replacement: "Vous avez déjà une requête SQL saisie, êtes-vous sûr de vouloir la remplacer ?"
     add_inclusive_criteria: "Ajouter un critère incluant"
     add_exclusive_criteria: "Ajouter un critère excluant"
     remove_criteria: "Retirer le critère"
@@ -595,6 +599,7 @@ search:
         freeText: "Texte libre"
         source_id: "ID de Source"
         attestation_id: "ID d'Attestation"
+        query: "Requête SQL"
     element_labels:
         added: "Éléments ajoutés"
         add_new: "Ajouter un nouvel élément"
@@ -619,6 +624,8 @@ search:
         no_inclusive_criteria: "Aucun critère incluant choisi. Ajoutez en avec le bouton ci-dessous"
         no_exclusive_criteria: "Aucun critère excluant choisi. Ajoutez en avec le bouton ci-dessous"
         no_elements: "Aucun élément choisi. Ajoutez en avec la liste ci-dessus"
+        no_results: "La requête SQL n'a produit aucun résultat"
+        sql_error: "Erreur lors de l'exécution de la requête : "
     help:
         direct_locations: >
             Les localisations <u>directes</u> sont : <br/>
@@ -681,3 +688,8 @@ contact:
         attestation: "Numéro/ID de l'Attestation"
         element: "Numéro/ID de l'Élément"
         nothing: "Sans ID (signaler un manque)"
+
+bags:
+    error: "Erreur"
+    warning: "Avertissement"
+    success: "Succès"

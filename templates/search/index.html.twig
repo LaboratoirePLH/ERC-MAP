@@ -14,7 +14,6 @@
 </div>
 {% endif %}
 <div class="row my-3">
-
     <div class="col-sm-12 {{ is_granted('ROLE_USER') ? 'col-xl-8' : 'col-xl-12' }} text-center mb-3 mb-xl-0"
         id="search-panel">
         <ul class="nav nav-pills nav-fill" id="searchTabLinks" role="tablist">
@@ -40,6 +39,12 @@
                 <a class="nav-link font-weight-bolder" id="elements-tab" data-toggle="tab" href="#elements" role="tab"
                     aria-controls="elements" aria-selected="false">
                     {{ ('search.elements')|trans }}
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link font-weight-bolder" id="sql-tab" data-toggle="tab" href="#sql" role="tab"
+                    aria-controls="sql" aria-selected="false">
+                    {{ ('search.sql')|trans }}
                 </a>
             </li>
         </ul>
@@ -436,6 +441,49 @@
                     </div>
                 </form>
             </div>
+            <div class="tab-pane fade p-3" id="sql" role="tabpanel" aria-labelledby="sql-tab">
+                <form action="{{ url('search_sql') }}" method="post">
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">
+                            {{ 'search.saved_queries'|trans }}
+                        </label>
+                        <div class="col">
+                            <select class="form-control" name="saved_query" id="saved-queries"
+                                aria-describedby="savedQueriesHelp">
+                                <option value="">{{('search.select_sql_query')|trans}}</option>
+                                {% for query in sql_queries %}
+                                <option value="{{ query.id }}">{{ query.getNom(locale) }}</option>
+                                {% endfor %}
+                            </select>
+                            <small id="savedQueriesHelp" class="form-text text-muted d-none"></small>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">
+                            {{ 'search.criteria_labels.query'|trans }}
+                        </label>
+                        <div class="col">
+                            <textarea class="form-control form-control-lg flex-grow-1" type="text" name="search_value"
+                                id="sql-query"
+                                rows="8">{% for sql in app.session.flashbag.get('sql') %}{{sql}}{% endfor %}</textarea>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-12">
+                            <button class="btn btn-secondary btn-sm mx-2" type="reset" name="reset"
+                                class="reset-button">
+                                <i class="fas fa-eraser fa-fw"></i>
+                                {{ 'generic.clear'|trans }}
+                            </button>
+                            <button class="btn btn-primary mx-2" type="submit" name="search">
+                                <i class="fas fa-search fa-fw"></i>
+                                {{ 'generic.search'|trans }}
+                            </button>
+                            {% include 'partials/_help.html.twig' with {'section': 'search_sql'} %}
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
     {% if is_granted('ROLE_USER') %}
@@ -525,6 +573,9 @@
 
         // Store elements selected for formula search
         SEARCH_ELEMENTS = {};
+
+        // Object to store the list of SQL queries
+        SQL_QUERIES = $.parseJSON('{{ sql_queries|map(q => q.toArray(locale))|json_encode|e("js")|raw }}');
 
         function changeMode(mode) { // Save in variable
             CURRENT_MODE = mode;
@@ -1156,6 +1207,12 @@
                 setupFormulaEditors();
             }, 100);
         });
+        $('#sql').on('reset', function (e) {
+            $('#savedQueriesHelp')
+                .addClass('d-none')
+                .html('');
+            $('#sql-query').val('');
+        });
 
         // Change tab and populate data
         var url = document.location.toString(),
@@ -1269,6 +1326,28 @@
                 rebuildKey = data.rebuildKey;
                 nextQuery();
             });
+        })
+
+        // SQL search
+        $('#saved-queries').on('change', function (e) {
+            const queryId = e.target.value;
+            $('#savedQueriesHelp')
+                .addClass('d-none')
+                .html('');
+            if (!queryId) {
+                $('#sql-query').val('');
+                return;
+            }
+            const query = SQL_QUERIES.find((q) => q.id === parseInt(queryId, 10));
+            if (!!query) {
+                const hasCurrentQuery = $('#sql-query').val().length > 0;
+                if (!hasCurrentQuery || confirm("{{ 'search.confirm_sql_replacement'|trans }}")) {
+                    $('#sql-query').val(query.query);
+                    $('#savedQueriesHelp')
+                        .removeClass('d-none')
+                        .html(query.description);
+                }
+            }
         })
     });
 </script>

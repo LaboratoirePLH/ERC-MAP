@@ -11,8 +11,8 @@
             {% for flashMessage in app.session.flashbag.get(bag) %}
                 <div class="row justify-content-center">
                     <div class="col-sm-6 alert alert-{{color}}" role="alert">
-                        <span class="badge badge-{{color}} text-uppercase">{{bag}}</span>
-                        {{ flashMessage|trans }}
+                        <span class="badge badge-{{color}} text-uppercase">{{('bags.'~bag)|trans}}</span>
+                        {{ flashMessage|trans|raw }}
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>

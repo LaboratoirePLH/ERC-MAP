@@ -17,6 +17,7 @@ easy_admin:
          - Projet
          - Suivi
          - VerrouEntite
+         - RequeteEnregistree
          - { label: 'Source' }
          - SourceTraductions
          - Auteur
@@ -228,6 +229,9 @@ easy_admin:
         Projet:
             class: App\Entity\Projet
             label: Projet
+        RequeteEnregistree:
+            class: App\Entity\RequeteEnregistree
+            label: Requête Enregistrée
         QFonction:
             class: App\Entity\QFonction
             label: Qualité Fonctionnnelle

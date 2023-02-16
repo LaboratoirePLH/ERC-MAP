@@ -591,12 +591,16 @@ class Attestation extends AbstractEntity implements Interfaces\Located
         return [
             'id'                     => $this->getId(),
             'source'                 => $this->source->getId(),
+            'etatFicheFr'              => $this->etatFiche->getNomFr(),
+            'etatFicheEn'              => $this->etatFiche->getNomEn(),
             'prose'                  => $this->prose,
             'poesie'                 => $this->poesie,
             'passage'                => $this->passage,
             'extraitAvecRestitution' => $this->extraitAvecRestitution,
             'translitteration'       => $this->translitteration,
             'fiabilite'              => $this->fiabiliteAttestation,
+            'prose'                  => $this->prose,
+            'poesie'                 => $this->poesie,
             'traductions'            => $this->traductions->map($toArray)->getValues(),
             'pratiques'              => $this->pratiques->map($toArray)->getValues(),
             'materiels'              => $this->attestationMateriels->map(function ($am) {
@@ -612,9 +616,12 @@ class Attestation extends AbstractEntity implements Interfaces\Located
                     'occasion'          => $ao->getOccasion() === null ? null : $ao->getOccasion()->toArray()
                 ];
             })->getValues(),
-            'agents'        => $this->agents->map($toArray)->getValues(),
-            'datation'      => $this->datation === null ? null : $this->datation->toArray(),
-            'localisation'  => $this->localisation === null ? null : $this->localisation->toArray(),
+            'agents'            => $this->agents->map($toArray)->getValues(),
+            'datation'          => $this->datation === null ? null : $this->datation->toArray(),
+            'localisation'      => $this->localisation === null ? null : $this->localisation->toArray(),
+            'attestationsLiees' => $this->attestationsLiees->map(function ($a) {
+                return $a->id;
+            })->getValues(),
             'elements'      => $this->contientElements->map(function ($e) {
                 return $e->toArray();
             })->getValues(),

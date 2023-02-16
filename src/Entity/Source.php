@@ -741,6 +741,9 @@ class Source extends AbstractEntity
                 return $att->getId();
             })->toArray(),
             'iconographie'  => $this->iconographie,
+            'urlTexte'      => $this->urlTexte,
+            'urlImage'      => $this->urlImage,
+            'iconographie'  => $this->iconographie,
             'commentaireFr' => $this->commentaireFr,
             'commentaireEn' => $this->commentaireEn
         ];

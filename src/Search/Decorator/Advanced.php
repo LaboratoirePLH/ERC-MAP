@@ -18,21 +18,21 @@ class Advanced
 
             $entityData = $entity->getData();
             $method = "decorate" . $entity->getEntite();
-            $result[] = self::$method($entity, $allData, $locale);
+            $result[] = self::$method($entity, $allData, $locale, $translator);
         }
         return $result;
     }
 
-    protected static function decorateSource(IndexRecherche $entity, array $allData, string $locale): array
+    protected static function decorateSource(IndexRecherche $entity, array $allData, string $locale, TranslatorInterface $translator): array
     {
         $nameField = "nom" . ucfirst(strtolower($locale));
 
         $data = $entity->getData();
 
         $result = [
-            // "urlTexte"    => $data['urlTexte'],
-            // "urlImage"    => $data['urlImage'],
-            "commentaire" => $data['commentaire' . ucfirst(strtolower($locale))],
+            "urlTexte"    => $data['urlTexte'] ?? '',
+            "urlImage"    => $data['urlImage'] ?? '',
+            "commentaire" => $data['commentaire' . ucfirst(strtolower($locale))] ?? '',
         ];
 
         $mainEdition = array_reduce(
@@ -83,19 +83,22 @@ class Advanced
         return ['source' => $result];
     }
 
-    protected static function decorateAttestation(IndexRecherche $entity, array $allData, string $locale): array
+    protected static function decorateAttestation(IndexRecherche $entity, array $allData, string $locale, TranslatorInterface $translator): array
     {
         $nameField = "nom" . ucfirst(strtolower($locale));
 
         $data = $entity->getData();
 
         $result = [
+            "etatFiche"              => $data['etatFiche' . ucfirst(strtolower($locale))] ?? '',
             "passage"                => $data['passage'] ?? '',
+            "prose"                  => !is_null($data['prose'] ?? null) ? $translator->trans($data['prose'] ? 'generic.choices.yes' : 'generic.choices.no') : '',
+            "poesie"                 => !is_null($data['poesie'] ?? null) ? $translator->trans($data['poesie'] ? 'generic.choices.yes' : 'generic.choices.no') : '',
             "extraitAvecRestitution" => $data['extraitAvecRestitution'] ?? '',
             "translitteration"       => $data['translitteration'] ?? '',
             "compteElement"          => count($data['elementIds'] ?? []),
             "fiabilite"              => array_key_exists('fiabilite', $data) ? self::$translator->trans('attestation.fiabilite.niveau_' . $data['fiabilite']) : '',
-            "commentaire"            => $data['commentaire' . ucfirst(strtolower($locale))],
+            "commentaire"            => $data['commentaire' . ucfirst(strtolower($locale))] ?? '',
         ];
 
         if (array_key_exists('traductions', $data)) {
@@ -141,6 +144,11 @@ class Advanced
             $result['puissancesDivines'] = '';
         }
 
+        // Add linked testimonies
+        $result['attestationsLiees'] = array_map(function ($id) {
+            return ['type' => 'attestation', 'id' => $id];
+        }, $data['attestationsLiees']);
+
         // Add link data
         $result['link'] = ['type' => strtolower($entity->getEntite()), 'id' => $entity->getId()];
 
@@ -149,12 +157,12 @@ class Advanced
         $source = array_reduce($allData, function ($result, $e) use ($sourceId) {
             return $result ?? (($e->getEntite() == "Source" && $e->getId() == $sourceId) ? $e : null);
         }, null);
-        $sourceData = self::decorateSource($source, $allData, $locale);
+        $sourceData = self::decorateSource($source, $allData, $locale, $translator);
 
         return array_merge($sourceData, ['attestation' => $result]);
     }
 
-    protected static function decorateElement(IndexRecherche $entity, array $allData, string $locale): array
+    protected static function decorateElement(IndexRecherche $entity, array $allData, string $locale, TranslatorInterface $translator): array
     {
         $nameField = "nom" . ucfirst(strtolower($locale));
 
@@ -164,7 +172,7 @@ class Advanced
             "etatAbsolu"    => $data['etatAbsolu'] ?? '',
             "betaCode"      => $data['betaCode'] ?? '',
             "natureElement" => ($data['natureElement'] ?? [])[$nameField] ?? '',
-            "commentaire"   => $data['commentaire' . ucfirst(strtolower($locale))],
+            "commentaire"   => $data['commentaire' . ucfirst(strtolower($locale))] ?? '',
         ];
 
         if (array_key_exists('traductions', $data)) {
@@ -209,6 +217,29 @@ class Advanced
         $localisations = array_unique(array_filter(array_map(function ($s) {
             return array_key_exists('lieuOrigine', $s->getData()) ? $s->getData()['lieuOrigine']['id'] : null;
         }, $sources)));
+
+        $result['theonymesImplicites'] = array_values(array_map(
+            function ($el) {
+                return ['type' => 'element', 'id' => $el->getData()['id'], 'text' => $el->getData()['id'] . " " . $el->getData()['etatAbsolu']];
+            },
+            array_filter(
+                $allData,
+                function ($e) use ($data) {
+                    return $e->getEntite() == "Element" && in_array($e->getId(), $data['theonymesImplicites'] ?? []);
+                }
+            )
+        ));
+        $result['theonymesConstruits'] = array_values(array_map(
+            function ($el) {
+                return ['type' => 'element', 'id' => $el->getData()['id'], 'text' => $el->getData()['id'] . " " . $el->getData()['etatAbsolu']];
+            },
+            array_filter(
+                $allData,
+                function ($e) use ($data) {
+                    return $e->getEntite() == "Element" && in_array($e->getId(), $data['theonymesConstruits'] ?? []);
+                }
+            )
+        ));
 
         $result['sources'] = count($sourcesIds);
         $result['attestations'] = count($attestations);

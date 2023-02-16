@@ -90,13 +90,23 @@
                             return data;
                         }
                         if (col.link === true) {
-                            if (type === 'display' || type === 'export') {
-                                const html = $('#template-link-' + data.type).html();
-                                return html.replace(/__ID__/g, data.id);
+                            if (Array.isArray(data)) {
+                                return data.map(function (item) {
+                                    if (type === 'display' || type === 'export') {
+                                        const html = $('#template-link-' + item.type).html();
+                                        return html.replace(/__ID__/g, item.text ?? item.id);
+                                    }
+                                    return data.id;
+                                }).join('<hr/>');
+                            } else {
+                                if (type === 'display' || type === 'export') {
+                                    const html = $('#template-link-' + data.type).html();
+                                    return html.replace(/__ID__/g, data.text ?? data.id);
+                                }
+                                return data.id;
                             }
-                            return data.id;
                         } else if (typeof col.link === 'object' && col.link !== null) {
-                            if (type === 'display' || type === 'export') {
+                            if (type === 'display') {
                                 const html = $('#template-link-usage').html();
                                 const link = col.link.url.replace(/__ID__/g, row[group_name].link.id);
                                 return html.replace(/__LINK__/g, link).replace(/__TEXT__/g, col.link.text).replace(/__DATA__/g, data);
@@ -196,7 +206,12 @@
                                 // Replace <br> and <hr> with CSV accepted fallback
                                 row = row.map(v => v.replace(/<(br)[\s]*[\/]?>/gi, "\n").replace(/<(hr)[\s]*[\/]?>/gi, "\n-----\n"));
                             }
-                            return row.map(col => $("<div/>").html(col).text());
+                            return row.map(col => {
+                                // Set contents in div to get only the text
+                                const text = $("<div/>").html(col).text();
+                                // Remove empty lines et redundant line breaks
+                                return text.split("\n").map(l => l.trim()).filter(l => l.length > 0).join("\n");
+                            });
                         });
 
                         // Now remove all hidden columns

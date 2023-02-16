@@ -491,10 +491,10 @@ class Element extends AbstractEntity implements Interfaces\Located
             })->getValues(),
             'theonymesImplicites' => $this->theonymesImplicites->map(function ($ti) {
                 return $ti->getId();
-            })->toArray(),
+            })->getValues(),
             'theonymesConstruits' => $this->theonymesConstruits->map(function ($tc) {
                 return $tc->getId();
-            })->toArray(),
+            })->getValues(),
             'commentaireFr' => $this->commentaireFr,
             'commentaireEn' => $this->commentaireEn
         ];

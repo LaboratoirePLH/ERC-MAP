@@ -4,7 +4,8 @@ namespace App\Search\Filter;
 
 use App\Entity\IndexRecherche;
 
-class ProsePoetry extends AbstractFilter {
+class ProsePoetry extends AbstractFilter
+{
 
     public static function filter(IndexRecherche $entity, array $criteria, array $sortedData): bool
     {
@@ -14,7 +15,7 @@ class ProsePoetry extends AbstractFilter {
         $attestations = self::toArray(
             self::resolveAttestations($entity, $sortedData)
         );
-        $data = array_map(function($attestation){
+        $data = array_map(function ($attestation) {
             $attestation_data = array_filter([
                 ($attestation['prose'] ?? false) ? 'prose' : null,
                 ($attestation['poesie'] ?? false) ? 'poesie' : null,
@@ -24,10 +25,10 @@ class ProsePoetry extends AbstractFilter {
 
         // For each criteria entry, we will get a boolean result of whether the entry is valid against the data
         // We need at least one truthy value to accept the data
-        return !!count(array_filter(array_map(function($crit) use ($data) {
-            foreach($data as $d){
+        return !!count(array_filter(array_map(function ($crit) use ($data) {
+            foreach ($data as $d) {
                 // We require all the values in the criteria to be present (intersection count equals to criteria values count)
-                if(count(array_intersect($crit, $d)) >= count($crit)){
+                if (count(array_intersect($crit['values'], $d)) >= count($crit['values'])) {
                     return true;
                 }
             }

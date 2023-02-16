@@ -100,7 +100,18 @@
                 {% endif %}
             </td>
         </tr>
-        {% if source.iconographie == true %}
+        <tr>
+            <th scope="row">
+                {{ 'source.fields.iconographie'|trans}}
+            </th>
+            <td>
+                {% if source.iconographie == true %}
+                    <i class="fa fa-fw fa-check"></i>
+                {% else %}
+                    <i class="fa fa-fw fa-times"></i>
+                {% endif %}
+            </td>
+            </tr>
             <tr>
                 <th scope="row">
                     {{ 'source.fields.url_image'|trans}}
@@ -111,7 +122,6 @@
                     {% endif %}
                 </td>
             </tr>
-        {% endif %}
         <tr>
             <th scope="row">
                 {{ 'biblio.list'|trans}}

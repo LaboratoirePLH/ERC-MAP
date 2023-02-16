@@ -21,14 +21,14 @@ class Advanced extends AbstractFilterSet
         }
         // Ensure freeText criteria is at the end to improve performance
         if (array_key_exists('freeText', $criteria)) {
-            $freeTextCriteria = $criteria['freeText'];
-            unset($criteria['freeText']);
             // normalize search value
-            $criteria['freeText'] = strtolower(
-                \App\Utils\StringHelper::removeAccents(
-                    strip_tags($freeTextCriteria)
-                )
-            );
+            foreach ($criteria['freeText'] as &$crit) {
+                $crit['value'] = strtolower(
+                    \App\Utils\StringHelper::removeAccents(
+                        strip_tags($crit['value'])
+                    )
+                );
+            }
         }
 
         foreach ($this->data as $e) {

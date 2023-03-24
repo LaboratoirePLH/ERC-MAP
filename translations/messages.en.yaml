@@ -628,6 +628,7 @@ search:
         no_elements: "No elements selected. Add some using the list above"
         no_results: "SQL query has not produced any results"
         sql_error: "Error during query execution : "
+        invalid_query: "Invalid SQL query, only SELECT queries are allowed"
     help:
         direct_locations: >
             <u>Directs</u> locations are : <br/>

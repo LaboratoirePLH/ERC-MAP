@@ -626,6 +626,7 @@ search:
         no_elements: "Aucun élément choisi. Ajoutez en avec la liste ci-dessus"
         no_results: "La requête SQL n'a produit aucun résultat"
         sql_error: "Erreur lors de l'exécution de la requête : "
+        invalid_query: "Requête SQL invalide, seules les requêtes SELECT sont autorisées"
     help:
         direct_locations: >
             Les localisations <u>directes</u> sont : <br/>

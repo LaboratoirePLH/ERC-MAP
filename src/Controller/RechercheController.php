@@ -244,8 +244,14 @@ class RechercheController extends AbstractController
             return $this->_emptySearchResponse($request, $searchMode);
         }
 
-        // TODO : check for invalid queries
-
+        // Check for invalid queries
+        $queries = explode(';', $search);
+        $invalid = array_filter($queries, function ($q) {
+            return substr(strtolower(trim($q)), 0, 6) !== 'select';
+        });
+        if (count($invalid) > 0) {
+            return $this->_errorSqlResponse($request, $searchMode, $translator->trans('search.messages.invalid_query'), $search);
+        }
 
         $pdo = $this->getDoctrine()->getConnection();
         $pdo->beginTransaction();

@@ -14,19 +14,19 @@ DROP VIEW IF EXISTS public.vue_agent_nature;
 
 DROP VIEW IF EXISTS public.vue_agent_statut;
 
-DROP VIEW IF EXISTS public.vue_attestation_en;
-
-DROP VIEW IF EXISTS public.vue_attestation_fr;
-
-DROP VIEW IF EXISTS public.vue_contient_element_en;
-
-DROP VIEW IF EXISTS public.vue_contient_element_fr;
-
 DROP VIEW IF EXISTS public.vue_element_categorie;
 
 DROP VIEW IF EXISTS public.vue_element_en;
 
 DROP VIEW IF EXISTS public.vue_element_fr;
+
+DROP VIEW IF EXISTS public.vue_contient_element_en;
+
+DROP VIEW IF EXISTS public.vue_contient_element_fr;
+
+DROP VIEW IF EXISTS public.vue_attestation_en;
+
+DROP VIEW IF EXISTS public.vue_attestation_fr;
 
 DROP VIEW IF EXISTS public.vue_loc_en;
 

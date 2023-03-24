@@ -235,6 +235,49 @@
                         stripNewlines: false,
                         orthogonal: 'export'
                     }
+                },
+                {
+                    text: "{{ 'search.export_results_as_criteria'|trans }}",
+                    action: function (e, dt) {
+                        if (dt.data().length == 0) {
+                            return null;
+                        }
+                        var ids = []
+                        var keys = Object.keys(dt.data()[0]);
+                        var type = null;
+                        var criterium = null;
+                        if (keys.includes('element')) {
+                            type = 'element';
+                            criterium = 'names';
+                        } else if (keys.includes('attestation')) {
+                            type = 'attestation';
+                            criterium = 'testimonyIds';
+                        } else {
+                            type = 'source';
+                            criterium = 'sourceIds';
+                        }
+                        dt.data().each(function (row) {
+                            ids.push(row[type].link.id);
+                        });
+                        ids.sort();
+                        var data = {
+                            "mode": "advanced",
+                            "criteria": {
+                                [criterium]: [
+                                    {
+                                        "values": ids.map(id => `${id}`),
+                                        "type": "inclusive"
+                                    }
+                                ]
+                            }
+                        }
+                        // Generate and download file
+                        const jsonString = `data:text/json;chatset=utf-8,${encodeURIComponent(JSON.stringify(data))}`;
+                        const link = document.createElement("a");
+                        link.href = jsonString;
+                        link.download = "criteria.json";
+                        link.click();
+                    }
                 }
             ]
         });
@@ -363,7 +406,7 @@
 
         // Wait for data being loaded before adding table buttons, setting the counter and toggling columns based on cookie
         dt.on('init', () => {
-            dt.buttons().container().appendTo('.table-buttons');
+            dt.buttons().container().appendTo('#table-header-buttons');
             updateCounter(dt.page.info());
             updateWebmappingForms(dt);
             loadVisibleColumns();
@@ -405,5 +448,20 @@
                 spinner.addClass('d-none');
             });
         })
+
+        $('#criteria-export-button').on('click', function (e) {
+            e.preventDefault();
+            var data = {
+                mode: $('input[name=populate_mode]').val(),
+                criteria: JSON.parse('{{criteria|json_encode}}')
+            };
+            // Generate and download file
+            const jsonString = `data:text/json;chatset=utf-8,${encodeURIComponent(JSON.stringify(data))}`;
+            const link = document.createElement("a");
+            link.href = jsonString;
+            link.download = "criteria.json";
+            link.click();
+        })
+
     });
 </script>

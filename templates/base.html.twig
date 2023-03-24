@@ -2,83 +2,98 @@
 <!DOCTYPE html>
 <html>
 
-    <head>
-        <meta charset="utf-8"/>
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
-        <meta name="description" content="ERC - MAP (Mapping Ancient Polytheisms)"/>
-        <meta name="author" content="Laboratoire PLH"/>
-        <link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png">
-        <link rel="apple-touch-icon" sizes="60x60" href="/apple-icon-60x60.png">
-        <link rel="apple-touch-icon" sizes="72x72" href="/apple-icon-72x72.png">
-        <link rel="apple-touch-icon" sizes="76x76" href="/apple-icon-76x76.png">
-        <link rel="apple-touch-icon" sizes="114x114" href="/apple-icon-114x114.png">
-        <link rel="apple-touch-icon" sizes="120x120" href="/apple-icon-120x120.png">
-        <link rel="apple-touch-icon" sizes="144x144" href="/apple-icon-144x144.png">
-        <link rel="apple-touch-icon" sizes="152x152" href="/apple-icon-152x152.png">
-        <link rel="apple-touch-icon" sizes="180x180" href="/apple-icon-180x180.png">
-        <link rel="icon" type="image/png" sizes="192x192" href="/android-icon-192x192.png">
-        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-        <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-        <link rel="manifest" href="/manifest.json">
-        <meta name="msapplication-TileColor" content="#ffffff">
-        <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
-        <meta name="theme-color" content="#ffffff">
-        <title>
-            {{ 'app_name'|trans }}
-            -
-            {% block title %}{% endblock %}
-        </title>
-        {% block stylesheets %}
-            {{ encore_entry_link_tags('page') }}
-        {% endblock %}
-    </head>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="ERC - MAP (Mapping Ancient Polytheisms)" />
+    <meta name="author" content="Laboratoire PLH" />
+    <link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+    <title>
+        {{ 'app_name'|trans }}
+        -
+        {% block title %}{% endblock %}
+    </title>
+    {% block stylesheets %}
+    {{ encore_entry_link_tags('page') }}
+    {% endblock %}
+    {% if env == "prod" %}
+    <script>
+        var _paq = window._paq = window._paq || [];
+        /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+        _paq.push(['trackPageView']);
+        _paq.push(['enableLinkTracking']);
+        (function () {
+            var u = "https://analyseweb.huma-num.fr/";
+            _paq.push(['setTrackerUrl', u + 'piwik.php']);
+            _paq.push(['setSiteId', '476']);
+            var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
+            g.async = true; g.src = u + 'piwik.js'; s.parentNode.insertBefore(g, s);
+        })();
+    </script>
+    {% endif %}
+</head>
 
-    <body class="{% block bodyclass %}{% endblock %}" id="top"> {% block body %}{% endblock %}
-        <div id="cookies-banner" class="fixed-bottom w-100 background-map-grey text-light p-2 text-center d-none">
-            {{ 'misc.cookies'|trans}}
-            <button id="accept-cookies" class="btn btn-sm btn-success ml-2">OK</button>
-        </div>
-        <script type="text/javascript">
-            function removeAccents(str) {
-                return str.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
-            }
-            function normalizeDiacritics(str) {
-                return str.normalize('NFC');
-            }
+<body class="{% block bodyclass %}{% endblock %}" id="top"> {% block body %}{% endblock %}
+    <div id="cookies-banner" class="fixed-bottom w-100 background-map-grey text-light p-2 text-center d-none">
+        {{ 'misc.cookies'|trans}}
+        <button id="accept-cookies" class="btn btn-sm btn-success ml-2">OK</button>
+    </div>
+    <script type="text/javascript">
+        function removeAccents(str) {
+            return str.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+        }
+        function normalizeDiacritics(str) {
+            return str.normalize('NFC');
+        }
 
-            CHOSEN_SETTINGS = {
-                disable_search: false,
-                disable_search_threshold: 1,
-                no_results_text: "{{ 'autocomplete.no_matches'|trans }}",
-                allow_single_deselect: true,
-                display_selected_options: false,
-                search_contains: true,
-                normalize_search_text: function (search_text) { // return removeAccents(search_text);
-                    return search_text + '|' + removeAccents(search_text);
-                },
-                normalize_query_text: function (query_text) {
-                    return query_text;
-                }
-            };
-        </script>
-        {% block javascripts %}
-            {{ encore_entry_script_tags('page') }}
-        {% endblock %}
-        <script>
-            (function ($) {
-                var cookiesAccepted = Cookie.get('cookiesAccepted');
-                if (cookiesAccepted == 1) {
+        CHOSEN_SETTINGS = {
+            disable_search: false,
+            disable_search_threshold: 1,
+            no_results_text: "{{ 'autocomplete.no_matches'|trans }}",
+            allow_single_deselect: true,
+            display_selected_options: false,
+            search_contains: true,
+            normalize_search_text: function (search_text) { // return removeAccents(search_text);
+                return search_text + '|' + removeAccents(search_text);
+            },
+            normalize_query_text: function (query_text) {
+                return query_text;
+            }
+        };
+    </script>
+    {% block javascripts %}
+    {{ encore_entry_script_tags('page') }}
+    {% endblock %}
+    <script>
+        (function ($) {
+            var cookiesAccepted = Cookie.get('cookiesAccepted');
+            if (cookiesAccepted == 1) {
+                $('#cookies-banner').remove();
+            } else {
+                $('#accept-cookies').one('click', () => {
+                    Cookie.set('cookiesAccepted', 1, { expires: 365 });
                     $('#cookies-banner').remove();
-                } else {
-                    $('#accept-cookies').one('click', () => {
-                        Cookie.set('cookiesAccepted', 1, {expires: 365});
-                        $('#cookies-banner').remove();
-                    });
-                    $('#cookies-banner').removeClass('d-none');
-                }
-            })(jQuery)
-        </script>
-    </body>
+                });
+                $('#cookies-banner').removeClass('d-none');
+            }
+        })(jQuery)
+    </script>
+</body>
 
 </html>

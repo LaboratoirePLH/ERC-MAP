@@ -445,6 +445,12 @@ class AttestationController extends AbstractController
                     $em->remove($ce);
                 }
             }
+            // Renumber elements
+            $cpt = 1;
+            foreach ($attestation->getContientElements() as $ce) {
+                $ce->setPositionElement($cpt);
+                $cpt++;
+            }
 
             foreach ($attestation->getFormules() as $f) {
                 if (!empty($f->getFormule())) {

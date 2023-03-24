@@ -42,7 +42,7 @@ class ContientElementType extends AbstractType
                 'selection_choice_label'  => 'affichage',
                 'selection_query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('e')
-                        ->orderBy('e.id', 'DESC');
+                        ->orderBy('e.etatAbsolu', 'ASC');
                 }
             ])
             ->add('enContexte', Type\QuillType::class, [
@@ -76,14 +76,14 @@ class ContientElementType extends AbstractType
                 'multiple'     => false,
                 'expanded'     => false,
                 'class'        => GenreElement::class,
-                'choice_label' => 'nom'.ucfirst($locale),
+                'choice_label' => 'nom' . ucfirst($locale),
                 'attr'         => [
                     'class' => 'autocomplete',
                     'data-placeholder' => $options['translations']['autocomplete.select_element']
                 ],
                 'query_builder' => function (EntityRepository $er) use ($locale) {
                     return $er->createQueryBuilder('e')
-                        ->orderBy('e.nom'.ucfirst($locale), 'ASC');
+                        ->orderBy('e.nom' . ucfirst($locale), 'ASC');
                 }
             ])
             ->add('nombreElement', EntityType::class, [
@@ -92,14 +92,14 @@ class ContientElementType extends AbstractType
                 'multiple'     => false,
                 'expanded'     => false,
                 'class'        => NombreElement::class,
-                'choice_label' => 'nom'.ucfirst($locale),
+                'choice_label' => 'nom' . ucfirst($locale),
                 'attr'         => [
                     'class' => 'autocomplete',
                     'data-placeholder' => $options['translations']['autocomplete.select_element']
                 ],
                 'query_builder' => function (EntityRepository $er) use ($locale) {
                     return $er->createQueryBuilder('e')
-                        ->orderBy('e.nom'.ucfirst($locale), 'ASC');
+                        ->orderBy('e.nom' . ucfirst($locale), 'ASC');
                 }
             ])
             ->add('categorieElement', EntityType::class, [
@@ -108,17 +108,16 @@ class ContientElementType extends AbstractType
                 'multiple'     => false,
                 'expanded'     => false,
                 'class'        => CategorieElement::class,
-                'choice_label' => 'nom'.ucfirst($locale),
+                'choice_label' => 'nom' . ucfirst($locale),
                 'attr'         => [
                     'class' => 'autocomplete',
                     'data-placeholder' => $options['translations']['autocomplete.select_element']
                 ],
                 'query_builder' => function (EntityRepository $er) use ($locale) {
                     return $er->createQueryBuilder('e')
-                        ->orderBy('e.nom'.ucfirst($locale), 'ASC');
+                        ->orderBy('e.nom' . ucfirst($locale), 'ASC');
                 }
-            ])
-        ;
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)

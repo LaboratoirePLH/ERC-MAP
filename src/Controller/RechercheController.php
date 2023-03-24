@@ -255,7 +255,8 @@ class RechercheController extends AbstractController
         // Check for invalid queries
         $queries = explode(';', $search);
         $invalid = array_filter($queries, function ($q) {
-            return substr(strtolower(trim($q)), 0, 6) !== 'select';
+            $q = strtolower(trim($q));
+            return strlen($q) > 0 && substr($q, 0, 6) !== 'select';
         });
         if (count($invalid) > 0) {
             return $this->_errorSqlResponse($request, $searchMode, $translator->trans('search.messages.invalid_query'), $search);
@@ -265,20 +266,25 @@ class RechercheController extends AbstractController
         $pdo->beginTransaction();
 
         $stmt = $pdo->prepare($search);
+        $errorResponse = null;
         try {
             $stmt->execute();
             $result = $stmt->fetchAll();
+            if (count($result) === 0) {
+                $errorResponse = $this->_errorSqlResponse($request, $searchMode, 'search.messages.no_results', $search);
+            }
         } catch (\Exception $e) {
-            return $this->_errorSqlResponse($request, $searchMode, $translator->trans('search.messages.sql_error') . '<pre>' . $e->getMessage() . '</pre>', $search);
+            $errorResponse = $this->_errorSqlResponse($request, $searchMode, $translator->trans('search.messages.sql_error') . '<pre>' . $e->getMessage() . '</pre>', $search);
+        } finally {
+            $pdo->rollback();
         }
-        if (count($result)) {
-            return $this->_errorSqlResponse($request, $searchMode, 'search.messages.no_results', $search);
+        if ($errorResponse !== null) {
+            return $errorResponse;
         }
-
-        $pdo->rollback();
 
         $tmpFile = tmpfile();
 
+        fputcsv($tmpFile, [$translator->trans('misc.export_copyright', ['%date%' => date('Y/m/d')])]);
         fputcsv($tmpFile, array_keys($result[0]));
         foreach ($result as $row) {
             fputcsv($tmpFile, $row);

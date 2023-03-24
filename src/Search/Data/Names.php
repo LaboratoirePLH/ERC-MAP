@@ -4,7 +4,8 @@ namespace App\Search\Data;
 
 use \Doctrine\ORM\EntityManager;
 
-class Names implements CriteriaDataInterface {
+class Names implements CriteriaDataInterface
+{
 
     public static function compute(EntityManager $entityManager, string $locale): array
     {
@@ -16,22 +17,22 @@ class Names implements CriteriaDataInterface {
         );
         $els = $query->getArrayResult();
         $elements = [];
-        foreach($els as $el){
+        foreach ($els as $el) {
             $trads = array_column($el['traductions'], $nameField);
-            if(!empty($trads)){
+            if (!empty($trads)) {
                 $trads = '(' . implode(' ; ', $trads) . ')';
             } else {
                 $trads = '';
             }
             $elements[$el['id']] = implode(' ', array_filter([
                 $el['etatAbsolu'],
-                $el['betaCode'] ? '['.$el['betaCode'].']' : null,
+                $el['betaCode'] ? '[' . $el['betaCode'] . ']' : null,
                 $trads
             ]));
         }
-        uasort($elements, function($a, $b){
-            return \App\Utils\StringHelper::removeAccents(strip_tags($a))
-                <=> \App\Utils\StringHelper::removeAccents(strip_tags($b));
+        uasort($elements, function ($a, $b) {
+            return \App\Utils\StringHelper::removeAccents(strtolower(strip_tags($a)))
+                <=> \App\Utils\StringHelper::removeAccents(strtolower(strip_tags($b)));
         });
         return $elements;
     }
@@ -43,6 +44,6 @@ class Names implements CriteriaDataInterface {
 
     public static function getCacheLifetime(): int
     {
-        return 3600*24; // 1 day
+        return 3600 * 24; // 1 day
     }
 }

@@ -22,7 +22,7 @@ class SourceRepository extends ServiceEntityRepository
     public function findByElement($elementId)
     {
         return $this->createQueryBuilder('s')
-            ->select('s', 't', 'tsu', 'm', 'ld', 'lo', 'v', 'd', 'c', 'de', 'l', 'sb', 'b', 'tso', 'cs')
+            ->select('s', 't', 'tsu', 'm', 'ld', 'lo', 'v', 'd', 'c', 'de', 'l', 'sb', 'b', 'tso', 'cs', 'p')
             ->leftJoin('s.titrePrincipal', 't')
             ->leftJoin('s.typeSupport', 'tsu')
             ->leftJoin('s.materiau', 'm')
@@ -40,6 +40,7 @@ class SourceRepository extends ServiceEntityRepository
             ->leftJoin('s.attestations', 'att')
             ->leftJoin('att.contientElements', 'ce')
             ->leftJoin('ce.element', 'e')
+            ->leftJoin('s.projet', 'p')
             ->where('e.id = :eId')
             ->setParameter(':eId', $elementId)
             ->getQuery()
@@ -49,7 +50,7 @@ class SourceRepository extends ServiceEntityRepository
     public function findAll(): array
     {
         return $this->createQueryBuilder('s')
-            ->select('s', 't', 'tsu', 'm', 'ld', 'lo', 'v', 'd', 'c', 'de', 'l', 'sb', 'b', 'tso', 'cs')
+            ->select('s', 't', 'tsu', 'm', 'ld', 'lo', 'v', 'd', 'c', 'de', 'l', 'sb', 'b', 'tso', 'cs', 'p')
             ->leftJoin('s.titrePrincipal', 't')
             ->leftJoin('s.typeSupport', 'tsu')
             ->leftJoin('s.materiau', 'm')
@@ -64,6 +65,7 @@ class SourceRepository extends ServiceEntityRepository
             ->leftJoin('sb.biblio', 'b')
             ->leftJoin('s.typeSources', 'tso')
             ->leftJoin('tso.categorieSource', 'cs')
+            ->leftJoin('s.projet', 'p')
             ->getQuery()
             ->getResult();
     }

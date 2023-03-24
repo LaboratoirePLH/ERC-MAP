@@ -121,6 +121,7 @@ class IndexRechercheRepository extends ServiceEntityRepository
             $entityData = $this->_cleanData($entityData);
 
             $secondaryRebuilds = false;
+            $projetId = null;
 
             // Check corpus state
             if ($entityType == 'Source' || $entityType == 'Attestation') {
@@ -128,6 +129,9 @@ class IndexRechercheRepository extends ServiceEntityRepository
                     $source = $entity;
                 } else {
                     $source = $entity->getSource();
+                }
+                if ($source->getProjet() !== null) {
+                    $projetId = $source->getProjet()->getId();
                 }
                 $states = $source->getAttestations()->map(function ($att) {
                     return $att->getEtatFiche()->getOpenAccess();
@@ -167,6 +171,7 @@ class IndexRechercheRepository extends ServiceEntityRepository
             $newEntry = new IndexRecherche;
             $newEntry->setEntite($entityType);
             $newEntry->setId($entity->getId());
+            $newEntry->setProjetId($projetId);
             $newEntry->setData($entityData);
             $newEntry->setCorpusReady($corpusReady);
             $this->getEntityManager()->persist($newEntry);
@@ -274,7 +279,7 @@ class IndexRechercheRepository extends ServiceEntityRepository
         return array_column($result, 'id');
     }
 
-    public function simpleSearch(string $search, string $locale, bool $restrictToCorpusReady = false): array
+    public function simpleSearch(string $search, string $locale, bool $restrictToCorpusReady = false, ?array $restrictToProjects = null): array
     {
         $normalized_search = strtolower(\App\Utils\StringHelper::removeAccents($search));
         $query = $this->createQueryBuilder('i')
@@ -284,6 +289,10 @@ class IndexRechercheRepository extends ServiceEntityRepository
 
         if ($restrictToCorpusReady) {
             $query = $query->andWhere("i.corpusReady = 't'");
+        }
+        if ($restrictToProjects !== null) {
+            $query = $query->andWhere("i.projet_id IN (:projets)")
+                ->setParameter('projets', $restrictToProjects);
         }
 
         $results = $query->getQuery()
@@ -299,10 +308,17 @@ class IndexRechercheRepository extends ServiceEntityRepository
         return $response;
     }
 
-    public function search(string $mode, array $criteria, string $locale, bool $restrictToCorpusReady = false): array
+    public function search(string $mode, array $criteria, string $locale, bool $restrictToCorpusReady = false, ?array $restrictToProjects = null): array
     {
         // Get all data and sort it by entity type
-        $allData = $this->findAll();
+        $query = $this->createQueryBuilder('i')
+            ->select('i');
+        if ($mode !== 'elements' && $restrictToProjects !== null) {
+            $query = $query->andWhere("i.projet_id IN (:projets)")
+                ->setParameter('projets', $restrictToProjects);
+        }
+        $allData = $query->getQuery()
+            ->getResult();
 
         switch ($mode) {
             case 'guided':

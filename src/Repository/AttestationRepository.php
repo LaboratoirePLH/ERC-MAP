@@ -22,7 +22,7 @@ class AttestationRepository extends ServiceEntityRepository
     private function baseQuery()
     {
         return $this->createQueryBuilder('a')
-            ->select('a', 'd', 'l', 'c', 'de', 's', 't', 'tsu', 'm', 'ld', 'lo', 'sv', 'sd', 'sc', 'sde', 'sl', 'sb', 'b')
+            ->select('a', 'd', 'l', 'c', 'de', 's', 't', 'tsu', 'm', 'ld', 'lo', 'sv', 'sd', 'sc', 'sde', 'sl', 'sb', 'b', 'p')
             ->leftJoin('a.datation', 'd')
             ->leftJoin('a.localisation', 'l')
             ->leftJoin('a.createur', 'c')
@@ -39,6 +39,7 @@ class AttestationRepository extends ServiceEntityRepository
             ->leftJoin('s.dernierEditeur', 'sde')
             ->leftJoin('s.langues', 'sl')
             ->leftJoin('s.sourceBiblios', 'sb')
+            ->leftJoin('s.projet', 'p')
             ->leftJoin('sb.biblio', 'b');
     }
 

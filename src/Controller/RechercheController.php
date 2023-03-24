@@ -87,10 +87,12 @@ class RechercheController extends AbstractController
         if (!strlen($search)) {
             return $this->_emptySearchResponse($request, $searchMode);
         }
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $restrictToProjects = $user->getRole() === "admin" ? null : $user->getIdsProjets();
 
         $results = $this->getDoctrine()
             ->getRepository(\App\Entity\IndexRecherche::class)
-            ->simpleSearch($search, $request->getLocale(), !$this->isGranted('ROLE_CONTRIBUTOR'));
+            ->simpleSearch($search, $request->getLocale(), !$this->isGranted('ROLE_CONTRIBUTOR'), $restrictToProjects);
 
         if (count($results)) {
             $cacheKey = $this->_cacheSearchResults($searchMode, $results);
@@ -126,9 +128,12 @@ class RechercheController extends AbstractController
             return $this->_emptySearchResponse($request, $searchMode);
         }
 
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $restrictToProjects = $user->getRole() === "admin" ? null : $user->getIdsProjets();
+
         $results = $this->getDoctrine()
             ->getRepository(\App\Entity\IndexRecherche::class)
-            ->search($searchMode, $criteria, $request->getLocale(), !$this->isGranted('ROLE_CONTRIBUTOR'));
+            ->search($searchMode, $criteria, $request->getLocale(), !$this->isGranted('ROLE_CONTRIBUTOR'), $restrictToProjects);
 
         if (count($results)) {
             $cacheKey = $this->_cacheSearchResults($searchMode, $results);
@@ -164,11 +169,14 @@ class RechercheController extends AbstractController
             return $this->_emptySearchResponse($request, $searchMode);
         }
 
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $restrictToProjects = $user->getRole() === "admin" ? null : $user->getIdsProjets();
+
         $resultsType = $criteria['resultsType'];
 
         $results = $this->getDoctrine()
             ->getRepository(\App\Entity\IndexRecherche::class)
-            ->search($searchMode, $criteria, $request->getLocale(), !$this->isGranted('ROLE_CONTRIBUTOR'));
+            ->search($searchMode, $criteria, $request->getLocale(), !$this->isGranted('ROLE_CONTRIBUTOR'), $restrictToProjects);
 
         if (count($results)) {
             $cacheKey = $this->_cacheSearchResults($searchMode, $results);

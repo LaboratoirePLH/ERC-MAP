@@ -44,6 +44,22 @@ class IndexRecherche
     }
 
     /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $projet_id;
+
+    public function getProjetId(): ?int
+    {
+        return $this->projet_id;
+    }
+
+    public function setProjetId(?int $projet_id = null): self
+    {
+        $this->projet_id = $projet_id;
+        return $this;
+    }
+
+    /**
      * @ORM\Column(type="text", nullable=false, options={"collation":"utf8_bin"})
      */
     private $data;

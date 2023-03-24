@@ -300,6 +300,15 @@ class Chercheur extends AbstractEntity implements UserInterface
         return implode(', ', $projets);
     }
 
+    public function getIdsProjets(): array
+    {
+        $projets = [];
+        foreach ($this->getProjets() as $p) {
+            $projets[] = $p->getId();
+        }
+        return $projets;
+    }
+
     public function getSalt()
     {
         return null;

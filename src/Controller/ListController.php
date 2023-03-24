@@ -25,6 +25,7 @@ class ListController extends AbstractController
     {
         $locale = $request->getLocale();
         $user = $this->get('security.token_storage')->getToken()->getUser();
+        $projets = $user->getIdsProjets();
 
         $repository = $this->getDoctrine()->getRepository(Source::class);
 
@@ -55,6 +56,11 @@ class ListController extends AbstractController
                 return in_array($s->getId(), $valid_ids);
             }));
         }
+
+        $sources = array_values(array_filter($sources, function (Source $source) use ($user, $projets) {
+            return $user->getRole() === "admin"
+                || ($source->getProjet() !== null && in_array($source->getProjet()->getId(), $projets));
+        }));
 
         $data = array_map(function ($source) use ($locale, $user, $datetimeFormat, $languages) {
             $lieu = $source->getInSitu() ? $source->getLieuDecouverte() : $source->getLieuOrigine();
@@ -118,6 +124,7 @@ class ListController extends AbstractController
     {
         $locale = $request->getLocale();
         $user = $this->get('security.token_storage')->getToken()->getUser();
+        $projets = $user->getIdsProjets();
 
         $repository = $this->getDoctrine()->getRepository(Attestation::class);
 
@@ -152,6 +159,11 @@ class ListController extends AbstractController
             'en' => $translator->trans('languages.en'),
         ];
         $datetimeFormat = $translator->trans('locale_datetime');
+
+        $attestations = array_values(array_filter($attestations, function (Attestation $attestation) use ($user, $projets) {
+            return $user->getRole() === "admin"
+                || ($attestation->getSource()->getProjet() !== null && in_array($attestation->getSource()->getProjet()->getId(), $projets));
+        }));
 
         $data = array_map(function ($attestation) use ($locale, $user, $datetimeFormat, $languages) {
             $translitteration = strlen($attestation->getTranslitteration()) > 0 ? $attestation->getTranslitteration() : $attestation->getExtraitAvecRestitution();

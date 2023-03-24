@@ -246,7 +246,9 @@ class RechercheController extends AbstractController
     public function sqlSearch(Request $request, Criteria $searchCriteria, TranslatorInterface $translator)
     {
         $searchMode = 'sql';
+        $locale     = $request->getLocale();
         $search     = $request->request->get('search_value', '');
+        $query_id   = $request->request->get('saved_query', '');
 
         if (!strlen($search)) {
             return $this->_emptySearchResponse($request, $searchMode);
@@ -290,10 +292,20 @@ class RechercheController extends AbstractController
             fputcsv($tmpFile, $row);
         }
 
+        $fileName = 'export_sql';
+        if ($query_id !== '') {
+            $query = $this->getDoctrine()
+                ->getRepository(RequeteEnregistree::class)
+                ->find(intval($query_id));
+            $fileName = $query->getNom($locale);
+        }
+        $fileName .= '_' . date('Y-m-d') . '.csv';
+
         rewind($tmpFile);
         $content = stream_get_contents($tmpFile);
         $response = new Response($content);
         $response->headers->set('Content-Type', 'text/csv');
+        $response->headers->set('Content-Disposition', 'attachment; filename="' . $fileName . '"');
 
         return $response;
     }

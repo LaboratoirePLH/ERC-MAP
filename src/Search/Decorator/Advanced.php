@@ -147,7 +147,7 @@ class Advanced
         // Add linked testimonies
         $result['attestationsLiees'] = array_map(function ($id) {
             return ['type' => 'attestation', 'id' => $id];
-        }, $data['attestationsLiees']);
+        }, ($data['attestationsLiees'] ?? []));
 
         // Add link data
         $result['link'] = ['type' => strtolower($entity->getEntite()), 'id' => $entity->getId()];

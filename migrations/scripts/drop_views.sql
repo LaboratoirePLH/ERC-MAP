@@ -45,3 +45,5 @@ DROP VIEW IF EXISTS public.vue_source_fr;
 DROP VIEW IF EXISTS public.vue_source_langue;
 
 DROP VIEW IF EXISTS public.vue_source_typologie;
+
+DROP VIEW IF EXISTS public.attestation_localisation_origine;

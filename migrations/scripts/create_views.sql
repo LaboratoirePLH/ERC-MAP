@@ -90,8 +90,14 @@ SELECT
     string_agg(DISTINCT agentivite.nom_en :: text, ', ' :: text) AS "Agency",
     string_agg(DISTINCT nature.nom_en :: text, ', ' :: text) AS "Nature",
     string_agg(DISTINCT genre.nom_en :: text, ', ' :: text) AS "Gender",
-    string_agg(DISTINCT statut_affiche.nom_en :: text, ', ' :: text) AS "Explicit status",
-    string_agg(DISTINCT activite_agent.nom_en :: text, ', ' :: text) AS "Profession"
+    string_agg(
+        DISTINCT statut_affiche.nom_en :: text,
+        ', ' :: text
+    ) AS "Explicit status",
+    string_agg(
+        DISTINCT activite_agent.nom_en :: text,
+        ', ' :: text
+    ) AS "Profession"
 FROM
     agent
     LEFT JOIN agent_agentivite ON agent_agentivite.id_agent = agent.id
@@ -136,8 +142,14 @@ SELECT
     string_agg(DISTINCT agentivite.nom_fr :: text, ', ' :: text) AS "Agentivité",
     string_agg(DISTINCT nature.nom_fr :: text, ', ' :: text) AS "Nature",
     string_agg(DISTINCT genre.nom_fr :: text, ', ' :: text) AS "Genre",
-    string_agg(DISTINCT statut_affiche.nom_fr :: text, ', ' :: text) AS "Statut affiché",
-    string_agg(DISTINCT activite_agent.nom_fr :: text, ', ' :: text) AS "Activité"
+    string_agg(
+        DISTINCT statut_affiche.nom_fr :: text,
+        ', ' :: text
+    ) AS "Statut affiché",
+    string_agg(
+        DISTINCT activite_agent.nom_fr :: text,
+        ', ' :: text
+    ) AS "Activité"
 FROM
     agent
     LEFT JOIN agent_agentivite ON agent_agentivite.id_agent = agent.id
@@ -621,7 +633,10 @@ SELECT
     localisation.commentaire_en AS "Commentary",
     localisation.geom,
     string_agg(DISTINCT q_fonction.nom_en :: text, ', ' :: text) AS "Function",
-    string_agg(DISTINCT q_topographie.nom_en :: text, ', ' :: text) AS "Topography",
+    string_agg(
+        DISTINCT q_topographie.nom_en :: text,
+        ', ' :: text
+    ) AS "Topography",
     1 AS "Density"
 FROM
     localisation
@@ -660,7 +675,10 @@ SELECT
     localisation.commentaire_fr AS "Commentaire",
     localisation.geom,
     string_agg(DISTINCT q_fonction.nom_fr :: text, ', ' :: text) AS "Qualification fonctionnelle",
-    string_agg(DISTINCT q_topographie.nom_fr :: text, ', ' :: text) AS "Qualification topographique",
+    string_agg(
+        DISTINCT q_topographie.nom_fr :: text,
+        ', ' :: text
+    ) AS "Qualification topographique",
     1 AS "Densité"
 FROM
     localisation
@@ -963,3 +981,27 @@ FROM
     LEFT JOIN source_type_source ON source_type_source.id_source = source.id
     LEFT JOIN type_source ON source_type_source.id_type_source = type_source.id
     LEFT JOIN categorie_source ON categorie_source.id = source.categorie_source_id;
+
+-- Localisation d'origine des Attestations
+CREATE VIEW attestation_localisation_origine AS
+SELECT
+    attestation.id AS id_attestation,
+    grande_region.nom_fr AS grande_region,
+    sous_region.nom_fr AS sous_region,
+    localisation.entite_politique,
+    localisation.nom_ville,
+    localisation.nom_site,
+    q_fonction.nom_fr AS fonction_lieu,
+    q_topographie.nom_fr AS topographie_lieu
+FROM
+    attestation
+    INNER JOIN source ON source.id = attestation.id_source
+    INNER JOIN localisation ON localisation.id = source.localisation_origine_id
+    INNER JOIN grande_region ON grande_region.id = localisation.grande_region_id
+    INNER JOIN sous_region ON sous_region.id = localisation.sous_region_id
+    INNER JOIN localisation_q_fonction ON localisation_q_fonction.id_localisation = localisation.id
+    INNER JOIN q_fonction ON q_fonction.id = localisation_q_fonction.id_q_fonction
+    INNER JOIN localisation_q_topographie ON localisation_q_topographie.id_localisation = localisation.id
+    INNER JOIN q_topographie ON q_topographie.id = localisation_q_topographie.id_q_topographie
+ORDER BY
+    attestation.id;

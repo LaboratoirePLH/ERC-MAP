@@ -313,7 +313,7 @@ class IndexRechercheRepository extends ServiceEntityRepository
         // Get all data and sort it by entity type
         $query = $this->createQueryBuilder('i')
             ->select('i');
-        if ($mode !== 'elements' && $restrictToProjects !== null) {
+        if ($restrictToProjects !== null) {
             $query = $query->andWhere("i.projet_id IN (:projets)")
                 ->setParameter('projets', $restrictToProjects);
         }

@@ -491,8 +491,8 @@
             </div>
         </div>
     </div>
-    {% if is_granted('ROLE_USER') %}
     <div class="col-sm-12 col-xl-4">
+        {% if is_granted('ROLE_USER') %}
         <ul class="nav nav-pills nav-fill" id="myTab" role="tablist">
             <li class="nav-item">
                 <a class="nav-link text-white background-map-grey" role="tab">
@@ -500,7 +500,8 @@
                 </a>
             </li>
         </ul>
-        <div class="tab-content overflow-auto" id="savedQueriesTab" style="max-height: 400px; ">
+        <div class="tab-content overflow-auto pb-4 mb-4 border-bottom border-secondary" id="savedQueriesTab"
+            style="max-height: 400px; ">
             <div class="tab-pane show active" role="tabpanel">
                 <ul class="list-group list-group-flush">
                     {% for query in saved_queries %}
@@ -510,8 +511,15 @@
                 </ul>
             </div>
         </div>
+        {% endif %}
+        <div class="row d-flex justify-content-center">
+            <input type="file" name="upload-criteria" id="upload-criteria-input" class="d-none">
+            <button class="btn btn-primary mx-2" type="button" id="upload-criteria">
+                <i class="fas fa-file-import fa-fw"></i>
+                {{ 'search.import_criteria'|trans }}
+            </button>
+        </div>
     </div>
-    {% endif %}
 </div>
 {% include "search/_templates.html.twig" with {'criteria_list': criteria_list} only %}
 {% if is_granted('ROLE_ADMIN') %}
@@ -1357,6 +1365,14 @@
                 }
             }
         })
+
+        $('#upload-criteria').on('click', function (e) {
+            e.preventDefault();
+            $('#upload-criteria-input').click();
+            // TODO : watch for input change
+            // then : https://stackoverflow.com/questions/23344776/how-to-access-data-of-uploaded-json-file
+            // and populate form
+        });
     });
 </script>
 {% endblock %}

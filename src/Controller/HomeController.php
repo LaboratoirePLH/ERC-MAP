@@ -455,6 +455,10 @@ class HomeController extends AbstractController
             'search_formulae' => [
                 'fr' => 'MAP_Guide_Recherche_formule_FR.pdf',
                 'en' => 'MAP_Guidelines_Formulae_Research_EN.pdf',
+            ],
+            'search_sql_mcd' => [
+                'fr' => 'MCD_DB_MAP.png',
+                'en' => 'MCD_DB_MAP.png',
             ]
         ];
 

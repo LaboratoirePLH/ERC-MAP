@@ -629,6 +629,7 @@ search:
         no_results: "SQL query has not produced any results"
         sql_error: "Error during query execution : "
         invalid_query: "Invalid SQL query, only SELECT queries are allowed"
+        sql_warning: "Please note that some testimonies have not been completed or validated yet. To display only the open access testimonies, add the following condition: \"where attestation.id_etat_fiche = 4\"."
     help:
         direct_locations: >
             <u>Directs</u> locations are : <br/>

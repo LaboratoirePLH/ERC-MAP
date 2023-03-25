@@ -75,9 +75,17 @@ class Datation extends AbstractEntity
         ];
     }
 
+    public function isEmpty(): bool
+    {
+        return $this->getPostQuem() === null
+            && $this->getAnteQuem() === null
+            && ($this->getCommentaireFr() === null || trim($this->getCommentaireFr()) === '')
+            && ($this->getCommentaireEn() === null || trim($this->getCommentaireEn()) === '');
+    }
+
     public function __clone()
     {
-        if($this->id !== null){
+        if ($this->id !== null) {
             $this->id = null;
         }
     }

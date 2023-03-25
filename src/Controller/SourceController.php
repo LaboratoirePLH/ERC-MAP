@@ -174,8 +174,9 @@ class SourceController extends AbstractController
                     }
                 }
             }
-            if ($source->getEstDatee() !== true) {
+            if ($source->getEstDatee() !== true || $source->getDatation()->isEmpty()) {
                 $source->setDatation(null);
+                $source->setEstDatee(false);
             }
             $em->flush();
 
@@ -316,8 +317,9 @@ class SourceController extends AbstractController
                     }
                 }
             }
-            if ($source->getEstDatee() !== true) {
+            if ($source->getEstDatee() !== true || $source->getDatation()->isEmpty()) {
                 $source->setDatation(null);
+                $source->setEstDatee(false);
             }
             $this->getDoctrine()->getRepository(VerrouEntite::class)->remove($source->getVerrou());
             $em->flush();

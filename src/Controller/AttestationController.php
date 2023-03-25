@@ -248,6 +248,12 @@ class AttestationController extends AbstractController
                     $attestation->removeContientElement($ce);
                 }
             }
+
+            if ($attestation->getEstDatee() !== true || $attestation->getDatation()->isEmpty()) {
+                $attestation->setDatation(null);
+                $attestation->setEstDatee(false);
+            }
+
             $this->getDoctrine()->getRepository(VerrouEntite::class)->remove($source->getVerrou());
             $em->flush();
 
@@ -463,6 +469,12 @@ class AttestationController extends AbstractController
                     $attestation->removeFormule($f);
                 }
             }
+
+            if ($attestation->getEstDatee() !== true || $attestation->getDatation()->isEmpty()) {
+                $attestation->setDatation(null);
+                $attestation->setEstDatee(false);
+            }
+
             $this->getDoctrine()->getRepository(VerrouEntite::class)->remove($source->getVerrou());
             $em->flush();
 

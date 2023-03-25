@@ -631,6 +631,7 @@ search:
         sql_error: "Erreur lors de l'exécution de la requête : "
         invalid_query: "Requête SQL invalide, seules les requêtes SELECT sont autorisées"
         sql_warning: "Attention, certaines attestations n’ont pas encore été achevées ou validées. Pour n’afficher que les attestations en open access, ajoutez la condition suivante : \"where attestation.id_etat_fiche = 4\"."
+        invalid_criteria_file: "Fichier de critères invalide"
     help:
         direct_locations: >
             Les localisations <u>directes</u> sont : <br/>

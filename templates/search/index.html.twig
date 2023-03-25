@@ -1368,10 +1368,39 @@
 
         $('#upload-criteria').on('click', function (e) {
             e.preventDefault();
+            $('#upload-criteria-input').off('change');
+            $('#upload-criteria-input').on('change', function (e) {
+                var reader = new FileReader();
+                reader.onload = function (event) {
+                    try {
+                        var obj = JSON.parse(event.target.result);
+                        if (!obj.hasOwnProperty('mode') || !obj.hasOwnProperty('criteria')) {
+                            throw "Invalid file contents";
+                        } else {
+                            //File is valid
+                            var btn = $('#upload-criteria');
+                            // Show spinner on current button
+                            btn.attr('disabled', true);
+                            btn.append($('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>'));
+
+                            if (CURRENT_MODE !== obj.mode) {
+                                changeMode(obj.mode);
+                            }
+                            populateCriteriaData(obj.mode, obj.criteria, function () {
+                                btn.find('span.spinner-border').remove();
+                                btn.attr('disabled', false);
+                            });
+                        }
+
+                    } catch (exception) {
+                        alert("{{ 'search.messages.invalid_criteria_file'|trans }}");
+                        btn.find('span.spinner-border').remove();
+                        btn.attr('disabled', false);
+                    }
+                };
+                reader.readAsText(e.target.files[0]);
+            });
             $('#upload-criteria-input').click();
-            // TODO : watch for input change
-            // then : https://stackoverflow.com/questions/23344776/how-to-access-data-of-uploaded-json-file
-            // and populate form
         });
     });
 </script>

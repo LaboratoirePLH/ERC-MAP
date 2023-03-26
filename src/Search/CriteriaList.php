@@ -12,7 +12,7 @@ class CriteriaList
             [
                 'key'      => 'names',
                 'label'    => $translator->trans('search.criteria_labels.names'),
-                'type'     => 'select',
+                'type'     => 'nameselect',
                 'semitic'  => true,
                 'children' => [
                     [

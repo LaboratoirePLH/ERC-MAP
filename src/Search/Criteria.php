@@ -323,6 +323,14 @@ class Criteria
                             return $v;
                         }, $value);
                         break;
+                    case 'nameselect':
+                        $criteriaValues = array_map(function ($v) use ($key, $locale) {
+                            $v['values'] = $this->getDisplay($key, $v['values'], $locale);
+                            $v['mode'] = $v['mode'] ?? 'one';
+                            $v['indirect'] = $v['indirect'] ?? 'direct';
+                            return $v;
+                        }, $value);
+                        break;
                     default:
                         throw new \InvalidArgumentException("Criteria $key (with value '" . json_encode($value) . "') is not of an accepted type ('{$criteriaSettings['type']}')");
                 }

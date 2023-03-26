@@ -331,6 +331,7 @@ element:
         theonyme_implicite_n: "Heteronymous/By-Form Theonym #"
         theonymes_construits: "Built on "
         theonyme_construit_n: "Built on #"
+        theonymes: "Heteronymous & Built on"
         a_reference: "Reference ?"
         element_biblio: "Reference"
         element_biblio_n: "Reference #"
@@ -635,6 +636,7 @@ search:
         sql_warning: "Please note that some testimonies have not been completed or validated yet. To display only the open access testimonies, add the following condition: \"where attestation.id_etat_fiche = 4\"."
         invalid_criteria_file: "Invalid criteria file"
     help:
+        theonymes: "Includes in the search criterium the selected elements' alternative forms (heteronyms), as well as other elements built on them"
         direct_locations: >
             <u>Directs</u> locations are : <br/>
              - <strong>Source :</strong> Original location and Discovery location<br/>

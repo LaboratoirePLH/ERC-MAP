@@ -59,6 +59,30 @@
         </div>
         {{ removeCriteriaButton }}
     </div>
+    <div class="form-group my-1 row align-items-center" id="nameselect-template">
+        <label class="col-sm-3 col-form-label" for="inputNameSelect"></label>
+        <div class="col">
+            <select class="form-control autocomplete" name="name" id="inputNameSelect" size="1" multiple
+                data-placeholder="{{('autocomplete.select_multiple')|trans}}">
+                <option value></option>
+            </select>
+        </div>
+        <div class="col-sm-2 d-flex flex-column justify-content-around align-items-center">
+            <div class="custom-control custom-switch select-strict">
+                <input type="checkbox" class="custom-control-input" id="name_mode" name="name_mode" value="all">
+                <label class="custom-control-label" for="names_mode">{{ 'generic.fields.require_all'|trans }}</label>
+            </div>
+            <div class="custom-control custom-switch nameselect-indirect">
+                <input type="checkbox" class="custom-control-input" id="name_indirect" name="name_indirect"
+                    value="indirect">
+                <label class="custom-control-label" for="name_indirect">{{ ('element.fields.theonymes')|trans
+                    }}</label>
+                <i class="fas fa-question-circle" data-toggle="tooltip" data-placement="top" data-html="true"
+                    title="{{ 'search.help.theonymes'|trans|raw }}"></i>
+            </div>
+        </div>
+        {{ removeCriteriaButton }}
+    </div>
     <div class="form-group my-1 row align-items-center" id="locationselect-template">
         <label class="col-sm-3 col-form-label" for="inputNameSelect"></label>
         <div class="col">

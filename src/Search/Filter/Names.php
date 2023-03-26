@@ -4,21 +4,25 @@ namespace App\Search\Filter;
 
 use App\Entity\IndexRecherche;
 
-class Names extends AbstractFilter {
+class Names extends AbstractFilter
+{
 
     public static function filter(IndexRecherche $entity, array $criteria, array $sortedData): bool
     {
         self::validateInput($entity, $criteria, $sortedData);
 
+        // If we have at least one criteria with the direct flag, we compute the direct locations
+        $hasIndirectFilter = !!count(array_column($criteria, "indirect"));
+
         // We get all the IDs of the resolved elements
         $elements = self::toArray(
-            self::resolveElements($entity, $sortedData)
+            self::resolveElements($entity, $sortedData, $hasIndirectFilter)
         );
         $data = array_column($elements, 'id');
 
         // For each criteria entry, we will get a boolean result of whether the entry is valid against the data
         // We need at least one truthy value to accept the data
-        return !!count(array_filter(array_map(function($crit) use ($data) {
+        return !!count(array_filter(array_map(function ($crit) use ($data) {
             $requireAll = ($crit['mode'] ?? 'one') === 'all';
             $crit = array_filter($crit['values']);
 

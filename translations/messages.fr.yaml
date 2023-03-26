@@ -330,6 +330,7 @@ element:
         theonyme_implicite_n: "Hétéronyme/Forme Alternative #"
         theonymes_construits: "Construits sur"
         theonyme_construit_n: "Construit sur #"
+        theonymes: "Hétéronymes & Construits sur"
         a_reference: "Référence ?"
         element_biblio: "Référence"
         element_biblio_n: "Référence #"
@@ -633,6 +634,7 @@ search:
         sql_warning: "Attention, certaines attestations n’ont pas encore été achevées ou validées. Pour n’afficher que les attestations en open access, ajoutez la condition suivante : \"where attestation.id_etat_fiche = 4\"."
         invalid_criteria_file: "Fichier de critères invalide"
     help:
+        theonymes: "Inclut dans le critère de recherche les formes alternatives des éléments (hétéronymes), ainsi que les éléments construits sur ceux-ci"
         direct_locations: >
             Les localisations <u>directes</u> sont : <br/>
              - <strong>Source :</strong> Lieu de découverte et lieu d'origine<br/>

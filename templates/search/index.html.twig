@@ -680,9 +680,23 @@
                         Object.values(values).forEach((value, index) => {
                             switch (criteria.type) {
                                 case 'locationselect':
+                                    $('#advanced').find('select[name="' + criteriaName + '[' + index + '][values][]"]').val(value.values).trigger('chosen:updated');
                                     if (value.hasOwnProperty('direct') && value.direct === "direct") {
                                         $('#advanced').find('input[name="' + criteriaName + '[' + index + '][direct]"]').attr('checked', true);
                                     }
+                                    if (value.hasOwnProperty('mode') && value.mode === "all") {
+                                        $('#advanced').find('input[name="' + criteriaName + '[' + index + '][mode]"]').attr('checked', true);
+                                    }
+                                    break;
+                                case 'nameselect':
+                                    $('#advanced').find('select[name="' + criteriaName + '[' + index + '][values][]"]').val(value.values).trigger('chosen:updated');
+                                    if (value.hasOwnProperty('indirect') && value.indirect === "indirect") {
+                                        $('#advanced').find('input[name="' + criteriaName + '[' + index + '][indirect]"]').attr('checked', true);
+                                    }
+                                    if (value.hasOwnProperty('mode') && value.mode === "all") {
+                                        $('#advanced').find('input[name="' + criteriaName + '[' + index + '][mode]"]').attr('checked', true);
+                                    }
+                                    break;
                                 case 'select':
                                     $('#advanced').find('select[name="' + criteriaName + '[' + index + '][values][]"]').val(value.values).trigger('chosen:updated');
                                     if (value.hasOwnProperty('mode') && value.mode === "all") {
@@ -933,12 +947,6 @@
 
             // Set required properties depending on input type
             switch (criteria.type) {
-                case 'locationselect':
-                    var index = $("#advanced").find('select[name^="' + criteria.key + '"]').length;
-                    var inputId = 'input' + criteria.key.charAt(0).toUpperCase() + criteria.key.slice(1);
-                    var inputName = criteria.key + '[' + index + '][values][]';
-                    template.find('.locationselect-direct').find('label').prop('for', inputId + 'Direct_' + index);
-                    template.find('.locationselect-direct').find('input').prop('id', inputId + 'Direct_' + index).prop('name', criteria.key + '[' + index + '][direct]');
                 case 'select':
                     // Compute an index based on the number of same name selects already added
                     var index = $("#advanced").find('select[name^="' + criteria.key + '"]').length;
@@ -948,6 +956,30 @@
                     template.find('select').prop('id', inputId).prop('name', inputName);
                     template.find('.select-strict').find('label').prop('for', inputId + 'Mode_' + index);
                     template.find('.select-strict').find('input').prop('id', inputId + 'Mode_' + index).prop('name', criteria.key + '[' + index + '][mode]');
+                    loadCriteriaData(criteria.key, template.find('select'), null, criteria.semitic !== true);
+                    break;
+                case 'locationselect':
+                    var index = $("#advanced").find('select[name^="' + criteria.key + '"]').length;
+                    var inputId = 'input' + criteria.key.charAt(0).toUpperCase() + criteria.key.slice(1);
+                    var inputName = criteria.key + '[' + index + '][values][]';
+                    template.find('.locationselect-direct').find('label').prop('for', inputId + 'Direct_' + index);
+                    template.find('.locationselect-direct').find('input').prop('id', inputId + 'Direct_' + index).prop('name', criteria.key + '[' + index + '][direct]');
+                    template.find('label').first().prop('for', inputId).text(criteria.label);
+                    template.find('select').prop('id', inputId).prop('name', inputName);
+                    template.find('.select-strict').find('label').prop('for', inputId + 'Mode_' + index);
+                    template.find('.select-strict').find('input').prop('id', inputId + 'Mode_' + index).prop('name', criteria.key + '[' + index + '][mode]');
+                    loadCriteriaData(criteria.key, template.find('select'), null, criteria.semitic !== true);
+                    break;
+                case 'nameselect':
+                    var index = $("#advanced").find('select[name^="' + criteria.key + '"]').length;
+                    var inputId = 'input' + criteria.key.charAt(0).toUpperCase() + criteria.key.slice(1);
+                    var inputName = criteria.key + '[' + index + '][values][]';
+                    template.find('label').first().prop('for', inputId).text(criteria.label);
+                    template.find('select').prop('id', inputId).prop('name', inputName);
+                    template.find('.select-strict').find('label').prop('for', inputId + 'Mode_' + index);
+                    template.find('.select-strict').find('input').prop('id', inputId + 'Mode_' + index).prop('name', criteria.key + '[' + index + '][mode]');
+                    template.find('.nameselect-indirect').find('label').prop('for', inputId + 'Indirect_' + index);
+                    template.find('.nameselect-indirect').find('input').prop('id', inputId + 'Indirect_' + index).prop('name', criteria.key + '[' + index + '][indirect]');
                     loadCriteriaData(criteria.key, template.find('select'), null, criteria.semitic !== true);
                     break;
                 case 'text':

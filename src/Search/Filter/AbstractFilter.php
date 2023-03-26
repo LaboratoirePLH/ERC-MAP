@@ -86,23 +86,42 @@ abstract class AbstractFilter
         return [];
     }
 
-    public static function resolveElements(IndexRecherche $e, array $sortedData): array
+    public static function resolveElements(IndexRecherche $e, array $sortedData, bool $allowIndirect = false): array
     {
         $eData = $e->getData();
         if ($e->getEntite() === 'Element') {
+            $indirect = [];
+            if ($allowIndirect) {
+                $indirect = array_filter($sortedData['elements'], function ($element) use ($eData) {
+                    return in_array($element->getId(), array_merge(
+                        $eData['theonymesImplicites'] ?? [],
+                        $eData['theonymesConstruits'] ?? []
+                    ));
+                });
+            }
             // Return itself
-            return [$e];
+            return array_merge([$e], $indirect);
         } else if ($e->getEntite() === 'Attestation') {
             // Get all elements whose ID is in the 'elementIds' property
-            return array_filter(array_map(function ($elementId) use ($sortedData) {
-                return $sortedData['elements'][$elementId] ?? null;
-            }, $eData['elementIds'] ?? []));
+            return array_filter(
+                array_reduce(
+                    $eData['elementIds'],
+                    function ($result, $elementId) use ($sortedData, $allowIndirect) {
+                        $element = $sortedData['elements'][$elementId] ?? null;
+                        if ($element !== null) {
+                            return array_merge($result, self::resolveElements($element, $sortedData, $allowIndirect));
+                        }
+                        return null;
+                    },
+                    []
+                )
+            );
         } else if ($e->getEntite() === 'Source') {
             // Resolve all attestations, then call resolveElements on each of them
             return array_reduce(
                 self::resolveAttestations($e, $sortedData),
-                function ($result, $attestation) use ($sortedData) {
-                    return array_merge($result, self::resolveElements($attestation, $sortedData));
+                function ($result, $attestation) use ($sortedData, $allowIndirect) {
+                    return array_merge($result, self::resolveElements($attestation, $sortedData, $allowIndirect));
                 },
                 []
             );

@@ -2,11 +2,12 @@ require('../css/list_page.scss');
 
 require('./base.js');
 
-require('datatables.net-bs4')(window, $);
-require('datatables.net-buttons/js/buttons.html5')(window, $);
-require('datatables.net-buttons-bs4')(window, $);
-require('datatables.net-responsive')(window, $);
-require('datatables.net-responsive-bs4')(window, $);
+require('datatables.net-bs4');
+require('datatables.net-buttons/js/dataTables.buttons.js')(window,jQuery);
+require('datatables.net-buttons/js/buttons.html5.js')(window,jQuery);
+require('datatables.net-buttons-bs4/js/buttons.bootstrap4.js')(window,jQuery);
+require('datatables.net-responsive/js/dataTables.responsive.js')(window,jQuery);
+require('datatables.net-responsive-bs4/js/responsive.bootstrap4.js')(window,jQuery);
 
 function accents_supr(data) {
     return !data ?
@@ -37,7 +38,7 @@ jQuery.fn.DataTable.ext.type.search['html'] = function (data) {
     return accents_supr(data);
 };
 
-jQuery.fn.dataTable.ext.type.order['id-pre'] = function (d) {
+jQuery.fn.DataTable.ext.type.order['id-pre'] = function (d) {
     const [type, id] = d.split('#');
     var typeNumber;
     switch (type) {
@@ -155,7 +156,7 @@ jQuery.fn.dataTable.ext.type.order['id-pre'] = function (d) {
         })
 
         // Wait for data being laoded before adding table buttons
-        tableRef.on('init', () => {
+        tableRef.on('init.dt', () => {
             var target = $('.table-buttons').find('.help-btn');
             if(target){
                 tableRef.buttons().container().insertBefore(target);

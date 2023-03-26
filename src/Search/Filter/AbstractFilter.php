@@ -105,7 +105,7 @@ abstract class AbstractFilter
             // Get all elements whose ID is in the 'elementIds' property
             return array_filter(
                 array_reduce(
-                    $eData['elementIds'],
+                    ($eData['elementIds'] ?? []),
                     function ($result, $elementId) use ($sortedData, $allowIndirect) {
                         $element = $sortedData['elements'][$elementId] ?? null;
                         if ($element !== null) {

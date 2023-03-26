@@ -290,6 +290,7 @@ class Criteria
                         break;
                     case 'locationreal':
                     case 'iconography':
+                    case 'suffix':
                         $criteriaValues = array_map(function ($v) {
                             return array_map(function ($v_value) {
                                 return $this->translator->trans('generic.choices.' . $v_value);

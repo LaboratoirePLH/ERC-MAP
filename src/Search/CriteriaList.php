@@ -64,6 +64,12 @@ class CriteriaList
                         'semitic' => false,
                     ],
                     [
+                        'key'     => 'suffix',
+                        'label'   => $translator->trans('element.fields.suffixe'),
+                        'type'    => 'suffix',
+                        'semitic' => false,
+                    ],
+                    [
                         'key'      => 'attestationFiability',
                         'label'    => $translator->trans('search.criteria_labels.fiabilite_lecture'),
                         'type'     => 'range',

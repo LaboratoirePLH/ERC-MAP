@@ -249,6 +249,29 @@
         <div class="col">&nbsp;</div>
         {{ removeCriteriaButton }}
     </div>
+    <div class="form-group my-1 row align-items-center" id="suffix-template">
+        <label class="col-sm-3 col-form-label">{{ 'element.fields.suffixe'|trans }}</label>
+        <div class="col-sm-2 d-flex flex-column justify-content-around align-items-center">
+            <div class="custom-control custom-switch mr-2">
+                <input type="checkbox" class="custom-control-input" id="inputSuffixYes#X#" name="suffix[#X#][values][]"
+                    value="yes">
+                <label class="custom-control-label" for="inputSuffixYes#X#">
+                    {{ ('generic.choices.oui')|trans }}
+                </label>
+            </div>
+        </div>
+        <div class="col-sm-2 d-flex flex-column justify-content-around align-items-center">
+            <div class="custom-control custom-switch mr-2">
+                <input type="checkbox" class="custom-control-input" id="inputSuffixNo#X#" name="suffix[#X#][values][]"
+                    value="no">
+                <label class="custom-control-label" for="inputSuffixNo#X#">
+                    {{ ('generic.choices.non')|trans }}
+                </label>
+            </div>
+        </div>
+        <div class="col">&nbsp;</div>
+        {{ removeCriteriaButton }}
+    </div>
     <div class="form-group my-1 row align-items-center" id="elementsemitic-template">
         <label class="col-sm-3 col-form-label">{{ 'search.criteria_labels.element_semitique'|trans }}</label>
         <div class="col-sm-2 d-flex flex-column justify-content-around align-items-center">

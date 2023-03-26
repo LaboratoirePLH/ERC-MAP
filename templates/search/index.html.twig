@@ -734,6 +734,10 @@
                                     $('#advanced').find('input[name="iconography[' + index + '][values][]"][value=yes]').attr('checked', value.values.includes('yes'));
                                     $('#advanced').find('input[name="iconography[' + index + '][values][]"][value=no]').attr('checked', value.values.includes('no'));
                                     break;
+                                case 'suffix':
+                                    $('#advanced').find('input[name="suffix[' + index + '][values][]"][value=yes]').attr('checked', value.values.includes('yes'));
+                                    $('#advanced').find('input[name="suffix[' + index + '][values][]"][value=no]').attr('checked', value.values.includes('no'));
+                                    break;
                                 case 'elementsemitic':
                                     $('#advanced').find('input[name="elementSemitic[' + index + '][values][]"][value=yes]').attr('checked', value.values.includes('yes'));
                                     $('#advanced').find('input[name="elementSemitic[' + index + '][values][]"][value=no]').attr('checked', value.values.includes('no'));
@@ -749,7 +753,12 @@
                 setTimeout(() => {
                     Object.entries(data).forEach(([criteriaName, values]) => {
                         if (criteriaName != 'resultsType') {
-                            const len = (criteriaName === 'locationReal' || criteriaName === 'iconography' || criteriaName === 'elementSemitic') ? 1 : Object.values(values).length;
+                            const len = (criteriaName === 'locationReal'
+                                || criteriaName === 'iconography'
+                                || criteriaName === 'suffix'
+                                || criteriaName === 'elementSemitic')
+                                ? 1
+                                : Object.values(values).length;
                             for (i = 0; i < len; i++) {
                                 addNewCriteria(criteriaName, values[i]['type'] ?? 'inclusive');
                             }
@@ -1021,6 +1030,7 @@
                 case 'prosepoetry':
                 case 'locationreal':
                 case 'iconography':
+                case 'suffix':
                 case 'elementsemitic':
                     // Compute an index based on the number of same type templates already added
                     var index = $("#advanced").find('.' + criteria.type + '-template').length;

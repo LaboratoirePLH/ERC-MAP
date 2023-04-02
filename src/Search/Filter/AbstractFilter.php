@@ -111,7 +111,7 @@ abstract class AbstractFilter
                         if ($element !== null) {
                             return array_merge($result, self::resolveElements($element, $sortedData, $allowIndirect));
                         }
-                        return null;
+                        return $result;
                     },
                     []
                 )

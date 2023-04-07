@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\RechercheEnregistree;
 use App\Entity\RequeteEnregistree;
 use App\Search\Criteria;
+use App\Search\ExportNodes;
 use Doctrine\Persistence\ManagerRegistry;
 use PDO;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -572,6 +573,44 @@ class RechercheController extends AbstractController
 
         // Respond with current data
         return new JsonResponse($rebuildData);
+    }
+
+
+    /**
+     * @Route("/search/export_nodes", name="search_export_nodes")
+     */
+    public function exportNodes(Request $request, TranslatorInterface $translator, ManagerRegistry $doctrine)
+    {
+        if (!$request->isMethod('POST')) {
+            return null;
+        }
+
+        $ids = json_decode($request->request->get('ids', '[]'));
+
+        if (!count($ids)) {
+            return null;
+        }
+
+        $result = ExportNodes::get($ids, $doctrine);
+
+
+        $tmpFile = tmpfile();
+
+        fputcsv($tmpFile, [$translator->trans('misc.export_copyright', ['%date%' => date('Y/m/d')])]);
+        fputcsv($tmpFile, array_keys($result[0]));
+        foreach ($result as $row) {
+            fputcsv($tmpFile, $row);
+        }
+
+        $fileName = 'export_nodes_' . date('Y-m-d') . '.csv';
+
+        rewind($tmpFile);
+        $content = stream_get_contents($tmpFile);
+        $response = new Response($content);
+        $response->headers->set('Content-Type', 'text/csv');
+        $response->headers->set('Content-Disposition', 'attachment; filename="' . $fileName . '"');
+
+        return $response;
     }
 
     private function _emptySearchResponse(Request $request, string $mode)

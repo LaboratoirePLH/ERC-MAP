@@ -5,7 +5,7 @@ locale_datetime: "Y-m-d H:i:s"
 languages:
     fr: "French"
     en: "English"
-test_database : "Test Environment"
+test_database: "Test Environment"
 
 nav:
     profile: "Profile"
@@ -130,7 +130,7 @@ generic:
         indetermine: "Undetermined"
         lien_direct: "Direct link"
         texte_libre: "Free text"
-    choices :
+    choices:
         new: "New"
         existing: "Existing"
         none: "None"
@@ -156,8 +156,8 @@ generic:
         error_unauthorized: "You are not allowed to perform this operation"
     help:
         edition_principale: "At least one reference must be specified as the Main Edition"
-        city_search: "Enter a City name and/or a Pleiades number, then click the \"Search database\" button to search the database. If a single result is found, relevant fields will be populated according to its data"
-        pleiades_number: "Enter the ID of a Pleiades entry and click the \"Search\" button to search on Pleiades. If a result is found, relevant fields will be populated according to its data and locked. Click the \"Clear\" button to erase the data, or the \"View\" button to open Pleiades with the given ID."
+        city_search: 'Enter a City name and/or a Pleiades number, then click the "Search database" button to search the database. If a single result is found, relevant fields will be populated according to its data'
+        pleiades_number: 'Enter the ID of a Pleiades entry and click the "Search" button to search on Pleiades. If a result is found, relevant fields will be populated according to its data and locked. Click the "Clear" button to erase the data, or the "View" button to open Pleiades with the given ID.'
         regional_data: >
             <a href="https://geoapps.huma-num.fr/adws/app/8cc4e1b9-3a92-11e9-8702-e571f836e404/index.html" target="_blank" rel="noopener">Regional data webmapping help</a>
 
@@ -180,9 +180,9 @@ source:
         missing: "Source #%id% does not exists"
     fields:
         projet: "Project"
-        titre:  "Title"
-        titre_fr:  "Title (FR)"
-        titre_en:  "Title (EN)"
+        titre: "Title"
+        titre_fr: "Title (FR)"
+        titre_en: "Title (EN)"
         titre_principal: "Main Title"
         auteurs: "Author"
         types_source: "Source Types"
@@ -208,7 +208,7 @@ source:
         region_origine: "Original Region"
         lieu_origine: "Original Location"
         lieu_decouverte: "Discovery Location"
-        lieu_decouverte_in_situ : "Discovery / Original Location"
+        lieu_decouverte_in_situ: "Discovery / Original Location"
         iconographie: "Iconography ?"
         source_biblio: "Reference"
         source_biblio_n: "Reference #"
@@ -268,10 +268,10 @@ attestation:
         occasion_n: "Occasion #"
         pratiques: "Connected Acts"
         categorie_materiel: "Material Category"
-        materiel : "Materials"
-        materiel_n : "Connected Material #"
-        agent_n : "Agent #"
-        element_n : "Element #"
+        materiel: "Materials"
+        materiel_n: "Connected Material #"
+        agent_n: "Agent #"
+        element_n: "Element #"
         element_invariant: "Element (Invariant)"
         attestations_liees: "Linked Testimonies"
         compte_element: "Element count"
@@ -351,7 +351,7 @@ element:
         deleted: "Element deleted"
         missing: "Element #%id% does not exists"
     sections:
-        description_element : "Element Description"
+        description_element: "Element Description"
         references: "References to other Elements"
         localisation: "Element Location"
         bibliographie: "Bibliography"
@@ -366,7 +366,7 @@ element:
         indetermine: "Undetermined"
 
 agent:
-    name: 'Agent'
+    name: "Agent"
     fields:
         designation: "Designation"
         agentivite: "Agencies"
@@ -399,13 +399,13 @@ localisation:
         entite_politique: "Political Entity"
         pleiades_ville: "Pleiades Number (Place)"
         ville: "Place"
-        nom_ville : "Name (Place)"
+        nom_ville: "Name (Place)"
         latitude: "Latitude"
         longitude: "Longitude"
         pleiades_site: "Pleiades Number (Site)"
         site: "Site"
-        nom_site : "Name (Site)"
-        topographie : "Topographies"
+        nom_site: "Name (Site)"
+        topographie: "Topographies"
         fonction: "Functions"
         precision: "Location precision"
     precision:
@@ -486,8 +486,7 @@ modals:
 
 datatable:
     all: "All"
-    language: '{"emptyTable":"No data available","info":"Page _PAGE_ of _PAGES_ (_TOTAL_ records)",
-    "infoEmpty":"No data available","infoFiltered":"(filtered from _MAX_ total records)","lengthMenu":"Display _MENU_ items per page","search":"Search :","zeroRecords":"No result","paginate":{"first":"First","last":"Last","next":"Next","previous":"Previous"},"aria":{"sortAscending":"Activate to sort column ascending","sortDescending":"Activate to sort column descending"},"processing":"<div class=\\"spinner-border spinner-border-sm\\" role=\\"status\\"><span class=\\"sr-only\\">Loading data...</span></div> Loading data..."}'
+    language: '{"emptyTable":"No data available","info":"Page _PAGE_ of _PAGES_ (_TOTAL_ records)", "infoEmpty":"No data available","infoFiltered":"(filtered from _MAX_ total records)","lengthMenu":"Display _MENU_ items per page","search":"Search :","zeroRecords":"No result","paginate":{"first":"First","last":"Last","next":"Next","previous":"Previous"},"aria":{"sortAscending":"Activate to sort column ascending","sortDescending":"Activate to sort column descending"},"processing":"<div class=\\"spinner-border spinner-border-sm\\" role=\\"status\\"><span class=\\"sr-only\\">Loading data...</span></div> Loading data..."}'
 
 autocomplete:
     select_single: "Select a value"
@@ -583,6 +582,9 @@ search:
     import_criteria: "Importer criteria"
     export_resultats_as_criteria: "Exporter as criteria"
     results_type: "Results type"
+    results_nodes_links: "Results nodes & links"
+    results_nodes: "Nodes"
+    results_links: "Links"
     found_in: "Found in"
     choose_columns: "Choose columns"
     criteria_labels:
@@ -633,8 +635,9 @@ search:
         no_results: "SQL query has not produced any results"
         sql_error: "Error during query execution : "
         invalid_query: "Invalid SQL query, only SELECT queries are allowed"
-        sql_warning: "Please note that some testimonies have not been completed or validated yet. To display only the open access testimonies, add the following condition: \"where attestation.id_etat_fiche = 4\"."
+        sql_warning: 'Please note that some testimonies have not been completed or validated yet. To display only the open access testimonies, add the following condition: "where attestation.id_etat_fiche = 4".'
         invalid_criteria_file: "Invalid criteria file"
+        nothing_to_export: "No data to"
     help:
         theonymes: "Includes in the search criterium the selected elements' alternative forms (heteronyms), as well as other elements built on them"
         direct_locations: >
@@ -662,8 +665,8 @@ maintenance:
     locations_cleanup_duplicate: "Duplicate Locations"
     locations_cleanup_manual_duplicate: "Duplicate Locations (manual action)"
     locations_cleanup_merge_group: "Select the entire group"
-    is_located_cleanup: "\"Is Located ?\" booleans cleanup"
-    in_situ_cleanup: "\"In Situ ?\" booleans cleanup"
+    is_located_cleanup: '"Is Located ?" booleans cleanup'
+    in_situ_cleanup: '"In Situ ?" booleans cleanup'
     messages:
         invalid_char: "Invalid character(s)"
         invalid_length: "Length difference"

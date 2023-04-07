@@ -306,6 +306,10 @@
                 $(this).find('input[type=hidden][name=ids]').val(JSON.stringify(filteredRows.map(r => r[type].link.id).toArray()));
                 $(this).find('button').prop('disabled', false);
             })
+            $('form.nodes-links-form').each(function () {
+                $(this).find('input[type=hidden][name=ids]').val(JSON.stringify(filteredRows.map(r => r['attestation'].link.id).toArray()));
+                $(this).find('button').prop('disabled', false);
+            })
         }
 
         function storeVisibleColumns() {

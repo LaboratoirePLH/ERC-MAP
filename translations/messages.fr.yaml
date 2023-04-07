@@ -129,7 +129,7 @@ generic:
         indetermine: "Indéterminé"
         lien_direct: "Lien direct"
         texte_libre: "Texte libre"
-    choices :
+    choices:
         new: "Nouveau"
         existing: "Existant"
         none: "Aucun"
@@ -155,8 +155,8 @@ generic:
         error_unauthorized: "Vous n'avez pas le droit d'effectuer cette opération"
     help:
         edition_principale: "Au moins une référence doit être spécifiée en tant qu'Édition Principale"
-        city_search: "Entrez un nom de ville et/ou un numéro Pléiades, puis cliquez le bouton \"Chercher dans la base\". Si un résultat unique est trouvé, les champs correspondants seront remplis avec ses données"
-        pleiades_number: "Entrez le numéro Pléiades et cliquez sur le bouton \"Chercher sur Pléiades\" pour consulter la base de données Pléiades. Si un résultat est trouvé, les champs correspondants seront remplis avec ses données et verrouillés. Cliquez sur le bouton \"Effacer\" pour effacer les champs, ou sur le bouton \"Visualiser\" pour ouvrir Pléiades avec le numéro saisi."
+        city_search: 'Entrez un nom de ville et/ou un numéro Pléiades, puis cliquez le bouton "Chercher dans la base". Si un résultat unique est trouvé, les champs correspondants seront remplis avec ses données'
+        pleiades_number: 'Entrez le numéro Pléiades et cliquez sur le bouton "Chercher sur Pléiades" pour consulter la base de données Pléiades. Si un résultat est trouvé, les champs correspondants seront remplis avec ses données et verrouillés. Cliquez sur le bouton "Effacer" pour effacer les champs, ou sur le bouton "Visualiser" pour ouvrir Pléiades avec le numéro saisi.'
         regional_data: >
             <a href="https://geoapps.huma-num.fr/adws/app/8cc4e1b9-3a92-11e9-8702-e571f836e404/index.html" target="_blank" rel="noopener">Aide au webmapping des données régionales</a>
 
@@ -179,9 +179,9 @@ source:
         missing: "La Source #%id% n'existe pas"
     fields:
         projet: "Projet"
-        titre:  "Titre"
-        titre_fr:  "Titre (FR)"
-        titre_en:  "Titre (EN)"
+        titre: "Titre"
+        titre_fr: "Titre (FR)"
+        titre_en: "Titre (EN)"
         titre_principal: "Titre Principal"
         auteurs: "Auteur"
         types_source: "Types de Source"
@@ -207,7 +207,7 @@ source:
         region_origine: "Région d'Origine"
         lieu_origine: "Lieu d'Origine"
         lieu_decouverte: "Lieu de Découverte"
-        lieu_decouverte_in_situ : "Lieu de Découverte / Origine"
+        lieu_decouverte_in_situ: "Lieu de Découverte / Origine"
         iconographie: "Iconographie ?"
         source_biblio: "Référence"
         source_biblio_n: "Référence #"
@@ -267,10 +267,10 @@ attestation:
         occasion_n: "Occasion #"
         pratiques: "Pratiques Associées"
         categorie_materiel: "Catégorie de Matériel"
-        materiel : "Matériels"
-        materiel_n : "Matériel Associé #"
-        agent_n : "Agent #"
-        element_n : "Élément #"
+        materiel: "Matériels"
+        materiel_n: "Matériel Associé #"
+        agent_n: "Agent #"
+        element_n: "Élément #"
         element_invariant: "Élément (Invariant)"
         attestations_liees: "Attestations Liées"
         compte_element: "Nombre d'éléments"
@@ -350,7 +350,7 @@ element:
         deleted: "L'Élément a été supprimé"
         missing: "L'Élément #%id% n'existe pas"
     sections:
-        description_element : "Description de l'Élément"
+        description_element: "Description de l'Élément"
         references: "Références à d'autres Éléments"
         localisation: "Localisation de l'Élément"
         bibliographie: "Bibliographie"
@@ -364,9 +364,8 @@ element:
         ablatif: "Ablatif"
         indetermine: "Indéterminé"
 
-
 agent:
-    name: 'Agent'
+    name: "Agent"
     fields:
         designation: "Désignation"
         agentivite: "Agentivités"
@@ -399,13 +398,13 @@ localisation:
         entite_politique: "Entité Politique"
         pleiades_ville: "Numéro Pléiades (Lieu)"
         ville: "Lieu"
-        nom_ville : "Nom (Lieu)"
+        nom_ville: "Nom (Lieu)"
         latitude: "Latitude"
         longitude: "Longitude"
         pleiades_site: "Numéro Pléiades (Site)"
         site: "Site"
-        nom_site : "Nom (Site)"
-        topographie : "Topographies"
+        nom_site: "Nom (Site)"
+        topographie: "Topographies"
         fonction: "Fonctions"
         precision: "Précision de la Localisation"
     precision:
@@ -583,6 +582,9 @@ search:
     results_type: "Type de résultats"
     found_in: "Trouvé dans"
     choose_columns: "Choisir les colonnes"
+    results_nodes_links: "Noeuds & Liens des résultats"
+    results_nodes: "Noeuds"
+    results_links: "Liens"
     criteria_labels:
         names: "Nom(s)"
         names_all: "Nom(s) (Tous)"
@@ -631,8 +633,9 @@ search:
         no_results: "La requête SQL n'a produit aucun résultat"
         sql_error: "Erreur lors de l'exécution de la requête : "
         invalid_query: "Requête SQL invalide, seules les requêtes SELECT sont autorisées"
-        sql_warning: "Attention, certaines attestations n’ont pas encore été achevées ou validées. Pour n’afficher que les attestations en open access, ajoutez la condition suivante : \"where attestation.id_etat_fiche = 4\"."
+        sql_warning: 'Attention, certaines attestations n’ont pas encore été achevées ou validées. Pour n’afficher que les attestations en open access, ajoutez la condition suivante : "where attestation.id_etat_fiche = 4".'
         invalid_criteria_file: "Fichier de critères invalide"
+        nothing_to_export: "Aucune données à exporter"
     help:
         theonymes: "Inclut dans le critère de recherche les formes alternatives des éléments (hétéronymes), ainsi que les éléments construits sur ceux-ci"
         direct_locations: >
@@ -645,7 +648,6 @@ search:
              - <strong>Source :</strong> Localisations directes de la source<br/>
              - <strong>Attestation :</strong> Localisations directes de l'attestation et de la source<br/>
              - <strong>Élément :</strong> Localisations directes de l'élément, de ses attestations et de leurs sources
-
 
 maintenance:
     title: "Maintenance de la Base de Données"
@@ -661,8 +663,8 @@ maintenance:
     locations_cleanup_duplicate: "Localisation Dupliquées"
     locations_cleanup_manual_duplicate: "Localisation Dupliquées (action manuelle)"
     locations_cleanup_merge_group: "Sélectionner le groupe entier"
-    is_located_cleanup: "Nettoyage des booléens \"Est Localisé(e) ?\""
-    in_situ_cleanup: "Nettoyage des booléens \"In Situ ?\""
+    is_located_cleanup: 'Nettoyage des booléens "Est Localisé(e) ?"'
+    in_situ_cleanup: 'Nettoyage des booléens "In Situ ?"'
     messages:
         invalid_char: "Caractère(s) invalide(s)"
         invalid_length: "Différence de longueur"

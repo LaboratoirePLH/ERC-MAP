@@ -6,6 +6,7 @@ use App\Entity\RechercheEnregistree;
 use App\Entity\RequeteEnregistree;
 use App\Search\Criteria;
 use App\Search\ExportNodes;
+use App\Search\ExportResults;
 use Doctrine\Persistence\ManagerRegistry;
 use PDO;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -584,18 +585,14 @@ class RechercheController extends AbstractController
         if (!$request->isMethod('POST')) {
             return null;
         }
-
         $ids = json_decode($request->request->get('ids', '[]'));
-
         if (!count($ids)) {
             return null;
         }
 
-        $result = ExportNodes::get($ids, $doctrine);
-
+        $result = ExportResults::getNodes($ids, $doctrine);
 
         $tmpFile = tmpfile();
-
         fputcsv($tmpFile, [$translator->trans('misc.export_copyright', ['%date%' => date('Y/m/d')])]);
         fputcsv($tmpFile, array_keys($result[0]));
         foreach ($result as $row) {
@@ -603,6 +600,39 @@ class RechercheController extends AbstractController
         }
 
         $fileName = 'export_nodes_' . date('Y-m-d') . '.csv';
+
+        rewind($tmpFile);
+        $content = stream_get_contents($tmpFile);
+        $response = new Response($content);
+        $response->headers->set('Content-Type', 'text/csv');
+        $response->headers->set('Content-Disposition', 'attachment; filename="' . $fileName . '"');
+
+        return $response;
+    }
+
+    /**
+     * @Route("/search/export_links", name="search_export_links")
+     */
+    public function exportLinks(Request $request, TranslatorInterface $translator, ManagerRegistry $doctrine)
+    {
+        if (!$request->isMethod('POST')) {
+            return null;
+        }
+        $ids = json_decode($request->request->get('ids', '[]'));
+        if (!count($ids)) {
+            return null;
+        }
+
+        $result = ExportResults::getLinks($ids, $doctrine, $request->getLocale());
+
+        $tmpFile = tmpfile();
+        fputcsv($tmpFile, [$translator->trans('misc.export_copyright', ['%date%' => date('Y/m/d')])]);
+        fputcsv($tmpFile, array_keys($result[0]));
+        foreach ($result as $row) {
+            fputcsv($tmpFile, $row);
+        }
+
+        $fileName = 'export_links_' . date('Y-m-d') . '.csv';
 
         rewind($tmpFile);
         $content = stream_get_contents($tmpFile);

@@ -330,7 +330,8 @@ element:
         theonyme_implicite_n: "Hétéronyme/Forme Alternative #"
         theonymes_construits: "Construits sur"
         theonyme_construit_n: "Construit sur #"
-        theonymes: "Hétéronymes & Construits sur"
+        theonymes_search_heteronym: "Hétéronymes"
+        theonymes_search_built: "Construits sur"
         a_reference: "Référence ?"
         element_biblio: "Référence"
         element_biblio_n: "Référence #"
@@ -606,6 +607,8 @@ search:
         source_id: "ID de Source"
         attestation_id: "ID d'Attestation"
         query: "Requête SQL"
+        heteronym: "(+ Hétéronymes)"
+        built: "(+ Construits sur)"
     element_labels:
         added: "Éléments ajoutés"
         add_new: "Ajouter un nouvel élément"
@@ -637,7 +640,8 @@ search:
         invalid_criteria_file: "Fichier de critères invalide"
         nothing_to_export: "Aucune données à exporter"
     help:
-        theonymes: "Inclut dans le critère de recherche les formes alternatives des éléments (hétéronymes), ainsi que les éléments construits sur ceux-ci"
+        theonymes_heteronym: "Inclut dans le critère de recherche les formes alternatives des éléments (hétéronymes)"
+        theonymes_built: "Inclut dans le critère de recherche les éléments construits sur ceux-ci"
         direct_locations: >
             Les localisations <u>directes</u> sont : <br/>
              - <strong>Source :</strong> Lieu de découverte et lieu d'origine<br/>

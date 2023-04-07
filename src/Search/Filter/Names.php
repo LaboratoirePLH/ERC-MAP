@@ -12,11 +12,12 @@ class Names extends AbstractFilter
         self::validateInput($entity, $criteria, $sortedData);
 
         // If we have at least one criteria with the direct flag, we compute the direct locations
-        $hasIndirectFilter = !!count(array_column($criteria, "indirect"));
+        $hasHeteronymFilter = !!count(array_column($criteria, "heteronym"));
+        $hasBuiltFilter = !!count(array_column($criteria, "built"));
 
         // We get all the IDs of the resolved elements
         $elements = self::toArray(
-            self::resolveElements($entity, $sortedData, $hasIndirectFilter)
+            self::resolveElements($entity, $sortedData, $hasHeteronymFilter, $hasBuiltFilter)
         );
         $data = array_column($elements, 'id');
 

@@ -690,8 +690,11 @@
                                     break;
                                 case 'nameselect':
                                     $('#advanced').find('select[name="' + criteriaName + '[' + index + '][values][]"]').val(value.values).trigger('chosen:updated');
-                                    if (value.hasOwnProperty('indirect') && value.indirect === "indirect") {
-                                        $('#advanced').find('input[name="' + criteriaName + '[' + index + '][indirect]"]').attr('checked', true);
+                                    if (value.hasOwnProperty('heteronym') && value.heteronym === "heteronym") {
+                                        $('#advanced').find('input[name="' + criteriaName + '[' + index + '][heteronym]"]').attr('checked', true);
+                                    }
+                                    if (value.hasOwnProperty('built') && value.built === "built") {
+                                        $('#advanced').find('input[name="' + criteriaName + '[' + index + '][built]"]').attr('checked', true);
                                     }
                                     if (value.hasOwnProperty('mode') && value.mode === "all") {
                                         $('#advanced').find('input[name="' + criteriaName + '[' + index + '][mode]"]').attr('checked', true);
@@ -987,8 +990,10 @@
                     template.find('select').prop('id', inputId).prop('name', inputName);
                     template.find('.select-strict').find('label').prop('for', inputId + 'Mode_' + index);
                     template.find('.select-strict').find('input').prop('id', inputId + 'Mode_' + index).prop('name', criteria.key + '[' + index + '][mode]');
-                    template.find('.nameselect-indirect').find('label').prop('for', inputId + 'Indirect_' + index);
-                    template.find('.nameselect-indirect').find('input').prop('id', inputId + 'Indirect_' + index).prop('name', criteria.key + '[' + index + '][indirect]');
+                    template.find('.nameselect-heteronym').find('label').prop('for', inputId + 'Heteronym_' + index);
+                    template.find('.nameselect-heteronym').find('input').prop('id', inputId + 'Heteronym_' + index).prop('name', criteria.key + '[' + index + '][heteronym]');
+                    template.find('.nameselect-built').find('label').prop('for', inputId + 'Built_' + index);
+                    template.find('.nameselect-built').find('input').prop('id', inputId + 'Built_' + index).prop('name', criteria.key + '[' + index + '][built]');
                     loadCriteriaData(criteria.key, template.find('select'), null, criteria.semitic !== true);
                     break;
                 case 'text':

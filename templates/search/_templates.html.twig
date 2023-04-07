@@ -51,7 +51,7 @@
                 <option value></option>
             </select>
         </div>
-        <div class="col-sm-2 select-strict d-flex flex-column justify-content-around align-items-center">
+        <div class="col-sm-2 select-strict d-flex flex-column justify-content-around align-items-center text-small">
             <div class="custom-control custom-switch">
                 <input type="checkbox" class="custom-control-input" id="name_mode" name="name_mode" value="all">
                 <label class="custom-control-label" for="name_mode">{{ 'generic.fields.require_all'|trans }}</label>
@@ -67,18 +67,26 @@
                 <option value></option>
             </select>
         </div>
-        <div class="col-sm-2 d-flex flex-column justify-content-around align-items-center">
+        <div class="col-sm-2 d-flex flex-column justify-content-around align-items-center text-small">
             <div class="custom-control custom-switch select-strict">
                 <input type="checkbox" class="custom-control-input" id="name_mode" name="name_mode" value="all">
                 <label class="custom-control-label" for="names_mode">{{ 'generic.fields.require_all'|trans }}</label>
             </div>
-            <div class="custom-control custom-switch nameselect-indirect">
-                <input type="checkbox" class="custom-control-input" id="name_indirect" name="name_indirect"
-                    value="indirect">
-                <label class="custom-control-label" for="name_indirect">{{ ('element.fields.theonymes')|trans
+            <div class="custom-control custom-switch nameselect-heteronym">
+                <input type="checkbox" class="custom-control-input" id="name_heteronym" name="name_heteronym"
+                    value="heteronym">
+                <label class="custom-control-label" for="name_heteronym">{{
+                    ('element.fields.theonymes_search_heteronym')|trans
                     }}</label>
                 <i class="fas fa-question-circle" data-toggle="tooltip" data-placement="top" data-html="true"
-                    title="{{ 'search.help.theonymes'|trans|raw }}"></i>
+                    title="{{ 'search.help.theonymes_heteronym'|trans|raw }}"></i>
+            </div>
+            <div class="custom-control custom-switch nameselect-built">
+                <input type="checkbox" class="custom-control-input" id="name_built" name="name_built" value="built">
+                <label class="custom-control-label" for="name_built">{{ ('element.fields.theonymes_search_built')|trans
+                    }}</label>
+                <i class="fas fa-question-circle" data-toggle="tooltip" data-placement="top" data-html="true"
+                    title="{{ 'search.help.theonymes_built'|trans|raw }}"></i>
             </div>
         </div>
         {{ removeCriteriaButton }}
@@ -91,7 +99,7 @@
                 <option value></option>
             </select>
         </div>
-        <div class="col-sm-2 d-flex flex-column justify-content-around align-items-center">
+        <div class="col-sm-2 d-flex flex-column justify-content-around align-items-center text-small">
             <div class="custom-control custom-switch select-strict">
                 <input type="checkbox" class="custom-control-input" id="name_mode" name="name_mode" value="all">
                 <label class="custom-control-label" for="name_mode">{{ 'generic.fields.require_all'|trans }}</label>
@@ -110,7 +118,7 @@
         <div class="col">
             <input class="form-control flex-grow-1" type="text" name="name" id="inputNameText" />
         </div>
-        <div class="col-sm-2 text-strict d-flex flex-column justify-content-around align-items-center">
+        <div class="col-sm-2 text-strict d-flex flex-column justify-content-around align-items-center text-small">
             <div class="custom-control custom-switch">
                 <input type="checkbox" class="custom-control-input" id="name_mode" name="name_mode" value="strict">
                 <label class="custom-control-label" for="name_mode">{{ ('generic.fields.strict')|trans }}</label>
@@ -169,7 +177,7 @@
             <input type="number" step="1" class="form-control" name="datation[#X#][ante_quem]" id="inputAnteQuem#X#"
                 placeholder="{{('datation.fields.ante_quem')|trans}}">
         </div>
-        <div class="col-sm-2 d-flex flex-column justify-content-around align-items-center">
+        <div class="col-sm-2 d-flex flex-column justify-content-around align-items-center text-small">
             <div class="custom-control custom-switch">
                 <input type="checkbox" class="custom-control-input" id="inputDatationExact#X#"
                     name="datation[#X#][exact]" value="datation_exact" checked>
@@ -191,7 +199,7 @@
                 </label>
             </div>
         </div>
-        <div class="col-sm-2 d-flex flex-column justify-content-around align-items-center">
+        <div class="col-sm-2 d-flex flex-column justify-content-around align-items-center text-small">
             <div class="custom-control custom-switch mr-2">
                 <input type="checkbox" class="custom-control-input" id="inputPoetry#X#"
                     name="prosePoetry[#X#][values][]" value="poesie">
@@ -214,7 +222,7 @@
                 </label>
             </div>
         </div>
-        <div class="col-sm-2 d-flex flex-column justify-content-around align-items-center">
+        <div class="col-sm-2 d-flex flex-column justify-content-around align-items-center text-small">
             <div class="custom-control custom-switch mr-2">
                 <input type="checkbox" class="custom-control-input" id="inputRealNo#X#"
                     name="locationReal[#X#][values][]" value="no">
@@ -237,7 +245,7 @@
                 </label>
             </div>
         </div>
-        <div class="col-sm-2 d-flex flex-column justify-content-around align-items-center">
+        <div class="col-sm-2 d-flex flex-column justify-content-around align-items-center text-small">
             <div class="custom-control custom-switch mr-2">
                 <input type="checkbox" class="custom-control-input" id="inputIconographyNo#X#"
                     name="iconography[#X#][values][]" value="no">

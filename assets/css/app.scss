@@ -11,6 +11,14 @@ $map-grey: #434343;
 body {
     background-color: lightgray;
 
+    .text-small {
+        font-size: 80%;
+
+        .custom-control {
+            min-height: 0;
+        }
+    }
+
     &.login-page {
         background-image: url('../images/bkg-ercmap.jpg');
 
@@ -76,7 +84,7 @@ body {
                 background-color: $jumbotron-bg;
                 @include border-radius($border-radius-lg);
 
-                &:hover{
+                &:hover {
                     background-color: $map-yellow;
                 }
 
@@ -123,6 +131,7 @@ body {
             th:not(.sorttable_sorted):not(.sorttable_sorted_reverse):not(.sorttable_nosort):after {
                 content: " \25B4\25BE"
             }
+
             th {
                 cursor: pointer;
             }
@@ -178,9 +187,11 @@ body {
     text-decoration: none;
     transition: opacity 0.2s ease-out;
     opacity: 0;
+
     &:hover {
         background: #e9ebec;
     }
+
     &.show {
         opacity: 1;
     }
@@ -193,20 +204,21 @@ body {
     border: 1px solid $map-yellow;
     border-radius: 10px;
 
-    & > div.row {
+    &>div.row {
         @extend .py-2;
         border-bottom: 1px solid $map-yellow;
-        &:last-child{
+
+        &:last-child {
             border-bottom: none;
         }
 
-        & > div.label {
+        &>div.label {
             height: 100%;
             font-weight: bolder;
             border-right: 1px dotted $map-yellow;
         }
 
-        &:first-child > div.label {
+        &:first-child>div.label {
             line-height: 50px;
         }
     }
@@ -217,14 +229,17 @@ body {
         }
     }
 
-    .formula-operators, .formula-elements {
+    .formula-operators,
+    .formula-elements {
         .btn {
             @extend .btn-sm;
         }
     }
 
     .formula-status {
-        i.fa, i.fas {
+
+        i.fa,
+        i.fas {
             font-size: 2em;
 
             @include media-breakpoint-up(xl) {
@@ -235,9 +250,17 @@ body {
 }
 
 #search-panel {
-    .nav-pills, .tab-content {
+
+    .nav-pills,
+    .tab-content {
         border: 1px solid $map-yellow;
         border-radius: 5px;
+    }
+}
+
+#advanced-criteria {
+    .list-group-item {
+        padding: 0.5rem 1rem;
     }
 }
 
@@ -245,11 +268,12 @@ body {
     border-collapse: collapse !important;
 
     tbody {
-        tr{
+        tr {
             &:hover {
                 border: 3px solid $map-yellow !important;
                 background-color: #cabb9c !important;
             }
+
             td hr {
                 margin-top: initial !important;
                 margin-bottom: initial !important;
@@ -278,10 +302,22 @@ body {
     background-color: $map-grey !important;
 }
 
-table { page-break-inside:auto }
-tr    { page-break-inside:avoid; page-break-after:auto }
-thead { display:table-header-group }
-tfoot { display:table-footer-group }
+table {
+    page-break-inside: auto
+}
+
+tr {
+    page-break-inside: avoid;
+    page-break-after: auto
+}
+
+thead {
+    display: table-header-group
+}
+
+tfoot {
+    display: table-footer-group
+}
 
 #total-checked-wrapper {
     bottom: 5px;
@@ -293,8 +329,9 @@ tfoot { display:table-footer-group }
 }
 
 .bg-success-faded {
-    background-color: rgba(40,167,69,0.4);
+    background-color: rgba(40, 167, 69, 0.4);
 }
+
 .bg-warning-faded {
-    background-color: rgba(255,193,7,0.4)
+    background-color: rgba(255, 193, 7, 0.4)
 }

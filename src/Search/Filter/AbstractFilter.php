@@ -86,18 +86,26 @@ abstract class AbstractFilter
         return [];
     }
 
-    public static function resolveElements(IndexRecherche $e, array $sortedData, bool $allowIndirect = false): array
+    public static function resolveElements(IndexRecherche $e, array $sortedData, bool $includeHeteronyms = false, bool $includeBuiltOn = false): array
     {
         $eData = $e->getData();
         if ($e->getEntite() === 'Element') {
             $indirect = [];
-            if ($allowIndirect) {
-                $indirect = array_filter($sortedData['elements'], function ($element) use ($eData) {
-                    return in_array($element->getId(), array_merge(
-                        $eData['theonymesImplicites'] ?? [],
-                        $eData['theonymesConstruits'] ?? []
-                    ));
-                });
+            if ($includeHeteronyms) {
+                $indirect = array_merge(
+                    $indirect,
+                    array_filter($sortedData['elements'], function ($element) use ($eData) {
+                        return in_array($element->getId(), $eData['theonymesImplicites'] ?? []);
+                    })
+                );
+            }
+            if ($includeBuiltOn) {
+                $indirect = array_merge(
+                    $indirect,
+                    array_filter($sortedData['elements'], function ($element) use ($eData) {
+                        return in_array($element->getId(), $eData['theonymesConstruits'] ?? []);
+                    })
+                );
             }
             // Return itself
             return array_merge([$e], $indirect);
@@ -106,10 +114,10 @@ abstract class AbstractFilter
             return array_filter(
                 array_reduce(
                     ($eData['elementIds'] ?? []),
-                    function ($result, $elementId) use ($sortedData, $allowIndirect) {
+                    function ($result, $elementId) use ($sortedData, $includeHeteronyms, $includeBuiltOn) {
                         $element = $sortedData['elements'][$elementId] ?? null;
                         if ($element !== null) {
-                            return array_merge($result, self::resolveElements($element, $sortedData, $allowIndirect));
+                            return array_merge($result, self::resolveElements($element, $sortedData, $includeHeteronyms, $includeBuiltOn));
                         }
                         return $result;
                     },
@@ -120,8 +128,8 @@ abstract class AbstractFilter
             // Resolve all attestations, then call resolveElements on each of them
             return array_reduce(
                 self::resolveAttestations($e, $sortedData),
-                function ($result, $attestation) use ($sortedData, $allowIndirect) {
-                    return array_merge($result, self::resolveElements($attestation, $sortedData, $allowIndirect));
+                function ($result, $attestation) use ($sortedData, $includeHeteronyms, $includeBuiltOn) {
+                    return array_merge($result, self::resolveElements($attestation, $sortedData, $includeHeteronyms, $includeBuiltOn));
                 },
                 []
             );

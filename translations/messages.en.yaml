@@ -331,7 +331,8 @@ element:
         theonyme_implicite_n: "Heteronymous/By-Form Theonym #"
         theonymes_construits: "Built on "
         theonyme_construit_n: "Built on #"
-        theonymes: "Heteronym & Built on"
+        theonymes_search_heteronym: "Heteronym"
+        theonymes_search_built: "Built on"
         a_reference: "Reference ?"
         element_biblio: "Reference"
         element_biblio_n: "Reference #"
@@ -608,6 +609,8 @@ search:
         source_id: "Source ID"
         attestation_id: "Testimony ID"
         query: "SQL Query"
+        heteronym: "(+ Heteronyms)"
+        built: "(+ Built on)"
     element_labels:
         added: "Added elements"
         add_new: "Add a new element"
@@ -639,7 +642,8 @@ search:
         invalid_criteria_file: "Invalid criteria file"
         nothing_to_export: "No data to"
     help:
-        theonymes: "Includes in the search criterium the selected elements' alternative forms (heteronyms), as well as other elements built on them"
+        theonymes_heteronym: "Includes in the search criterium the selected elements' alternative forms (heteronyms)"
+        theonymes_built: "Includes in the search criterium the other elements built on selected elements'"
         direct_locations: >
             <u>Directs</u> locations are : <br/>
              - <strong>Source :</strong> Original location and Discovery location<br/>

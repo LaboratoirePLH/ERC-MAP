@@ -33,7 +33,7 @@
                     {% endfor %}
                 </div>
             {% elseif mode == 'advanced' %}
-                <div class="d-flex flex-sm-wrap justify-content-around">
+                <div class="d-flex flex-sm-wrap justify-content-around" id="advanced-criteria">
                     {% for key, value in criteria %}
                         <div class="card">
                             <ul class="list-group list-group-flush">
@@ -42,7 +42,7 @@
                                 </li>
                                 {% for subvalue in value %}
                                     {% if subvalue is iterable and subvalue.values is defined %}
-                                        <li class="list-group-item {{ subvalue.type|default('inclusive') == 'inclusive' ? 'bg-success-faded' : 'bg-warning-faded' }}">
+                                        <li class="list-group-item text-small {{ subvalue.type|default('inclusive') == 'inclusive' ? 'bg-success-faded' : 'bg-warning-faded' }}">
                                             <strong>
                                                 <em>
                                                     {{ loop.index }}
@@ -51,6 +51,12 @@
                                                     {% endif %}
                                                     {% if (subvalue.direct|default('')) == "direct" %}
                                                         {{ 'search.criteria_labels.direct'|trans }}
+                                                    {% endif %}
+                                                    {% if (subvalue.heteronym|default('')) == "heteronym" %}
+                                                        {{ 'search.criteria_labels.heteronym'|trans }}
+                                                    {% endif %}
+                                                    {% if (subvalue.built|default('')) == "built" %}
+                                                        {{ 'search.criteria_labels.built'|trans }}
                                                     {% endif %}
                                                 </em>
                                             </strong>

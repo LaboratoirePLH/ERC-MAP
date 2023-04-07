@@ -13,6 +13,11 @@ class Advanced extends AbstractFilterSet
         $resultsType = $criteria['resultsType'];
         unset($criteria['resultsType']);
 
+        // Only examine data of the requested type
+        $this->data = array_filter($this->data, function ($e) use ($resultsType) {
+            return strtolower($e->getEntite()) === $resultsType;
+        });
+
         // Ensure comments criteria is at the end to improve performance
         if (array_key_exists('comments', $criteria)) {
             $commentsCriteria = $criteria['comments'];
@@ -30,14 +35,7 @@ class Advanced extends AbstractFilterSet
                 );
             }
         }
-
-        foreach ($this->data as $e) {
-
-            // Only examine data of the requested type
-            if (strtolower($e->getEntite()) != $resultsType) {
-                continue;
-            }
-
+        return array_filter($this->data, function ($e) use ($criteria) {
             foreach ($criteria as $criteriaName => $criteriaValues) {
                 // Compute fully qualified classname from criteria name
                 $cls = '\\App\\Search\\Filter\\' . ucfirst($criteriaName);
@@ -74,20 +72,21 @@ class Advanced extends AbstractFilterSet
                 if (count($inclusiveCriteriaValues)) {
                     $inclusiveCriteriaAccepted = $cls::filter($e, $inclusiveCriteriaValues, $this->sortedData);
                     if (!$inclusiveCriteriaAccepted) {
-                        continue 2; // Ignore current record, because it did not match the inclusive filter
+                        // continue 2; // Ignore current record, because it did not match the inclusive filter
+                        return false;
                     }
                 }
                 if (count($exclusiveCriteriaValues)) {
                     $exclusiveCriteriaAccepted = $cls::filter($e, $exclusiveCriteriaValues, $this->sortedData);
                     if ($exclusiveCriteriaAccepted) {
-                        continue 2; // Ignore current record, because it did match the exclusive filter
+                        // continue 2; // Ignore current record, because it did match the exclusive filter
+                        return false;
                     }
                 }
             }
 
             // We only get here if all criteria matched
-            $filtered[] = $e;
-        }
-        return $filtered;
+            return true;
+        });
     }
 }

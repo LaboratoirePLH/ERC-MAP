@@ -6,16 +6,19 @@ class Guided extends AbstractFilterSet
 {
     public function filter(array $criteria): array
     {
-        $filtered = [];
+        // Only examine data of the requested type
+        $this->data = array_filter($this->data, function ($e) {
+            return strtolower($e->getEntite()) !== 'element';
+        });
 
-        foreach ($this->data as $e) {
+        $filtered = array_filter($this->data, function ($e) use ($criteria) {
             if (array_key_exists('names', $criteria) && !empty($criteria['names'])) {
                 $crit = [[
                     "values" => $criteria['names'],
                     "mode"   => ($criteria['names_mode'] ?? "one")
                 ]];
                 if (!\App\Search\Filter\Names::filter($e, $crit, $this->sortedData)) {
-                    continue;
+                    return false;
                 }
             }
             if (array_key_exists('languages', $criteria) && !empty($criteria['languages'])) {
@@ -24,7 +27,7 @@ class Guided extends AbstractFilterSet
                     "mode"   => ($criteria['languages_mode'] ?? "one")
                 ]];
                 if (!\App\Search\Filter\Languages::filter($e, $crit, $this->sortedData)) {
-                    continue;
+                    return false;
                 }
             }
             if (array_key_exists('datation', $criteria) && (
@@ -32,7 +35,7 @@ class Guided extends AbstractFilterSet
                 || (array_key_exists('ante_quem', $criteria['datation']) && is_numeric($criteria['datation']['ante_quem'])))) {
                 // We need at least one numeric value (empty field will set empty string) to filter by datation
                 if (!\App\Search\Filter\Datation::filter($e, [$criteria['datation']], $this->sortedData)) {
-                    continue;
+                    return false;
                 }
             }
             if (array_key_exists('locations', $criteria) && !empty($criteria['locations'])) {
@@ -41,7 +44,7 @@ class Guided extends AbstractFilterSet
                     "mode"   => "one"
                 ]];
                 if (!\App\Search\Filter\Locations::filter($e, $crit, $this->sortedData)) {
-                    continue;
+                    return false;
                 }
             }
             if (array_key_exists('sourceTypes', $criteria) && !empty($criteria['sourceTypes'])) {
@@ -50,7 +53,7 @@ class Guided extends AbstractFilterSet
                     "mode"   => "one"
                 ]];
                 if (!\App\Search\Filter\SourceTypes::filter($e, $crit, $this->sortedData)) {
-                    continue;
+                    return false;
                 }
             }
             if (array_key_exists('agents', $criteria) && !empty($criteria['agents'])) {
@@ -59,7 +62,7 @@ class Guided extends AbstractFilterSet
                     "mode"   => "one"
                 ]];
                 if (!\App\Search\Filter\Agentivities::filter($e, $crit, $this->sortedData)) {
-                    continue;
+                    return false;
                 }
             }
             if (array_key_exists('freeText', $criteria) && !empty($criteria['freeText'])) {
@@ -68,12 +71,13 @@ class Guided extends AbstractFilterSet
                     "mode"  => "loose"
                 ]];
                 if (!\App\Search\Filter\FreeText::filter($e, $crit, $this->sortedData)) {
-                    continue;
+                    return false;
                 }
             }
 
-            $filtered[] = $e;
-        }
+            return true;
+        });
+
         usort($filtered, function ($a, $b) {
             if ($a->getEntite() == "Source" && $b->getEntite() == "Attestation") {
                 return -1;

@@ -39,7 +39,7 @@ class RechercheEnregistree extends AbstractEntity
         return $this->getCreateur()->getId();
     }
 
-    public function setCreateur(Chercheur $createur): self
+    public function setCreateur(?Chercheur $createur = null): self
     {
         $this->createur = $createur;
         return $this;

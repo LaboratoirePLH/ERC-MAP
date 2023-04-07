@@ -34,7 +34,5 @@ class ProsePoetry extends AbstractFilter
             }
             return false;
         }, $criteria)));
-
-        return false;
     }
 }

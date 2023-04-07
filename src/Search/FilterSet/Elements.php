@@ -8,19 +8,20 @@ class Elements extends AbstractFilterSet
     {
         $filtered = [];
 
-        foreach ($this->data as $e) {
-            // Only examine Attestation data
-            if (strtolower($e->getEntite()) != "attestation") {
-                continue;
-            }
+        // Only examine data of the requested type
+        $this->data = array_filter($this->data, function ($e) {
+            return strtolower($e->getEntite()) === 'attestation';
+        });
 
+
+        return array_filter($this->data, function ($e) use ($criteria) {
             if (array_key_exists('languages', $criteria) && !empty($criteria['languages'])) {
                 $crit = [[
                     "values" => $criteria['languages'],
                     "mode"   => ($criteria['languages_mode'] ?? "one")
                 ]];
                 if (!\App\Search\Filter\Languages::filter($e, $crit, $this->sortedData)) {
-                    continue;
+                    return false;
                 }
             }
             if (array_key_exists('datation', $criteria) && (
@@ -28,7 +29,7 @@ class Elements extends AbstractFilterSet
                 || (array_key_exists('ante_quem', $criteria['datation']) && is_numeric($criteria['datation']['ante_quem'])))) {
                 // We need at least one numeric value (empty field will set empty string) to filter by datation
                 if (!\App\Search\Filter\Datation::filter($e, [$criteria['datation']], $this->sortedData)) {
-                    continue;
+                    return false;
                 }
             }
             if (array_key_exists('locations', $criteria) && !empty($criteria['locations'])) {
@@ -37,7 +38,7 @@ class Elements extends AbstractFilterSet
                     "mode"   => "one"
                 ]];
                 if (!\App\Search\Filter\Locations::filter($e, $crit, $this->sortedData)) {
-                    continue;
+                    return false;
                 }
             }
             if (array_key_exists('sourceTypes', $criteria) && !empty($criteria['sourceTypes'])) {
@@ -46,22 +47,22 @@ class Elements extends AbstractFilterSet
                     "mode"   => "one"
                 ]];
                 if (!\App\Search\Filter\SourceTypes::filter($e, $crit, $this->sortedData)) {
-                    continue;
+                    return false;
                 }
             }
             if (array_key_exists('element_count', $criteria)) {
                 if (!\App\Search\Filter\ElementCount::filter($e, [$criteria['element_count']], $this->sortedData)) {
-                    continue;
+                    return false;
                 }
             }
             if (array_key_exists('element_position', $criteria)) {
                 if (!\App\Search\Filter\ElementPosition::filter($e, $criteria['element_position'], $this->sortedData)) {
-                    continue;
+                    return false;
                 }
             }
             if (array_key_exists('divine_powers_count', $criteria)) {
                 if (!\App\Search\Filter\DivinePowersCount::filter($e, [$criteria['divine_powers_count']], $this->sortedData)) {
-                    continue;
+                    return false;
                 }
             }
             if (array_key_exists('formule', $criteria)) {
@@ -70,13 +71,11 @@ class Elements extends AbstractFilterSet
                     "mode"   => ($criteria['formules_mode'] ?? "one")
                 ]];
                 if (!\App\Search\Filter\Formula::filter($e, $crit, $this->sortedData)) {
-                    continue;
+                    return false;
                 }
             }
 
-            $filtered[] = $e;
-        }
-
-        return $filtered;
+            return true;
+        });
     }
 }

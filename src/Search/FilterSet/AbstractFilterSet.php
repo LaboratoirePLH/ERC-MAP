@@ -20,9 +20,7 @@ abstract class AbstractFilterSet
             'attestations' => [],
             'elements'     => [],
         ];
-        $sources = [];
-        $attestations = [];
-        $elements = [];
+
         foreach ($data as $e) {
             $targetArray = strtolower($e->getEntite()) . 's';
             $this->sortedData[$targetArray][$e->getId()] = $e;

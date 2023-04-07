@@ -9,8 +9,7 @@ use App\Entity\Occasion;
 use App\Entity\SousRegion;
 use App\Entity\TypeSource;
 use App\Entity\TypeSupport;
-
-
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,12 +17,12 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class DataController extends AbstractController
 {
-    private function _fetchDataForCategory($entityClass, $parentField, $parentValue, $locale)
+    private function _fetchDataForCategory($entityClass, $parentField, $parentValue, $locale, ManagerRegistry $doctrine)
     {
         if (empty($parentValue)) {
             return new JsonResponse(['message' => 'Missing parameters'], 400);
         }
-        $repo = $this->getDoctrine()->getManager()->getRepository($entityClass);
+        $repo = $doctrine->getRepository($entityClass);
         $rows = $repo->createQueryBuilder("e")
             ->where("e.$parentField = :id")
             ->setParameter("id", $parentValue)
@@ -46,87 +45,93 @@ class DataController extends AbstractController
     /**
      * @Route("/data/materiau", name="data_materiau")
      */
-    public function materiau(Request $request)
+    public function materiau(Request $request, ManagerRegistry $doctrine)
     {
         return $this->_fetchDataForCategory(
             Materiau::class,
             'categorieMateriau',
             $request->query->get("parentId"),
-            $request->getLocale()
+            $request->getLocale(),
+            $doctrine
         );
     }
 
     /**
      * @Route("/data/materiel", name="data_materiel")
      */
-    public function materiel(Request $request)
+    public function materiel(Request $request, ManagerRegistry $doctrine)
     {
         return $this->_fetchDataForCategory(
             Materiel::class,
             'categorieMateriel',
             $request->query->get("parentId"),
-            $request->getLocale()
+            $request->getLocale(),
+            $doctrine
         );
     }
 
     /**
      * @Route("/data/type_occasion", name="data_type_occasion")
      */
-    public function typeOccasion(Request $request)
+    public function typeOccasion(Request $request, ManagerRegistry $doctrine)
     {
         return $this->_fetchDataForCategory(
             Occasion::class,
             'categorieOccasion',
             $request->query->get("parentId"),
-            $request->getLocale()
+            $request->getLocale(),
+            $doctrine
         );
     }
 
     /**
      * @Route("/data/type_source", name="data_type_source")
      */
-    public function typeSource(Request $request)
+    public function typeSource(Request $request, ManagerRegistry $doctrine)
     {
         return $this->_fetchDataForCategory(
             TypeSource::class,
             'categorieSource',
             $request->query->get("parentId"),
-            $request->getLocale()
+            $request->getLocale(),
+            $doctrine
         );
     }
 
     /**
      * @Route("/data/type_support", name="data_type_support")
      */
-    public function typeSupport(Request $request)
+    public function typeSupport(Request $request, ManagerRegistry $doctrine)
     {
         return $this->_fetchDataForCategory(
             TypeSupport::class,
             'categorieSupport',
             $request->query->get("parentId"),
-            $request->getLocale()
+            $request->getLocale(),
+            $doctrine
         );
     }
 
     /**
      * @Route("/data/sous_region", name="data_sous_region")
      */
-    public function sousRegion(Request $request)
+    public function sousRegion(Request $request, ManagerRegistry $doctrine)
     {
         return $this->_fetchDataForCategory(
             SousRegion::class,
             'grandeRegion',
             $request->query->get("parentId"),
-            $request->getLocale()
+            $request->getLocale(),
+            $doctrine
         );
     }
 
     /**
      * @Route("/data/localisation/{id}", name="data_localisation")
      */
-    public function localisation($id, Request $request)
+    public function localisation($id, Request $request, ManagerRegistry $doctrine)
     {
-        $repo = $this->getDoctrine()->getManager()->getRepository(Localisation::class);
+        $repo = $doctrine->getRepository(Localisation::class);
         $localisation = $repo->find($id);
         if ($localisation === null) {
             return new JsonResponse(['message' => 'Localisation not found'], 404);
@@ -137,9 +142,9 @@ class DataController extends AbstractController
     /**
      * @Route("/data/city_search", name="city_search")
      */
-    public function citySearch(Request $request)
+    public function citySearch(Request $request, ManagerRegistry $doctrine)
     {
-        $repo = $this->getDoctrine()->getManager()->getRepository(Localisation::class);
+        $repo = $doctrine->getRepository(Localisation::class);
         $query = $repo->createQueryBuilder("e");
 
         if ($request->query->has('city')) {

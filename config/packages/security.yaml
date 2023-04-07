@@ -1,31 +1,35 @@
 security:
-    encoders:
+    password_hashers:
         App\Entity\Chercheur:
             algorithm: bcrypt
+
+    enable_authenticator_manager: true
+
     providers:
         user:
             entity:
                 class: App\Entity\Chercheur
                 property: username
+
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
-            anonymous: true
+            lazy: true
             provider: user
             form_login:
                 default_target_path: home
             logout:
-                path:   /logout
+                path: /logout
                 target: /login
-            guard:
-                authenticators:
-                    - App\Security\LoginFormAuthenticator
+            custom_authenticator:
+                - App\Security\LoginFormAuthenticator
             remember_me:
-                secret:   '%kernel.secret%'
+                secret: "%kernel.secret%"
                 lifetime: 604800 # 1 week in seconds
-                path:     /
+                path: /
+            entry_point: form_login
 
             # activate different ways to authenticate
 
@@ -38,12 +42,12 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        - { path: ^/admin,              roles: ROLE_ADMIN }
-        - { path: ^/maintenance,        roles: ROLE_ADMIN }
+        - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/maintenance, roles: ROLE_ADMIN }
         - { path: ^/forgotten_password, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/reset_password,     roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/login,              roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/language,           roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/register,           roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/inactive_account,   roles: [ROLE_UNVERIFIED_USER, ROLE_USER] }
-        - { path: ^/,                   roles: ROLE_USER }
+        - { path: ^/reset_password, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/language, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/inactive_account, roles: [ROLE_UNVERIFIED_USER, ROLE_USER] }
+        - { path: ^/, roles: ROLE_USER }

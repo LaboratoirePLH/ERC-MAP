@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -23,7 +24,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     message="username_duplicate"
  * )
  */
-class Chercheur extends AbstractEntity implements UserInterface
+class Chercheur extends AbstractEntity implements UserInterface, PasswordAuthenticatedUserInterface
 {
     use Traits\EntityId;
 
@@ -261,6 +262,16 @@ class Chercheur extends AbstractEntity implements UserInterface
             $roles[] = 'ROLE_CONTRIBUTOR';
         }
         return $roles;
+    }
+
+    /**
+     * A visual identifier that represents this user.
+     *
+     * @see UserInterface
+     */
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->username;
     }
 
     /**

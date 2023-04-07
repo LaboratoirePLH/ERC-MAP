@@ -6,7 +6,7 @@ use App\Entity\Biblio;
 use App\Entity\IndexRecherche;
 use App\Entity\VerrouEntite;
 use App\Form\BiblioType;
-
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,9 +27,9 @@ class BibliographyController extends AbstractController
     /**
      * @Route("/bibliography", name="bibliography_list")
      */
-    public function index()
+    public function index(ManagerRegistry $doctrine)
     {
-        $biblios = $this->getDoctrine()
+        $biblios = $doctrine
             ->getRepository(Biblio::class)
             ->findAll();
         return $this->render('bibliography/index.html.twig', [
@@ -45,13 +45,13 @@ class BibliographyController extends AbstractController
     /**
      * @Route("/bibliography/create", name="bibliography_create")
      */
-    public function create(Request $request, TranslatorInterface $translator)
+    public function create(Request $request, TranslatorInterface $translator, ManagerRegistry $doctrine)
     {
         $this->denyAccessUnlessGranted("ROLE_CONTRIBUTOR");
 
         $biblio = new Biblio();
 
-        $form   = $this->get('form.factory')->create(BiblioType::class, $biblio, [
+        $form   = $this->createForm(BiblioType::class, $biblio, [
             'action'       => 'create',
             'locale'       => $request->getLocale(),
             'translations' => [
@@ -61,7 +61,7 @@ class BibliographyController extends AbstractController
         ]);
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
-            $em = $this->getDoctrine()->getManager();
+            $em = $doctrine->getManager();
             $em->persist($biblio);
             $em->flush();
 
@@ -89,9 +89,9 @@ class BibliographyController extends AbstractController
     /**
      * @Route("/bibliography/{id}", name="bibliography_show")
      */
-    public function show($id, Request $request, TranslatorInterface $translator)
+    public function show($id, Request $request, TranslatorInterface $translator, ManagerRegistry $doctrine)
     {
-        $bibliography = $this->getDoctrine()
+        $bibliography = $doctrine
             ->getRepository(Biblio::class)
             ->find(intval($id));
         if (is_null($bibliography)) {
@@ -102,7 +102,7 @@ class BibliographyController extends AbstractController
             return $this->redirectToRoute('bibliography_list');
         }
 
-        $valid_sources = $this->getDoctrine()->getRepository(IndexRecherche::class)->getEntityIds('Source', !$this->isGranted('ROLE_CONTRIBUTOR'));
+        $valid_sources = $doctrine->getRepository(IndexRecherche::class)->getEntityIds('Source', !$this->isGranted('ROLE_CONTRIBUTOR'));
 
         return $this->render('bibliography/show.html.twig', [
             'controller_name' => 'BibliographyController',
@@ -120,12 +120,12 @@ class BibliographyController extends AbstractController
     /**
      * @Route("/bibliography/{id}/edit", name="bibliography_edit")
      */
-    public function edit($id, Request $request, TranslatorInterface $translator)
+    public function edit($id, Request $request, TranslatorInterface $translator, ManagerRegistry $doctrine)
     {
         $this->denyAccessUnlessGranted("ROLE_CONTRIBUTOR");
 
-        $user = $this->get('security.token_storage')->getToken()->getUser();
-        $biblio = $this->getDoctrine()
+        $user = $this->getUser();
+        $biblio = $doctrine
             ->getRepository(Biblio::class)
             ->find(intval($id));
         if (is_null($biblio)) {
@@ -136,7 +136,7 @@ class BibliographyController extends AbstractController
             return $this->redirectToRoute('bibliography_list');
         }
         if ($biblio->getVerrou() === null) {
-            $verrou = $this->getDoctrine()->getRepository(VerrouEntite::class)->create($biblio, $user, $this->dureeVerrou);
+            $verrou = $doctrine->getRepository(VerrouEntite::class)->create($biblio, $user, $this->dureeVerrou);
         } else if (!$biblio->getVerrou()->isWritable($user)) {
             $request->getSession()->getFlashBag()->add(
                 'error',
@@ -152,7 +152,7 @@ class BibliographyController extends AbstractController
             return $this->redirectToRoute('bibliography_list');
         }
 
-        $form   = $this->get('form.factory')->create(BiblioType::class, $biblio, [
+        $form   = $this->createForm(BiblioType::class, $biblio, [
             'action'       => 'edit',
             'locale'       => $request->getLocale(),
             'translations' => [
@@ -162,9 +162,9 @@ class BibliographyController extends AbstractController
         ]);
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
-            $em = $this->getDoctrine()->getManager();
+            $em = $doctrine->getManager();
             $em->persist($biblio);
-            $this->getDoctrine()->getRepository(VerrouEntite::class)->remove($biblio->getVerrou());
+            $doctrine->getRepository(VerrouEntite::class)->remove($biblio->getVerrou());
             $em->flush();
 
             // Message de confirmation
@@ -192,17 +192,17 @@ class BibliographyController extends AbstractController
     /**
      * @Route("/biblio/{id}/canceledit", name="biblio_canceledit")
      */
-    public function canceledit($id, Request $request)
+    public function canceledit($id, Request $request, ManagerRegistry $doctrine)
     {
         $this->denyAccessUnlessGranted("ROLE_CONTRIBUTOR");
 
-        $user = $this->get('security.token_storage')->getToken()->getUser();
-        $biblio = $this->getDoctrine()
+        $user = $this->getUser();
+        $biblio = $doctrine
             ->getRepository(Biblio::class)
             ->find(intval($id));
-        $verrou = $this->getDoctrine()->getRepository(VerrouEntite::class)->fetch($biblio);
+        $verrou = $doctrine->getRepository(VerrouEntite::class)->fetch($biblio);
         if ($verrou !== null && $verrou->isWritable($user)) {
-            $this->getDoctrine()->getRepository(VerrouEntite::class)->remove($verrou);
+            $doctrine->getRepository(VerrouEntite::class)->remove($verrou);
         }
         return $this->redirectToRoute('bibliography_list');
     }
@@ -210,21 +210,21 @@ class BibliographyController extends AbstractController
     /**
      * @Route("/bibliography/{id}/delete", name="bibliography_delete")
      */
-    public function delete($id, Request $request, TranslatorInterface $translator)
+    public function delete($id, Request $request, TranslatorInterface $translator, ManagerRegistry $doctrine)
     {
         $this->denyAccessUnlessGranted("ROLE_CONTRIBUTOR");
 
         $submittedToken = $request->request->get('token');
-        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $user = $this->getUser();
 
         if ($this->isCsrfTokenValid('delete_biblio', $submittedToken)) {
-            $repository = $this->getDoctrine()->getRepository(Biblio::class);
+            $repository = $doctrine->getRepository(Biblio::class);
             $biblio = $repository->find(intval($id));
             if ($biblio instanceof Biblio) {
                 if ($this->isGranted('ROLE_ADMIN')) {
                     $verrou = $biblio->getVerrou();
                     if (!$verrou || $verrou->isWritable($user)) {
-                        $em = $this->getDoctrine()->getManager();
+                        $em = $doctrine->getManager();
                         $em->remove($biblio);
                         $em->flush();
                         $request->getSession()->getFlashBag()->add('success', 'biblio.messages.deleted');

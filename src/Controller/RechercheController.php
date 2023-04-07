@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\RechercheEnregistree;
 use App\Entity\RequeteEnregistree;
 use App\Search\Criteria;
+use Doctrine\Persistence\ManagerRegistry;
 use PDO;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
@@ -20,26 +21,26 @@ class RechercheController extends AbstractController
     /**
      * @Route("/search", name="search")
      */
-    public function index(Request $request, TranslatorInterface $translator, Criteria $searchCriteria)
+    public function index(Request $request, TranslatorInterface $translator, Criteria $searchCriteria, ManagerRegistry $doctrine)
     {
         $locale = $request->getLocale();
 
         // Compute index status
-        $indexStatus = $this->getDoctrine()
+        $indexStatus = $doctrine
             ->getRepository(\App\Entity\IndexRecherche::class)
             ->getStatus();
 
         $populate_mode = $request->request->get('populate_mode', '');
         $populate_criteria = urldecode($request->request->get('populate_criteria', ''));
 
-        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $user = $this->getUser();
 
         $queries = $this->isGranted('ROLE_USER')
-            ? ($this->getDoctrine()
+            ? ($doctrine
                 ->getRepository(RechercheEnregistree::class)
                 ->findAllByChercheur($user))
             : [];
-        $sql_queries = $this->getDoctrine()
+        $sql_queries = $doctrine
             ->getRepository(RequeteEnregistree::class)
             ->findAll();
 
@@ -79,7 +80,7 @@ class RechercheController extends AbstractController
     /**
      * @Route("/search/simple", name="search_simple")
      */
-    public function simpleSearch(Request $request, Criteria $searchCriteria)
+    public function simpleSearch(Request $request, Criteria $searchCriteria, ManagerRegistry $doctrine)
     {
         $searchMode = 'simple';
         $queryName  = $request->request->get('queryName', '');
@@ -87,10 +88,10 @@ class RechercheController extends AbstractController
         if (!strlen($search)) {
             return $this->_emptySearchResponse($request, $searchMode);
         }
-        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $user = $this->getUser();
         $restrictToProjects = $user->getRole() === "admin" ? null : $user->getIdsProjets();
 
-        $results = $this->getDoctrine()
+        $results = $doctrine
             ->getRepository(\App\Entity\IndexRecherche::class)
             ->simpleSearch($search, $request->getLocale(), !$this->isGranted('ROLE_CONTRIBUTOR'), $restrictToProjects);
 
@@ -117,7 +118,7 @@ class RechercheController extends AbstractController
     /**
      * @Route("/search/guided", name="search_guided")
      */
-    public function guidedSearch(Request $request, Criteria $searchCriteria)
+    public function guidedSearch(Request $request, Criteria $searchCriteria, ManagerRegistry $doctrine)
     {
         $searchMode  = 'guided';
         $queryName   = $request->request->get('queryName', '');
@@ -128,10 +129,10 @@ class RechercheController extends AbstractController
             return $this->_emptySearchResponse($request, $searchMode);
         }
 
-        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $user = $this->getUser();
         $restrictToProjects = $user->getRole() === "admin" ? null : $user->getIdsProjets();
 
-        $results = $this->getDoctrine()
+        $results = $doctrine
             ->getRepository(\App\Entity\IndexRecherche::class)
             ->search($searchMode, $criteria, $request->getLocale(), !$this->isGranted('ROLE_CONTRIBUTOR'), $restrictToProjects);
 
@@ -158,7 +159,7 @@ class RechercheController extends AbstractController
     /**
      * @Route("/search/advanced", name="search_advanced")
      */
-    public function advancedSearch(Request $request, Criteria $searchCriteria)
+    public function advancedSearch(Request $request, Criteria $searchCriteria, ManagerRegistry $doctrine)
     {
         $searchMode  = 'advanced';
         $queryName   = $request->request->get('queryName', '');
@@ -169,12 +170,12 @@ class RechercheController extends AbstractController
             return $this->_emptySearchResponse($request, $searchMode);
         }
 
-        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $user = $this->getUser();
         $restrictToProjects = $user->getRole() === "admin" ? null : $user->getIdsProjets();
 
         $resultsType = $criteria['resultsType'];
 
-        $results = $this->getDoctrine()
+        $results = $doctrine
             ->getRepository(\App\Entity\IndexRecherche::class)
             ->search($searchMode, $criteria, $request->getLocale(), !$this->isGranted('ROLE_CONTRIBUTOR'), $restrictToProjects);
 
@@ -202,7 +203,7 @@ class RechercheController extends AbstractController
     /**
      * @Route("/search/elements", name="search_elements")
      */
-    public function elementsSearch(Request $request, Criteria $searchCriteria)
+    public function elementsSearch(Request $request, Criteria $searchCriteria, ManagerRegistry $doctrine)
     {
         $searchMode  = 'elements';
         $queryName   = $request->request->get('queryName', '');
@@ -215,7 +216,7 @@ class RechercheController extends AbstractController
 
         $resultsType = "attestation";
 
-        $results = $this->getDoctrine()
+        $results = $doctrine
             ->getRepository(\App\Entity\IndexRecherche::class)
             ->search($searchMode, $criteria, $request->getLocale(), !$this->isGranted('ROLE_CONTRIBUTOR'));
 
@@ -243,7 +244,7 @@ class RechercheController extends AbstractController
     /**
      * @Route("/search/sql", name="search_sql")
      */
-    public function sqlSearch(Request $request, Criteria $searchCriteria, TranslatorInterface $translator)
+    public function sqlSearch(Request $request, Criteria $searchCriteria, TranslatorInterface $translator, ManagerRegistry $doctrine)
     {
         $searchMode = 'sql';
         $locale     = $request->getLocale();
@@ -264,7 +265,7 @@ class RechercheController extends AbstractController
             return $this->_errorSqlResponse($request, $searchMode, $translator->trans('search.messages.invalid_query'), $search);
         }
 
-        $pdo = $this->getDoctrine()->getConnection();
+        $pdo = $doctrine->getConnection();
         $pdo->beginTransaction();
 
         $stmt = $pdo->prepare($search);
@@ -294,7 +295,7 @@ class RechercheController extends AbstractController
 
         $fileName = 'export_sql';
         if ($query_id !== '') {
-            $query = $this->getDoctrine()
+            $query = $doctrine
                 ->getRepository(RequeteEnregistree::class)
                 ->find(intval($query_id));
             $fileName = $query->getNom($locale);
@@ -349,18 +350,14 @@ class RechercheController extends AbstractController
     public function searchResultsWebmapping(Request $request)
     {
         if (!$request->isMethod('POST')) {
-            return $this->redirect(
-                $this->get('router')->generate('search')
-            );
+            return $this->redirect($this->generateUrl('search'));
         }
 
         $type = $request->request->get('type', '');
         $ids = json_decode($request->request->get('ids', '[]'));
 
         if (!in_array($type, ['source', 'attestation', 'element']) || !count($ids)) {
-            return $this->redirect(
-                $this->get('router')->generate('search')
-            );
+            return $this->redirect($this->generateUrl('search'));
         }
 
         return $this->render('search/webmapping.html.twig', [
@@ -382,7 +379,7 @@ class RechercheController extends AbstractController
     /**
      * @Route("/search/save", name="search_save")
      */
-    public function searchSave(Request $request, TranslatorInterface $translator)
+    public function searchSave(Request $request, TranslatorInterface $translator, ManagerRegistry $doctrine)
     {
         $submittedToken = $request->request->get('token');
         $query_name = $request->request->get('query_name', '');
@@ -421,10 +418,10 @@ class RechercheController extends AbstractController
         $query->setMode($query_mode);
         $query->setCriteria($query_criteria);
         $query->setCreateur(
-            $this->get('security.token_storage')->getToken()->getUser()
+            $this->getUser()
         );
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $doctrine->getManager();
         $em->persist($query);
         $em->flush();
 
@@ -437,17 +434,17 @@ class RechercheController extends AbstractController
     /**
      * @Route("/search/{id}/delete", name="search_delete")
      */
-    public function searchDelete($id, Request $request)
+    public function searchDelete($id, Request $request, ManagerRegistry $doctrine)
     {
         $submittedToken = $request->request->get('token');
-        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $user = $this->getUser();
 
         if ($this->isCsrfTokenValid('delete_query_' . $id, $submittedToken)) {
-            $repository = $this->getDoctrine()->getRepository(RechercheEnregistree::class);
+            $repository = $doctrine->getRepository(RechercheEnregistree::class);
             $query = $repository->find($id);
             if ($query instanceof RechercheEnregistree) {
                 if ($query->getCreateur()->getId() === $user->getId()) {
-                    $em = $this->getDoctrine()->getManager();
+                    $em = $doctrine->getManager();
                     $em->remove($query);
                     $em->flush();
                     $request->getSession()->getFlashBag()->add('success', 'search.messages.query_deleted');
@@ -477,12 +474,12 @@ class RechercheController extends AbstractController
         return $this->redirectToRoute('search');
     }
 
-    public function rebuildIndexSync(Request $request, TranslatorInterface $translator, TagAwareCacheInterface $mapCache)
+    public function rebuildIndexSync(Request $request, TranslatorInterface $translator, TagAwareCacheInterface $mapCache, ManagerRegistry $doctrine)
     {
         set_time_limit(3600);
         $start = microtime(true);
 
-        $records = $this->getDoctrine()
+        $records = $doctrine
             ->getRepository(\App\Entity\IndexRecherche::class)
             ->fullRebuild();
 
@@ -502,7 +499,7 @@ class RechercheController extends AbstractController
     /**
      * @Route("/search/rebuild_index", name="search_reindex")
      */
-    public function rebuildIndex(Request $request, TranslatorInterface $translator)
+    public function rebuildIndex(Request $request, TranslatorInterface $translator, ManagerRegistry $doctrine)
     {
         // Store request start time, to prevent time_limit being reached
         $start_request = time();
@@ -512,7 +509,7 @@ class RechercheController extends AbstractController
         $cache = new FilesystemAdapter('search_index_rebuild', 3600);
 
         // Repository
-        $repo = $this->getDoctrine()->getRepository(\App\Entity\IndexRecherche::class);
+        $repo = $doctrine->getRepository(\App\Entity\IndexRecherche::class);
 
         // Check if we have a key in parameter
         $rebuildKey = $request->query->get('rebuildKey', null);
@@ -597,9 +594,7 @@ class RechercheController extends AbstractController
             'error',
             $error
         );
-        return $this->redirect(
-            $this->get('router')->generate('search', ['_fragment' => $mode])
-        );
+        return $this->redirect($this->generateUrl('search', ['_fragment' => $mode]));
     }
 
     private function _cacheSearchResults(string $mode, array $results): string

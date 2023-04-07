@@ -7,7 +7,7 @@ use App\Entity\Biblio;
 use App\Entity\Element;
 use App\Entity\IndexRecherche;
 use App\Entity\Source;
-
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,13 +21,13 @@ class ListController extends AbstractController
     /**
      * @Route("/list/source", name="json_source_list")
      */
-    public function source(Request $request, TranslatorInterface $translator)
+    public function source(Request $request, TranslatorInterface $translator, ManagerRegistry $doctrine)
     {
         $locale = $request->getLocale();
-        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $user = $this->getUser();
         $projets = $user->getIdsProjets();
 
-        $repository = $this->getDoctrine()->getRepository(Source::class);
+        $repository = $doctrine->getRepository(Source::class);
 
         // Check if we have a filter in parameter
         $filter = $request->query->get('filter', null);
@@ -51,7 +51,7 @@ class ListController extends AbstractController
 
         // If user is not a contributor, filter to keep only corpus ready entities
         if (!$this->isGranted('ROLE_CONTRIBUTOR')) {
-            $valid_ids = $this->getDoctrine()->getRepository(IndexRecherche::class)->getEntityIds('Source', true);
+            $valid_ids = $doctrine->getRepository(IndexRecherche::class)->getEntityIds('Source', true);
             $sources = array_values(array_filter($sources, function ($s) use ($valid_ids) {
                 return in_array($s->getId(), $valid_ids);
             }));
@@ -120,13 +120,13 @@ class ListController extends AbstractController
     /**
      * @Route("/list/attestation", name="json_attestation_list")
      */
-    public function attestation(Request $request, TranslatorInterface $translator)
+    public function attestation(Request $request, TranslatorInterface $translator, ManagerRegistry $doctrine)
     {
         $locale = $request->getLocale();
-        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $user = $this->getUser();
         $projets = $user->getIdsProjets();
 
-        $repository = $this->getDoctrine()->getRepository(Attestation::class);
+        $repository = $doctrine->getRepository(Attestation::class);
 
         // Check if we have a filter in parameter
         $filter = $request->query->get('filter', null);
@@ -148,7 +148,7 @@ class ListController extends AbstractController
 
         // If user is not a contributor, filter to keep only corpus ready entities
         if (!$this->isGranted('ROLE_CONTRIBUTOR')) {
-            $valid_ids = $this->getDoctrine()->getRepository(IndexRecherche::class)->getEntityIds('Attestation', true);
+            $valid_ids = $doctrine->getRepository(IndexRecherche::class)->getEntityIds('Attestation', true);
             $attestations = array_values(array_filter($attestations, function ($a) use ($valid_ids) {
                 return in_array($a->getId(), $valid_ids);
             }));
@@ -227,12 +227,12 @@ class ListController extends AbstractController
     /**
      * @Route("/list/element", name="json_element_list")
      */
-    public function element(Request $request, TranslatorInterface $translator)
+    public function element(Request $request, TranslatorInterface $translator, ManagerRegistry $doctrine)
     {
         $locale = $request->getLocale();
-        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $user = $this->getUser();
 
-        $repository = $this->getDoctrine()->getRepository(Element::class);
+        $repository = $doctrine->getRepository(Element::class);
 
         // Check if we have a filter in parameter
         $filter = $request->query->get('filter', null);
@@ -295,17 +295,17 @@ class ListController extends AbstractController
     /**
      * @Route("/list/bibliography", name="json_bibliography_list")
      */
-    public function bibliography(Request $request, TranslatorInterface $translator)
+    public function bibliography(Request $request, TranslatorInterface $translator, ManagerRegistry $doctrine)
     {
         $locale = $request->getLocale();
-        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $user = $this->getUser();
 
-        $bibliographies = $this->getDoctrine()
+        $bibliographies = $doctrine
             ->getRepository(Biblio::class)
             ->findAll();
 
 
-        $valid_ids = $this->getDoctrine()->getRepository(IndexRecherche::class)->getEntityIds('Source', true);
+        $valid_ids = $doctrine->getRepository(IndexRecherche::class)->getEntityIds('Source', true);
 
 
         $data = array_map(function ($bibliography) use ($user, $translator, $valid_ids) {

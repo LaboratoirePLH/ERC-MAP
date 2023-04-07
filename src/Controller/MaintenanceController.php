@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Localisation;
 use App\Utils\StringHelper;
-
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -25,9 +25,9 @@ class MaintenanceController extends AbstractController
     /**
      * @Route("/maintenance/beta_codes", name="maintenance_beta_codes")
      */
-    public function betaCodes()
+    public function betaCodes(ManagerRegistry $doctrine)
     {
-        $query = $this->getDoctrine()->getManager()->createQuery(
+        $query = $doctrine->getManager()->createQuery(
             "SELECT partial e.{id, etatAbsolu, betaCode} FROM \App\Entity\Element e"
         );
         $elements = $query->getArrayResult();
@@ -61,9 +61,9 @@ class MaintenanceController extends AbstractController
     /**
      * @Route("/maintenance/formula_numbers", name="maintenance_formula_numbers")
      */
-    public function formulaNumbers()
+    public function formulaNumbers(ManagerRegistry $doctrine)
     {
-        $query = $this->getDoctrine()->getManager()->createQuery(
+        $query = $doctrine->getManager()->createQuery(
             "SELECT partial a.{id}, f FROM \App\Entity\Attestation a INNER JOIN a.formules f ORDER BY a.id ASC, f.positionFormule ASC"
         );
         $attestations = $query->getArrayResult();
@@ -98,16 +98,16 @@ class MaintenanceController extends AbstractController
     /**
      * @Route("/maintenance/html_cleanup", name="maintenance_html_cleanup")
      */
-    public function htmlCleanup(Request $request)
+    public function htmlCleanup(Request $request, ManagerRegistry $doctrine)
     {
-        $em = $this->getDoctrine()->getManager();
+        $em = $doctrine->getManager();
 
         // If request was posted, do the cleaning
         $selection = [];
         $totalSelected = 0;
         $totalUpdated = 0;
         if ($request->isMethod('POST')) {
-            $change = $request->request->get('change', []);
+            $change = (array) $request->request->get('change', []);
             // Process selection
             foreach ($change as $c) {
                 list($table, $field, $id) = explode(';', $c);
@@ -246,7 +246,7 @@ class MaintenanceController extends AbstractController
     /**
      * @Route("/maintenance/locations_cleanup", name="maintenance_locations_cleanup")
      */
-    public function locationsCleanup(Request $request)
+    public function locationsCleanup(Request $request, ManagerRegistry $doctrine)
     {
         // We are looking for 2 problems :
         //    - Locations that are empty and should be deleted
@@ -262,7 +262,7 @@ class MaintenanceController extends AbstractController
         //         - Foreign Key field (because Source has 2 location foreign keys)
         // Form is submitted to function below (doLocationsCleanup), then redirected here
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $doctrine->getManager();
 
         // Select all locations
         $allLocations = $em->getRepository(Localisation::class)->findAll();
@@ -407,7 +407,7 @@ class MaintenanceController extends AbstractController
     /**
      * @Route("/maintenance/do_locations_cleanup", name="maintenance_do_locations_cleanup")
      */
-    public function doLocationsCleanup(Request $request, TranslatorInterface $translator)
+    public function doLocationsCleanup(Request $request, TranslatorInterface $translator, ManagerRegistry $doctrine)
     {
         // Operations inner workings :
         //    Delete : - Unlink the given location from every entity to which is was linked (set the foreign key to null).
@@ -420,10 +420,10 @@ class MaintenanceController extends AbstractController
         //            - Lifecycle events will then automatically remove the orphan locations
 
         if ($request->isMethod('POST')) {
-            $delete = $request->request->get('delete', []);
-            $merge = $request->request->get('merge', []);
+            $delete = (array) $request->request->get('delete', []);
+            $merge = (array) $request->request->get('merge', []);
 
-            $em = $this->getDoctrine()->getManager();
+            $em = $doctrine->getManager();
 
 
             $delete = array_reduce($delete, function ($total, $carry) {
@@ -545,9 +545,9 @@ class MaintenanceController extends AbstractController
     /**
      * @Route("/maintenance/is_located_cleanup", name="maintenance_is_located_cleanup")
      */
-    public function isLocatedCleanup(Request $request, TranslatorInterface $translator)
+    public function isLocatedCleanup(Request $request, TranslatorInterface $translator, ManagerRegistry $doctrine)
     {
-        $em = $this->getDoctrine()->getManager();
+        $em = $doctrine->getManager();
 
         $total_updated = 0;
         $total_updated += $em->createQuery("UPDATE \App\Entity\Agent a SET a.estLocalisee = false WHERE a.estLocalisee = true AND a.localisation IS NULL")->execute();
@@ -569,9 +569,9 @@ class MaintenanceController extends AbstractController
     /**
      * @Route("/maintenance/in_situ_cleanup", name="maintenance_in_situ_cleanup")
      */
-    public function inSituCleanup(Request $request, TranslatorInterface $translator)
+    public function inSituCleanup(Request $request, TranslatorInterface $translator, ManagerRegistry $doctrine)
     {
-        $em = $this->getDoctrine()->getManager();
+        $em = $doctrine->getManager();
 
         $total_updated = 0;
         $total_updated += $em->createQuery("UPDATE \App\Entity\Source s SET s.inSitu = false WHERE s.lieuOrigine IS NOT NULL AND s.lieuOrigine != s.lieuDecouverte AND s.inSitu = true")->execute();

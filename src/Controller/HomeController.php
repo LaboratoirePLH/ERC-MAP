@@ -7,7 +7,7 @@ use App\Entity\Source;
 use App\Entity\IndexRecherche;
 use App\Form\ChercheurType;
 use App\Form\ChangePasswordType;
-
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Asset\Packages;
 use Symfony\Component\Form\FormError;
@@ -38,12 +38,12 @@ class HomeController extends AbstractController
     /**
      * @Route("/", name="home")
      */
-    public function index(Request $request)
+    public function index(Request $request, ManagerRegistry $doctrine)
     {
-        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $user = $this->getUser();
         $locale = $request->getLocale();
 
-        $counters = $this->getDoctrine()->getRepository(IndexRecherche::class)->getHomeCounters(!$this->isGranted('ROLE_CONTRIBUTOR'));
+        $counters = $doctrine->getRepository(IndexRecherche::class)->getHomeCounters(!$this->isGranted('ROLE_CONTRIBUTOR'));
 
         return $this->render('home/index.html.twig', [
             'controller_name' => 'HomeController',
@@ -115,14 +115,14 @@ class HomeController extends AbstractController
     /**
      * @Route("/language/{lang}", name="language")
      */
-    public function language($lang, Request $request)
+    public function language($lang, Request $request, ManagerRegistry $doctrine)
     {
         if (!in_array($lang, ["fr", "en"])) {
             $request->getSession()->getFlashBag()->add('error', 'generic.messages.invalid_locale');
         } else if ($this->isGranted('ROLE_USER')) {
-            $user = $this->get('security.token_storage')->getToken()->getUser();
+            $user = $this->getUser();
             $user->setPreferenceLangue($lang);
-            $this->getDoctrine()->getManager()->flush();
+            $doctrine->getManager()->flush();
         }
         $request->getSession()->set('_locale', $lang);
         $referer = $request->headers->get('referer');
@@ -137,20 +137,20 @@ class HomeController extends AbstractController
     /**
      * @Route("/profile", name="profile")
      */
-    public function profile(Request $request, TranslatorInterface $translator)
+    public function profile(Request $request, TranslatorInterface $translator, ManagerRegistry $doctrine)
     {
-        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $user = $this->getUser();
 
-        $accountForm = $this->get('form.factory')->create(ChercheurType::class, $user);
+        $accountForm = $this->createForm(ChercheurType::class, $user);
         $accountForm->handleRequest($request);
-        $passwordForm = $this->get('form.factory')->create(ChangePasswordType::class, null, [
+        $passwordForm = $this->createForm(ChangePasswordType::class, null, [
             'repeat_error' => $translator->trans('chercheur.repeat_password_error')
         ]);
         $passwordForm->handleRequest($request);
 
         if ($request->isMethod('POST')) {
             if ($accountForm->isSubmitted() && $accountForm->isValid()) {
-                $this->getDoctrine()->getManager()->flush();
+                $doctrine->getManager()->flush();
 
                 // Message de confirmation
                 $request->getSession()->getFlashBag()->add('success', 'chercheur.profile_edited');
@@ -164,7 +164,7 @@ class HomeController extends AbstractController
                         ['cost' => 15]
                     );
                     $user->setPassword($newPassword);
-                    $this->getDoctrine()->getManager()->flush();
+                    $doctrine->getManager()->flush();
 
                     $request->getSession()->getFlashBag()->add('success', 'chercheur.password_edited');
                     return $this->redirectToRoute('home');
@@ -193,11 +193,11 @@ class HomeController extends AbstractController
     /**
      * @Route("/corpus_state", name="corpus_state")
      */
-    public function corpusState(Request $request, TranslatorInterface $translator)
+    public function corpusState(Request $request, TranslatorInterface $translator, ManagerRegistry $doctrine)
     {
         $locale = $request->getLocale();
 
-        $sources = $this->getDoctrine()
+        $sources = $doctrine
             ->getRepository(Source::class)
             ->findAll();
 

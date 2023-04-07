@@ -4,11 +4,13 @@ namespace App\Controller;
 
 use App\Entity\Chercheur;
 use App\Form\RegisterType;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -39,12 +41,12 @@ class SecurityController extends AbstractController
     /**
      * @Route("/forgotten_password", name="forgotten_password")
      */
-    public function forgotten_password(Request $request, \Swift_Mailer $mailer, TokenGeneratorInterface $tokenGenerator, TranslatorInterface $translator)
+    public function forgotten_password(Request $request, \Swift_Mailer $mailer, TokenGeneratorInterface $tokenGenerator, TranslatorInterface $translator, ManagerRegistry $doctrine)
     {
         if ($request->isMethod('POST')) {
             $username = $request->request->get('username');
 
-            $em = $this->getDoctrine()->getManager();
+            $em = $doctrine->getManager();
             $user = $em->getRepository(Chercheur::class)->createQueryBuilder("e")
                 ->where("e.username = :value")
                 ->orWhere("e.mail = :value")
@@ -92,10 +94,10 @@ class SecurityController extends AbstractController
     /**
      * @Route("/reset_password/{token}", name="reset_password")
      */
-    public function reset_password($token, Request $request, UserPasswordEncoderInterface $encoder)
+    public function reset_password($token, Request $request, UserPasswordHasherInterface $hasher, ManagerRegistry $doctrine)
     {
         if ($request->isMethod('POST')) {
-            $em = $this->getDoctrine()->getManager();
+            $em = $doctrine->getManager();
 
             $user = $em->getRepository(Chercheur::class)->findOneByResetToken($token);
 
@@ -105,7 +107,7 @@ class SecurityController extends AbstractController
             }
 
             $user->setResetToken(null);
-            $user->setPassword($encoder->encodePassword($user, $request->request->get('password')));
+            $user->setPassword($hasher->hashPassword($user, $request->request->get('password')));
             $em->flush();
 
             $request->getSession()->getFlashBag()->add('success', 'login_page.message.password_reset');
@@ -120,18 +122,18 @@ class SecurityController extends AbstractController
     /**
      * @Route("/register", name="register")
      */
-    public function register(Request $request, \Swift_Mailer $mailer, TranslatorInterface $translator, UserPasswordEncoderInterface $encoder)
+    public function register(Request $request, \Swift_Mailer $mailer, TranslatorInterface $translator, UserPasswordHasherInterface $hasher, ManagerRegistry $doctrine)
     {
         if ($this->isGranted('ROLE_USER')) {
             return $this->redirectToRoute('home');
         }
 
-        $em   = $this->getDoctrine()->getManager();
+        $em   = $doctrine->getManager();
         $user = new Chercheur;
-        $form = $this->get('form.factory')->create(RegisterType::class, $user);
+        $form = $this->createForm(RegisterType::class, $user);
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
-            $user->setPassword($encoder->encodePassword($user, $user->getPassword()));
+            $user->setPassword($hasher->hashPassword($user, $user->getPassword()));
             $em->persist($user);
 
             if ($this->openAccess) {
@@ -139,7 +141,7 @@ class SecurityController extends AbstractController
 
                 $request->getSession()->getFlashBag()->add('success', 'login_page.message.account_created');
             } else {
-                $admins = $this->getDoctrine()
+                $admins = $doctrine
                     ->getRepository(Chercheur::class)
                     ->findBy(["role" => "admin", "gestionnaireComptes" => true]);
 
@@ -180,7 +182,7 @@ class SecurityController extends AbstractController
     /**
      * @Route("/delete_account", name="delete_account")
      */
-    public function deleteAccount(Request $request)
+    public function deleteAccount(Request $request, ManagerRegistry $doctrine, TokenStorageInterface $tokenStorage)
     {
         $this->denyAccessUnlessGranted("ROLE_USER");
         if ($this->isGranted('ROLE_CONTRIBUTOR') || !$request->isMethod('POST')) {
@@ -197,15 +199,16 @@ class SecurityController extends AbstractController
             $request->getSession()->getFlashBag()->add('error', 'pages.messages.email_mandatory');
             return $this->redirectToRoute('profile');
         }
-        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $user = $this->getUser();
         if ($email != $user->getMail()) {
             $request->getSession()->getFlashBag()->add('error', 'pages.messages.invalid_email');
             return $this->redirectToRoute('profile');
         }
 
-        $this->getDoctrine()->getManager()->remove($user);
-        $this->getDoctrine()->getManager()->flush();
-        $this->get('security.token_storage')->setToken(null);
+        $doctrine->getManager()->remove($user);
+        $doctrine->getManager()->flush();
+
+        $tokenStorage->setToken(null);
         $request->getSession()->invalidate();
         return $this->redirectToRoute('home');
     }

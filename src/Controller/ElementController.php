@@ -7,7 +7,7 @@ use App\Entity\Element;
 use App\Entity\IndexRecherche;
 use App\Entity\VerrouEntite;
 use App\Form\ElementType;
-
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
@@ -43,9 +43,9 @@ class ElementController extends AbstractController
     /**
      * @Route("/element/attestation/{attestation_id}", name="element_attestation")
      */
-    public function indexAttestation($attestation_id, Request $request, TranslatorInterface $translator)
+    public function indexAttestation($attestation_id, Request $request, TranslatorInterface $translator, ManagerRegistry $doctrine)
     {
-        $attestation = $this->getDoctrine()
+        $attestation = $doctrine
             ->getRepository(Attestation::class)
             ->find(intval($attestation_id));
         if (is_null($attestation)) {
@@ -72,15 +72,15 @@ class ElementController extends AbstractController
     /**
      * @Route("/element/create", name="element_create")
      */
-    public function create(Request $request, TranslatorInterface $translator)
+    public function create(Request $request, TranslatorInterface $translator, ManagerRegistry $doctrine)
     {
         $this->denyAccessUnlessGranted("ROLE_CONTRIBUTOR");
 
-        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $user = $this->getUser();
 
         $element = new Element();
 
-        $form   = $this->get('form.factory')->create(ElementType::class, $element, [
+        $form   = $this->createForm(ElementType::class, $element, [
             'formAction'   => 'create',
             'element'      => $element,
             'locale'       => $request->getLocale(),
@@ -91,12 +91,12 @@ class ElementController extends AbstractController
         ]);
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
-            $em = $this->getDoctrine()->getManager();
+            $em = $doctrine->getManager();
 
             $element->setCreateur($user);
             $element->setDernierEditeur($user);
             // Sauvegarde
-            $em = $this->getDoctrine()->getManager();
+            $em = $doctrine->getManager();
             $em->persist($element);
 
             foreach ($element->getElementBiblios() as $eb) {
@@ -158,9 +158,9 @@ class ElementController extends AbstractController
     /**
      * @Route("/element/{id}", name="element_show")
      */
-    public function show($id, Request $request, TranslatorInterface $translator)
+    public function show($id, Request $request, TranslatorInterface $translator, ManagerRegistry $doctrine)
     {
-        $element = $this->getDoctrine()
+        $element = $doctrine
             ->getRepository(Element::class)
             ->find(intval($id));
 
@@ -172,7 +172,7 @@ class ElementController extends AbstractController
             return $this->redirectToRoute('element_list');
         }
 
-        $valid_attestations = $this->getDoctrine()->getRepository(IndexRecherche::class)->getEntityIds('Attestation', !$this->isGranted('ROLE_CONTRIBUTOR'));
+        $valid_attestations = $doctrine->getRepository(IndexRecherche::class)->getEntityIds('Attestation', !$this->isGranted('ROLE_CONTRIBUTOR'));
 
         return $this->render('element/show.html.twig', [
             'controller_name'    => 'ElementController',
@@ -190,12 +190,12 @@ class ElementController extends AbstractController
     /**
      * @Route("/element/{id}/edit", name="element_edit")
      */
-    public function edit($id, Request $request, TranslatorInterface $translator)
+    public function edit($id, Request $request, TranslatorInterface $translator, ManagerRegistry $doctrine)
     {
         $this->denyAccessUnlessGranted("ROLE_CONTRIBUTOR");
 
-        $user = $this->get('security.token_storage')->getToken()->getUser();
-        $element = $this->getDoctrine()
+        $user = $this->getUser();
+        $element = $doctrine
             ->getRepository(Element::class)
             ->find(intval($id));
         if (is_null($element)) {
@@ -210,7 +210,7 @@ class ElementController extends AbstractController
             return $this->redirectToRoute('element_list');
         }
         if ($element->getVerrou() === null) {
-            $verrou = $this->getDoctrine()->getRepository(VerrouEntite::class)->create($element, $user, $this->dureeVerrou);
+            $verrou = $doctrine->getRepository(VerrouEntite::class)->create($element, $user, $this->dureeVerrou);
         } else if (!$element->getVerrou()->isWritable($user)) {
             $request->getSession()->getFlashBag()->add(
                 'error',
@@ -226,7 +226,7 @@ class ElementController extends AbstractController
             return $this->redirectToRoute('element_list');
         }
 
-        $form   = $this->get('form.factory')->create(ElementType::class, $element, [
+        $form   = $this->createForm(ElementType::class, $element, [
             'formAction'   => 'edit',
             'element'      => $element,
             'locale'       => $request->getLocale(),
@@ -239,7 +239,7 @@ class ElementController extends AbstractController
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $element->setDernierEditeur($user);
             // Sauvegarde
-            $em = $this->getDoctrine()->getManager();
+            $em = $doctrine->getManager();
             foreach ($element->getElementBiblios() as $sb) {
                 if ($sb->getBiblio() !== null) {
                     if (!$em->contains($sb->getBiblio())) {
@@ -275,7 +275,7 @@ class ElementController extends AbstractController
                     }
                 }
             }
-            $this->getDoctrine()->getRepository(VerrouEntite::class)->remove($element->getVerrou());
+            $doctrine->getRepository(VerrouEntite::class)->remove($element->getVerrou());
             $em->flush();
 
             // Message de confirmation
@@ -303,17 +303,17 @@ class ElementController extends AbstractController
     /**
      * @Route("/element/{id}/canceledit", name="element_canceledit")
      */
-    public function canceledit($id, Request $request)
+    public function canceledit($id, Request $request, ManagerRegistry $doctrine)
     {
         $this->denyAccessUnlessGranted("ROLE_CONTRIBUTOR");
 
-        $user = $this->get('security.token_storage')->getToken()->getUser();
-        $element = $this->getDoctrine()
+        $user = $this->getUser();
+        $element = $doctrine
             ->getRepository(Element::class)
             ->find(intval($id));
-        $verrou = $this->getDoctrine()->getRepository(VerrouEntite::class)->fetch($element);
+        $verrou = $doctrine->getRepository(VerrouEntite::class)->fetch($element);
         if ($verrou !== null && $verrou->isWritable($user)) {
-            $this->getDoctrine()->getRepository(VerrouEntite::class)->remove($verrou);
+            $doctrine->getRepository(VerrouEntite::class)->remove($verrou);
         }
         return $this->redirectToRoute('element_list');
     }
@@ -321,21 +321,21 @@ class ElementController extends AbstractController
     /**
      * @Route("/element/{id}/delete", name="element_delete")
      */
-    public function delete($id, Request $request, TranslatorInterface $translator)
+    public function delete($id, Request $request, TranslatorInterface $translator, ManagerRegistry $doctrine)
     {
         $this->denyAccessUnlessGranted("ROLE_CONTRIBUTOR");
 
         $submittedToken = $request->request->get('token');
-        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $user = $this->getUser();
 
         if ($this->isCsrfTokenValid('delete_element', $submittedToken)) {
-            $repository = $this->getDoctrine()->getRepository(Element::class);
+            $repository = $doctrine->getRepository(Element::class);
             $element = $repository->find(intval($id));
             if ($element instanceof Element) {
                 if ($this->isGranted('ROLE_ADMIN')) {
                     $verrou = $element->getVerrou();
                     if (!$verrou || $verrou->isWritable($user)) {
-                        $em = $this->getDoctrine()->getManager();
+                        $em = $doctrine->getManager();
                         $em->remove($element);
                         $em->flush();
                         $request->getSession()->getFlashBag()->add('success', 'element.messages.deleted');

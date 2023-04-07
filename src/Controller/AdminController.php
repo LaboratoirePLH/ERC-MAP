@@ -5,12 +5,12 @@ namespace App\Controller;
 use App\Entity\Chercheur;
 
 use EasyCorp\Bundle\EasyAdminBundle\Controller\EasyAdminController;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class AdminController extends EasyAdminController
 {
-    private $passwordEncoder;
+    private $passwordHasher;
     private $translator;
     private $mailer;
 
@@ -24,9 +24,9 @@ class AdminController extends EasyAdminController
      */
     private $fromName;
 
-    public function __construct(UserPasswordEncoderInterface $passwordEncoder, TranslatorInterface $translator, \Swift_Mailer $mailer, string $fromEmail, string $fromName)
+    public function __construct(UserPasswordHasherInterface $passwordHasher, TranslatorInterface $translator, \Swift_Mailer $mailer, string $fromEmail, string $fromName)
     {
-        $this->passwordEncoder = $passwordEncoder;
+        $this->passwordHasher = $passwordHasher;
         $this->translator = $translator;
         $this->mailer = $mailer;
         $this->fromEmail = $fromEmail;
@@ -53,14 +53,14 @@ class AdminController extends EasyAdminController
 
     private function encodePassword($user, $password)
     {
-        return $this->passwordEncoder->encodePassword($user, $password);
+        return $this->passwordHasher->hashPassword($user, $password);
     }
 
     protected function createNewFormuleEntity()
     {
         $formule = new \App\Entity\Formule();
         $formule->setCreateur(
-            $this->get('security.token_storage')->getToken()->getUser()
+            $this->getUser()
         );
         return $formule;
     }

@@ -8,7 +8,7 @@ use App\Entity\EtatFiche;
 use App\Entity\Source;
 use App\Entity\VerrouEntite;
 use App\Form\SourceType;
-
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
@@ -43,9 +43,9 @@ class SourceController extends AbstractController
     /**
      * @Route("/source/element/{element_id}", name="source_element")
      */
-    public function indexForElement($element_id, Request $request, TranslatorInterface $translator)
+    public function indexForElement($element_id, Request $request, TranslatorInterface $translator, ManagerRegistry $doctrine)
     {
-        $element = $this->getDoctrine()
+        $element = $doctrine
             ->getRepository(Element::class)
             ->find(intval($element_id));
         if (is_null($element)) {
@@ -70,9 +70,9 @@ class SourceController extends AbstractController
     /**
      * @Route("/source/element/{element_id}/webmapping", name="source_element_webmapping")
      */
-    public function indexForElementWebmapping($element_id, Request $request, TranslatorInterface $translator)
+    public function indexForElementWebmapping($element_id, Request $request, TranslatorInterface $translator, ManagerRegistry $doctrine)
     {
-        $element = $this->getDoctrine()
+        $element = $doctrine
             ->getRepository(Element::class)
             ->find(intval($element_id));
         if (is_null($element)) {
@@ -102,14 +102,14 @@ class SourceController extends AbstractController
     /**
      * @Route("/source/create", name="source_create")
      */
-    public function create(Request $request, TranslatorInterface $translator)
+    public function create(Request $request, TranslatorInterface $translator, ManagerRegistry $doctrine)
     {
         $this->denyAccessUnlessGranted("ROLE_CONTRIBUTOR");
 
-        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $user = $this->getUser();
 
         if (($cloneId = $request->query->get('cloneFrom', null)) !== null) {
-            $source = $this->getDoctrine()
+            $source = $doctrine
                 ->getRepository(Source::class)
                 ->find(intval($cloneId));
 
@@ -124,14 +124,14 @@ class SourceController extends AbstractController
             $clone = true;
         } else {
             $source = new Source();
-            $catSource = $this->getDoctrine()
+            $catSource = $doctrine
                 ->getRepository(CategorieSource::class)
                 ->findOneBy(['nomEn' => 'Epigraphy']);
             $source->setCategorieSource($catSource);
             $clone = false;
         }
 
-        $form   = $this->get('form.factory')->create(SourceType::class, $source, [
+        $form   = $this->createForm(SourceType::class, $source, [
             'formAction'   => 'create',
             'isClone'      => $clone,
             'user'         => $user,
@@ -146,7 +146,7 @@ class SourceController extends AbstractController
             $source->setCreateur($user);
             $source->setDernierEditeur($user);
             // Sauvegarde
-            $em = $this->getDoctrine()->getManager();
+            $em = $doctrine->getManager();
             $em->persist($source);
             foreach ($source->getSourceBiblios() as $sb) {
                 if ($sb->getBiblio() !== null) {
@@ -164,7 +164,7 @@ class SourceController extends AbstractController
                         $a->setSource($source);
                         $a->setCreateur($user);
                         $a->setDernierEditeur($user);
-                        $etatFiche = $this->getDoctrine()
+                        $etatFiche = $doctrine
                             ->getRepository(EtatFiche::class)
                             ->find(1);
                         $a->setEtatFiche($etatFiche);
@@ -204,9 +204,9 @@ class SourceController extends AbstractController
     /**
      * @Route("/source/{id}", name="source_show")
      */
-    public function show($id, Request $request, TranslatorInterface $translator)
+    public function show($id, Request $request, TranslatorInterface $translator, ManagerRegistry $doctrine)
     {
-        $source = $this->getDoctrine()
+        $source = $doctrine
             ->getRepository(Source::class)
             ->find(intval($id));
         if (is_null($source)) {
@@ -232,13 +232,13 @@ class SourceController extends AbstractController
     /**
      * @Route("/source/{id}/edit", name="source_edit")
      */
-    public function edit($id, Request $request, TranslatorInterface $translator)
+    public function edit($id, Request $request, TranslatorInterface $translator, ManagerRegistry $doctrine)
     {
         $this->denyAccessUnlessGranted("ROLE_CONTRIBUTOR");
 
-        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $user = $this->getUser();
 
-        $source = $this->getDoctrine()
+        $source = $doctrine
             ->getRepository(Source::class)
             ->find(intval($id));
 
@@ -254,7 +254,7 @@ class SourceController extends AbstractController
             return $this->redirectToRoute('source_list');
         }
         if ($source->getVerrou() === null) {
-            $verrou = $this->getDoctrine()->getRepository(VerrouEntite::class)->create($source, $user, $this->dureeVerrou);
+            $verrou = $doctrine->getRepository(VerrouEntite::class)->create($source, $user, $this->dureeVerrou);
         } else if (!$source->getVerrou()->isWritable($user)) {
             $request->getSession()->getFlashBag()->add(
                 'error',
@@ -270,7 +270,7 @@ class SourceController extends AbstractController
             return $this->redirectToRoute('source_list');
         }
 
-        $form   = $this->get('form.factory')->create(SourceType::class, $source, [
+        $form   = $this->createForm(SourceType::class, $source, [
             'formAction'   => 'edit',
             'user'         => $user,
             'locale'       => $request->getLocale(),
@@ -283,7 +283,7 @@ class SourceController extends AbstractController
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $source->setDernierEditeur($user);
             // Sauvegarde
-            $em = $this->getDoctrine()->getManager();
+            $em = $doctrine->getManager();
             foreach ($source->getSourceBiblios() as $sb) {
                 if ($sb->getBiblio() !== null) {
                     if (!$em->contains($sb->getBiblio())) {
@@ -307,7 +307,7 @@ class SourceController extends AbstractController
                             $a->setSource($source);
                             $a->setCreateur($user);
                             $a->setDernierEditeur($user);
-                            $etatFiche = $this->getDoctrine()
+                            $etatFiche = $doctrine
                                 ->getRepository(EtatFiche::class)
                                 ->find(1);
                             $a->setEtatFiche($etatFiche);
@@ -321,7 +321,7 @@ class SourceController extends AbstractController
                 $source->setDatation(null);
                 $source->setEstDatee(false);
             }
-            $this->getDoctrine()->getRepository(VerrouEntite::class)->remove($source->getVerrou());
+            $doctrine->getRepository(VerrouEntite::class)->remove($source->getVerrou());
             $em->flush();
 
             // Message de confirmation
@@ -349,17 +349,17 @@ class SourceController extends AbstractController
     /**
      * @Route("/source/{id}/canceledit", name="source_canceledit")
      */
-    public function canceledit($id, Request $request)
+    public function canceledit($id, Request $request, ManagerRegistry $doctrine)
     {
         $this->denyAccessUnlessGranted("ROLE_CONTRIBUTOR");
 
-        $user = $this->get('security.token_storage')->getToken()->getUser();
-        $source = $this->getDoctrine()
+        $user = $this->getUser();
+        $source = $doctrine
             ->getRepository(Source::class)
             ->find(intval($id));
-        $verrou = $this->getDoctrine()->getRepository(VerrouEntite::class)->fetch($source);
+        $verrou = $doctrine->getRepository(VerrouEntite::class)->fetch($source);
         if ($verrou !== null && $verrou->isWritable($user)) {
-            $this->getDoctrine()->getRepository(VerrouEntite::class)->remove($verrou);
+            $doctrine->getRepository(VerrouEntite::class)->remove($verrou);
         }
         return $this->redirectToRoute('source_list');
     }
@@ -367,22 +367,22 @@ class SourceController extends AbstractController
     /**
      * @Route("/source/{id}/delete", name="source_delete")
      */
-    public function delete($id, Request $request, TranslatorInterface $translator)
+    public function delete($id, Request $request, TranslatorInterface $translator, ManagerRegistry $doctrine)
     {
         $this->denyAccessUnlessGranted("ROLE_CONTRIBUTOR");
 
         $submittedToken = $request->request->get('token');
-        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $user = $this->getUser();
 
         if ($this->isCsrfTokenValid('delete_source', $submittedToken)) {
-            $user = $this->get('security.token_storage')->getToken()->getUser();
-            $repository = $this->getDoctrine()->getRepository(Source::class);
+            $user = $this->getUser();
+            $repository = $doctrine->getRepository(Source::class);
             $source = $repository->find(intval($id));
             if ($source instanceof Source) {
                 if ($this->isGranted('ROLE_ADMIN')) {
                     $verrou = $source->getVerrou();
                     if (!$verrou || $verrou->isWritable($user)) {
-                        $em = $this->getDoctrine()->getManager();
+                        $em = $doctrine->getManager();
                         $em->remove($source);
                         $em->flush();
                         $request->getSession()->getFlashBag()->add('success', 'source.messages.deleted');

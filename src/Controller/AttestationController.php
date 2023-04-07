@@ -11,6 +11,7 @@ use App\Entity\VerrouEntite;
 use App\Form\AttestationType;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
@@ -46,9 +47,9 @@ class AttestationController extends AbstractController
     /**
      * @Route("/attestation/source/{source_id}", name="attestation_source")
      */
-    public function indexSource($source_id, Request $request, TranslatorInterface $translator)
+    public function indexSource($source_id, Request $request, TranslatorInterface $translator, ManagerRegistry $doctrine)
     {
-        $source = $this->getDoctrine()
+        $source = $doctrine
             ->getRepository(Source::class)
             ->find(intval($source_id));
         if (is_null($source)) {
@@ -75,9 +76,9 @@ class AttestationController extends AbstractController
     /**
      * @Route("/attestation/element/{element_id}", name="attestation_element")
      */
-    public function indexForElement($element_id, Request $request, TranslatorInterface $translator)
+    public function indexForElement($element_id, Request $request, TranslatorInterface $translator, ManagerRegistry $doctrine)
     {
-        $element = $this->getDoctrine()
+        $element = $doctrine
             ->getRepository(Element::class)
             ->find(intval($element_id));
         if (is_null($element)) {
@@ -103,7 +104,7 @@ class AttestationController extends AbstractController
     /**
      * @Route("/attestation/create", name="attestation_create")
      */
-    public function create(Request $request, TranslatorInterface $translator)
+    public function create(Request $request, TranslatorInterface $translator, ManagerRegistry $doctrine)
     {
         $this->denyAccessUnlessGranted("ROLE_CONTRIBUTOR");
 
@@ -130,13 +131,13 @@ class AttestationController extends AbstractController
     /**
      * @Route("/attestation/create/{source_id}", name="attestation_create_source")
      */
-    public function createForSource($source_id, Request $request, TranslatorInterface $translator)
+    public function createForSource($source_id, Request $request, TranslatorInterface $translator, ManagerRegistry $doctrine)
     {
         $this->denyAccessUnlessGranted("ROLE_CONTRIBUTOR");
 
-        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $user = $this->getUser();
 
-        $source = $this->getDoctrine()
+        $source = $doctrine
             ->getRepository(Source::class)
             ->find(intval($source_id));
         if (is_null($source)) {
@@ -148,7 +149,7 @@ class AttestationController extends AbstractController
         }
 
         if (($cloneId = $request->query->get('cloneFrom', null)) !== null) {
-            $attestation = $this->getDoctrine()
+            $attestation = $doctrine
                 ->getRepository(Attestation::class)
                 ->find(intval($cloneId));
 
@@ -164,7 +165,7 @@ class AttestationController extends AbstractController
         } else {
 
             $attestation = new Attestation();
-            $etatFiche = $this->getDoctrine()
+            $etatFiche = $doctrine
                 ->getRepository(EtatFiche::class)
                 ->find(1);
             $attestation->setEtatFiche($etatFiche);
@@ -175,7 +176,7 @@ class AttestationController extends AbstractController
         $attestation->setSource($source);
 
         if ($source->getVerrou() === null) {
-            $verrou = $this->getDoctrine()->getRepository(VerrouEntite::class)->create($source, $user, $this->dureeVerrou);
+            $verrou = $doctrine->getRepository(VerrouEntite::class)->create($source, $user, $this->dureeVerrou);
         } else if (!$source->getVerrou()->isWritable($user)) {
             $request->getSession()->getFlashBag()->add(
                 'error',
@@ -191,7 +192,7 @@ class AttestationController extends AbstractController
             return $this->redirectToRoute('attestation_create');
         }
 
-        $form   = $this->get('form.factory')->create(AttestationType::class, $attestation, [
+        $form   = $this->createForm(AttestationType::class, $attestation, [
             'formAction'   => 'create',
             'source'       => $source,
             'attestation'  => $attestation,
@@ -208,7 +209,7 @@ class AttestationController extends AbstractController
             $attestation->setCreateur($user);
             $attestation->setDernierEditeur($user);
             // Sauvegarde
-            $em = $this->getDoctrine()->getManager();
+            $em = $doctrine->getManager();
             $em->persist($attestation);
             foreach ($attestation->getAttestationMateriels() as $am) {
                 if ($am->getMateriel() !== null || $am->getCategorieMateriel() !== null) {
@@ -254,7 +255,7 @@ class AttestationController extends AbstractController
                 $attestation->setEstDatee(false);
             }
 
-            $this->getDoctrine()->getRepository(VerrouEntite::class)->remove($source->getVerrou());
+            $doctrine->getRepository(VerrouEntite::class)->remove($source->getVerrou());
             $em->flush();
 
             // Message de confirmation
@@ -283,17 +284,17 @@ class AttestationController extends AbstractController
     /**
      * @Route("/attestation/cancelcreate/{source_id}", name="attestation_cancelcreate")
      */
-    public function cancelcreate($source_id, Request $request)
+    public function cancelcreate($source_id, Request $request, ManagerRegistry $doctrine)
     {
         $this->denyAccessUnlessGranted("ROLE_CONTRIBUTOR");
 
-        $user = $this->get('security.token_storage')->getToken()->getUser();
-        $source = $this->getDoctrine()
+        $user = $this->getUser();
+        $source = $doctrine
             ->getRepository(Source::class)
             ->find(intval($source_id));
         $verrou = $source->getVerrou();
         if ($verrou !== null && $verrou->isWritable($user)) {
-            $this->getDoctrine()->getRepository(VerrouEntite::class)->remove($verrou);
+            $doctrine->getRepository(VerrouEntite::class)->remove($verrou);
         }
         return $this->redirectToRoute('attestation_list');
     }
@@ -302,9 +303,9 @@ class AttestationController extends AbstractController
     /**
      * @Route("/attestation/{id}", name="attestation_show")
      */
-    public function show($id, Request $request, TranslatorInterface $translator)
+    public function show($id, Request $request, TranslatorInterface $translator, ManagerRegistry $doctrine)
     {
-        $attestation = $this->getDoctrine()
+        $attestation = $doctrine
             ->getRepository(Attestation::class)
             ->find(intval($id));
         if (is_null($attestation)) {
@@ -315,7 +316,7 @@ class AttestationController extends AbstractController
             return $this->redirectToRoute('attestation_list');
         }
 
-        $valid_attestations = $this->getDoctrine()->getRepository(IndexRecherche::class)->getEntityIds('Attestation', !$this->isGranted('ROLE_CONTRIBUTOR'));
+        $valid_attestations = $doctrine->getRepository(IndexRecherche::class)->getEntityIds('Attestation', !$this->isGranted('ROLE_CONTRIBUTOR'));
 
         return $this->render('attestation/show.html.twig', [
             'controller_name'    => 'AttestationController',
@@ -333,13 +334,13 @@ class AttestationController extends AbstractController
     /**
      * @Route("/attestation/{id}/edit", name="attestation_edit")
      */
-    public function edit($id, Request $request, TranslatorInterface $translator)
+    public function edit($id, Request $request, TranslatorInterface $translator, ManagerRegistry $doctrine)
     {
         $this->denyAccessUnlessGranted("ROLE_CONTRIBUTOR");
 
-        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $user = $this->getUser();
 
-        $attestation = $this->getDoctrine()
+        $attestation = $doctrine
             ->getRepository(Attestation::class)
             ->find(intval($id));
 
@@ -356,7 +357,7 @@ class AttestationController extends AbstractController
         }
         $source = $attestation->getSource();
         if ($source->getVerrou() === null) {
-            $verrou = $this->getDoctrine()->getRepository(VerrouEntite::class)->create($source, $user, $this->dureeVerrou);
+            $verrou = $doctrine->getRepository(VerrouEntite::class)->create($source, $user, $this->dureeVerrou);
         } else if (!$source->getVerrou()->isWritable($user)) {
             $request->getSession()->getFlashBag()->add(
                 'error',
@@ -379,7 +380,7 @@ class AttestationController extends AbstractController
             $contientElements->add($ce);
         }
 
-        $form   = $this->get('form.factory')->create(AttestationType::class, $attestation, [
+        $form   = $this->createForm(AttestationType::class, $attestation, [
             'formAction'   => 'edit',
             'source'       => $attestation->getSource(),
             'attestation'  => $attestation,
@@ -392,7 +393,7 @@ class AttestationController extends AbstractController
         ]);
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
-            $em = $this->getDoctrine()->getManager();
+            $em = $doctrine->getManager();
             $attestation->setDernierEditeur($user);
             foreach ($attestation->getAttestationMateriels() as $am) {
                 if ($am->getMateriel() !== null || $am->getCategorieMateriel() !== null) {
@@ -475,7 +476,7 @@ class AttestationController extends AbstractController
                 $attestation->setEstDatee(false);
             }
 
-            $this->getDoctrine()->getRepository(VerrouEntite::class)->remove($source->getVerrou());
+            $doctrine->getRepository(VerrouEntite::class)->remove($source->getVerrou());
             $em->flush();
 
             // Message de confirmation
@@ -503,17 +504,17 @@ class AttestationController extends AbstractController
     /**
      * @Route("/attestation/{id}/canceledit", name="attestation_canceledit")
      */
-    public function canceledit($id, Request $request)
+    public function canceledit($id, Request $request, ManagerRegistry $doctrine)
     {
         $this->denyAccessUnlessGranted("ROLE_CONTRIBUTOR");
 
-        $user = $this->get('security.token_storage')->getToken()->getUser();
-        $attestation = $this->getDoctrine()
+        $user = $this->getUser();
+        $attestation = $doctrine
             ->getRepository(Attestation::class)
             ->find(intval($id));
         $verrou = $attestation->getSource()->getVerrou();
         if ($verrou !== null && $verrou->isWritable($user)) {
-            $this->getDoctrine()->getRepository(VerrouEntite::class)->remove($verrou);
+            $doctrine->getRepository(VerrouEntite::class)->remove($verrou);
         }
         return $this->redirectToRoute('attestation_list');
     }
@@ -521,22 +522,22 @@ class AttestationController extends AbstractController
     /**
      * @Route("/attestation/{id}/delete", name="attestation_delete")
      */
-    public function delete($id, Request $request, TranslatorInterface $translator)
+    public function delete($id, Request $request, TranslatorInterface $translator, ManagerRegistry $doctrine)
     {
         $this->denyAccessUnlessGranted("ROLE_CONTRIBUTOR");
 
         $submittedToken = $request->request->get('token');
-        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $user = $this->getUser();
 
         if ($this->isCsrfTokenValid('delete_attestation', $submittedToken)) {
-            $repository = $this->getDoctrine()->getRepository(Attestation::class);
+            $repository = $doctrine->getRepository(Attestation::class);
             $attestation = $repository->find(intval($id));
             if ($attestation instanceof Attestation) {
                 if ($this->isGranted('ROLE_ADMIN')) {
-                    $user = $this->get('security.token_storage')->getToken()->getUser();
+                    $user = $this->getUser();
                     $verrou = $attestation->getSource()->getVerrou();
                     if (!$verrou || $verrou->isWritable($user)) {
-                        $em = $this->getDoctrine()->getManager();
+                        $em = $doctrine->getManager();
                         $em->remove($attestation);
                         $em->flush();
                         $request->getSession()->getFlashBag()->add('success', 'attestation.messages.deleted');

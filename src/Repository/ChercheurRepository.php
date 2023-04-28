@@ -23,6 +23,12 @@ class ChercheurRepository extends ServiceEntityRepository
     {
         $user = $this->find($id);
         $user->setActif(true);
+        if ($user->getProjets()->isEmpty()) {
+            $projet = $this->getEntityManager()->createQuery('SELECT p FROM App\Entity\Projet p WHERE p.id = 1')->getOneOrNullResult();
+            if ($projet !== null) {
+                $user->addProjet($projet);
+            }
+        }
         $this->getEntityManager()->flush();
         return $user;
     }

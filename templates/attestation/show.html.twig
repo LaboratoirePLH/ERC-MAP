@@ -22,7 +22,9 @@
     <hr/>
     <div class="row">
         <div class="col-12 text-center">
-            <a href=" {{ url('attestation_list') }}" class="btn btn-secondary">{{ 'generic.back'|trans }}</a>
+            <a href=" {{ url('attestation_list') }}" onclick="javascript: history.back(); return false;" class="btn btn-secondary">
+                {{ 'generic.back'|trans }}
+            </a>
         </div>
     </div>
 {% endblock %}

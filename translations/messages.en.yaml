@@ -581,7 +581,7 @@ search:
     choose_criteria: "Choose the criteria"
     export_criteria: "Share research"
     import_criteria: "Import research"
-    export_resultats_as_criteria: "Sample research"
+    export_results_as_criteria: "Search in this sample"
     results_type: "Results type"
     results_nodes_links: "Results nodes & links"
     results_nodes: "Nodes"

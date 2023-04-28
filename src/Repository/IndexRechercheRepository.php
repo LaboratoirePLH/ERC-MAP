@@ -314,7 +314,7 @@ class IndexRechercheRepository extends ServiceEntityRepository
         $query = $this->createQueryBuilder('i')
             ->select('i');
         if ($restrictToProjects !== null) {
-            $query = $query->andWhere("i.projet_id IN (:projets)")
+            $query = $query->andWhere("(i.entite = 'Element' OR i.projet_id IN (:projets))")
                 ->setParameter('projets', $restrictToProjects);
         }
         $allData = $query->getQuery()

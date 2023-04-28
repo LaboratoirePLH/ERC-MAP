@@ -344,7 +344,7 @@ element:
     add_elementbiblio: "Ajouter une Référence Bibliographique"
     add_traduction: "Ajouter une Traduction"
     add_theonyme_implicite: "Ajouter un Hétéronyme / une Forme Alternative"
-    add_theonyme_construit: "Ajouter un Thénoyme Construit sur"
+    add_theonyme_construit: "Ajouter un Élément Racine"
     messages:
         created: "L'Élément a été créé"
         edited: "L'Élément a été modifié"

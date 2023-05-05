@@ -374,6 +374,12 @@ agent:
         genre: "Genres"
         statut_affiche: "Statuts Affichés"
         activite: "Activités"
+        agent_designation: "Désignation (Agent)"
+        agent_agentivite: "Agentivités (Agent)"
+        agent_nature: "Natures (Agent)"
+        agent_genre: "Genres (Agent)"
+        agent_statut_affiche: "Statuts Affichés (Agent)"
+        agent_activite: "Activités (Agent)"
 
 datation:
     fields:

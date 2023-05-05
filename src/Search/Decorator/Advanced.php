@@ -132,7 +132,47 @@ class Advanced
         $result = array_merge($result, self::_decorateDatation($data['datation'] ?? []));
         $result = array_merge($result, self::_decorateLocalisation($data['localisation'] ?? [], $locale));
 
-        $result['agents'] = array_filter(array_column($data['agents'] ?? [], 'designation'));
+        $result['agentsDesignation'] = array_filter(array_column($data['agents'] ?? [], 'designation'));
+        $result['agentsStatutsAffiches'] = array_map(function ($a) use ($nameField) {
+            $v = array_column($a['statutAffiches'] ?? [], $nameField);
+            if (count($v) == 0) {
+                return 'Ø';
+            } else {
+                return implode(' + ', $v);
+            }
+        }, $data['agents'] ?? []);
+        $result['agentsNatures'] = array_map(function ($a) use ($nameField) {
+            $v = array_column($a['natures'] ?? [], $nameField);
+            if (count($v) == 0) {
+                return 'Ø';
+            } else {
+                return implode(' + ', $v);
+            }
+        }, $data['agents'] ?? []);
+        $result['agentsGenres'] = array_map(function ($a) use ($nameField) {
+            $v = array_column($a['genres'] ?? [], $nameField);
+            if (count($v) == 0) {
+                return 'Ø';
+            } else {
+                return implode(' + ', $v);
+            }
+        }, $data['agents'] ?? []);
+        $result['agentsActivites'] = array_map(function ($a) use ($nameField) {
+            $v = array_column($a['activites'] ?? [], $nameField);
+            if (count($v) == 0) {
+                return 'Ø';
+            } else {
+                return implode(' + ', $v);
+            }
+        }, $data['agents'] ?? []);
+        $result['agentsAgentivites'] = array_map(function ($a) use ($nameField) {
+            $v = array_column($a['agentivites'] ?? [], $nameField);
+            if (count($v) == 0) {
+                return 'Ø';
+            } else {
+                return implode(' + ', $v);
+            }
+        }, $data['agents'] ?? []);
 
         if (array_key_exists('formule1', $data)) {
             $result = array_merge($result, $data['formule1']);

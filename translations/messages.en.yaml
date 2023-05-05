@@ -375,6 +375,12 @@ agent:
         genre: "Genders"
         statut_affiche: "Explicit Statuses"
         activite: "Activities"
+        agent_designation: "Designation (Agent)"
+        agent_agentivite: "Agencies (Agent)"
+        agent_nature: "Natures (Agent)"
+        agent_genre: "Genders (Agent)"
+        agent_statut_affiche: "Explicit Statuses (Agent)"
+        agent_activite: "Activities (Agent)"
 
 datation:
     fields:

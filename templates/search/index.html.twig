@@ -681,8 +681,20 @@
                             switch (criteria.type) {
                                 case 'locationselect':
                                     $('#advanced').find('select[name="' + criteriaName + '[' + index + '][values][]"]').val(value.values).trigger('chosen:updated');
-                                    if (value.hasOwnProperty('direct') && value.direct === "direct") {
-                                        $('#advanced').find('input[name="' + criteriaName + '[' + index + '][direct]"]').attr('checked', true);
+                                    if (value.hasOwnProperty('origin') && value.direct === "origin") {
+                                        $('#advanced').find('input[name="' + criteriaName + '[' + index + '][origin]"]').attr('checked', true);
+                                    }
+                                    if (value.hasOwnProperty('discovery') && value.direct === "discovery") {
+                                        $('#advanced').find('input[name="' + criteriaName + '[' + index + '][discovery]"]').attr('checked', true);
+                                    }
+                                    if (value.hasOwnProperty('attestation') && value.direct === "attestation") {
+                                        $('#advanced').find('input[name="' + criteriaName + '[' + index + '][attestation]"]').attr('checked', true);
+                                    }
+                                    if (value.hasOwnProperty('agents') && value.direct === "agents") {
+                                        $('#advanced').find('input[name="' + criteriaName + '[' + index + '][agents]"]').attr('checked', true);
+                                    }
+                                    if (value.hasOwnProperty('elements') && value.direct === "elements") {
+                                        $('#advanced').find('input[name="' + criteriaName + '[' + index + '][elements]"]').attr('checked', true);
                                     }
                                     if (value.hasOwnProperty('mode') && value.mode === "all") {
                                         $('#advanced').find('input[name="' + criteriaName + '[' + index + '][mode]"]').attr('checked', true);
@@ -974,8 +986,16 @@
                     var index = $("#advanced").find('select[name^="' + criteria.key + '"]').length;
                     var inputId = 'input' + criteria.key.charAt(0).toUpperCase() + criteria.key.slice(1);
                     var inputName = criteria.key + '[' + index + '][values][]';
-                    template.find('.locationselect-direct').find('label').prop('for', inputId + 'Direct_' + index);
-                    template.find('.locationselect-direct').find('input').prop('id', inputId + 'Direct_' + index).prop('name', criteria.key + '[' + index + '][direct]');
+                    template.find('.locationselect-origin').find('label').prop('for', inputId + 'Origin_' + index);
+                    template.find('.locationselect-origin').find('input').prop('id', inputId + 'Origin_' + index).prop('name', criteria.key + '[' + index + '][origin]');
+                    template.find('.locationselect-discovery').find('label').prop('for', inputId + 'Discovery_' + index);
+                    template.find('.locationselect-discovery').find('input').prop('id', inputId + 'Discovery_' + index).prop('name', criteria.key + '[' + index + '][discovery]');
+                    template.find('.locationselect-testimony').find('label').prop('for', inputId + 'Testimony_' + index);
+                    template.find('.locationselect-testimony').find('input').prop('id', inputId + 'Testimony_' + index).prop('name', criteria.key + '[' + index + '][testimony]');
+                    template.find('.locationselect-agents').find('label').prop('for', inputId + 'Agents_' + index);
+                    template.find('.locationselect-agents').find('input').prop('id', inputId + 'Agents_' + index).prop('name', criteria.key + '[' + index + '][agents]');
+                    template.find('.locationselect-elements').find('label').prop('for', inputId + 'Elements_' + index);
+                    template.find('.locationselect-elements').find('input').prop('id', inputId + 'Elements_' + index).prop('name', criteria.key + '[' + index + '][elements]');
                     template.find('label').first().prop('for', inputId).text(criteria.label);
                     template.find('select').prop('id', inputId).prop('name', inputName);
                     template.find('.select-strict').find('label').prop('for', inputId + 'Mode_' + index);

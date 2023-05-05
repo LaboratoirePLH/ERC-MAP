@@ -609,6 +609,11 @@ search:
         query: "Requête SQL"
         heteronym: "(+ Hétéronymes)"
         built: "(+ Construits sur)"
+        location_origin: "Origine de la Source"
+        location_discovery: "Découverte de la Source"
+        location_attestation: "Attestation"
+        location_agents: "Agents"
+        location_elements: "Éléments"
     element_labels:
         added: "Éléments ajoutés"
         add_new: "Ajouter un nouvel élément"

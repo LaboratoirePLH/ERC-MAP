@@ -208,6 +208,63 @@ abstract class AbstractFilter
         return [];
     }
 
+    public static function resolveCategorizedLocalisations(IndexRecherche $e, array $sortedData): array
+    {
+        $eData = $e->getData();
+        $loc = [
+            'discovery' => [],
+            'origin'    => [],
+            'testimony' => [],
+            'agents'    => [],
+            'elements'  => [],
+        ];
+        if ($e->getEntite() === 'Element') {
+            $loc['elements'] = array_filter([$eData['localisation'] ?? null]);
+            $attestations = self::resolveAttestations($e, $sortedData);
+            foreach ($attestations as $attestation) {
+                $loc['testimony'] = array_merge($loc['testimony'], [$$attestation['localisation'] ?? null]);
+                $loc['agents'] = array_merge(
+                    $loc['agents'],
+                    array_map(function ($agent) {
+                        return $agent['localisation'] ?? [];
+                    }, self::resolveAgents($e, $sortedData))
+                );
+                $sources = self::resolveSources($attestation, $sortedData);
+                $loc['discovery'] = array_merge(
+                    $loc['discovery'],
+                    array_map(function ($s) {
+                        return $s['lieuDecouverte'] ?? null;
+                    }, $sources)
+                );
+                $loc['origin'] = array_merge(
+                    $loc['origin'],
+                    array_map(function ($s) {
+                        return $s['lieuOrigine'] ?? null;
+                    }, $sources)
+                );
+            }
+        } else if ($e->getEntite() === 'Attestation') {
+            $loc['testimony'] = [$eData['localisation'] ?? null];
+            $loc['agents'] = array_map(function ($agent) {
+                return $agent['localisation'] ?? [];
+            }, self::resolveAgents($e, $sortedData));
+
+            $sources = self::resolveSources($e, $sortedData);
+            $loc['discovery'] = array_map(function ($s) {
+                return $s['lieuDecouverte'] ?? null;
+            }, $sources);
+            $loc['origin'] = array_map(function ($s) {
+                return $s['lieuOrigine'] ?? null;
+            }, $sources);
+        } else if ($e->getEntite() === 'Source') {
+            $loc['discovery'] = [$eData['lieuDecouverte'] ?? null];
+            $loc['origin']    = [$eData['lieuOrigine'] ?? null];
+        }
+        return array_map(function ($v) {
+            return array_filter($v);
+        }, $loc);
+    }
+
     public static function resolveAgents(IndexRecherche $e, array $sortedData): array
     {
         // Resolve attestations and get agent data from them

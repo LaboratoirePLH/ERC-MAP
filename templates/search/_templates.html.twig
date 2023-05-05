@@ -104,12 +104,47 @@
                 <input type="checkbox" class="custom-control-input" id="name_mode" name="name_mode" value="all">
                 <label class="custom-control-label" for="name_mode">{{ 'generic.fields.require_all'|trans }}</label>
             </div>
-            <div class="custom-control custom-switch locationselect-direct">
+            <div class="custom-control custom-switch locationselect-origin">
+                <input type="checkbox" class="custom-control-input" id="name_origin" name="name_origin"
+                    value="origin" />
+                <label class="custom-control-label" for="name_origin">
+                    {{ ('search.criteria_labels.location_origin')|trans }}
+                </label>
+            </div>
+            <div class="custom-control custom-switch locationselect-discovery">
+                <input type="checkbox" class="custom-control-input" id="name_discovery" name="name_discovery"
+                    value="discovery" />
+                <label class="custom-control-label" for="name_discovery">
+                    {{ ('search.criteria_labels.location_discovery')|trans }}
+                </label>
+            </div>
+            <div class="custom-control custom-switch locationselect-testimony">
+                <input type="checkbox" class="custom-control-input" id="name_testimony" name="name_testimony"
+                    value="testimony" />
+                <label class="custom-control-label" for="name_testimony">
+                    {{ ('search.criteria_labels.location_attestation')|trans }}
+                </label>
+            </div>
+            <div class="custom-control custom-switch locationselect-agents">
+                <input type="checkbox" class="custom-control-input" id="name_agents" name="name_agents"
+                    value="agents" />
+                <label class="custom-control-label" for="name_agents">
+                    {{ ('search.criteria_labels.location_agents')|trans }}
+                </label>
+            </div>
+            <div class="custom-control custom-switch locationselect-elements">
+                <input type="checkbox" class="custom-control-input" id="name_elements" name="name_elements"
+                    value="elements" />
+                <label class="custom-control-label" for="name_elements">
+                    {{ ('search.criteria_labels.location_elements')|trans }}
+                </label>
+            </div>
+            {# <div class="custom-control custom-switch locationselect-direct">
                 <input type="checkbox" class="custom-control-input" id="name_direct" name="name_direct" value="direct">
                 <label class="custom-control-label" for="name_direct">{{ ('generic.fields.direct')|trans }}</label>
                 <i class="fas fa-question-circle" data-toggle="tooltip" data-placement="top" data-html="true"
                     title="{{ 'search.help.direct_locations'|trans|raw }}"></i>
-            </div>
+            </div> #}
         </div>
         {{ removeCriteriaButton }}
     </div>

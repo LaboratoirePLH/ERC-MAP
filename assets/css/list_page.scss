@@ -3,6 +3,11 @@
 @import "~datatables.net-bs4/css/dataTables.bootstrap4.min.css";
 @import "~datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css";
 
-div.dataTables_wrapper div.dataTables_processing {
-    width: 300px;
+div.dataTables_wrapper {
+    width: 90vw;
+    margin: 0 auto;
+
+    div.dataTables_processing {
+        width: 300px;
+    }
 }

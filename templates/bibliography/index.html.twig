@@ -159,7 +159,7 @@
                                 buttons.push(verrou);
                             }
 
-                            return buttons.map(btn => btn[0].outerHTML).join("\n");
+                            return '<div class="d-flex flex-column align-items-stretch">' + buttons.map(btn => btn[0].outerHTML).join("\n") + '</div>';
                         }
                     }
                 ],

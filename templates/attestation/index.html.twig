@@ -214,7 +214,7 @@
                             buttons.push($.fn.createListButton('a', 'secondary', 'copy', "{{ 'generic.clone'|trans }}", cloneRoute.replace('__ID__', row.id)));
                         }
 
-                        return buttons.map(btn => btn[0].outerHTML).join("\n");
+                        return '<div class="d-flex flex-column align-items-stretch">' + buttons.map(btn => btn[0].outerHTML).join("\n") + '</div>';
                     }
                 }
             ],

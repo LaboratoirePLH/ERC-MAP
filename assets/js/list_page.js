@@ -189,13 +189,17 @@ jQuery.fn.DataTable.ext.type.order['id-pre'] = function (d) {
     };
 
     $.fn.createListButton = function (tag, color, icon, text, href) {
+        var textEl = $(document.createElement('span')).addClass('flex-grow').text(text);
         var btn = $(document.createElement(tag))
-            .addClass('btn btn-sm btn-block my-1 btn-' + color)
-            .text(text)
-            .prepend($(document.createElement('i')).addClass("fas fa-fw fa-" + icon));
+            .addClass('btn btn-sm d-flex align-items-center w-full my-1 btn-' + color)
+            .append(textEl)
+            .prepend($(document.createElement('i')).addClass("mr-1 fas fa-fw fa-" + icon));
 
         if (tag === 'a') {
-            btn.attr('href', href);
+            btn.attr('href', href)
+                .attr('target', '_blank')
+                .attr('rel', 'noopener noreferer')
+                .append($(document.createElement('i')).addClass("ml-1 fas fa-fw fa-external-link-alt"));
         } else {
             btn.attr('type', 'button')
         }

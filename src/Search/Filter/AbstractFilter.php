@@ -222,7 +222,7 @@ abstract class AbstractFilter
             $loc['elements'] = array_filter([$eData['localisation'] ?? null]);
             $attestations = self::resolveAttestations($e, $sortedData);
             foreach ($attestations as $attestation) {
-                $loc['testimony'] = array_merge($loc['testimony'], [$$attestation['localisation'] ?? null]);
+                $loc['testimony'] = array_merge($loc['testimony'], [$attestation->getData()['localisation'] ?? null]);
                 $loc['agents'] = array_merge(
                     $loc['agents'],
                     array_map(function ($agent) {
@@ -233,13 +233,13 @@ abstract class AbstractFilter
                 $loc['discovery'] = array_merge(
                     $loc['discovery'],
                     array_map(function ($s) {
-                        return $s['lieuDecouverte'] ?? null;
+                        return $s->getData()['lieuDecouverte'] ?? null;
                     }, $sources)
                 );
                 $loc['origin'] = array_merge(
                     $loc['origin'],
                     array_map(function ($s) {
-                        return $s['lieuOrigine'] ?? null;
+                        return $s->getData()['lieuOrigine'] ?? null;
                     }, $sources)
                 );
             }
@@ -251,10 +251,10 @@ abstract class AbstractFilter
 
             $sources = self::resolveSources($e, $sortedData);
             $loc['discovery'] = array_map(function ($s) {
-                return $s['lieuDecouverte'] ?? null;
+                return $s->getData()['lieuDecouverte'] ?? null;
             }, $sources);
             $loc['origin'] = array_map(function ($s) {
-                return $s['lieuOrigine'] ?? null;
+                return $s->getData()['lieuOrigine'] ?? null;
             }, $sources);
         } else if ($e->getEntite() === 'Source') {
             $loc['discovery'] = [$eData['lieuDecouverte'] ?? null];

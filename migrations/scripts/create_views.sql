@@ -118,7 +118,7 @@ WHERE
             FROM
                 attestation
             WHERE
-                attestation.id_etat_fiche = 3
+                attestation.id_etat_fiche = 4
         )
     )
 GROUP BY
@@ -170,7 +170,7 @@ WHERE
             FROM
                 attestation
             WHERE
-                attestation.id_etat_fiche = 3
+                attestation.id_etat_fiche = 4
         )
     )
 GROUP BY
@@ -270,7 +270,7 @@ FROM
     LEFT JOIN attestation_pratique ON attestation_pratique.id_attestation = attestation.id
     LEFT JOIN pratique ON pratique.id = attestation_pratique.id_pratique
 WHERE
-    attestation.id_etat_fiche = 3
+    attestation.id_etat_fiche = 4
     AND (
         attestation.id_source IN (
             SELECT
@@ -279,7 +279,7 @@ WHERE
                 source source
                 LEFT JOIN attestation attestation_1 ON attestation_1.id_source = source.id
             WHERE
-                attestation_1.id_etat_fiche = 3
+                attestation_1.id_etat_fiche = 4
             EXCEPT
             SELECT
                 source.id
@@ -289,6 +289,7 @@ WHERE
             WHERE
                 attestation_1.id_etat_fiche = 1
                 OR attestation_1.id_etat_fiche = 2
+                OR attestation_1.id_etat_fiche = 3
         )
     )
 GROUP BY
@@ -356,7 +357,7 @@ FROM
     LEFT JOIN attestation_pratique ON attestation_pratique.id_attestation = attestation.id
     LEFT JOIN pratique ON pratique.id = attestation_pratique.id_pratique
 WHERE
-    attestation.id_etat_fiche = 3
+    attestation.id_etat_fiche = 4
     AND (
         attestation.id_source IN (
             SELECT
@@ -365,7 +366,7 @@ WHERE
                 source source
                 LEFT JOIN attestation attestation_1 ON attestation_1.id_source = source.id
             WHERE
-                attestation_1.id_etat_fiche = 3
+                attestation_1.id_etat_fiche = 4
             EXCEPT
             SELECT
                 source.id
@@ -375,6 +376,7 @@ WHERE
             WHERE
                 attestation_1.id_etat_fiche = 1
                 OR attestation_1.id_etat_fiche = 2
+                OR attestation_1.id_etat_fiche = 3
         )
     )
 GROUP BY
@@ -821,7 +823,7 @@ WHERE
                 source source_1
                 LEFT JOIN attestation ON attestation.id_source = source_1.id
             WHERE
-                attestation.id_etat_fiche = 3
+                attestation.id_etat_fiche = 4
             EXCEPT
             SELECT
                 source_1.id
@@ -831,6 +833,7 @@ WHERE
             WHERE
                 attestation.id_etat_fiche = 1
                 OR attestation.id_etat_fiche = 2
+                OR attestation.id_etat_fiche = 3
         )
     )
 GROUP BY
@@ -927,7 +930,7 @@ WHERE
                 source source_1
                 LEFT JOIN attestation ON attestation.id_source = source_1.id
             WHERE
-                attestation.id_etat_fiche = 3
+                attestation.id_etat_fiche = 4
             EXCEPT
             SELECT
                 source_1.id
@@ -937,6 +940,7 @@ WHERE
             WHERE
                 attestation.id_etat_fiche = 1
                 OR attestation.id_etat_fiche = 2
+                OR attestation.id_etat_fiche = 3
         )
     )
 GROUP BY

@@ -15,7 +15,7 @@ class Locations extends AbstractFilter
         $hasSpecificLocations = !!count(array_merge(
             array_column($criteria, "origin"),
             array_column($criteria, "discovery"),
-            array_column($criteria, "attestation"),
+            array_column($criteria, "testimony"),
             array_column($criteria, "agents"),
             array_column($criteria, "elements")
         ));

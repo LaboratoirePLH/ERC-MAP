@@ -256,9 +256,33 @@ abstract class AbstractFilter
             $loc['origin'] = array_map(function ($s) {
                 return $s->getData()['lieuOrigine'] ?? null;
             }, $sources);
+
+            $elements = self::resolveElements($e, $sortedData);
+            $loc['elements'] = array_map(function ($e) {
+                return $e->getData()['localisation'] ?? null;
+            }, $elements);
         } else if ($e->getEntite() === 'Source') {
             $loc['discovery'] = [$eData['lieuDecouverte'] ?? null];
             $loc['origin']    = [$eData['lieuOrigine'] ?? null];
+
+            $attestations = self::resolveAttestations($e, $sortedData);
+            foreach ($attestations as $attestation) {
+                $loc['testimony'] = array_merge($loc['testimony'], [$attestation->getData()['localisation'] ?? null]);
+                $loc['agents'] = array_merge(
+                    $loc['agents'],
+                    array_map(function ($agent) {
+                        return $agent['localisation'] ?? [];
+                    }, self::resolveAgents($e, $sortedData))
+                );
+
+                $elements = self::resolveElements($e, $sortedData);
+                $loc['elements'] = array_merge(
+                    $loc['elements'],
+                    array_map(function ($e) {
+                        return $e->getData()['localisation'] ?? null;
+                    }, $elements)
+                );
+            }
         }
         return array_map(function ($v) {
             return array_filter($v);

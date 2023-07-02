@@ -50,4 +50,5 @@ security:
         - { path: ^/language, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/inactive_account, roles: [ROLE_UNVERIFIED_USER, ROLE_USER] }
-        - { path: ^/, roles: ROLE_USER }
+        # - { path: ^/, roles: ROLE_USER }
+        - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }

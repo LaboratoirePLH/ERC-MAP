@@ -8,8 +8,8 @@ parameters:
     duree_verrou: 30 #durée des verrous sur les données (en minutes)
     from_email: map.polytheisms@gmail.com
     from_name: "ERC-MAP-BD"
-    google_recaptcha_site_key: '%env(GOOGLE_RECAPTCHA_SITE_KEY)%'
-    open_access: false
+    google_recaptcha_site_key: "%env(GOOGLE_RECAPTCHA_SITE_KEY)%"
+    open_access: true
     geo.app_url_fr: "https://geoapps.huma-num.fr/adws/app/8cc4e1b9-3a92-11e9-8702-e571f836e404/"
     geo.app_url_en: "https://geoapps.huma-num.fr/adws/app/6b2d0f72-83ac-11ea-9fab-cdd8796420d3/"
     geo.function_source_fr: "1e143ce6-6ce3-11ea-90e3-f7ccf6c80337"
@@ -23,25 +23,25 @@ parameters:
 services:
     # default configuration for services in *this* file
     _defaults:
-        autowire: true      # Automatically injects dependencies in your services.
+        autowire: true # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
         bind:
-            $dureeVerrou: '%duree_verrou%'
-            $fromEmail: '%from_email%'
-            $fromName: '%from_name%'
-            $openAccess: '%open_access%'
+            $dureeVerrou: "%duree_verrou%"
+            $fromEmail: "%from_email%"
+            $fromName: "%from_name%"
+            $openAccess: "%open_access%"
 
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
     App\:
-        resource: '../src/*'
-        exclude: '../src/{DependencyInjection,Entity,Migrations,Tests,Kernel.php}'
+        resource: "../src/*"
+        exclude: "../src/{DependencyInjection,Entity,Migrations,Tests,Kernel.php}"
 
     # controllers are imported separately to make sure services can be injected
     # as action arguments even if you don't extend any base controller class
     App\Controller\:
-        resource: '../src/Controller'
-        tags: ['controller.service_arguments']
+        resource: "../src/Controller"
+        tags: ["controller.service_arguments"]
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
@@ -50,15 +50,15 @@ services:
             - { name: doctrine.event_subscriber, connection: default }
 
     App\EventSubscriber\LocaleSubscriber:
-        arguments: ['%kernel.default_locale%']
+        arguments: ["%kernel.default_locale%"]
 
     App\EventListener\ClearOrphanLocationsSubscriber:
         tags:
-            - { name: 'doctrine.event_subscriber' }
+            - { name: "doctrine.event_subscriber" }
 
     App\EventListener\DatabaseActivitySubscriber:
         tags:
-            - { name: 'doctrine.event_subscriber' }
+            - { name: "doctrine.event_subscriber" }
 
     App\EventListener\RedirectUserListener:
         tags:

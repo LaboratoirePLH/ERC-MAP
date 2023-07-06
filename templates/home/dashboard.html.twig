@@ -191,10 +191,16 @@
             // Show spinner on corpus state title
             $('#corpus-state-title').prepend($('<div class="spinner-border" role="status"></div>'));
             // Load data
-            $.get("{{ url('corpus_state') }}").done(function (data) {
-                $('#corpus-state > ul').tree(data, "{{ 'pages.dashboard.corpus_state_filter'|trans }}");
-            }).always(function () {
-                $('#corpus-state-title').find('.spinner-border').remove();
+            $.ajax({
+                url: "{{ url('corpus_state') }}",
+                timeout: 120000,
+                dataType: 'json',
+                success: function (data) {
+                    $('#corpus-state > ul').tree(data, "{{ 'pages.dashboard.corpus_state_filter'|trans }}");
+                },
+                complete: function () {
+                    $('#corpus-state-title').find('.spinner-border').remove();
+                }
             });
         });
         $('.collapse').on('show.bs.collapse', function () {

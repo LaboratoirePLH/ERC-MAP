@@ -11,8 +11,9 @@ class StringHelper
 
     public static function removeAccents(string $input): string
     {
-        $transliterator = \Transliterator::createFromRules(':: NFD; :: [:Nonspacing Mark:] Remove; :: NFC;', \Transliterator::FORWARD);
-        return $transliterator->transliterate($input);
+        return TransliteratorSingleton::transliterate($input);
+        // $transliterator = \Transliterator::createFromRules(':: NFD; :: [:Nonspacing Mark:] Remove; :: NFC;', \Transliterator::FORWARD);
+        // return $transliterator->transliterate($input);
     }
 
     public static function normalizeDiacritics($input): ?string

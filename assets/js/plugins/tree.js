@@ -7,7 +7,17 @@
         }
 
         function buildBadge(value) {
-            return $('<span>').addClass('badge badge-primary badge-pill float-right mr-3').text(value);
+            return $('<div>').addClass('d-flex justify-content-center float-right mr-3').css('width', '50px'). append(
+                $('<span>').addClass('badge badge-primary badge-pill').text(value)
+            );
+        }
+
+        function buildProgress(value) {
+            const progressBar = $('<div>')
+                .addClass('progress-bar')
+                .css('width', (value ?? 0) + '%')
+                .text((value ?? 0) + '%')
+            return $('<div>').addClass('progress d-inline-flex float-right').css('width', '100px').append(progressBar);
         }
 
         function buildLi(item, level) {
@@ -20,10 +30,12 @@
             } else {
                 li.html(item.text);
             }
-
             // Add badge
             li.append(buildBadge(item.badge))
             li.prepend(buildIcon(item.icon));
+            if(item.progress !== undefined){
+                li.append(buildProgress(item.progress));
+            }
 
             // If item has children, prepare for collapsible
             if (item.children !== undefined && item.children.length) {

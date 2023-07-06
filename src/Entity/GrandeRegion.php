@@ -22,6 +22,13 @@ class GrandeRegion extends AbstractEntity
      */
     private $geom;
 
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="progression", type="smallint", nullable=false, options={"unsigned": true, "default":0})
+     */
+    private $progression = 0;
+
     public function getGeom()
     {
         return $this->geom;
@@ -30,6 +37,21 @@ class GrandeRegion extends AbstractEntity
     public function setGeom($geom): self
     {
         $this->geom = $geom;
+
+        return $this;
+    }
+
+    public function getProgression(): ?int
+    {
+        return $this->progression;
+    }
+
+    public function setProgression($progression): self
+    {
+        if (!is_numeric($progression)) {
+            $progression = 0;
+        }
+        $this->progression = $progression;
 
         return $this;
     }

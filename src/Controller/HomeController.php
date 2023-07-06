@@ -7,6 +7,7 @@ use App\Entity\Source;
 use App\Entity\IndexRecherche;
 use App\Form\ChercheurType;
 use App\Form\ChangePasswordType;
+use DateTime;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Asset\Packages;
@@ -209,7 +210,7 @@ class HomeController extends AbstractController
 
         $sources = $doctrine
             ->getRepository(Source::class)
-            ->findAll();
+            ->findForCorpusState();
 
         $data = [];
 
@@ -243,6 +244,7 @@ class HomeController extends AbstractController
             if (!array_key_exists($loc['grandeRegion']->getId(), $data)) {
                 $data[$loc['grandeRegion']->getId()] = [
                     "label"       => $loc['grandeRegion']->getNom($locale),
+                    "progress"    => round($loc['grandeRegion']->getProgression(), 2),
                     "sousRegions" => [],
                     "biblios"     => [],
                 ];
@@ -252,7 +254,8 @@ class HomeController extends AbstractController
                 if (!array_key_exists($loc['sousRegion']->getId(), $data[$loc['grandeRegion']->getId()]['sousRegions'])) {
                     $data[$loc['grandeRegion']->getId()]['sousRegions'][$loc['sousRegion']->getId()] = [
                         "label"    => $loc['sousRegion']->getNom($locale),
-                        "biblios" => []
+                        "progress" => round($loc['sousRegion']->getProgression(), 2),
+                        "biblios"  => []
                     ];
                 }
                 if (!array_key_exists($bib->getId(), $data[$loc['grandeRegion']->getId()]['sousRegions'][$loc['sousRegion']->getId()]['biblios'])) {
@@ -279,16 +282,18 @@ class HomeController extends AbstractController
 
         foreach ($data as $r) {
             $tree_r = [
-                'text' => $r['label'],
-                'icon' => 'globe-europe',
-                'badge' => 0,
+                'text'     => $r['label'],
+                'progress' => $r['progress'],
+                'icon'     => 'globe-europe',
+                'badge'    => 0,
                 'children' => []
             ];
             foreach ($r['sousRegions'] as $sr) {
                 $tree_sr = [
-                    'text' => $sr['label'],
-                    'icon' => 'map-marked',
-                    'badge' => 0,
+                    'text'     => $sr['label'],
+                    'progress' => $sr['progress'],
+                    'icon'     => 'map-marked',
+                    'badge'    => 0,
                     'children' => []
                 ];
 

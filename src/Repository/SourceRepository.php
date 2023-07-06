@@ -69,4 +69,24 @@ class SourceRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findForCorpusState(): array
+    {
+        $query = $this->createQueryBuilder('s')
+            ->select('PARTIAL s.{id}, ld, lo, PARTIAL ldgr.{id, nomFr, nomEn, progression}, PARTIAL ldsr.{id, nomFr, nomEn, progression}, PARTIAL logr.{id, nomFr, nomEn, progression}, PARTIAL losr.{id, nomFr, nomEn, progression}, sb, PARTIAL b.{id,auteurBiblio, titreAbrege, annee}, PARTIAL a.{id}, PARTIAL aef.{id,openAccess}')
+            ->leftJoin('s.lieuDecouverte', 'ld')
+            ->leftJoin('s.lieuOrigine', 'lo')
+            ->leftJoin('ld.grandeRegion', 'ldgr')
+            ->leftJoin('ld.sousRegion', 'ldsr')
+            ->leftJoin('lo.grandeRegion', 'logr')
+            ->leftJoin('lo.sousRegion', 'losr')
+            ->leftJoin('s.sourceBiblios', 'sb')
+            ->leftJoin('sb.biblio', 'b')
+            ->leftJoin('s.attestations', 'a')
+            ->leftJoin('a.etatFiche', 'aef')
+            ->getQuery();
+
+        $query->setHint(\Doctrine\ORM\Query::HINT_FORCE_PARTIAL_LOAD, 1);
+        return $query->getResult();
+    }
 }

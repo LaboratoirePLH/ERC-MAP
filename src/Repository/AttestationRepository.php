@@ -22,51 +22,81 @@ class AttestationRepository extends ServiceEntityRepository
     private function baseQuery()
     {
         return $this->createQueryBuilder('a')
-            ->select('a', 'd', 'l', 'c', 'de', 's', 't', 'tsu', 'm', 'ld', 'lo', 'sv', 'sd', 'sc', 'sde', 'sl', 'sb', 'b', 'p')
-            ->leftJoin('a.datation', 'd')
-            ->leftJoin('a.localisation', 'l')
+            ->select(
+                'PARTIAL a.{id, version, translitteration, extraitAvecRestitution, passage, dateCreation, dateModification, traduireFr, traduireEn}',
+                // 'd',
+                // 'l',
+                'PARTIAL c.{id, prenomNom}',
+                'PARTIAL de.{id, prenomNom}',
+                'PARTIAL aef.{id,openAccess, nomFr, nomEn}',
+                'PARTIAL s.{id}',
+                // 't',
+                // 'tsu',
+                // 'm',
+                // 'ld',
+                // 'lo',
+                'PARTIAL sv.{id, date_fin}',
+                'PARTIAL svc.{id, prenomNom}',
+                // 'sd',
+                // 'sc',
+                // 'sde',
+                // 'sl',
+                'sb',
+                'b',
+                'PARTIAL p.{id, nomFr, nomEn}'
+            )
+            // ->leftJoin('a.datation', 'd')
+            // ->leftJoin('a.localisation', 'l')
             ->leftJoin('a.createur', 'c')
             ->leftJoin('a.dernierEditeur', 'de')
+            ->leftJoin('a.etatFiche', 'aef')
             ->leftJoin('a.source', 's')
-            ->leftJoin('s.titrePrincipal', 't')
-            ->leftJoin('s.typeSupport', 'tsu')
-            ->leftJoin('s.materiau', 'm')
-            ->leftJoin('s.lieuDecouverte', 'ld')
-            ->leftJoin('s.lieuOrigine', 'lo')
+            // ->leftJoin('s.titrePrincipal', 't')
+            // ->leftJoin('s.typeSupport', 'tsu')
+            // ->leftJoin('s.materiau', 'm')
+            // ->leftJoin('s.lieuDecouverte', 'ld')
+            // ->leftJoin('s.lieuOrigine', 'lo')
             ->leftJoin('s.verrou', 'sv')
-            ->leftJoin('s.datation', 'sd')
-            ->leftJoin('s.createur', 'sc')
-            ->leftJoin('s.dernierEditeur', 'sde')
-            ->leftJoin('s.langues', 'sl')
+            ->leftJoin('sv.createur', 'svc')
+            // ->leftJoin('s.datation', 'sd')
+            // ->leftJoin('s.createur', 'sc')
+            // ->leftJoin('s.dernierEditeur', 'sde')
+            // ->leftJoin('s.langues', 'sl')
             ->leftJoin('s.sourceBiblios', 'sb')
-            ->leftJoin('s.projet', 'p')
-            ->leftJoin('sb.biblio', 'b');
+            ->leftJoin('sb.biblio', 'b')
+            ->leftJoin('s.projet', 'p');
     }
 
     public function findByElement($elementId)
     {
-        return $this->baseQuery()
+        $query = $this->baseQuery()
             ->leftJoin('a.contientElements', 'ce')
             ->leftJoin('ce.element', 'e')
             ->where('e.id = :eId')
             ->setParameter(':eId', $elementId)
-            ->getQuery()
-            ->getResult();
+            ->getQuery();
+
+        $query->setHint(\Doctrine\ORM\Query::HINT_FORCE_PARTIAL_LOAD, 1);
+        return $query->getResult();
     }
 
     public function findAll()
     {
-        return $this->baseQuery()
-            ->getQuery()
-            ->getResult();
+        $query = $this->baseQuery()
+            ->getQuery();
+
+        $query->setHint(\Doctrine\ORM\Query::HINT_FORCE_PARTIAL_LOAD, 1);
+        return $query->getResult();
     }
 
     public function findBySource($sourceId)
     {
-        return $this->baseQuery()
+        $query = $this->baseQuery()
             ->where('s.id = :sId')
             ->setParameter(':sId', $sourceId)
-            ->getQuery()
-            ->getResult();
+            ->getQuery();
+
+        $query->setHint(\Doctrine\ORM\Query::HINT_FORCE_PARTIAL_LOAD, 1);
+        return $query->getResult();
     }
 }

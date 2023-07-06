@@ -70,7 +70,7 @@ class ListController extends AbstractController
                 'id'        => $source->getId(),
                 'projet'    => $source->getProjet() !== null ? $source->getProjet()->getNom($locale) : "",
                 'version'   => $source->getVersion(),
-                'categorie' => $source->getCategorieSource()->getNom($locale),
+                'categorie' => ($source->getCategorieSource() !== null) ? $source->getCategorieSource()->getNom($locale) : "",
                 'types'     => $source->getTypeSources()->map(function ($ts) use ($locale) {
                     return $ts->getNom($locale);
                 })->toArray(),

@@ -3,75 +3,103 @@
 <br />
 <h5>Historique et Objectifs</h5>
 <p class="text-justify">
-    La base de données MAP est issue du projet ERC Advanced Grant <em>Mapping Ancient Polytheisms. Cult Epithets as an
-        Interface between Religious Systems and Human Agency</em> (741182) développé d’octobre 2017 à juin 2023 et voué
-    à se
-    prolonger à travers un réseau scientifique international. Elle est entièrement en <em>open access</em> à l’adresse
-    suivante : <a href="https://base-map-polytheisms.huma-num.fr/">https://base-map-polytheisms.huma-num.fr/</a>
-    <br />
-    MAP étudie les puissances divines des mondes grecs et sémitiques à travers le recensement de leurs appellations
-    (noms, épithètes, titres et autres qualifications), appréhendées comme des « séquences onomastiques ». Les noms
-    divins expriment en effet les multiples fonctions et modes d’action des dieux, ainsi que leur inscription dans
-    diverses échelles spatiales. Les séquences onomastiques jouent un rôle stratégique dans la communication
-    rituelle, puisqu’elles permettent de cibler un ou des interlocuteur(s) et de renforcer l’efficacité du rituel.
-    Enfin, l’attention prêtée aux agents qui construisent et mobilisent les séquences onomastiques divines permet
-    d’aborder les modalités de l’agentivité humaine dans tout un éventail de situations de communication avec le
-    divin. Grâce aux systèmes de dénomination du divin, l’objectif est ainsi d’analyser les logiques relationnelles,
-    contextuelles et fluides, qui donnent lieu aux configurations de divinités.
-    <br />
-    La base de données MAP prend en compte les dénominations divines des mondes grecs dans leur plus grande
-    extension et des mondes sémitiques de l’Ouest (phénicien, punique, araméen, hébreu) à l’échelle d’une ample
-    Méditerranée et sur un temps long, d’environ 1000 av. jusqu’à 400 de n.è. Les données relatives aux supports
-    matériels, aux contextes, aux agents et aux noms divins sont extraites de corpus publiés. Ces données étant
-    largement hétérogènes, la base de données utilise, pour les enregistrer, des ontologies et des listes de valeurs
-    prédéfinies afin d’harmoniser la saisie et faciliter la consultation.
-</p>
-
-<br />
-<h5>Conception et Structure</h5>
-<p class="text-justify">
-    Il s’agit d’une base de données relationnelle en SQL (Structured Query Language) structurée autour de 3 tables
-    principales (Source, Attestation, Élément) et une série de tables secondaires, suivant une architecture répondant
-    aux problématiques d’une recherche portant sur l’onomastique divine. La base de données MAP n’est pas une base de
-    données épigraphiques ; elle est d’ailleurs conçue pour accueillir également des données papyrologiques,
-    numismatiques et littéraires. Le DMP (<em>Data Management Plan</em>) est disponible sur Opidor (<a
-        href="https://dmp.opidor.fr/plans">https://dmp.opidor.fr/plans</a>). Pour plus d’informations, consultez la
-    section « Mentions Légales » (<a
-        href="https://base-map-polytheisms.huma-num.fr/legal">https://base-map-polytheisms.huma-num.fr/legal</a>).
+    La base de données MAP (<em>DB MAP</em>) est issue du projet ERC Advanced Grant <em>Mapping Ancient Polytheisms.
+        Cult Epithets as an Interface between Religious Systems and Human Agency</em> (741182) développé d'octobre 2017
+    à juin 2023 et voué à se prolonger à travers un réseau scientifique international. Elle est entièrement en <em>open
+        access</em> à l'adresse suivante : <a href="https://base-map-polytheisms.huma-num.fr/">
+        https://base-map-polytheisms.huma-num.fr/</a>
     <br />
     <br />
-    La base de données MAP repose sur trois niveaux d’enregistrement des données :
-<ul>
+    La <em>DB MAP</em> est une base de données relationnelle en SQL (<em>Structured Query Language</em>) structurée
+    autour de 3 tables principales (Source, Attestation, Élément) et une série de tables secondaires, suivant une
+    architecture répondant aux problématiques d'une recherche portant sur l'onomastique divine. MAP étudie les
+    puissances divines des mondes grecs et sémitiques à travers le recensement de leurs appellations (noms, épithètes,
+    titres et autres qualifications), appréhendées comme des « séquences onomastiques ». La <em>DB MAP</em> prend en
+    compte les dénominations divines des mondes grecs dans leur plus grande extension et des mondes sémitiques de
+    l'Ouest (phénicien, punique, araméen, hébreu) à l'échelle d'une ample Méditerranée et sur un temps long, d'environ
+    1000 av. jusqu'à 400 de n.è. La <em>DB MAP</em> repose sur <strong>trois niveaux d'enregistrement des
+        données</strong> :
+<ul class="">
     <li>Source</li>
     <li>Attestation</li>
     <li>Élément</li>
 </ul>
+</p>
+<div class="d-flex justify-content-center align-items-start mb-3">
+    <img src="{{ asset('build/images/structure_fr.png') }}" alt="Structure de la BDD" height="200" />
+</div>
+<p class="text-justify">
+    La <strong>source</strong> est le document – épigraphique, glyptique, numismatique, papyrologique ou de
+    tradition manuscrite – qui contient une ou plusieurs séquences onomastiques divines.
+    <br />
+    L'<strong>attestation</strong> ou « séquence onomastique divine » est extraite d'une source et constitue un
+    ensemble de plusieurs éléments onomastiques se rapportant à une ou plusieurs divinités.
+    <br />
+    L'<strong>élément</strong> onomastique est l'unité de sens minimale au sein de l'attestation. Il s'agit d'une
+    catégorie sémantique et non grammaticale. Il peut donc s'agir d'un adjectif, substantif, verbe
+    ou d'une proposition. La <em>DB MAP</em> enregistre les attestations ou séquences
+    onomastiques de minimum 2 éléments, sauf lorsqu'un adjectif seul sert à désigner un dieu
+    (comme <em>Hypsistos</em>).
+    <br />
+    <br />
+    Ainsi, une source (niveau 1) contient une ou plusieurs attestations (niveau 2) qui contiennent
+    un ou plusieurs éléments (niveau 3). À ces trois niveaux sont rattachées des tables de
+    métadonnées : localisation, datation, agents, bibliographie, etc.
+    <br />
+    <br />
+    La <em>DB MAP</em> n'est pas une base de données épigraphique ; elle est d'ailleurs conçue pour
+    accueillir également des données papyrologiques, numismatiques et littéraires. Les données
+    relatives aux supports matériels, aux contextes, aux agents et aux noms divins sont extraites
+    des éditions des sources (corpus et autres publications). Ces données étant largement
+    hétérogènes, la base de données utilise, pour les enregistrer, des ontologies et des listes de
+    valeurs prédéfinies afin d'harmoniser la saisie et faciliter la consultation.
+    <br />
+    <br />
+    Les noms divins expriment en effet les multiples fonctions et modes d'action des dieux, ainsi
+    que leur inscription dans diverses échelles spatiales. Les séquences onomastiques jouent un
+    rôle stratégique dans la communication rituelle, puisqu'elles permettent de cibler un ou des
+    interlocuteur(s) et de renforcer l'efficacité du rituel. Enfin, l'attention prêtée aux agents qui
+    construisent et mobilisent les séquences onomastiques divines permet d'aborder les modalités
+    de l'agentivité humaine dans un large éventail de situations de communication avec le divin.
+    À travers le prisme des systèmes de dénomination du divin, l'objectif est ainsi d'analyser les
+    logiques relationnelles, contextuelles et fluides, qui donnent lieu aux configurations de
+    divinités.
+</p>
+<br />
+<h5>Navigation</h5>
+<p class="text-justify">
+    Le <strong>Tableau de Bord</strong> permet de visualiser les trois niveaux d'enregistrement, <em>Sources</em>,
+    <em>Attestations</em>, <em>Éléments</em>, avec le nombre de fiches enregistrées à l'instant T. Cliquer sur
+    <em>Sources</em>, ou <em>Attestations</em>, ou <em>Éléments</em> pour accéder à la Liste correspondante.
+    <br />
+    Cliquer sur
+    <strong>Bibliographie</strong> pour accéder à la Liste des références bibliographiques enregistrées.
+    <br />
+    Cliquer sur <strong>Outils</strong> pour accéder à l'<a
+        href="https://analytics.huma-num.fr/Sebastien.Plutniak/map-syntax-diagrams/">Analyse de Réseaux</a> ou au <a
+        href="https://geoapps.huma-num.fr/adws/app/8cc4e1b9-3a92-11e9-8702-e571f836e404/index.html">Webmapping</a>
+    permettant de visualiser les données enregistrées.
+    <br />
+    <br />
+    À partir de la page d'accueil, on peut consulter l'<strong>État de dépouillement des corpus</strong>, sous la forme
+    d'une liste, organisée géographiquement, des références dépouillées et enregistrées dans la base de données. Le
+    nombre affiché correspond au nombre de <strong>sources dont la saisie est achevée et validée</strong>.
 
-<strong>La source</strong> est le document – épigraphique, glyptique, numismatique, papyrologique ou de
-tradition manuscrite – qui contient une ou plusieurs séquences onomastiques divines.
-<br />
-<strong>L’attestation</strong> ou « séquence onomastique divine » est extraite d’une source et constitue un
-ensemble de plusieurs éléments onomastiques se rapportant à une ou plusieurs divinités.
-<br />
-<strong>L’élément</strong> onomastique est l’unité de sens minimale au sein de l’attestation. Il s’agit d’une
-catégorie sémantique et non grammaticale. Il peut donc s’agir d’un adjectif, substantif, verbe
-ou d’une proposition. La base de données MAP enregistre les attestations ou séquences
-onomastiques de minimum 2 éléments, sauf lorsqu’un adjectif seul sert à désigner un dieu
-(comme <em>Hypsistos</em>).
-<br />
-<br />
-Donc, une source (niveau 1) contient une ou plusieurs attestations (niveau 2) qui contiennent
-un ou plusieurs éléments (niveau 3). À ces trois niveaux sont rattachées des tables de
-métadonnées : localisation, datation, agents, bibliographie, etc.
+    Le DMP (<em>Data Management Plan</em>) est disponible sur Opidor (<a
+        href="https://dmp.opidor.fr/plans">https://dmp.opidor.fr/plans</a>). Pour plus d'informations, consultez la
+    section « Mentions Légales » (<a
+        href="https://base-map-polytheisms.huma-num.fr/legal">https://base-map-polytheisms.huma-num.fr/legal</a>).
+    <br />
+    <br />
 
-Pour plus d’informations, on se réfèrera à 3 Guides, disponibles : <a
-    href="https://hal.science/hal-02555965v1">https://hal.science/hal-02555965v1</a>.
+    <strong>Pour plus d'informations</strong>, on se réfèrera à 3 Guides, disponibles ici : <a
+        href="https://hal.science/hal-02555965v1">https://hal.science/hal-02555965v1</a>.
 <ul>
-    <li>Guide de l’usager : work in progress</li>
+    <li>Guide de l'usager : work in progress</li>
     <li>Guide des interfaces de recherche</li>
-    <li>Guide d’enregistrement dans la base de données</li>
+    <li>Guide d'enregistrement dans la base de données</li>
 </ul>
-Voir aussi les articles suivants :
+<strong>Voir aussi les articles suivants :</strong>
 <ul>
     <li><strong>Sylvain Lebreton</strong>, <strong>Corinne Bonnet</strong>, « Mettre les polythéismes en formules ? À
         propos
@@ -97,22 +125,4 @@ Voir aussi les articles suivants :
 <p class="text-justify">
     <a href="mailto:map.polytheisms@gmail.com">map.polytheisms@gmail.com</a> ou depuis la page <a
         href="{{ url('contact') }}">Contact</a>
-</p>
-
-<br />
-<h5>Naviguer dans la Base de Données</h5>
-<p class="text-justify">
-    Le <strong>Tableau de Bord</strong> permet de visualiser les trois niveaux d’enregistrement, <em>Sources</em>,
-    <em>Attestations</em>, <em>Éléments</em>, avec le nombre de fiches enregistrées à l’instant T. Cliquer sur
-    <em>Sources</em>, ou <em>Attestations</em>, ou <em>Éléments</em> pour accéder à la Liste correspondante. Cliquer sur
-    <em>Bibliographie</em> pour accéder à la Liste des références bibliographiques enregistrées. Cliquer sur
-    <em>Outils</em> pour accéder à l’<a
-        href="https://analytics.huma-num.fr/Sebastien.Plutniak/map-syntax-diagrams/">Analyse de Réseaux</a> ou au <a
-        href="https://geoapps.huma-num.fr/adws/app/8cc4e1b9-3a92-11e9-8702-e571f836e404/index.html">Webmapping</a>
-    permettant de visualiser les données enregistrées.
-    <br />
-    <br />
-    À partir de la page d’accueil, on peut consulter l’<strong>État de dépouillement des corpus</strong>, sous la forme
-    d’une liste, organisée géographiquement, des références dépouillées et enregistrées dans la base de données. Le
-    nombre affiché correspond au nombre de <strong>sources dont la saisie est achevée et validée</strong>.
 </p>

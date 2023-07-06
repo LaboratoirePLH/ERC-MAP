@@ -1,0 +1,128 @@
+<br />
+<h3>Presentation of the MAP Database</h3>
+<br />
+<h5>Historique et Objectifs</h5>
+<p class="text-justify">
+    The MAP database (<em>DB MAP</em>) is an outcome of the ERC Advanced Grant <em>Mapping Ancient Polytheisms.
+        Cult Epithets as an Interface between Religious Systems and Human Agency</em> (741182) which took place between
+    October 2017 and June 2023 and will be
+    extended through an international scientific network. The MAP database is available in full <em>open
+        access</em> at the following address: : <a href="https://base-map-polytheisms.huma-num.fr/">
+        https://base-map-polytheisms.huma-num.fr/</a>
+    <br />
+    <br />
+    The <em>DB MAP</em> is a relational database in SQL (<em>Structured Query Language</em>) structured around
+    3 main tables (Source, Testimony, Element) and a series of secondary tables, following an
+    architecture that responds to the research enquiry into divine onomastics. MAP studies the
+    divine powers of the Greek and Semitic worlds through a collection of their appellations
+    (names, epithets, titles and other qualifications), understood as “onomastic sequences”. The <em>DB MAP</em>
+    collects divine names from the Greek world in its widest extension and from the
+    Western Semitic world (Phoenician, Punic, Aramaic, Hebrew) in a large Mediterranean
+    framework and over a long period of time, from around 1000 BCE to 400 CE.
+    The <em>DB MAP</em> is based on <strong>three levels of data recording</strong>:
+<ul class="">
+    <li>Source</li>
+    <li>Testimony</li>
+    <li>Element</li>
+</ul>
+</p>
+<div class="d-flex justify-content-center align-items-start mb-3">
+    <img src="{{ asset('build/images/structure_fr.png') }}" alt="Structure de la BDD" height="200" />
+</div>
+<p class="text-justify">
+    The <strong>source</strong> is the document – epigraphic, glyptic, numismatic, papyrological or from the
+    manuscript tradition – which contains one or more divine onomastic sequences.
+    <br />
+    The <strong>testimony</strong> or “divine onomastic sequence” is extracted from a source and constitutes a
+    set of several onomastic elements relating to one or more deities.
+    <br />
+    The onomastic <strong>element</strong>element is the minimum unit of meaning within the testimony. It is a semantic
+    and not a grammatical category. It may therefore be an adjective, noun, verb or proposition.
+    The <em>DB MAP</em> records testimonies or onomastic sequences including at least 2 elements,
+    except when an adjective alone is used to designate a god (such as <em>Hypsistos</em>).
+    <br />
+    <br />
+    A source (level 1) therefore contains one or more testimonies (level 2) which contain one or
+    more elements (level 3). Metadata tables are attached to these three levels: location, dating,
+    agents, bibliography, etc.
+    <br />
+    <br />
+    It is worth stressing the fact that the <em>DB MAP</em> is not an epigraphic database; in fact, it is
+    designed to register papyrological, numismatic and literary data as well as inscriptions. Data
+    relating to material supports, contexts, agents and divine names are extracted from scientific
+    editions of sources (corpora and other publications). As these data are largely heterogeneous,
+    the database uses ontologies and lists of predefined values to record and harmonise them, and
+    to ease the consultation.
+    <br />
+    <br />
+    Divine names express the multiple functions and modes of action of the gods, as well as their
+    place in various spatial scales. Onomastic sequences play a strategic role in ritual
+    communication, targeting one or more divine interlocutors and enhancing the effectiveness of
+    the ritual. Finally, the attention paid to the agents who construct and mobilise divine
+    onomastic sequences allows to address different aspects of human agency in a wide range of
+    situations of communication with the divine. Through the lens of the naming systems of the
+    divine, the aim of the MAP project is to analyse the relational, contextual and fluid logics that
+    give rise to configurations of deities.
+</p>
+<br />
+<h5>Browse</h5>
+<p class="text-justify">
+    The <strong>Home Page</strong> displays the three levels of registration, <em>Sources</em>,
+    <em>Testimonies</em>, <em>Elements</em>, together with the number of records registered at that time. Click on
+    <em>Sources</em>, or <em>Testimonies</em>, or <em>Elements</em> to access the corresponding List.
+    <br />
+    Click on
+    <strong>Bibliography</strong> to access the List of registered bibliographic references.
+    <br />
+    Click on <strong>Tools</strong> to access the<a
+        href="https://analytics.huma-num.fr/Sebastien.Plutniak/map-syntax-diagrams/">Network Analysis</a> or <a
+        href="https://geoapps.huma-num.fr/adws/app/8cc4e1b9-3a92-11e9-8702-e571f836e404/index.html">Webmapping</a>
+    functions for viewing the data recorded.
+    <br />
+    <br />
+    From the home page, you can view the <strong>Corpus counting state</strong>, in the form of a
+    geographically organised list of the references processed and registered in the database. The
+    number displayed corresponds to the <strong>number of sources completed and validated</strong>.
+
+    The DMP (<em>Data Management Plan</em>) is available on Opidor (<a
+        href="https://dmp.opidor.fr/plans">https://dmp.opidor.fr/plans</a>). For more information, see the « Legal
+    Information » section (<a
+        href="https://base-map-polytheisms.huma-num.fr/legal">https://base-map-polytheisms.huma-num.fr/legal</a>).
+
+    <br />
+    <br />
+
+    <strong>For further information</strong>, please refer to the 3 Guides, available at : <a
+        href="https://hal.science/hal-02555965v1">https://hal.science/hal-02555965v1</a>.
+<ul>
+    <li>User guide: work in progress</li>
+    <li>Search interface guide</li>
+    <li>Database registration guide</li>
+</ul>
+<strong>See also the following articles:</strong>
+<ul>
+    <li><strong>Sylvain Lebreton</strong>, <strong>Corinne Bonnet</strong>, « Mettre les polythéismes en formules ? À
+        propos
+        de la base de données <em>Mapping Ancient Polytheisms</em> », <em>Kernos</em> 32, 2019, 267-296 (online version
+        URL : <a href="http://journals.openedition.org/kernos/3163">http://journals.openedition.org/kernos/3163</a> ;
+        DOI :
+        <a href="https://doi.org/10.4000/kernos.3163">https://doi.org/10.4000/kernos.3163</a>
+    </li>
+    <li><strong>Élodie Guillon</strong>, <strong>Alaya Palamidis</strong> & <strong>Corinne Bonnet</strong>, <em>work in
+            progress</em></li>
+</ul>
+</p>
+
+<br />
+<h5>To cite the MAP database</h5>
+<p class="text-justify">
+    Bonnet C. (dir.), ERC Mapping Ancient Polytheisms 741182 (DB MAP), Toulouse 2017-2023 : <a
+        href="https://base-map-polytheisms.huma-num.fr">https://base-map-polytheisms.huma-num.fr</a> (AAAA/MM/JJ).
+</p>
+
+<br />
+<h5>Contact</h5>
+<p class="text-justify">
+    <a href="mailto:map.polytheisms@gmail.com">map.polytheisms@gmail.com</a> or from the <a
+        href="{{ url('contact') }}">Contact</a> page.
+</p>

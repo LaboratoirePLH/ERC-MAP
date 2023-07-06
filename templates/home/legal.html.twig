@@ -1,12 +1,13 @@
 {% extends 'page.html.twig' %}
 {% block title %}
-    {{ ('misc.legal')|trans }}
+{{ ('misc.legal')|trans }}
 {% endblock %}
 {% block content %}
-    <div class="col-12 col-xl-8 offset-xl-2">
-        {% if locale == 'fr' %}
-            {% include "home/_legal_fr.html.twig" %}
-        {% else %}
-            {% include "home/_legal_en.html.twig" %}
-        {% endif %}
-    {% endblock %}
+<div class="col-12 col-xl-8 offset-xl-2">
+    {% if locale == 'fr' %}
+    {% include "home/_legal_fr.html.twig" %}
+    {% else %}
+    {% include "home/_legal_en.html.twig" %}
+    {% endif %}
+</div>
+{% endblock %}

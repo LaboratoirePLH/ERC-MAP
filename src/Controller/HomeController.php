@@ -40,12 +40,22 @@ class HomeController extends AbstractController
      */
     public function index(Request $request, ManagerRegistry $doctrine)
     {
+        return $this->render('home/index.html.twig', [
+            'controller_name' => 'HomeController'
+        ]);
+    }
+
+    /**
+     * @Route("/dashboard", name="dashboard")
+     */
+    public function dashboard(Request $request, ManagerRegistry $doctrine)
+    {
         $user = $this->getUser();
         $locale = $request->getLocale();
 
         $counters = $doctrine->getRepository(IndexRecherche::class)->getHomeCounters(!$this->isGranted('ROLE_CONTRIBUTOR'));
 
-        return $this->render('home/index.html.twig', [
+        return $this->render('home/dashboard.html.twig', [
             'controller_name' => 'HomeController',
             'user_name'       => $this->isGranted('ROLE_USER') ? $user->getPrenomNom() : null,
             'webmapping_url'  => $this->getParameter('geo.app_url_' . $locale),

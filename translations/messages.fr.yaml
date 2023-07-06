@@ -12,7 +12,7 @@ nav:
     logout: "Déconnexion"
     go_to_showcase_website: "Aller au site vitrine"
     go_to_admin: "Administration"
-    home: "Accueil"
+    home: "Tableau de Bord"
     source_list: "Sources"
     attestation: "Attestations"
     element: "Éléments"
@@ -501,6 +501,8 @@ autocomplete:
     no_matches: "Aucune correspondance trouvée pour : "
 
 misc:
+    welcome: "Bienvenue sur la Base de Données MAP"
+    go_to_dashboard: "Accéder au Tableau de Bord"
     legal: "Mentions Légales"
     back_to_top: "Retour en haut de la page"
     copyright: "ERC-MAP - Laboratoire PLH - Université Toulouse - Jean Jaurès"
@@ -508,8 +510,8 @@ misc:
     cookies: "Ce site utilise des cookies uniquement à des fins d'amélioration de l'expérience du visiteur. Aucune donnée personnelle et/ou de suivi n'est recueillie."
 
 pages:
-    home:
-        title: "Accueil"
+    dashboard:
+        title: "Tableau de bord"
         logged_as: "Vous êtes connecté en tant que"
         tools: "Outils"
         bibliography: "Bibliographie"

@@ -25,7 +25,6 @@ class ListController extends AbstractController
     {
         $locale = $request->getLocale();
         $user = $this->getUser();
-        $projets = $user->getIdsProjets();
 
         $repository = $doctrine->getRepository(Source::class);
 
@@ -57,9 +56,10 @@ class ListController extends AbstractController
             }));
         }
 
-        $sources = array_values(array_filter($sources, function (Source $source) use ($user, $projets) {
-            return $user->getRole() === "admin"
-                || ($source->getProjet() !== null && in_array($source->getProjet()->getId(), $projets));
+        $sources = array_values(array_filter($sources, function (Source $source) use ($user) {
+            return $user === null
+                || $user->getRole() === "admin"
+                || ($source->getProjet() !== null && in_array($source->getProjet()->getId(), $user->getIdsProjets()));
         }));
 
         $data = array_map(function ($source) use ($locale, $user, $datetimeFormat, $languages) {
@@ -124,7 +124,6 @@ class ListController extends AbstractController
     {
         $locale = $request->getLocale();
         $user = $this->getUser();
-        $projets = $user->getIdsProjets();
 
         $repository = $doctrine->getRepository(Attestation::class);
 
@@ -160,9 +159,10 @@ class ListController extends AbstractController
         ];
         $datetimeFormat = $translator->trans('locale_datetime');
 
-        $attestations = array_values(array_filter($attestations, function (Attestation $attestation) use ($user, $projets) {
-            return $user->getRole() === "admin"
-                || ($attestation->getSource()->getProjet() !== null && in_array($attestation->getSource()->getProjet()->getId(), $projets));
+        $attestations = array_values(array_filter($attestations, function (Attestation $attestation) use ($user) {
+            return $user === null
+                || $user->getRole() === "admin"
+                || ($attestation->getSource()->getProjet() !== null && in_array($attestation->getSource()->getProjet()->getId(), $user->getIdsProjets()));
         }));
 
         $data = array_map(function ($attestation) use ($locale, $user, $datetimeFormat, $languages) {

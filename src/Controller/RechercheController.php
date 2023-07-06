@@ -91,7 +91,7 @@ class RechercheController extends AbstractController
             return $this->_emptySearchResponse($request, $searchMode);
         }
         $user = $this->getUser();
-        $restrictToProjects = $user->getRole() === "admin" ? null : $user->getIdsProjets();
+        $restrictToProjects = ($user === null || $user->getRole() === "admin") ? null : $user->getIdsProjets();
 
         $results = $doctrine
             ->getRepository(\App\Entity\IndexRecherche::class)
@@ -132,7 +132,7 @@ class RechercheController extends AbstractController
         }
 
         $user = $this->getUser();
-        $restrictToProjects = $user->getRole() === "admin" ? null : $user->getIdsProjets();
+        $restrictToProjects = ($user === null || $user->getRole() === "admin") ? null : $user->getIdsProjets();
 
         $results = $doctrine
             ->getRepository(\App\Entity\IndexRecherche::class)
@@ -173,7 +173,7 @@ class RechercheController extends AbstractController
         }
 
         $user = $this->getUser();
-        $restrictToProjects = $user->getRole() === "admin" ? null : $user->getIdsProjets();
+        $restrictToProjects = ($user === null || $user->getRole() === "admin") ? null : $user->getIdsProjets();
 
         $resultsType = $criteria['resultsType'];
 

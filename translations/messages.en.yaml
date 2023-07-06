@@ -345,7 +345,7 @@ element:
     add_elementbiblio: "Add Bibliographic Reference"
     add_traduction: "Add Translation"
     add_theonyme_implicite: "Add Heteronymous/By-Form Theonym"
-    add_theonyme_construit: "Add a Theonym Built on"
+    add_theonyme_construit: "Add a Root Element"
     messages:
         created: "Element created"
         edited: "Element edited"

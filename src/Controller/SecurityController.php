@@ -138,6 +138,8 @@ class SecurityController extends AbstractController
 
             if ($this->openAccess) {
                 $user->setActif(true);
+                $mapProject = $em->getRepository(\App\Entity\Projet::class)->find(1);
+                $user->addProjet($mapProject);
 
                 $request->getSession()->getFlashBag()->add('success', 'login_page.message.account_created');
             } else {

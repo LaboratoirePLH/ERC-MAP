@@ -16,30 +16,11 @@ class GrandeRegion extends AbstractEntity
     use Traits\TranslatedName;
 
     /**
-     * @var geometry|null
-     *
-     * @ORM\Column(name="geom", type="geometry", nullable=true, options={"geometry_type"="MULTIPOLYGON", "srid"=4326})
-     */
-    private $geom;
-
-    /**
      * @var int
      *
      * @ORM\Column(name="progression", type="smallint", nullable=false, options={"unsigned": true, "default":0})
      */
     private $progression = 0;
-
-    public function getGeom()
-    {
-        return $this->geom;
-    }
-
-    public function setGeom($geom): self
-    {
-        $this->geom = $geom;
-
-        return $this;
-    }
 
     public function getProgression(): ?int
     {

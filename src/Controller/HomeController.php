@@ -360,9 +360,13 @@ class HomeController extends AbstractController
                 'en' => 'MAP_Guidelines_Registration_EN_homepage.pdf'
             ],
             'source_list' => [
-                'fr' => 'MAP_Guide_Saisie_FR_liste_sources.pdf',
-                'en' => 'MAP_Guidelines_Registration_EN_sources_list.pdf'
+                'fr' => 'MAP_Guide_usager_SOURCE.pdf',
+                'en' => 'MAP_User_Guide_SOURCE.pdf'
             ],
+            // 'source_list' => [
+            //     'fr' => 'MAP_Guide_Saisie_FR_liste_sources.pdf',
+            //     'en' => 'MAP_Guidelines_Registration_EN_sources_list.pdf'
+            // ],
             'source_form_information' => [
                 'fr' => 'MAP_Guide_Saisie_FR_01.pdf',
                 'en' => 'MAP_Guidelines_Registration_EN_01.pdf'
@@ -388,9 +392,13 @@ class HomeController extends AbstractController
                 'en' => 'MAP_Guidelines_Registration_EN_06.pdf'
             ],
             'attestation_list' => [
-                'fr' => 'MAP_Guide_Saisie_FR_liste_attestations.pdf',
-                'en' => 'MAP_Guidelines_Registration_EN_testimonies_list.pdf'
+                'fr' => 'MAP_Guide_usager_ATTESTATION.pdf',
+                'en' => 'MAP_User_Guide_TESTIMONY.pdf'
             ],
+            // 'attestation_list' => [
+            //     'fr' => 'MAP_Guide_Saisie_FR_liste_attestations.pdf',
+            //     'en' => 'MAP_Guidelines_Registration_EN_testimonies_list.pdf'
+            // ],
             'attestation_form_source' => [
                 'fr' => 'MAP_Guide_Saisie_FR_07.pdf',
                 'en' => 'MAP_Guidelines_Registration_EN_07.pdf'
@@ -428,9 +436,13 @@ class HomeController extends AbstractController
                 'en' => 'MAP_Guidelines_Registration_EN_15.pdf'
             ],
             'element_list' => [
-                'fr' => 'MAP_Guide_Saisie_FR_liste_elements.pdf',
-                'en' => 'MAP_Guidelines_Registration_EN_elements_list.pdf'
+                'fr' => 'MAP_Guide_usager_ELEMENT.pdf',
+                'en' => 'MAP_User_Guide_ELEMENT.pdf'
             ],
+            // 'element_list' => [
+            //     'fr' => 'MAP_Guide_Saisie_FR_liste_elements.pdf',
+            //     'en' => 'MAP_Guidelines_Registration_EN_elements_list.pdf'
+            // ],
             'element_form_description' => [
                 'fr' => 'MAP_Guide_Saisie_FR_16.pdf',
                 'en' => 'MAP_Guidelines_Registration_EN_16.pdf'
@@ -454,6 +466,10 @@ class HomeController extends AbstractController
             'bibliography_form' => [
                 'fr' => 'MAP_Guide_Saisie_FR_21.pdf',
                 'en' => 'MAP_Guidelines_Registration_EN_21.pdf'
+            ],
+            'search' => [
+                'fr' => 'MAP_Guide_usager_INTERFACES.pdf',
+                'en' => 'MAP_User_Guide_INTERFACES.pdf',
             ],
             'search_simple' => [
                 'fr' => 'MAP_Guide_Recherche_simple_FR.pdf',

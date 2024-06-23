@@ -596,6 +596,7 @@ search:
     results_links: "Links"
     found_in: "Found in"
     choose_columns: "Choose columns"
+    mcd: "CDM"
     criteria_labels:
         names: "Name(s)"
         names_all: "Name(s) (All)"

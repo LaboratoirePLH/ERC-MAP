@@ -594,6 +594,7 @@ search:
     results_nodes_links: "Noeuds & Liens des résultats"
     results_nodes: "Noeuds"
     results_links: "Liens"
+    mcd: "MCD"
     criteria_labels:
         names: "Nom(s)"
         names_all: "Nom(s) (Tous)"

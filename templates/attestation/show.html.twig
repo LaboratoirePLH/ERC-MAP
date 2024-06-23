@@ -16,6 +16,20 @@
         {% endif %}
         <u>{{ 'generic.fields.lien_direct'|trans }}:</u>
         <a href="{{ app.request.uri }}">{{ app.request.uri }}</a>
+        <br/>
+        <br/>
+        {% apply spaceless %}
+        {{ 'generic.fields.date_creation'|trans }}&nbsp;:&nbsp;
+        {{ attestation.dateCreation|date(('locale_datetime'|trans), "Europe/Paris") }}&nbsp;
+        {{ 'generic.fields.by'|trans }}&nbsp;{{ attestation.createur.prenomNom }}
+        {% endapply %}
+        <br/>
+        {% apply spaceless %}
+        {{ 'generic.fields.date_modification'|trans }}&nbsp;:&nbsp;
+        {{ attestation.dateModification|date(('locale_datetime'|trans), "Europe/Paris") }}&nbsp;
+        {{ 'generic.fields.by'|trans }}&nbsp;{{ attestation.dernierEditeur.prenomNom }}
+        {% endapply %}
+        <br/>
     </div>
     <hr/>
     {% include "display/attestation.html.twig" with {'attestation': attestation, 'valid_attestations': valid_attestations} %}

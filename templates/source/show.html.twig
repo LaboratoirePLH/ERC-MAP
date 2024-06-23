@@ -13,6 +13,20 @@
         {% endif %}
         <u>{{ 'generic.fields.lien_direct'|trans }}:</u>
         <a href="{{ app.request.uri }}">{{ app.request.uri }}</a>
+        <br/>
+        <br/>
+        {% apply spaceless %}
+        {{ 'generic.fields.date_creation'|trans }}&nbsp;:&nbsp;
+        {{ source.dateCreation|date(('locale_datetime'|trans), "Europe/Paris") }}&nbsp;
+        {{ 'generic.fields.by'|trans }}&nbsp;{{ source.createur.prenomNom }}
+        {% endapply %}
+        <br/>
+        {% apply spaceless %}
+        {{ 'generic.fields.date_modification'|trans }}&nbsp;:&nbsp;
+        {{ source.dateModification|date(('locale_datetime'|trans), "Europe/Paris") }}&nbsp;
+        {{ 'generic.fields.by'|trans }}&nbsp;{{ source.dernierEditeur.prenomNom }}
+        {% endapply %}
+        <br/>
     </div>
     <hr/>
     {% include "display/source.html.twig" with {'source': source} %}

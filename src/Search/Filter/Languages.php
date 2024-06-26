@@ -4,7 +4,8 @@ namespace App\Search\Filter;
 
 use App\Entity\IndexRecherche;
 
-class Languages extends AbstractFilter {
+class Languages extends AbstractFilter
+{
 
     public static function filter(IndexRecherche $entity, array $criteria, array $sortedData): bool
     {
@@ -14,12 +15,14 @@ class Languages extends AbstractFilter {
         $sources = self::toArray(
             self::resolveSources($entity, $sortedData)
         );
-        $languages = array_reduce($sources, function($result, $source){ return array_merge($result, $source['langues'] ?? []); }, []);
+        $languages = array_reduce($sources, function ($result, $source) {
+            return array_merge($result, $source['langues'] ?? []);
+        }, []);
         $data = array_column($languages, 'id');
 
         // For each criteria entry, we will get a boolean result of whether the entry is valid against the data
-        // We need at least one truthy value to accept the data
-        return !!count(array_filter(array_map(function($crit) use ($data) {
+        // We need only truthy values to accept the data
+        return !in_array(false, (array_map(function ($crit) use ($data) {
             $requireAll = ($crit['mode'] ?? 'one') === 'all';
             $crit = array_filter($crit['values']);
 

@@ -4,7 +4,8 @@ namespace App\Search\Filter;
 
 use App\Entity\IndexRecherche;
 
-class ElementNumbers extends AbstractFilter {
+class ElementNumbers extends AbstractFilter
+{
 
     public static function filter(IndexRecherche $entity, array $criteria, array $sortedData): bool
     {
@@ -17,32 +18,31 @@ class ElementNumbers extends AbstractFilter {
         // For each attestation, we get their contextual elements
         $contextualElements = array_column($attestations, 'elements');
         // For each contextual element of a single attestation, we get the IDs of each gender
-        $data = array_filter(array_map(function($attestation_ce){
-            $genders = array_unique(array_filter(array_map(function($ce) {
+        $data = array_filter(array_map(function ($attestation_ce) {
+            $genders = array_unique(array_filter(array_map(function ($ce) {
                 return ($ce['nombreElement'] ?? [])['id'] ?? null;
             }, $attestation_ce)));
             return $genders ?: null;
         }, $contextualElements));
 
         // For each criteria entry, we will get a boolean result of whether the entry is valid against the data
-        // We need at least one truthy value to accept the data
-        return !!count(array_filter(array_map(function($crit) use ($data) {
+        // We need only truthy values to accept the data
+        return !in_array(false, (array_map(function ($crit) use ($data) {
             $requireAll = ($crit['mode'] ?? 'one') === 'all';
             $crit = array_filter($crit['values']);
 
             // We count the matched criteria values
             $matched = 0;
-            foreach($data as $d){
+            foreach ($data as $d) {
                 // $d contains all the contextual element numbers linked to a single attestation
                 // If we require all values to be matched we must find at least as many as the criteria values
                 // Else we only need one
-                if(count(array_intersect($crit, $d)) >= ($requireAll ? count($crit) : 1)){
+                if (count(array_intersect($crit, $d)) >= ($requireAll ? count($crit) : 1)) {
                     return true;
                 }
             }
 
             return false;
-
         }, $criteria)));
     }
 }

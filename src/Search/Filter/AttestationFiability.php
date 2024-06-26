@@ -18,8 +18,8 @@ class AttestationFiability extends AbstractFilter
         $data = array_column($attestations, 'fiabilite');
 
         // For each criteria entry, we will get a boolean result of whether the entry is valid against the data
-        // We need at least one truthy value to accept the data
-        return !!count(array_filter(array_map(function ($crit) use ($data) {
+        // We need only truthy values to accept the data
+        return !in_array(false, (array_map(function ($crit) use ($data) {
             // We check all the found attestations against the criteria entry
             // If at least one attestation is acceptable, we return true immediately
             foreach ($data as $d) {

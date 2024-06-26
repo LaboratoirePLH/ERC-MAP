@@ -25,8 +25,8 @@ class MorphologicalForms extends AbstractFilter
         }, $contextualElements));
 
         // For each criteria entry, we will get a boolean result of whether the entry is valid against the data
-        // We need at least one truthy value to accept the data
-        return !!count(array_filter(array_map(function ($crit) use ($data) {
+        // We need only truthy values to accept the data
+        return !in_array(false, (array_map(function ($crit) use ($data) {
             $requireAll = ($crit['mode'] ?? 'one') === 'all';
             $crit = array_filter($crit['values']);
 

@@ -18,8 +18,8 @@ class Datation extends AbstractFilter
         $data = self::resolveDatations($entity, $sortedData);
 
         // For each criteria entry, we will get a boolean result of whether the entry is valid against the data
-        // We need at least one truthy value to accept the data
-        return !!count(array_filter(array_map(function ($crit) use ($data) {
+        // We need only truthy values to accept the data
+        return !in_array(false, (array_map(function ($crit) use ($data) {
             $criteriaPostQuem = is_numeric($crit['post_quem']) ? intval($crit['post_quem']) : null;
             $criteriaAnteQuem = is_numeric($crit['ante_quem']) ? intval($crit['ante_quem']) : null;
             $criteriaExact    = !!($crit['exact'] ?? false); // Convert to boolean

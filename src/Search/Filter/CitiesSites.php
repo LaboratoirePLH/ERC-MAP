@@ -26,8 +26,8 @@ class CitiesSites extends AbstractFilter
         }, $directLocalisations));
 
         // For each criteria entry, we will get a boolean result of whether the entry is valid against the data
-        // We need at least one truthy value to accept the data
-        $match = !!count(array_filter(array_map(function ($crit) use ($data, $directData) {
+        // We need only truthy values to accept the data
+        return !in_array(false, (array_map(function ($crit) use ($data, $directData) {
             $requireAll = ($crit['mode'] ?? 'one') === 'all';
             $isDirect = ($crit['direct'] ?? 'indirect') === 'direct';
             $filterData = $isDirect ? $directData : $data;
@@ -59,7 +59,5 @@ class CitiesSites extends AbstractFilter
             // Else we only need one
             return $matched >= ($requireAll ? count($crit) : 1);
         }, $criteria)));
-
-        return $match;
     }
 }

@@ -16,8 +16,8 @@ class LocationPrecision extends AbstractFilter
         $data = array_map('self::getLocationPrecision', $locations);
 
         // For each criteria entry, we will get a boolean result of whether the entry is valid against the data
-        // We need at least one truthy value to accept the data
-        return !!count(array_filter(array_map(function ($crit) use ($data) {
+        // We need only truthy values to accept the data
+        return !in_array(false, (array_map(function ($crit) use ($data) {
             // We check all the found locations against the criteria entry
             // If at least one location is acceptable, we return true immediately
             foreach ($data as $d) {

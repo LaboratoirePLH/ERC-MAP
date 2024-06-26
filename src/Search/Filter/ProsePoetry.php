@@ -24,8 +24,8 @@ class ProsePoetry extends AbstractFilter
         }, $attestations);
 
         // For each criteria entry, we will get a boolean result of whether the entry is valid against the data
-        // We need at least one truthy value to accept the data
-        return !!count(array_filter(array_map(function ($crit) use ($data) {
+        // We need only truthy values to accept the data
+        return !in_array(false, (array_map(function ($crit) use ($data) {
             foreach ($data as $d) {
                 // We require all the values in the criteria to be present (intersection count equals to criteria values count)
                 if (count(array_intersect($crit['values'], $d)) >= count($crit['values'])) {

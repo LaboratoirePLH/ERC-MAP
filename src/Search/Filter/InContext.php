@@ -30,8 +30,8 @@ class InContext extends AbstractFilter
         $data     = array_map(array('self', 'cleanStringValue'), $data);
 
         // For each criteria entry, we will get a boolean result of whether the entry is valid against the data
-        // We need at least one truthy value to accept the data
-        return !!count(array_filter(array_map(function ($crit) use ($data) {
+        // We need only truthy values to accept the data
+        return !in_array(false, (array_map(function ($crit) use ($data) {
             $strict = ($crit['mode'] ?? 'loose') === 'strict';
             $crit = self::cleanStringValue($crit['value']);
             // We require the criteria value to be present in data

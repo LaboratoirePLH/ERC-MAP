@@ -19,8 +19,8 @@ class LocationReal extends AbstractFilter
         }, $localisations));
 
         // This criteria will only have a single entry with one or two values (duplicates and empty values are removed)
-        // We need to match all the criteria values against the data
-        return !!count(array_filter(array_map(function ($crit) use ($data) {
+        // We need only truthy values to accept the data
+        return !in_array(false, (array_map(function ($crit) use ($data) {
             return count(array_intersect($crit['values'], $data)) == count($crit['values']);
         }, $criteria)));
     }

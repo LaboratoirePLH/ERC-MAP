@@ -355,9 +355,21 @@ class HomeController extends AbstractController
     public function help(string $locale, string $section, Request $request, TranslatorInterface $translator)
     {
         $help_files = [
-            'home' => [
-                'fr' => 'MAP_Guide_Saisie_FR_accueil.pdf',
-                'en' => 'MAP_Guidelines_Registration_EN_homepage.pdf'
+            // 'home' => [
+            //     'fr' => 'MAP_Guide_Saisie_FR_accueil.pdf',
+            //     'en' => 'MAP_Guidelines_Registration_EN_homepage.pdf'
+            // ],
+            'home_user' => [
+                'fr' => 'MAP_Guide_Usager_202402.pdf',
+                'en' => 'MAP_User_Guide_202402.pdf'
+            ],
+            'home_registration' => [
+                'fr' => 'MAP_Guide_Saisie_v2.pdf',
+                'en' => 'MAP_Guidelines_Entering_v2.pdf'
+            ],
+            'home_webmapping' => [
+                'fr' => 'MAP_Guide_webmapping_FR.pdf',
+                'en' => 'MAP_Guidelines_Webmapping_EN.pdf'
             ],
             'source_list' => [
                 'fr' => 'MAP_Guide_usager_SOURCE.pdf',
@@ -502,7 +514,7 @@ class HomeController extends AbstractController
                 'error',
                 $translator->trans('pages.messages.missing_help_file', ['%section%' => $section])
             );
-            return $this->redirectToRoute('home');
+            return $this->redirectToRoute('dashboard');
         }
 
         return $this->file($this->getParameter('pdf_path') . '/' . $help_files[$section][$locale], null, ResponseHeaderBag::DISPOSITION_INLINE);

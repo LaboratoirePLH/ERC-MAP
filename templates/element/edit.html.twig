@@ -1,349 +1,356 @@
 {% extends 'form_page.html.twig' %}
 {% block title %}
-    {{ ('element.' ~ action)|trans((element is defined ? {'%id%': element.id} : {})) }}
+{{ ('element.' ~ action)|trans((element is defined ? {'%id%': element.id} : {})) }}
 {% endblock %}
 {% block content %}
 
-    {{ form_start(form, {'attr' : {'id': 'element'}}
-    ) }}
-    {% if not form.vars.valid %}
-        {% import "form/macros.html.twig" as macros %}
-        {{ macros.display_error(form) }}
-    {% endif %}
+{{ form_start(form, {'attr' : {'id': 'element'}}
+) }}
+{% if not form.vars.valid %}
+{% import "form/macros.html.twig" as macros %}
+{{ macros.display_error(form) }}
+{% endif %}
 
-    <div class="row justify-content-center">
-        <div class="col-6 col-xl-3 order-2 order-xl-1 d-flex justify-content-center align-items-center">
-            {% include "partials/_formbuttons.html.twig" with {'exitUrl' : url('element_list')} %}
-        </div>
-        <div class="col-12 col-xl-6 mb-2 mb-xl-0 order-1 order-xl-2 text-center">
-            {% if action == 'edit' %}
-                {% apply spaceless %}
-                {{ 'generic.fields.date_creation'|trans }}&nbsp;:&nbsp;
-                {{ element.dateCreation|date(('locale_datetime'|trans), "Europe/Paris") }}&nbsp;
-                {{ 'generic.fields.by'|trans }}&nbsp;{{ element.createur.prenomNom }}
-                {% endapply %}
-                <br/>
-                {% apply spaceless %}
-                {{ 'generic.fields.date_modification'|trans }}&nbsp;:&nbsp;
-                {{ element.dateModification|date(('locale_datetime'|trans), "Europe/Paris") }}&nbsp;
-                {{ 'generic.fields.by'|trans }}&nbsp;{{ element.dernierEditeur.prenomNom }}
-                {% endapply %}
-                <br/>
-                {{ 'generic.fields.version'|trans }}&nbsp;{{ element.version }}&rarr;{{ element.version+1 }}
-            {% endif %}
-        </div>
-        <div class="col-6 col-xl-3 order-3 d-flex justify-content-center align-items-center">
+<div class="row justify-content-center">
+    <div class="col-6 col-xl-3 order-2 order-xl-1 d-flex justify-content-center align-items-center">
+        {% include "partials/_formbuttons.html.twig" with {'exitUrl' : url('element_list')} %}
+    </div>
+    <div class="col-12 col-xl-6 mb-2 mb-xl-0 order-1 order-xl-2 text-center">
+        {% if action == 'edit' %}
+        {% apply spaceless %}
+        {{ 'generic.fields.date_creation'|trans }}&nbsp;:&nbsp;
+        {{ element.dateCreation|date(('locale_datetime'|trans), "Europe/Paris") }}&nbsp;
+        {{ 'generic.fields.by'|trans }}&nbsp;{{ element.createur.prenomNom }}
+        {% endapply %}
+        <br />
+        {% apply spaceless %}
+        {{ 'generic.fields.date_modification'|trans }}&nbsp;:&nbsp;
+        {{ element.dateModification|date(('locale_datetime'|trans), "Europe/Paris") }}&nbsp;
+        {{ 'generic.fields.by'|trans }}&nbsp;{{ element.dernierEditeur.prenomNom }}
+        {% endapply %}
+        <br />
+        {{ 'generic.fields.version'|trans }}&nbsp;{{ element.version }}&rarr;{{ element.version+1 }}
+        {% endif %}
+    </div>
+    <div class="col-6 col-xl-3 order-3 d-flex flex-column justify-content-center align-items-start">
+        <div class="d-flex justify-content-center align-items-center">
             {{ 'generic.fields.to_translate'|trans }}
             :
             <span class="mx-2">{{ form_widget(form.traduireFr) }}</span>
             {{ form_widget(form.traduireEn) }}
         </div>
-    </div>
-    <hr/>
-    <section>
-        {% include 'partials/_sectiontitle.html.twig' with {
-            'title'         : 'element.sections.description_element',
-            'collapseTarget': '#section-description',
-            'expanded'      : true,
-            'help_section'  : 'element_form_description'
-        } %}
-        <div class="collapse show" id="section-description">
-            {{ form_row(form.etatAbsolu) }}
-            {{ form_row(form.betaCode) }}
-            {{ form_row(form.traductions) }}
-            <div class="form-group row">
-                <div class="col-sm-10 offset-sm-2">
-                    <a href="#" class="btn btn-primary collection-add-link" id="link-add-traduction">
-                        <i class="fa fa-plus"></i>&nbsp;
-                        {{ 'element.add_traduction'|trans }}
-                    </a>
-                </div>
-            </div>
-            {{ form_row(form.natureElement) }}
-            {{ form_row(form.categories) }}
-        </div>
-    </section>
-
-    <section>
-        {% include 'partials/_sectiontitle.html.twig' with {
-            'title'         : 'element.sections.references',
-            'collapseTarget': '#section-references',
-            'expanded'      : true,
-            'counterId'     : 'references',
-            'counter'       : (element.theonymesImplicites.count()|default(0)+element.theonymesConstruits.count()|default(0)),
-            'help_section'  : 'element_form_references'
-        } %}
-        <div class="collapse show" id="section-references">
-            {{ form_row(form.aReference) }}
-            <div class="row">
-                <div class="col-sm-12 dependent_field_areference">
-                    {{ form_row(form.theonymesImplicites) }}
-                    <div class="form-group row">
-                        <div class="col-sm-10 offset-sm-2">
-                            <a href="#" class="btn btn-primary collection-add-link" id="link-add-theonyme-implicite">
-                                <i class="fa fa-plus"></i>&nbsp;
-                                {{ 'element.add_theonyme_implicite'|trans }}
-                            </a>
-                        </div>
-                    </div>
-                    {{ form_row(form.theonymesConstruits) }}
-                    <div class="form-group row">
-                        <div class="col-sm-10 offset-sm-2">
-                            <a href="#" class="btn btn-primary collection-add-link" id="link-add-theonyme-construit">
-                                <i class="fa fa-plus"></i>&nbsp;
-                                {{ 'element.add_theonyme_construit'|trans }}
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section>
-        {% include 'partials/_sectiontitle.html.twig' with {
-            'title'         : 'element.sections.localisation',
-            'collapseTarget': '#section-localisation',
-            'expanded'      : true,
-            'help_section'  : 'element_form_location'
-        } %}
-        <div class="collapse show" id="section-localisation">
-            {{ form_row(form.localisation) }}
-        </div>
-    </section>
-
-    <section>
-        {% include 'partials/_sectiontitle.html.twig' with {
-            'title'         : 'element.sections.bibliographie',
-            'collapseTarget': '#section-bibliographie',
-            'expanded'      : true,
-            'counterId'     : 'biblio',
-            'counter'       : element.elementBiblios.count()|default(0),
-            'help_section'  : 'element_form_bibliography'
-        } %}
-        <div class="collapse show" id="section-bibliographie">
-            {{ form_errors(form.elementBiblios) }}
-            {{ form_widget(form.elementBiblios) }}
-            <div class="form-group row">
-                <div class="col-sm-10 offset-sm-2">
-                    <a href="#" class="btn btn-primary collection-add-link">
-                        <i class="fa fa-plus"></i>&nbsp;
-                        {{ 'element.add_elementbiblio'|trans }}
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section>
-        {% include 'partials/_sectiontitle.html.twig' with {
-            'title'         : 'element.sections.commentaires',
-            'collapseTarget': '#section-commentaires',
-            'help_section'  : 'element_form_commentary'
-        } %}
-        <div class="collapse" id="section-commentaires">
-            {{ form_row(form.commentaireFr) }}
-            {{ form_row(form.commentaireEn) }}
-        </div>
-    </section>
-
-    <hr/>
-    <div class="form-group row">
-        <div class="col-sm-12 text-center">
-            {% include "partials/_formbuttons.html.twig" with {'exitUrl' : url('element_list')} %}
+        <div class="d-flex justify-content-center align-items-center">
+            {{ 'generic.fields.type'|trans }}&nbsp;:&nbsp;
+            {{ form_widget(form.type) }}
+            <span class="mx-2" style="white-space: nowrap;">{{ form_widget(form.typeChecked) }}</span>
         </div>
     </div>
-    {{ form_rest(form) }}
-    {{ form_end(form) }}
-
-    {% include "modals/confirmation.html.twig" with {
-        'modalName': 'confirm_exit_dirty',
-        'uuid': 'confirm_exit_dirty',
-        'targetUrl': url('element_list'),
-        'method': 'GET',
-        'confirmationLabel': 'generic.exit',
-        'cancelLabel': 'generic.stay'
+</div>
+<hr />
+<section>
+    {% include 'partials/_sectiontitle.html.twig' with {
+    'title' : 'element.sections.description_element',
+    'collapseTarget': '#section-description',
+    'expanded' : true,
+    'help_section' : 'element_form_description'
     } %}
-    {% include "modals/confirmation.html.twig" with {
-        'modalName': 'confirm_remove_item',
-        'uuid': 'confirm_remove_item',
-        'confirmationLabel': 'generic.delete',
-        'useForm': false
-    } %}
+    <div class="collapse show" id="section-description">
+        {{ form_row(form.etatAbsolu) }}
+        {{ form_row(form.betaCode) }}
+        {{ form_row(form.traductions) }}
+        <div class="form-group row">
+            <div class="col-sm-10 offset-sm-2">
+                <a href="#" class="btn btn-primary collection-add-link" id="link-add-traduction">
+                    <i class="fa fa-plus"></i>&nbsp;
+                    {{ 'element.add_traduction'|trans }}
+                </a>
+            </div>
+        </div>
+        {{ form_row(form.natureElement) }}
+        {{ form_row(form.categories) }}
+    </div>
+</section>
 
-    {{ include('partials/_backtotop.html.twig') }}
+<section>
+    {% include 'partials/_sectiontitle.html.twig' with {
+    'title' : 'element.sections.references',
+    'collapseTarget': '#section-references',
+    'expanded' : true,
+    'counterId' : 'references',
+    'counter' : (element.theonymesImplicites.count()|default(0)+element.theonymesConstruits.count()|default(0)),
+    'help_section' : 'element_form_references'
+    } %}
+    <div class="collapse show" id="section-references">
+        {{ form_row(form.aReference) }}
+        <div class="row">
+            <div class="col-sm-12 dependent_field_areference">
+                {{ form_row(form.theonymesImplicites) }}
+                <div class="form-group row">
+                    <div class="col-sm-10 offset-sm-2">
+                        <a href="#" class="btn btn-primary collection-add-link" id="link-add-theonyme-implicite">
+                            <i class="fa fa-plus"></i>&nbsp;
+                            {{ 'element.add_theonyme_implicite'|trans }}
+                        </a>
+                    </div>
+                </div>
+                {{ form_row(form.theonymesConstruits) }}
+                <div class="form-group row">
+                    <div class="col-sm-10 offset-sm-2">
+                        <a href="#" class="btn btn-primary collection-add-link" id="link-add-theonyme-construit">
+                            <i class="fa fa-plus"></i>&nbsp;
+                            {{ 'element.add_theonyme_construit'|trans }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section>
+    {% include 'partials/_sectiontitle.html.twig' with {
+    'title' : 'element.sections.localisation',
+    'collapseTarget': '#section-localisation',
+    'expanded' : true,
+    'help_section' : 'element_form_location'
+    } %}
+    <div class="collapse show" id="section-localisation">
+        {{ form_row(form.localisation) }}
+    </div>
+</section>
+
+<section>
+    {% include 'partials/_sectiontitle.html.twig' with {
+    'title' : 'element.sections.bibliographie',
+    'collapseTarget': '#section-bibliographie',
+    'expanded' : true,
+    'counterId' : 'biblio',
+    'counter' : element.elementBiblios.count()|default(0),
+    'help_section' : 'element_form_bibliography'
+    } %}
+    <div class="collapse show" id="section-bibliographie">
+        {{ form_errors(form.elementBiblios) }}
+        {{ form_widget(form.elementBiblios) }}
+        <div class="form-group row">
+            <div class="col-sm-10 offset-sm-2">
+                <a href="#" class="btn btn-primary collection-add-link">
+                    <i class="fa fa-plus"></i>&nbsp;
+                    {{ 'element.add_elementbiblio'|trans }}
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section>
+    {% include 'partials/_sectiontitle.html.twig' with {
+    'title' : 'element.sections.commentaires',
+    'collapseTarget': '#section-commentaires',
+    'help_section' : 'element_form_commentary'
+    } %}
+    <div class="collapse" id="section-commentaires">
+        {{ form_row(form.commentaireFr) }}
+        {{ form_row(form.commentaireEn) }}
+    </div>
+</section>
+
+<hr />
+<div class="form-group row">
+    <div class="col-sm-12 text-center">
+        {% include "partials/_formbuttons.html.twig" with {'exitUrl' : url('element_list')} %}
+    </div>
+</div>
+{{ form_rest(form) }}
+{{ form_end(form) }}
+
+{% include "modals/confirmation.html.twig" with {
+'modalName': 'confirm_exit_dirty',
+'uuid': 'confirm_exit_dirty',
+'targetUrl': url('element_list'),
+'method': 'GET',
+'confirmationLabel': 'generic.exit',
+'cancelLabel': 'generic.stay'
+} %}
+{% include "modals/confirmation.html.twig" with {
+'modalName': 'confirm_remove_item',
+'uuid': 'confirm_remove_item',
+'confirmationLabel': 'generic.delete',
+'useForm': false
+} %}
+
+{{ include('partials/_backtotop.html.twig') }}
 {% endblock %}
 {% block javascripts %}
-    {% set coordinatesButton %}
-    {% include "partials/_entitylink.html.twig" with {
-        'icon'       : 'fa-location-arrow',
-        'text'       : 'COORDINATES',
-        'link'       : 'https://www.google.com/maps/search/?api=1&query=' ~ 'COORDINATES_URL',
-        'buttonblock': false
-    } %}
-    {% endset %}
-    {{ parent() }}
-    <script type="text/javascript">
-        $(document).ready(function () {
+{% set coordinatesButton %}
+{% include "partials/_entitylink.html.twig" with {
+'icon' : 'fa-location-arrow',
+'text' : 'COORDINATES',
+'link' : 'https://www.google.com/maps/search/?api=1&query=' ~ 'COORDINATES_URL',
+'buttonblock': false
+} %}
+{% endset %}
+{{ parent() }}
+<script type="text/javascript">
+    $(document).ready(function () {
 
-            const chosenSettingsMax3 = $.extend(CHOSEN_SETTINGS, {max_selected_options: 3});
+        const chosenSettingsMax3 = $.extend(CHOSEN_SETTINGS, { max_selected_options: 3 });
 
-            $('form#element').watchFormDirty({message: "{{ 'modals.confirm_exit_dirty.body'|trans }}", modal: $(".modal#confirm_exit_dirty"), exitLink: $('.exit-form-link')});
+        $('form#element').watchFormDirty({ message: "{{ 'modals.confirm_exit_dirty.body'|trans }}", modal: $(".modal#confirm_exit_dirty"), exitLink: $('.exit-form-link') });
 
-            const addTranslationLabel = '{{ "element.add_traduction"| trans }}';
-            const viewElementLabel = '{{ "attestation.view_element"|trans }}';
-            const deleteLabel = '{{ "generic.delete"|trans }}';
+        const addTranslationLabel = '{{ "element.add_traduction"| trans }}';
+        const viewElementLabel = '{{ "attestation.view_element"|trans }}';
+        const deleteLabel = '{{ "generic.delete"|trans }}';
 
-            const smallDeleteLinkGenerator = function () {
-                return $('<a href="#" class="btn btn-danger btn-sm ml-2 mb-1" title="' + deleteLabel + '"><i class="fas fa-trash fa-fw"></i></a>')
-            };
+        const smallDeleteLinkGenerator = function () {
+            return $('<a href="#" class="btn btn-danger btn-sm ml-2 mb-1" title="' + deleteLabel + '"><i class="fas fa-trash fa-fw"></i></a>')
+        };
 
-            // Gestion des champs collection
-            $('div#element_elementBiblios').collectionField({
-                blockTitle: '{{ "element.fields.element_biblio_n"|trans }}',
-                deleteLink: deleteLabel,
-                confirmationModal: $('#confirm_remove_item'),
-                setupListener: function (el) {
-                    $(el).find('.selectorcreate_selection option').each(function () {
-                        $(this).html(decodeEntities($(this).html()));
-                    });
-                    $(el).find('.selectorcreate_selection').find('select.autocomplete').on('chosen:ready', function () {
-                        $(this).parent().find('.chosen-container:not(.chosen-container-single-nosearch)').find('input.chosen-search-input').semiticKeyboard($(this).parent().find('div.chosen-drop'), 'right top', 'right top', true);
-                    });
-                    $(el).find('.selectorcreate').selectOrCreate();
-                    $.fn.dependentFields({
-                        corpus: {
-                            conditionCallback: function (main) {
-                                return $(main).is(':checked');
-                            },
-                            targetFinder: function (name, main) {
-                                return main.parents('.selectorcreate').find('.dependent_field_' + name);
-                            }
-                        }
-                    });
-                    $(el).find('.quill').quill();
-                },
-                addListener: function (newEl, idx) {
-                    $('#counter-biblio').text(parseInt($('#counter-biblio').text(), 10) + 1);
-                },
-                deleteListener: function (oldEl) {
-                    $('#counter-biblio').text(parseInt($('#counter-biblio').text(), 10) - 1);
-                }
-            });
-            $('div#element_traductions').collectionField({addLink: $('#link-add-traduction'), confirmationModal: $('#confirm_remove_item'), deleteLink: deleteLabel, inline: true});
-            $('div#element_theonymesImplicites').collectionField({
-                addLink: $('#link-add-theonyme-implicite'),
-                confirmationModal: $('#confirm_remove_item'),
-                deleteLink: deleteLabel,
-                inline: true,
-                setupListener: function (el) {
-                    $(el).find('.selectorcreate_selection option').each(function () {
-                        $(this).html(decodeEntities($(this).html()));
-                    })
-                    $(el).find('.element_traductions').after($('<div class="form-group row"><div class="col-sm-11 offset-sm-1"><a href="#" class="btn btn-primary collection-add-link"><i class="fa fa-plus"></i>&nbsp;' + addTranslationLabel + '</a></div></div>'));
-                    $(el).find('.element_traductions').collectionField({addLink: $(el).find('.collection-add-link'), confirmationModal: $('#confirm_remove_item'), deleteLinkGenerator: smallDeleteLinkGenerator, inline: true});
-                    $(el).find('.selectorcreate_selection').find('select.autocomplete').on('chosen:ready', function () {
-                        $(this).parent().find('.chosen-container:not(.chosen-container-single-nosearch)').find('input.chosen-search-input').semiticKeyboard($(this).parent().find('div.chosen-drop'), 'right top', 'right top', true);
-                    });
-                    $(el).find('.selectorcreate').selectOrCreate();
-                    $(el).find('select.autocomplete:not(.autocomplete-max-3)').chosen(CHOSEN_SETTINGS);
-                    $(el).find('select.autocomplete.autocomplete-max-3').chosen(chosenSettingsMax3);
-                    $(el).find('.quill').quill();
-                },
-                viewLinkGenerator: function (entry) {
-                    const entryId = $(entry).find('.selectorcreate_selection').find('select').val();
-                    var url = "{{ url('element_show', {'id': '-ID-'}) }}";
-                    if (!$.isNumeric(entryId)) {
-                        return "";
-                    }
-                    return $('<a href="' + url.replace('-ID-', entryId) + '" class="btn btn-primary ml-2 mb-1" target="_blank" rel="noopener" title="' + viewElementLabel + '"><i class="fas fa-external-link-alt fa-fw"></i></a>');
-                },
-                addListener: function (newEl, idx) {
-                    $('#counter-references').text(parseInt($('#counter-references').text(), 10) + 1);
-                },
-                deleteListener: function (oldEl) {
-                    $('#counter-references').text(parseInt($('#counter-references').text(), 10) - 1);
-                }
-            });
-            $('div#element_theonymesConstruits').collectionField({
-                addLink: $('#link-add-theonyme-construit'),
-                confirmationModal: $('#confirm_remove_item'),
-                deleteLink: deleteLabel,
-                inline: true,
-                setupListener: function (el) {
-                    $(el).find('.selectorcreate_selection option').each(function () {
-                        $(this).html(decodeEntities($(this).html()));
-                    })
-                    $(el).find('.element_traductions').after($('<div class="form-group row"><div class="col-sm-11 offset-sm-1"><a href="#" class="btn btn-primary collection-add-link"><i class="fa fa-plus"></i>&nbsp;' + addTranslationLabel + '</a></div></div>'));
-                    $(el).find('.element_traductions').collectionField({
-                        addLink: $(el).find('.collection-add-link'),
-                        confirmationModal: $('#confirm_remove_item'),
-                        deleteLinkGenerator: function () {
-                            return $('<a href="#" class="btn btn-danger ml-2 mb-1" title="' + deleteLabel + '"><i class="fas fa-trash fa-fw"></i></a>')
+        // Gestion des champs collection
+        $('div#element_elementBiblios').collectionField({
+            blockTitle: '{{ "element.fields.element_biblio_n"|trans }}',
+            deleteLink: deleteLabel,
+            confirmationModal: $('#confirm_remove_item'),
+            setupListener: function (el) {
+                $(el).find('.selectorcreate_selection option').each(function () {
+                    $(this).html(decodeEntities($(this).html()));
+                });
+                $(el).find('.selectorcreate_selection').find('select.autocomplete').on('chosen:ready', function () {
+                    $(this).parent().find('.chosen-container:not(.chosen-container-single-nosearch)').find('input.chosen-search-input').semiticKeyboard($(this).parent().find('div.chosen-drop'), 'right top', 'right top', true);
+                });
+                $(el).find('.selectorcreate').selectOrCreate();
+                $.fn.dependentFields({
+                    corpus: {
+                        conditionCallback: function (main) {
+                            return $(main).is(':checked');
                         },
-                        inline: true
-                    });
-                    $(el).find('.selectorcreate_selection').find('select.autocomplete').on('chosen:ready', function () {
-                        $(this).parent().find('.chosen-container:not(.chosen-container-single-nosearch)').find('input.chosen-search-input').semiticKeyboard($(this).parent().find('div.chosen-drop'), 'right top', 'right top', true);
-                    });
-                    $(el).find('.selectorcreate').selectOrCreate();
-                    $(el).find('select.autocomplete:not(.autocomplete-max-3)').chosen(CHOSEN_SETTINGS);
-                    $(el).find('select.autocomplete.autocomplete-max-3').chosen(chosenSettingsMax3);
-                    $(el).find('.quill').quill();
-                },
-                viewLinkGenerator: function (entry) {
-                    const entryId = $(entry).find('.selectorcreate_selection').find('select').val();
-                    var url = "{{ url('element_show', {'id': '-ID-'}) }}";
-                    if (!$.isNumeric(entryId)) {
-                        return "";
+                        targetFinder: function (name, main) {
+                            return main.parents('.selectorcreate').find('.dependent_field_' + name);
+                        }
                     }
-                    return $('<a href="' + url.replace('-ID-', entryId) + '" class="btn btn-primary ml-2 mb-1" target="_blank" rel="noopener" title="' + viewElementLabel + '"><i class="fas fa-external-link-alt fa-fw"></i></a>');
-                },
-                addListener: function (newEl, idx) {
-                    $('#counter-references').text(parseInt($('#counter-references').text(), 10) + 1);
-                },
-                deleteListener: function (oldEl) {
-                    $('#counter-references').text(parseInt($('#counter-references').text(), 10) - 1);
-                }
-            });
-
-
-            $('select.autocomplete:not(.autocomplete-max-3)').chosen(CHOSEN_SETTINGS);
-            $('select.autocomplete.autocomplete-max-3').chosen(chosenSettingsMax3);
-
-            $.fn.dependentFields({
-                areference: {
-                    conditionCallback: function (main) {
-                        return $(main).is(':checked');
-                    },
-                    targetFinder: function (name, main) {
-                        return $(main).parent().parent().parent().siblings().find('.dependent_field_' + name);
-                    }
-                }
-            });
-
-            $('.selectorcreate').selectOrCreate();
-
-            $('.localisation_form').localisationForm({errorMessage: "{{ 'generic.messages.error_unknown'|trans }}", notFoundErrorMessage: "{{ 'generic.messages.error_not_found'|trans }}", ambiguousErrorMessage: "{{ 'generic.messages.error_ambiguous'|trans }}", dataUrl: "{{ url('city_search') }}"});
-
-            $('.localisation_selection').localisationDetails({
-                dataUrl: '{{ url("data_localisation", {"id": "##ID##"}) }}',
-                locale: "{{ locale|capitalize }}",
-                labels: {
-                    topographies: '{{ "localisation.fields.topographie"|trans }}',
-                    fonctions: '{{ "localisation.fields.fonction"|trans }}',
-                    coordonnees: '{{ "generic.fields.coordonnees"|trans }}',
-                    commentaires: '{{ "generic.fields.commentaire"|trans }}',
-                    reel: '{{ "generic.fields.localisation_reelle"|trans }}',
-                    oui: '{{ "generic.choices.oui"|trans }}',
-                    non: '{{ "generic.choices.non"|trans }}'
-                },
-                coordinatesButton: '{{ coordinatesButton|e("js") }}'
-            });
-
-            $('#element_localisation_creation_grandeSousRegion').dependentSelects({data_url: "{{ url('data_sous_region') }}"});
-
-            $('.quill').quill();
+                });
+                $(el).find('.quill').quill();
+            },
+            addListener: function (newEl, idx) {
+                $('#counter-biblio').text(parseInt($('#counter-biblio').text(), 10) + 1);
+            },
+            deleteListener: function (oldEl) {
+                $('#counter-biblio').text(parseInt($('#counter-biblio').text(), 10) - 1);
+            }
         });
-    </script>
+        $('div#element_traductions').collectionField({ addLink: $('#link-add-traduction'), confirmationModal: $('#confirm_remove_item'), deleteLink: deleteLabel, inline: true });
+        $('div#element_theonymesImplicites').collectionField({
+            addLink: $('#link-add-theonyme-implicite'),
+            confirmationModal: $('#confirm_remove_item'),
+            deleteLink: deleteLabel,
+            inline: true,
+            setupListener: function (el) {
+                $(el).find('.selectorcreate_selection option').each(function () {
+                    $(this).html(decodeEntities($(this).html()));
+                })
+                $(el).find('.element_traductions').after($('<div class="form-group row"><div class="col-sm-11 offset-sm-1"><a href="#" class="btn btn-primary collection-add-link"><i class="fa fa-plus"></i>&nbsp;' + addTranslationLabel + '</a></div></div>'));
+                $(el).find('.element_traductions').collectionField({ addLink: $(el).find('.collection-add-link'), confirmationModal: $('#confirm_remove_item'), deleteLinkGenerator: smallDeleteLinkGenerator, inline: true });
+                $(el).find('.selectorcreate_selection').find('select.autocomplete').on('chosen:ready', function () {
+                    $(this).parent().find('.chosen-container:not(.chosen-container-single-nosearch)').find('input.chosen-search-input').semiticKeyboard($(this).parent().find('div.chosen-drop'), 'right top', 'right top', true);
+                });
+                $(el).find('.selectorcreate').selectOrCreate();
+                $(el).find('select.autocomplete:not(.autocomplete-max-3)').chosen(CHOSEN_SETTINGS);
+                $(el).find('select.autocomplete.autocomplete-max-3').chosen(chosenSettingsMax3);
+                $(el).find('.quill').quill();
+            },
+            viewLinkGenerator: function (entry) {
+                const entryId = $(entry).find('.selectorcreate_selection').find('select').val();
+                var url = "{{ url('element_show', {'id': '-ID-'}) }}";
+                if (!$.isNumeric(entryId)) {
+                    return "";
+                }
+                return $('<a href="' + url.replace('-ID-', entryId) + '" class="btn btn-primary ml-2 mb-1" target="_blank" rel="noopener" title="' + viewElementLabel + '"><i class="fas fa-external-link-alt fa-fw"></i></a>');
+            },
+            addListener: function (newEl, idx) {
+                $('#counter-references').text(parseInt($('#counter-references').text(), 10) + 1);
+            },
+            deleteListener: function (oldEl) {
+                $('#counter-references').text(parseInt($('#counter-references').text(), 10) - 1);
+            }
+        });
+        $('div#element_theonymesConstruits').collectionField({
+            addLink: $('#link-add-theonyme-construit'),
+            confirmationModal: $('#confirm_remove_item'),
+            deleteLink: deleteLabel,
+            inline: true,
+            setupListener: function (el) {
+                $(el).find('.selectorcreate_selection option').each(function () {
+                    $(this).html(decodeEntities($(this).html()));
+                })
+                $(el).find('.element_traductions').after($('<div class="form-group row"><div class="col-sm-11 offset-sm-1"><a href="#" class="btn btn-primary collection-add-link"><i class="fa fa-plus"></i>&nbsp;' + addTranslationLabel + '</a></div></div>'));
+                $(el).find('.element_traductions').collectionField({
+                    addLink: $(el).find('.collection-add-link'),
+                    confirmationModal: $('#confirm_remove_item'),
+                    deleteLinkGenerator: function () {
+                        return $('<a href="#" class="btn btn-danger ml-2 mb-1" title="' + deleteLabel + '"><i class="fas fa-trash fa-fw"></i></a>')
+                    },
+                    inline: true
+                });
+                $(el).find('.selectorcreate_selection').find('select.autocomplete').on('chosen:ready', function () {
+                    $(this).parent().find('.chosen-container:not(.chosen-container-single-nosearch)').find('input.chosen-search-input').semiticKeyboard($(this).parent().find('div.chosen-drop'), 'right top', 'right top', true);
+                });
+                $(el).find('.selectorcreate').selectOrCreate();
+                $(el).find('select.autocomplete:not(.autocomplete-max-3)').chosen(CHOSEN_SETTINGS);
+                $(el).find('select.autocomplete.autocomplete-max-3').chosen(chosenSettingsMax3);
+                $(el).find('.quill').quill();
+            },
+            viewLinkGenerator: function (entry) {
+                const entryId = $(entry).find('.selectorcreate_selection').find('select').val();
+                var url = "{{ url('element_show', {'id': '-ID-'}) }}";
+                if (!$.isNumeric(entryId)) {
+                    return "";
+                }
+                return $('<a href="' + url.replace('-ID-', entryId) + '" class="btn btn-primary ml-2 mb-1" target="_blank" rel="noopener" title="' + viewElementLabel + '"><i class="fas fa-external-link-alt fa-fw"></i></a>');
+            },
+            addListener: function (newEl, idx) {
+                $('#counter-references').text(parseInt($('#counter-references').text(), 10) + 1);
+            },
+            deleteListener: function (oldEl) {
+                $('#counter-references').text(parseInt($('#counter-references').text(), 10) - 1);
+            }
+        });
+
+
+        $('select.autocomplete:not(.autocomplete-max-3)').chosen(CHOSEN_SETTINGS);
+        $('select.autocomplete.autocomplete-max-3').chosen(chosenSettingsMax3);
+
+        $.fn.dependentFields({
+            areference: {
+                conditionCallback: function (main) {
+                    return $(main).is(':checked');
+                },
+                targetFinder: function (name, main) {
+                    return $(main).parent().parent().parent().siblings().find('.dependent_field_' + name);
+                }
+            }
+        });
+
+        $('.selectorcreate').selectOrCreate();
+
+        $('.localisation_form').localisationForm({ errorMessage: "{{ 'generic.messages.error_unknown'|trans }}", notFoundErrorMessage: "{{ 'generic.messages.error_not_found'|trans }}", ambiguousErrorMessage: "{{ 'generic.messages.error_ambiguous'|trans }}", dataUrl: "{{ url('city_search') }}" });
+
+        $('.localisation_selection').localisationDetails({
+            dataUrl: '{{ url("data_localisation", {"id": "##ID##"}) }}',
+            locale: "{{ locale|capitalize }}",
+            labels: {
+                topographies: '{{ "localisation.fields.topographie"|trans }}',
+                fonctions: '{{ "localisation.fields.fonction"|trans }}',
+                coordonnees: '{{ "generic.fields.coordonnees"|trans }}',
+                commentaires: '{{ "generic.fields.commentaire"|trans }}',
+                reel: '{{ "generic.fields.localisation_reelle"|trans }}',
+                oui: '{{ "generic.choices.oui"|trans }}',
+                non: '{{ "generic.choices.non"|trans }}'
+            },
+            coordinatesButton: '{{ coordinatesButton|e("js") }}'
+        });
+
+        $('#element_localisation_creation_grandeSousRegion').dependentSelects({ data_url: "{{ url('data_sous_region') }}" });
+
+        $('.quill').quill();
+    });
+</script>
 {% endblock %}

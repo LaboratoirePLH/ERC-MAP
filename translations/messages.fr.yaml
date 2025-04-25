@@ -325,6 +325,7 @@ element:
         suffixe: "Suffixe ?"
         genre: "Genre"
         nombre: "Nombre"
+        type_checked: "Vérifié ?"
         categorie_contextuelle: "Catégorie contextuelle"
         theonymes_implicites: "Hétéronymes/Formes Alternatives"
         theonyme_implicite_n: "Hétéronyme/Forme Alternative #"
@@ -345,6 +346,13 @@ element:
     add_traduction: "Ajouter une Traduction"
     add_theonyme_implicite: "Ajouter un Hétéronyme / une Forme Alternative"
     add_theonyme_construit: "Ajouter un Élément Racine"
+    types:
+        non_theonym: "Non Théonyme"
+        theonym: "Théonyme"
+        mixed: "Mixte"
+    type_checked:
+        yes: "Vérifié"
+        no: "Non vérifié"
     messages:
         created: "L'Élément a été créé"
         edited: "L'Élément a été modifié"

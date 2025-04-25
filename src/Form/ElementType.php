@@ -19,6 +19,7 @@ use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\ChoiceList\View\ChoiceView;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 
@@ -34,6 +35,22 @@ class ElementType extends AbstractType
             ])
             ->add('traduireEn', CheckboxType::class, [
                 'label'    => 'languages.en',
+                'required' => false
+            ])
+            ->add('type', ChoiceType::class, [
+                'label'       => 'generic.fields.type',
+                'expanded'    => false,
+                'multiple'    => false,
+                'required'    => true,
+                'placeholder' => false,
+                'choices'     => [
+                    'element.types.non_theonym' => 'non_theonym',
+                    'element.types.theonym'     => 'theonym',
+                    'element.types.mixed'       => 'mixed',
+                ],
+            ])
+            ->add('typeChecked', CheckboxType::class, [
+                'label'    => 'element.fields.type_checked',
                 'required' => false
             ])
             ->add('etatAbsolu', TextType::class, [

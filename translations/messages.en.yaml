@@ -326,6 +326,7 @@ element:
         suffixe: "Suffix ?"
         genre: "Gender"
         nombre: "Number"
+        type_checked: "Checked ?"
         categorie_contextuelle: "Contextual Category"
         theonymes_implicites: "Heteronymous/By-Form Theonyms"
         theonyme_implicite_n: "Heteronymous/By-Form Theonym #"
@@ -346,6 +347,13 @@ element:
     add_traduction: "Add Translation"
     add_theonyme_implicite: "Add Heteronymous/By-Form Theonym"
     add_theonyme_construit: "Add a Root Element"
+    types:
+        non_theonym: "Non-Theonym"
+        theonym: "Theonym"
+        mixed: "Mixed"
+    type_checked:
+        yes: "Checked"
+        no: "Unchecked"
     messages:
         created: "Element created"
         edited: "Element edited"

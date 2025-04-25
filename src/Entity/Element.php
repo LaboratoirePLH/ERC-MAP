@@ -38,6 +38,20 @@ class Element extends AbstractEntity implements Interfaces\Located
     private $betaCode;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="type", type="string", length=255, nullable=false)
+     */
+    private $type;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="type_checked", type="boolean", nullable=false)
+     */
+    private $typeChecked;
+
+    /**
      * @var NatureElement
      *
      * @ORM\ManyToOne(targetEntity="NatureElement")
@@ -219,6 +233,28 @@ class Element extends AbstractEntity implements Interfaces\Located
     public function setBetaCode(?string $betaCode): self
     {
         $this->betaCode = $betaCode;
+        return $this;
+    }
+
+    public function getType(): string
+    {
+        return $this->type;
+    }
+
+    public function setType(string $type): self
+    {
+        $this->type = $type;
+        return $this;
+    }
+
+    public function getTypeChecked(): bool
+    {
+        return $this->typeChecked;
+    }
+
+    public function setTypeChecked(bool $typeChecked): self
+    {
+        $this->typeChecked = $typeChecked;
         return $this;
     }
 

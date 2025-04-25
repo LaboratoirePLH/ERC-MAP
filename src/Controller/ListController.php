@@ -261,6 +261,11 @@ class ListController extends AbstractController
                 'categories'       => $element->getCategories()->map(function ($c) use ($locale) {
                     return $c->getNom($locale);
                 })->toArray(),
+                'type'             => $translator->trans('element.types.' . $element->getType()),
+                'type_checked'     => [
+                    'display' => $element->getTypeChecked() ? $translator->trans('element.type_checked.yes') : $translator->trans('element.type_checked.no'),
+                    'value'   => $element->getTypeChecked()
+                ],
                 'date_creation'    => [
                     'display'   => $element->getDateCreation()->format($translator->trans('locale_datetime')),
                     'timestamp' => $element->getDateCreation()->getTimestamp(),

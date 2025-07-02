@@ -105,20 +105,21 @@ easy_admin:
             list:
                 dql_filter: "entity.actif = true"
                 fields:
-                    - "id"
-                    - "prenomNom"
-                    - "username"
+                    - { property: "id", type: "integer" }
+                    - { property: "prenomNom", type: "string" }
+                    - { property: "username", type: "string" }
                     - { property: "mail", type: "email" }
-                    - "institution"
-                    - "role"
-                    - "nomsProjets"
+                    - { property: "institution", type: "string" }
+                    - { property: "role", type: "text" }
+                    - { property: "nomsProjets", type: "string" }
             edit:
                 fields:
                     - {
                           property: "prenomNom",
+                          type: "string",
                           type_options: { required: true },
                       }
-                    - { property: "username", type_options: { required: true } }
+                    - { property: "username", type: "string", type_options: { required: true } }
                     - {
                           property: "mail",
                           type: "email",
@@ -127,9 +128,9 @@ easy_admin:
                     - {
                           property: "newPassword",
                           label: "Nouveau mot de passe",
-                          type: "text",
+                          type: "string",
                       }
-                    - "institution"
+                    - { property: "institution", type: "string" }
                     - {
                           property: "role",
                           type: "choice",
@@ -146,19 +147,22 @@ easy_admin:
                       }
                     - {
                           property: "projets",
+                          type: "entity",
+                          class: App\Entity\Projet,
                           type_options:
-                              { required: false, by_reference: false },
+                              { required: false, by_reference: false, multiple: true },
                       }
-                    - { property: "actif" }
-                    - { property: "gestionnaireComptes" }
+                    - { property: "actif", type: "checkbox" }
+                    - { property: "gestionnaireComptes", type: "checkbox" }
 
             new:
                 fields:
                     - {
                           property: "prenomNom",
+                          type: "string",
                           type_options: { required: true },
                       }
-                    - { property: "username", type_options: { required: true } }
+                    - { property: "username", type: "string", type_options: { required: true } }
                     - {
                           property: "mail",
                           type: "email",
@@ -167,10 +171,10 @@ easy_admin:
                     - {
                           property: "newPassword",
                           label: "Nouveau mot de passe",
-                          type: "text",
+                          type: "string",
                           type_options: { required: true },
                       }
-                    - "institution"
+                    - { property: "institution", type: "string" }
                     - {
                           property: "role",
                           type: "choice",
@@ -187,10 +191,12 @@ easy_admin:
                       }
                     - {
                           property: "projets",
+                          type: "entity",
+                          class: App\Entity\Projet,
                           type_options:
-                              { required: false, by_reference: false },
+                              { required: false, by_reference: false, multiple: true },
                       }
-                    - { property: "actif" }
+                    - { property: "actif", type: "checkbox" }
         EntitePolitique:
             class: App\Entity\EntitePolitique
             label: Entité Politique
@@ -200,9 +206,9 @@ easy_admin:
             list:
                 fields:
                     [
-                        "id",
-                        "nom_fr",
-                        "nom_en",
+                        { property: "id", type: "integer" },
+                        { property: "nomFr", type: "string" },
+                        { property: "nomEn", type: "string" },
                         {
                             property: "open_access",
                             label: "Inclure en Open Access ?",
@@ -215,11 +221,11 @@ easy_admin:
             list:
                 sort: ["attestation", "DESC"]
                 fields:
-                    - "id"
-                    - "formule"
-                    - "attestation"
-                    - "positionFormule"
-                    - "puissancesDivines"
+                    - { property: "id", type: "integer" }
+                    - { property: "formule", type: "string" }
+                    - { property: "attestation", type: "string" }
+                    - { property: "positionFormule", type: "integer" }
+                    - { property: "puissancesDivines", type: "integer" }
                 filters:
                     - property: "id_attestation"
                       label: "ID Attestation"
@@ -237,10 +243,10 @@ easy_admin:
             list:
                 sort: ["nomFr", "ASC"]
                 fields:
-                    - "id"
-                    - "nomFr"
-                    - "nomEn"
-                    - { property: "progression", format: "%d" }
+                    - { property: "id", type: "integer" }
+                    - { property: "nomFr", type: "string" }
+                    - { property: "nomEn", type: "string" }
+                    - { property: "progression", type: "integer", format: "%d" }
         Langue:
             class: App\Entity\Langue
             label: Langue
@@ -250,13 +256,13 @@ easy_admin:
             list:
                 sort: ["id", "DESC"]
                 fields:
-                    - "id"
-                    - "grandeRegion"
-                    - "sousRegion"
-                    - { property: "pleiadesVille", format: "%d" }
-                    - "nomVille"
-                    - { property: "pleiadesSite", format: "%d" }
-                    - "nomSite"
+                    - { property: "id", type: "integer" }
+                    - { property: "grandeRegion.nomFr", type: "string" }
+                    - { property: "sousRegion.nomFr", type: "string" }
+                    - { property: "pleiadesVille", type: "integer", format: "%d" }
+                    - { property: "nomVille", type: "string" }
+                    - { property: "pleiadesSite", type: "integer", format: "%d" }
+                    - { property: "nomSite", type: "string" }
                 filters:
                     - property: "grandeSousRegion"
                       label: ""
@@ -265,37 +271,47 @@ easy_admin:
                 actions: ["-new", "-delete"]
             edit:
                 fields:
-                    - { property: "reel" }
+                    - { property: "reel", type: "checkbox" }
                     - {
                           property: "entitePolitique",
+                          type: "entity",
+                          class: App\Entity\EntitePolitique,
                           type_options: { required: false },
                       }
                     - {
                           property: "grandeRegion",
+                          type: "entity",
+                          class: App\Entity\GrandeRegion,
                           type_options: { required: false },
                       }
                     - {
                           property: "sousRegion",
+                          type: "entity",
+                          class: App\Entity\SousRegion,
                           type_options: { required: false },
                       }
-                    - { property: "pleiadesVille", format: "%d" }
-                    - "nomVille"
-                    - { property: "pleiadesSite", format: "%d" }
-                    - "nomSite"
-                    - { property: "latitude", type_options: { scale: 8 } }
-                    - { property: "longitude", type_options: { scale: 8 } }
+                    - { property: "pleiadesVille", type: "integer", format: "%d" }
+                    - { property: "nomVille", type: "string" }
+                    - { property: "pleiadesSite", type: "integer", format: "%d" }
+                    - { property: "nomSite", type: "string" }
+                    - { property: "latitude", type: "number", type_options: { scale: 8 } }
+                    - { property: "longitude", type: "number", type_options: { scale: 8 } }
                     - {
                           property: "topographies",
+                          type: "entity",
+                          class: App\Entity\QTopographie,
                           type_options:
-                              { required: false, by_reference: false },
+                              { required: false, by_reference: false, multiple: true },
                       }
                     - {
                           property: "fonctions",
+                          type: "entity",
+                          class: App\Entity\QFonction,
                           type_options:
-                              { required: false, by_reference: false },
+                              { required: false, by_reference: false, multiple: true },
                       }
-                    - "commentaireFr"
-                    - "commentaireEn"
+                    - { property: "commentaireFr", type: "text" }
+                    - { property: "commentaireEn", type: "text" }
         Materiau:
             class: App\Entity\Materiau
             label: Matériau
@@ -335,11 +351,11 @@ easy_admin:
             list:
                 sort: ["nomFr", "ASC"]
                 fields:
-                    - "id"
-                    - "grandeRegion"
-                    - "nomFr"
-                    - "nomEn"
-                    - { property: "progression", format: "%d" }
+                    - { property: "id", type: "integer" }
+                    - { property: "grandeRegion", type: "entity", class: App\Entity\GrandeRegion }
+                    - { property: "nomFr", type: "string" }
+                    - { property: "nomEn", type: "string" }
+                    - { property: "progression", type: "integer", format: "%d" }
         StatutAffiche:
             class: App\Entity\StatutAffiche
             label: Statut Affiché
@@ -348,11 +364,11 @@ easy_admin:
             label: Suivi
             list:
                 fields:
-                    - "id"
-                    - "nom_table"
-                    - "id_entite"
-                    - "action"
-                    - "date_heure"
+                    - { property: "id", type: "integer" }
+                    - { property: "nom_table", type: "string" }
+                    - { property: "id_entite", type: "integer" }
+                    - { property: "action", type: "string" }
+                    - { property: "date_heure", type: "datetime" }
         Titre:
             class: App\Entity\Titre
             label: Titre
@@ -374,12 +390,12 @@ easy_admin:
             list:
                 dql_filter: "entity.actif = false"
                 fields:
-                    - "id"
-                    - "prenomNom"
-                    - "username"
+                    - { property: "id", type: "integer" }
+                    - { property: "prenomNom", type: "string" }
+                    - { property: "username", type: "string" }
                     - { property: "mail", type: "email" }
-                    - "institution"
-                    - "dateAjout"
+                    - { property: "institution", type: "string" }
+                    - { property: "dateAjout", type: "datetime" }
                 actions:
                     [
                         "-search",
@@ -390,15 +406,20 @@ easy_admin:
                 fields:
                     - {
                           property: "prenomNom",
+                          type: "string",
                           type_options: { required: true },
                       }
-                    - { property: "username", type_options: { required: true } }
+                    - {
+                          property: "username",
+                          type: "string",
+                          type_options: { required: true },
+                      }
                     - {
                           property: "mail",
                           type: "email",
                           type_options: { required: true },
                       }
-                    - "institution"
+                    - { property: "institution", type: "string" }
                     - {
                           property: "role",
                           type: "choice",
@@ -415,20 +436,22 @@ easy_admin:
                       }
                     - {
                           property: "projets",
+                          type: "entity",
+                          class: App\Entity\Projet,
                           type_options:
-                              { required: false, by_reference: false },
+                              { required: false, by_reference: false, multiple: true },
                       }
-                    - { property: "actif" }
-                    - { property: "gestionnaireComptes" }
+                    - { property: "actif", type: "checkbox" }
+                    - { property: "gestionnaireComptes", type: "checkbox" }
         AttestationEtatFiche:
             class: App\Entity\Attestation
             label: Attestations (Etat Fiche)
             list:
                 fields:
-                    - "source"
-                    - "id"
-                    - "affichage"
-                    - "etatFiche"
+                    - { property: "source.id", label: "ID Source", type: "string" }
+                    - { property: "id", type: "integer" }
+                    - { property: "affichage", type: "string" }
+                    - { property: "etatFiche.nomFr", label: "Etat Fiche", type: "string" }
                 filters:
                     - property: "id_source"
                       label: "ID Source"
@@ -439,6 +462,8 @@ easy_admin:
                 fields:
                     - {
                           property: "etatFiche",
+                          type: "entity",
+                          class: App\Entity\EtatFiche,
                           type_options: { required: true },
                       }
         AttestationTraductions:
@@ -446,11 +471,11 @@ easy_admin:
             label: Attestations (Traductions)
             list:
                 fields:
-                    - "source"
-                    - "id"
-                    - "affichage"
-                    - "traduireFr"
-                    - "traduireEn"
+                    - { property: "source.id", label: "ID Source", type: "integer" }
+                    - { property: "id", type: "integer" }
+                    - { property: "affichage", type: "string" }
+                    - { property: "traduireFr", type: "toggle" }
+                    - { property: "traduireEn", type: "toggle" }
                 filters:
                     - property: "id_source"
                       label: "ID Source"
@@ -462,16 +487,16 @@ easy_admin:
             label: Sources (Traductions)
             list:
                 fields:
-                    - "id"
-                    - "traduireFr"
-                    - "traduireEn"
+                    - { property: "id", type: "integer" }
+                    - { property: "traduireFr", type: "toggle" }
+                    - { property: "traduireEn", type: "toggle" }
                 actions: ["-new", "-edit", "-delete"]
         ElementTraductions:
             class: App\Entity\Element
             label: Elements (Traductions)
             list:
                 fields:
-                    - "id"
-                    - "traduireFr"
-                    - "traduireEn"
+                    - { property: "id", type: "integer" }
+                    - { property: "traduireFr", type: "toggle" }
+                    - { property: "traduireEn", type: "toggle" }
                 actions: ["-new", "-edit", "-delete"]

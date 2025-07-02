@@ -132,7 +132,7 @@ class SecurityController extends AbstractController
         $user = new Chercheur;
         $form = $this->createForm(RegisterType::class, $user);
 
-        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isSubmitted() && $form->handleRequest($request)->isValid()) {
             $user->setPassword($hasher->hashPassword($user, $user->getPassword()));
             $em->persist($user);
 

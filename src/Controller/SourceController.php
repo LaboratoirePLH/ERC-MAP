@@ -142,7 +142,7 @@ class SourceController extends AbstractController
             ]
         ]);
 
-        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isSubmitted() && $form->handleRequest($request)->isValid()) {
             $source->setCreateur($user);
             $source->setDernierEditeur($user);
             // Sauvegarde
@@ -280,7 +280,7 @@ class SourceController extends AbstractController
             ]
         ]);
 
-        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isSubmitted() && $form->handleRequest($request)->isValid()) {
             $source->setDernierEditeur($user);
             // Sauvegarde
             $em = $doctrine->getManager();

@@ -60,7 +60,7 @@ class BibliographyController extends AbstractController
             ]
         ]);
 
-        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isSubmitted() && $form->handleRequest($request)->isValid()) {
             $em = $doctrine->getManager();
             $em->persist($biblio);
             $em->flush();
@@ -161,7 +161,7 @@ class BibliographyController extends AbstractController
             ]
         ]);
 
-        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isSubmitted() && $form->handleRequest($request)->isValid()) {
             $em = $doctrine->getManager();
             $em->persist($biblio);
             $doctrine->getRepository(VerrouEntite::class)->remove($biblio->getVerrou());

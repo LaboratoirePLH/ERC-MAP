@@ -205,7 +205,7 @@ class AttestationController extends AbstractController
             ]
         ]);
 
-        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isSubmitted() && $form->handleRequest($request)->isValid()) {
             $attestation->setCreateur($user);
             $attestation->setDernierEditeur($user);
             // Sauvegarde
@@ -392,7 +392,7 @@ class AttestationController extends AbstractController
             ]
         ]);
 
-        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isSubmitted() && $form->handleRequest($request)->isValid()) {
             $em = $doctrine->getManager();
             $attestation->setDernierEditeur($user);
             foreach ($attestation->getAttestationMateriels() as $am) {

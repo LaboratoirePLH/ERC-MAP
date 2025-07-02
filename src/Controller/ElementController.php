@@ -90,7 +90,7 @@ class ElementController extends AbstractController
             ]
         ]);
 
-        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isSubmitted() && $form->handleRequest($request)->isValid()) {
             $em = $doctrine->getManager();
 
             $element->setCreateur($user);
@@ -236,7 +236,7 @@ class ElementController extends AbstractController
             ]
         ]);
 
-        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isSubmitted() && $form->handleRequest($request)->isValid()) {
             $element->setDernierEditeur($user);
             // Sauvegarde
             $em = $doctrine->getManager();

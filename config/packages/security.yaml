@@ -44,11 +44,11 @@ security:
     access_control:
         - { path: ^/admin, roles: ROLE_ADMIN }
         - { path: ^/maintenance, roles: ROLE_ADMIN }
-        - { path: ^/forgotten_password, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/reset_password, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/language, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/forgotten_password, roles: PUBLIC_ACCESS }
+        - { path: ^/reset_password, roles: PUBLIC_ACCESS }
+        - { path: ^/login, roles: PUBLIC_ACCESS }
+        - { path: ^/language, roles: PUBLIC_ACCESS }
+        - { path: ^/register, roles: PUBLIC_ACCESS }
         - { path: ^/inactive_account, roles: [ROLE_UNVERIFIED_USER, ROLE_USER] }
         # - { path: ^/, roles: ROLE_USER }
-        - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/, roles: PUBLIC_ACCESS }

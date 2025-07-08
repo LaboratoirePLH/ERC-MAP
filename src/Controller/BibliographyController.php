@@ -60,17 +60,20 @@ class BibliographyController extends AbstractController
             ]
         ]);
 
-        if ($request->isMethod('POST') && $form->handleRequest($request)->isSubmitted() && $form->handleRequest($request)->isValid()) {
-            $em = $doctrine->getManager();
-            $em->persist($biblio);
-            $em->flush();
+        if ($request->isMethod('POST')) {
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+                $em = $doctrine->getManager();
+                $em->persist($biblio);
+                $em->flush();
 
-            // Message de confirmation
-            $request->getSession()->getFlashBag()->add('success', 'biblio.messages.created');
-            if ($request->request->has("saveclose")) {
-                return $this->redirectToRoute('bibliography_list');
+                // Message de confirmation
+                $request->getSession()->getFlashBag()->add('success', 'biblio.messages.created');
+                if ($request->request->has("saveclose")) {
+                    return $this->redirectToRoute('bibliography_list');
+                }
+                return $this->redirectToRoute('bibliography_edit', ['id' => $biblio->getId()]);
             }
-            return $this->redirectToRoute('bibliography_edit', ['id' => $biblio->getId()]);
         }
 
         return $this->render('bibliography/edit.html.twig', [
@@ -161,18 +164,21 @@ class BibliographyController extends AbstractController
             ]
         ]);
 
-        if ($request->isMethod('POST') && $form->handleRequest($request)->isSubmitted() && $form->handleRequest($request)->isValid()) {
-            $em = $doctrine->getManager();
-            $em->persist($biblio);
-            $doctrine->getRepository(VerrouEntite::class)->remove($biblio->getVerrou());
-            $em->flush();
+        if ($request->isMethod('POST')) {
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+                $em = $doctrine->getManager();
+                $em->persist($biblio);
+                $doctrine->getRepository(VerrouEntite::class)->remove($biblio->getVerrou());
+                $em->flush();
 
-            // Message de confirmation
-            $request->getSession()->getFlashBag()->add('success', 'biblio.messages.edited');
-            if ($request->request->has("saveclose")) {
-                return $this->redirectToRoute('bibliography_list');
+                // Message de confirmation
+                $request->getSession()->getFlashBag()->add('success', 'biblio.messages.edited');
+                if ($request->request->has("saveclose")) {
+                    return $this->redirectToRoute('bibliography_list');
+                }
+                return $this->redirectToRoute('bibliography_edit', ['id' => $biblio->getId()]);
             }
-            return $this->redirectToRoute('bibliography_edit', ['id' => $biblio->getId()]);
         }
 
         return $this->render('bibliography/edit.html.twig', [

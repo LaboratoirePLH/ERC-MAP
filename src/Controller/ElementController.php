@@ -90,55 +90,58 @@ class ElementController extends AbstractController
             ]
         ]);
 
-        if ($request->isMethod('POST') && $form->handleRequest($request)->isSubmitted() && $form->handleRequest($request)->isValid()) {
-            $em = $doctrine->getManager();
+        if ($request->isMethod('POST')) {
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+                $em = $doctrine->getManager();
 
-            $element->setCreateur($user);
-            $element->setDernierEditeur($user);
-            // Sauvegarde
-            $em = $doctrine->getManager();
-            $em->persist($element);
+                $element->setCreateur($user);
+                $element->setDernierEditeur($user);
+                // Sauvegarde
+                $em = $doctrine->getManager();
+                $em->persist($element);
 
-            foreach ($element->getElementBiblios() as $eb) {
-                if ($eb->getBiblio() !== null) {
-                    $em->persist($eb->getBiblio());
-                    $eb->setElement($element);
-                    $em->persist($eb);
-                } else {
-                    $element->removeElementBiblio($eb);
-                }
-            }
-            foreach ($element->getTheonymesImplicites() as $ti) {
-                if ($ti !== null && !$em->contains($ti)) {
-                    if ($ti->getEtatAbsolu() !== null) {
-                        $ti->setCreateur($user);
-                        $ti->setDernierEditeur($user);
-                        $em->persist($ti);
+                foreach ($element->getElementBiblios() as $eb) {
+                    if ($eb->getBiblio() !== null) {
+                        $em->persist($eb->getBiblio());
+                        $eb->setElement($element);
+                        $em->persist($eb);
                     } else {
-                        $element->removeTheonymesImplicite($ti);
+                        $element->removeElementBiblio($eb);
                     }
                 }
-            }
-            foreach ($element->getTheonymesConstruits() as $tc) {
-                if ($tc !== null && !$em->contains($tc)) {
-                    if ($tc->getEtatAbsolu() !== null) {
-                        $tc->setCreateur($user);
-                        $tc->setDernierEditeur($user);
-                        $em->persist($tc);
-                    } else {
-                        $element->removeTheonymesConstruit($tc);
+                foreach ($element->getTheonymesImplicites() as $ti) {
+                    if ($ti !== null && !$em->contains($ti)) {
+                        if ($ti->getEtatAbsolu() !== null) {
+                            $ti->setCreateur($user);
+                            $ti->setDernierEditeur($user);
+                            $em->persist($ti);
+                        } else {
+                            $element->removeTheonymesImplicite($ti);
+                        }
                     }
                 }
-            }
+                foreach ($element->getTheonymesConstruits() as $tc) {
+                    if ($tc !== null && !$em->contains($tc)) {
+                        if ($tc->getEtatAbsolu() !== null) {
+                            $tc->setCreateur($user);
+                            $tc->setDernierEditeur($user);
+                            $em->persist($tc);
+                        } else {
+                            $element->removeTheonymesConstruit($tc);
+                        }
+                    }
+                }
 
-            $em->flush();
+                $em->flush();
 
-            // Message de confirmation
-            $request->getSession()->getFlashBag()->add('success', 'element.messages.created');
-            if ($request->request->has("saveclose")) {
-                return $this->redirectToRoute('element_list');
+                // Message de confirmation
+                $request->getSession()->getFlashBag()->add('success', 'element.messages.created');
+                if ($request->request->has("saveclose")) {
+                    return $this->redirectToRoute('element_list');
+                }
+                return $this->redirectToRoute('element_edit', ['id' => $element->getId()]);
             }
-            return $this->redirectToRoute('element_edit', ['id' => $element->getId()]);
         }
 
         return $this->render('element/edit.html.twig', [
@@ -236,54 +239,57 @@ class ElementController extends AbstractController
             ]
         ]);
 
-        if ($request->isMethod('POST') && $form->handleRequest($request)->isSubmitted() && $form->handleRequest($request)->isValid()) {
-            $element->setDernierEditeur($user);
-            // Sauvegarde
-            $em = $doctrine->getManager();
-            foreach ($element->getElementBiblios() as $sb) {
-                if ($sb->getBiblio() !== null) {
-                    if (!$em->contains($sb->getBiblio())) {
-                        $em->persist($sb->getBiblio());
-                    }
-                    $sb->setElement($element);
-                    if (!$em->contains($sb)) {
-                        $em->persist($sb);
-                    }
-                } else {
-                    $element->removeElementBiblio($sb);
-                }
-            }
-            foreach ($element->getTheonymesImplicites() as $ti) {
-                if ($ti !== null && !$em->contains($ti)) {
-                    if ($ti->getEtatAbsolu() !== null) {
-                        $ti->setCreateur($user);
-                        $ti->setDernierEditeur($user);
-                        $em->persist($ti);
+        if ($request->isMethod('POST')) {
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+                $element->setDernierEditeur($user);
+                // Sauvegarde
+                $em = $doctrine->getManager();
+                foreach ($element->getElementBiblios() as $sb) {
+                    if ($sb->getBiblio() !== null) {
+                        if (!$em->contains($sb->getBiblio())) {
+                            $em->persist($sb->getBiblio());
+                        }
+                        $sb->setElement($element);
+                        if (!$em->contains($sb)) {
+                            $em->persist($sb);
+                        }
                     } else {
-                        $element->removeTheonymesImplicite($ti);
+                        $element->removeElementBiblio($sb);
                     }
                 }
-            }
-            foreach ($element->getTheonymesConstruits() as $tc) {
-                if ($tc !== null && !$em->contains($tc)) {
-                    if ($tc->getEtatAbsolu() !== null) {
-                        $tc->setCreateur($user);
-                        $tc->setDernierEditeur($user);
-                        $em->persist($tc);
-                    } else {
-                        $element->removeTheonymesConstruit($tc);
+                foreach ($element->getTheonymesImplicites() as $ti) {
+                    if ($ti !== null && !$em->contains($ti)) {
+                        if ($ti->getEtatAbsolu() !== null) {
+                            $ti->setCreateur($user);
+                            $ti->setDernierEditeur($user);
+                            $em->persist($ti);
+                        } else {
+                            $element->removeTheonymesImplicite($ti);
+                        }
                     }
                 }
-            }
-            $doctrine->getRepository(VerrouEntite::class)->remove($element->getVerrou());
-            $em->flush();
+                foreach ($element->getTheonymesConstruits() as $tc) {
+                    if ($tc !== null && !$em->contains($tc)) {
+                        if ($tc->getEtatAbsolu() !== null) {
+                            $tc->setCreateur($user);
+                            $tc->setDernierEditeur($user);
+                            $em->persist($tc);
+                        } else {
+                            $element->removeTheonymesConstruit($tc);
+                        }
+                    }
+                }
+                $doctrine->getRepository(VerrouEntite::class)->remove($element->getVerrou());
+                $em->flush();
 
-            // Message de confirmation
-            $request->getSession()->getFlashBag()->add('success', 'element.messages.edited');
-            if ($request->request->has("saveclose")) {
-                return $this->redirectToRoute('element_list');
+                // Message de confirmation
+                $request->getSession()->getFlashBag()->add('success', 'element.messages.edited');
+                if ($request->request->has("saveclose")) {
+                    return $this->redirectToRoute('element_list');
+                }
+                return $this->redirectToRoute('element_edit', ['id' => $element->getId()]);
             }
-            return $this->redirectToRoute('element_edit', ['id' => $element->getId()]);
         }
 
         return $this->render('element/edit.html.twig', [

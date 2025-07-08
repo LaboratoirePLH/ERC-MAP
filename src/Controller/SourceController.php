@@ -142,50 +142,53 @@ class SourceController extends AbstractController
             ]
         ]);
 
-        if ($request->isMethod('POST') && $form->handleRequest($request)->isSubmitted() && $form->handleRequest($request)->isValid()) {
-            $source->setCreateur($user);
-            $source->setDernierEditeur($user);
-            // Sauvegarde
-            $em = $doctrine->getManager();
-            $em->persist($source);
-            foreach ($source->getSourceBiblios() as $sb) {
-                if ($sb->getBiblio() !== null) {
-                    $em->persist($sb->getBiblio());
-                    $sb->setSource($source);
-                    $em->persist($sb);
-                } else {
-                    $source->removeSourceBiblio($sb);
-                }
-            }
-            if (!empty($source->getAttestations())) {
-                foreach ($source->getAttestations() as $a) {
-                    if (!empty($a->getPassage())) {
-                        // Persist only valid data
-                        $a->setSource($source);
-                        $a->setCreateur($user);
-                        $a->setDernierEditeur($user);
-                        $etatFiche = $doctrine
-                            ->getRepository(EtatFiche::class)
-                            ->find(1);
-                        $a->setEtatFiche($etatFiche);
-                        $em->persist($a);
+        if ($request->isMethod('POST')) {
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+                $source->setCreateur($user);
+                $source->setDernierEditeur($user);
+                // Sauvegarde
+                $em = $doctrine->getManager();
+                $em->persist($source);
+                foreach ($source->getSourceBiblios() as $sb) {
+                    if ($sb->getBiblio() !== null) {
+                        $em->persist($sb->getBiblio());
+                        $sb->setSource($source);
+                        $em->persist($sb);
                     } else {
-                        $source->removeAttestation($a);
+                        $source->removeSourceBiblio($sb);
                     }
                 }
-            }
-            if ($source->getEstDatee() !== true || $source->getDatation()->isEmpty()) {
-                $source->setDatation(null);
-                $source->setEstDatee(false);
-            }
-            $em->flush();
+                if (!empty($source->getAttestations())) {
+                    foreach ($source->getAttestations() as $a) {
+                        if (!empty($a->getPassage())) {
+                            // Persist only valid data
+                            $a->setSource($source);
+                            $a->setCreateur($user);
+                            $a->setDernierEditeur($user);
+                            $etatFiche = $doctrine
+                                ->getRepository(EtatFiche::class)
+                                ->find(1);
+                            $a->setEtatFiche($etatFiche);
+                            $em->persist($a);
+                        } else {
+                            $source->removeAttestation($a);
+                        }
+                    }
+                }
+                if ($source->getEstDatee() !== true || $source->getDatation()->isEmpty()) {
+                    $source->setDatation(null);
+                    $source->setEstDatee(false);
+                }
+                $em->flush();
 
-            // Message de confirmation
-            $request->getSession()->getFlashBag()->add('success', 'source.messages.created');
-            if ($request->request->has("saveclose")) {
-                return $this->redirectToRoute('source_list');
+                // Message de confirmation
+                $request->getSession()->getFlashBag()->add('success', 'source.messages.created');
+                if ($request->request->has("saveclose")) {
+                    return $this->redirectToRoute('source_list');
+                }
+                return $this->redirectToRoute('source_edit', ['id' => $source->getId()]);
             }
-            return $this->redirectToRoute('source_edit', ['id' => $source->getId()]);
         }
 
         return $this->render('source/edit.html.twig', [
@@ -280,56 +283,59 @@ class SourceController extends AbstractController
             ]
         ]);
 
-        if ($request->isMethod('POST') && $form->handleRequest($request)->isSubmitted() && $form->handleRequest($request)->isValid()) {
-            $source->setDernierEditeur($user);
-            // Sauvegarde
-            $em = $doctrine->getManager();
-            foreach ($source->getSourceBiblios() as $sb) {
-                if ($sb->getBiblio() !== null) {
-                    if (!$em->contains($sb->getBiblio())) {
-                        $em->persist($sb->getBiblio());
+        if ($request->isMethod('POST')) {
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+                $source->setDernierEditeur($user);
+                // Sauvegarde
+                $em = $doctrine->getManager();
+                foreach ($source->getSourceBiblios() as $sb) {
+                    if ($sb->getBiblio() !== null) {
+                        if (!$em->contains($sb->getBiblio())) {
+                            $em->persist($sb->getBiblio());
+                        }
+                        $sb->setSource($source);
+                        if (!$em->contains($sb)) {
+                            $em->persist($sb);
+                        }
+                    } else {
+                        $source->removeSourceBiblio($sb);
                     }
-                    $sb->setSource($source);
-                    if (!$em->contains($sb)) {
-                        $em->persist($sb);
-                    }
-                } else {
-                    $source->removeSourceBiblio($sb);
                 }
-            }
-            if (!empty($source->getAttestations())) {
-                foreach ($source->getAttestations() as $a) {
-                    // Don't persist/remove already persisted entities
-                    if (!$em->contains($a)) {
-                        // If it's not persisted, we check the contents of the "passage" field
-                        // to determine if it's valid or not
-                        if (!empty($a->getPassage())) {
-                            $a->setSource($source);
-                            $a->setCreateur($user);
-                            $a->setDernierEditeur($user);
-                            $etatFiche = $doctrine
-                                ->getRepository(EtatFiche::class)
-                                ->find(1);
-                            $a->setEtatFiche($etatFiche);
-                            $em->persist($a);
-                        } else {
+                if (!empty($source->getAttestations())) {
+                    foreach ($source->getAttestations() as $a) {
+                        // Don't persist/remove already persisted entities
+                        if (!$em->contains($a)) {
+                            // If it's not persisted, we check the contents of the "passage" field
+                            // to determine if it's valid or not
+                            if (!empty($a->getPassage())) {
+                                $a->setSource($source);
+                                $a->setCreateur($user);
+                                $a->setDernierEditeur($user);
+                                $etatFiche = $doctrine
+                                    ->getRepository(EtatFiche::class)
+                                    ->find(1);
+                                $a->setEtatFiche($etatFiche);
+                                $em->persist($a);
+                            } else {
+                            }
                         }
                     }
                 }
-            }
-            if ($source->getEstDatee() !== true || $source->getDatation()->isEmpty()) {
-                $source->setDatation(null);
-                $source->setEstDatee(false);
-            }
-            $doctrine->getRepository(VerrouEntite::class)->remove($source->getVerrou());
-            $em->flush();
+                if ($source->getEstDatee() !== true || $source->getDatation()->isEmpty()) {
+                    $source->setDatation(null);
+                    $source->setEstDatee(false);
+                }
+                $doctrine->getRepository(VerrouEntite::class)->remove($source->getVerrou());
+                $em->flush();
 
-            // Message de confirmation
-            $request->getSession()->getFlashBag()->add('success', 'source.messages.edited');
-            if ($request->request->has("saveclose")) {
-                return $this->redirectToRoute('source_list');
+                // Message de confirmation
+                $request->getSession()->getFlashBag()->add('success', 'source.messages.edited');
+                if ($request->request->has("saveclose")) {
+                    return $this->redirectToRoute('source_list');
+                }
+                return $this->redirectToRoute('source_edit', ['id' => $source->getId()]);
             }
-            return $this->redirectToRoute('source_edit', ['id' => $source->getId()]);
         }
 
         return $this->render('source/edit.html.twig', [

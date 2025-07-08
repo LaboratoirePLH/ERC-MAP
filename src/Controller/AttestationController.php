@@ -205,65 +205,68 @@ class AttestationController extends AbstractController
             ]
         ]);
 
-        if ($request->isMethod('POST') && $form->handleRequest($request)->isSubmitted() && $form->handleRequest($request)->isValid()) {
-            $attestation->setCreateur($user);
-            $attestation->setDernierEditeur($user);
-            // Sauvegarde
-            $em = $doctrine->getManager();
-            $em->persist($attestation);
-            foreach ($attestation->getAttestationMateriels() as $am) {
-                if ($am->getMateriel() !== null || $am->getCategorieMateriel() !== null) {
-                    $am->setAttestation($attestation);
-                    $em->persist($am);
-                } else {
-                    $attestation->removeAttestationMateriel($am);
-                }
-            }
-            foreach ($attestation->getAttestationOccasions() as $ao) {
-                if ($ao->getOccasion() !== null || $ao->getCategorieOccasion() !== null) {
-                    $ao->setAttestation($attestation);
-                    $em->persist($ao);
-                } else {
-                    $attestation->removeAttestationOccasion($ao);
-                }
-            }
-            foreach ($attestation->getAgents() as $a) {
-                if (!$a->isBlank()) {
-                    $a->setAttestation($attestation);
-                    $em->persist($a);
-                } else {
-                    $attestation->removeAgent($a);
-                    $em->remove($a);
-                }
-            }
-            foreach ($attestation->getContientElements() as $ce) {
-                if ($ce->getElement() !== null) {
-                    if (!$em->contains($ce->getElement())) {
-                        $ce->getElement()->setCreateur($user);
-                        $ce->getElement()->setDernierEditeur($user);
-                        $em->persist($ce->getElement());
+        if ($request->isMethod('POST')) {
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+                $attestation->setCreateur($user);
+                $attestation->setDernierEditeur($user);
+                // Sauvegarde
+                $em = $doctrine->getManager();
+                $em->persist($attestation);
+                foreach ($attestation->getAttestationMateriels() as $am) {
+                    if ($am->getMateriel() !== null || $am->getCategorieMateriel() !== null) {
+                        $am->setAttestation($attestation);
+                        $em->persist($am);
+                    } else {
+                        $attestation->removeAttestationMateriel($am);
                     }
-                    $ce->setAttestation($attestation);
-                    $em->persist($ce);
-                } else {
-                    $attestation->removeContientElement($ce);
                 }
-            }
+                foreach ($attestation->getAttestationOccasions() as $ao) {
+                    if ($ao->getOccasion() !== null || $ao->getCategorieOccasion() !== null) {
+                        $ao->setAttestation($attestation);
+                        $em->persist($ao);
+                    } else {
+                        $attestation->removeAttestationOccasion($ao);
+                    }
+                }
+                foreach ($attestation->getAgents() as $a) {
+                    if (!$a->isBlank()) {
+                        $a->setAttestation($attestation);
+                        $em->persist($a);
+                    } else {
+                        $attestation->removeAgent($a);
+                        $em->remove($a);
+                    }
+                }
+                foreach ($attestation->getContientElements() as $ce) {
+                    if ($ce->getElement() !== null) {
+                        if (!$em->contains($ce->getElement())) {
+                            $ce->getElement()->setCreateur($user);
+                            $ce->getElement()->setDernierEditeur($user);
+                            $em->persist($ce->getElement());
+                        }
+                        $ce->setAttestation($attestation);
+                        $em->persist($ce);
+                    } else {
+                        $attestation->removeContientElement($ce);
+                    }
+                }
 
-            if ($attestation->getEstDatee() !== true || $attestation->getDatation()->isEmpty()) {
-                $attestation->setDatation(null);
-                $attestation->setEstDatee(false);
-            }
+                if ($attestation->getEstDatee() !== true || $attestation->getDatation()->isEmpty()) {
+                    $attestation->setDatation(null);
+                    $attestation->setEstDatee(false);
+                }
 
-            $doctrine->getRepository(VerrouEntite::class)->remove($source->getVerrou());
-            $em->flush();
+                $doctrine->getRepository(VerrouEntite::class)->remove($source->getVerrou());
+                $em->flush();
 
-            // Message de confirmation
-            $request->getSession()->getFlashBag()->add('success', 'attestation.messages.created');
-            if ($request->request->has("saveclose")) {
-                return $this->redirectToRoute('attestation_list');
+                // Message de confirmation
+                $request->getSession()->getFlashBag()->add('success', 'attestation.messages.created');
+                if ($request->request->has("saveclose")) {
+                    return $this->redirectToRoute('attestation_list');
+                }
+                return $this->redirectToRoute('attestation_edit', ['id' => $attestation->getId()]);
             }
-            return $this->redirectToRoute('attestation_edit', ['id' => $attestation->getId()]);
         }
 
         return $this->render('attestation/edit.html.twig', [
@@ -392,99 +395,102 @@ class AttestationController extends AbstractController
             ]
         ]);
 
-        if ($request->isMethod('POST') && $form->handleRequest($request)->isSubmitted() && $form->handleRequest($request)->isValid()) {
-            $em = $doctrine->getManager();
-            $attestation->setDernierEditeur($user);
-            foreach ($attestation->getAttestationMateriels() as $am) {
-                if ($am->getMateriel() !== null || $am->getCategorieMateriel() !== null) {
-                    $am->setAttestation($attestation);
-                    if (!$em->contains($am)) {
-                        $em->persist($am);
-                    }
-                } else {
-                    $attestation->removeAttestationMateriel($am);
-                    if ($em->contains($am)) {
-                        $em->remove($am);
-                    }
-                }
-            }
-            foreach ($attestation->getAttestationOccasions() as $am) {
-                if ($am->getOccasion() !== null || $am->getCategorieOccasion() !== null) {
-                    $am->setAttestation($attestation);
-                    if (!$em->contains($am)) {
-                        $em->persist($am);
-                    }
-                } else {
-                    $attestation->removeAttestationOccasion($am);
-                    if ($em->contains($am)) {
-                        $em->remove($am);
+        if ($request->isMethod('POST')) {
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+                $em = $doctrine->getManager();
+                $attestation->setDernierEditeur($user);
+                foreach ($attestation->getAttestationMateriels() as $am) {
+                    if ($am->getMateriel() !== null || $am->getCategorieMateriel() !== null) {
+                        $am->setAttestation($attestation);
+                        if (!$em->contains($am)) {
+                            $em->persist($am);
+                        }
+                    } else {
+                        $attestation->removeAttestationMateriel($am);
+                        if ($em->contains($am)) {
+                            $em->remove($am);
+                        }
                     }
                 }
-            }
-            foreach ($attestation->getAgents() as $a) {
-                if (!$a->isBlank()) {
-                    $a->setAttestation($attestation);
-                    if (!$em->contains($a)) {
-                        $em->persist($a);
-                    }
-                } else {
-                    $attestation->removeAgent($a);
-                    if ($em->contains($a)) {
-                        $em->remove($a);
+                foreach ($attestation->getAttestationOccasions() as $am) {
+                    if ($am->getOccasion() !== null || $am->getCategorieOccasion() !== null) {
+                        $am->setAttestation($attestation);
+                        if (!$em->contains($am)) {
+                            $em->persist($am);
+                        }
+                    } else {
+                        $attestation->removeAttestationOccasion($am);
+                        if ($em->contains($am)) {
+                            $em->remove($am);
+                        }
                     }
                 }
-            }
-            foreach ($attestation->getContientElements() as $ce) {
-                if ($ce->getElement() !== null) {
-                    if (!$em->contains($ce->getElement())) {
-                        $ce->getElement()->setCreateur($user);
-                        $ce->getElement()->setDernierEditeur($user);
-                        $em->persist($ce->getElement());
+                foreach ($attestation->getAgents() as $a) {
+                    if (!$a->isBlank()) {
+                        $a->setAttestation($attestation);
+                        if (!$em->contains($a)) {
+                            $em->persist($a);
+                        }
+                    } else {
+                        $attestation->removeAgent($a);
+                        if ($em->contains($a)) {
+                            $em->remove($a);
+                        }
                     }
-                    $ce->setAttestation($attestation);
-                    $em->persist($ce);
-                } else {
-                    $attestation->removeContientElement($ce);
                 }
-            }
-            foreach ($contientElements as $ce) {
-                if (false === $attestation->getContientElements()->contains($ce)) {
-                    $em->remove($ce);
+                foreach ($attestation->getContientElements() as $ce) {
+                    if ($ce->getElement() !== null) {
+                        if (!$em->contains($ce->getElement())) {
+                            $ce->getElement()->setCreateur($user);
+                            $ce->getElement()->setDernierEditeur($user);
+                            $em->persist($ce->getElement());
+                        }
+                        $ce->setAttestation($attestation);
+                        $em->persist($ce);
+                    } else {
+                        $attestation->removeContientElement($ce);
+                    }
                 }
-            }
-            // Renumber elements
-            $cpt = 1;
-            foreach ($attestation->getContientElements() as $ce) {
-                $ce->setPositionElement($cpt);
-                $cpt++;
-            }
+                foreach ($contientElements as $ce) {
+                    if (false === $attestation->getContientElements()->contains($ce)) {
+                        $em->remove($ce);
+                    }
+                }
+                // Renumber elements
+                $cpt = 1;
+                foreach ($attestation->getContientElements() as $ce) {
+                    $ce->setPositionElement($cpt);
+                    $cpt++;
+                }
 
-            foreach ($attestation->getFormules() as $f) {
-                if (!empty($f->getFormule())) {
-                    if (!$em->contains($f)) {
-                        $f->setCreateur($user);
-                        $f->setAttestation($attestation);
-                        $em->persist($f);
+                foreach ($attestation->getFormules() as $f) {
+                    if (!empty($f->getFormule())) {
+                        if (!$em->contains($f)) {
+                            $f->setCreateur($user);
+                            $f->setAttestation($attestation);
+                            $em->persist($f);
+                        }
+                    } else {
+                        $attestation->removeFormule($f);
                     }
-                } else {
-                    $attestation->removeFormule($f);
                 }
-            }
 
-            if ($attestation->getEstDatee() !== true || $attestation->getDatation()->isEmpty()) {
-                $attestation->setDatation(null);
-                $attestation->setEstDatee(false);
-            }
+                if ($attestation->getEstDatee() !== true || $attestation->getDatation()->isEmpty()) {
+                    $attestation->setDatation(null);
+                    $attestation->setEstDatee(false);
+                }
 
-            $doctrine->getRepository(VerrouEntite::class)->remove($source->getVerrou());
-            $em->flush();
+                $doctrine->getRepository(VerrouEntite::class)->remove($source->getVerrou());
+                $em->flush();
 
-            // Message de confirmation
-            $request->getSession()->getFlashBag()->add('success', 'attestation.messages.edited');
-            if ($request->request->has("saveclose")) {
-                return $this->redirectToRoute('attestation_list');
+                // Message de confirmation
+                $request->getSession()->getFlashBag()->add('success', 'attestation.messages.edited');
+                if ($request->request->has("saveclose")) {
+                    return $this->redirectToRoute('attestation_list');
+                }
+                return $this->redirectToRoute('attestation_edit', ['id' => $attestation->getId()]);
             }
-            return $this->redirectToRoute('attestation_edit', ['id' => $attestation->getId()]);
         }
 
         return $this->render('attestation/edit.html.twig', [

@@ -132,47 +132,49 @@ class SecurityController extends AbstractController
         $user = new Chercheur;
         $form = $this->createForm(RegisterType::class, $user);
 
-        if ($request->isMethod('POST') && $form->handleRequest($request)->isSubmitted() && $form->handleRequest($request)->isValid()) {
-            $user->setPassword($hasher->hashPassword($user, $user->getPassword()));
-            $em->persist($user);
+        if ($request->isMethod('POST')) {
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+                $user->setPassword($hasher->hashPassword($user, $user->getPassword()));
+                $em->persist($user);
 
-            if ($this->openAccess) {
-                $user->setActif(true);
-                $mapProject = $em->getRepository(\App\Entity\Projet::class)->find(1);
-                $user->addProjet($mapProject);
+                if ($this->openAccess) {
+                    $user->setActif(true);
+                    $mapProject = $em->getRepository(\App\Entity\Projet::class)->find(1);
+                    $user->addProjet($mapProject);
 
-                $request->getSession()->getFlashBag()->add('success', 'login_page.message.account_created');
-            } else {
-                $admins = $doctrine
-                    ->getRepository(Chercheur::class)
-                    ->findBy(["role" => "admin", "gestionnaireComptes" => true]);
+                    $request->getSession()->getFlashBag()->add('success', 'login_page.message.account_created');
+                } else {
+                    $admins = $doctrine
+                        ->getRepository(Chercheur::class)
+                        ->findBy(["role" => "admin", "gestionnaireComptes" => true]);
 
-                if (!count($admins)) {
-                    throw new \Exception("No designated account managers");
+                    if (!count($admins)) {
+                        throw new \Exception("No designated account managers");
+                    }
+
+                    $emails = array_map(function ($u) {
+                        return $u->getMail();
+                    }, $admins);
+
+                    $mail = (new \Swift_Message($translator->trans('mails.new_account.title')))
+                        ->setFrom([$this->fromEmail => $this->fromName])
+                        ->setTo($emails)
+                        ->setReplyTo($user->getMail())
+                        ->setBody(
+                            $this->renderView(
+                                'email/new_account.html.twig',
+                                compact('user')
+                            ),
+                            'text/html'
+                        );
+
+                    $mailer->send($mail);
+
+                    $request->getSession()->getFlashBag()->add('success', 'login_page.message.account_requested');
                 }
-
-                $emails = array_map(function ($u) {
-                    return $u->getMail();
-                }, $admins);
-
-                $mail = (new \Swift_Message($translator->trans('mails.new_account.title')))
-                    ->setFrom([$this->fromEmail => $this->fromName])
-                    ->setTo($emails)
-                    ->setReplyTo($user->getMail())
-                    ->setBody(
-                        $this->renderView(
-                            'email/new_account.html.twig',
-                            compact('user')
-                        ),
-                        'text/html'
-                    );
-
-                $mailer->send($mail);
-
-                $request->getSession()->getFlashBag()->add('success', 'login_page.message.account_requested');
+                $em->flush();
             }
-            $em->flush();
-
             return $this->redirectToRoute('login');
         }
 

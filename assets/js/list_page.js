@@ -3,11 +3,11 @@ require('../css/list_page.scss');
 require('./base.js');
 
 require('datatables.net-bs4');
-require('datatables.net-buttons/js/dataTables.buttons.js')(window,jQuery);
-require('datatables.net-buttons/js/buttons.html5.js')(window,jQuery);
-require('datatables.net-buttons-bs4/js/buttons.bootstrap4.js')(window,jQuery);
-require('datatables.net-responsive/js/dataTables.responsive.js')(window,jQuery);
-require('datatables.net-responsive-bs4/js/responsive.bootstrap4.js')(window,jQuery);
+require('datatables.net-buttons/js/dataTables.buttons.js');
+require('datatables.net-buttons/js/buttons.html5.js');
+require('datatables.net-buttons-bs4/js/buttons.bootstrap4.js');
+require('datatables.net-responsive/js/dataTables.responsive.js');
+require('datatables.net-responsive-bs4/js/responsive.bootstrap4.js');
 
 function accents_supr(data) {
     return !data ?

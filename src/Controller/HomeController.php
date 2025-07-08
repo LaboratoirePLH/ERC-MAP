@@ -47,7 +47,7 @@ class HomeController extends AbstractController
     }
 
     /**
-     * @Route("/dashboard", name="dashboard")
+     * @Route("/dashboard", name="home_dashboard")
      */
     public function dashboard(Request $request, ManagerRegistry $doctrine)
     {

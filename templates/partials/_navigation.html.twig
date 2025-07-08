@@ -75,8 +75,8 @@
             <div class="col-12 px-0 px-lg-2">
                 <ul class="nav nav-fill">
                     <li
-                        class="nav-item {{ (app.request.uri == url('home') or app.request.uri == url('dashboard')) ? 'active' : '' }}">
-                        <a class="nav-link" href="{{ url('dashboard') }}">
+                        class="nav-item {{ (app.request.uri == url('home') or app.request.uri == url('home_dashboard')) ? 'active' : '' }}">
+                        <a class="nav-link" href="{{ url('home_dashboard') }}">
                             <i class="fas {{ icons.home }}"></i>
                             <span class="d-none d-lg-inline">{{ 'nav.home'|trans }}</span>
                         </a>

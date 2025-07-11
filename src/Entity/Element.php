@@ -40,16 +40,16 @@ class Element extends AbstractEntity implements Interfaces\Located
     /**
      * @var string
      *
-     * @ORM\Column(name="type", type="string", length=255, nullable=false)
+     * @ORM\Column(name="type", type="string", length=255, nullable=false, options={"default" : "non_theonym"})
      */
-    private $type;
+    private $type = 'non_theonym';
 
     /**
      * @var bool
      *
-     * @ORM\Column(name="type_checked", type="boolean", nullable=false)
+     * @ORM\Column(name="type_checked", type="boolean", nullable=false, options={"default" : false})
      */
-    private $typeChecked;
+    private $typeChecked = false;
 
     /**
      * @var NatureElement

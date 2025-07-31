@@ -586,6 +586,7 @@ search:
     results_count_filtered: "%records% enregistrement%plural% affiché%plural% (sur un total de %total%)"
     results_webmapping: "Cartographie des résultats"
     reindex: "Reconstruire l'Index de Recherche"
+    reindex_entry: "Reconstruire l'Index de Recherche pour"
     clear_cache: "Effacer le cache"
     new_query: "Nouvelle Recherche"
     edit_query: "Modifier la Recherche"
@@ -649,6 +650,8 @@ search:
     messages:
         not_up_to_date: "Attention : l'Index de Recherche n'est pas à jour, les résultats peuvent être incomplets."
         reindex_done: "L'Index de Recherche a bien été reconstruit (%records% enregistrements, %time% secondes)"
+        reindex_done_single: "L'Index de Recherche a bien été reconstruit pour %type% #%id%"
+        reindex_failed_single: "L'Index de Recherche n'a pas pu être reconstruit pour %type% #%id%"
         cache_cleared: "Le cache de Recherche a bien été effacé"
         no_empty_search: "Vous devez saisir une valeur dans le champ de recherche"
         invalid_empty_name: "Le nom de la requête ne peut pas être vide"

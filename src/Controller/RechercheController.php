@@ -576,6 +576,52 @@ class RechercheController extends AbstractController
         return new JsonResponse($rebuildData);
     }
 
+    /**
+     * @Route("/search/rebuild_entry", name="search_rebuild_entry")
+     */
+    public function rebuildEntry(Request $request, TranslatorInterface $translator, ManagerRegistry $doctrine)
+    {
+        if ($this->isGranted('ROLE_ADMIN') && $request->isMethod('POST')) {
+            $entityType = $request->request->get('entityType', '');
+            $entityType = ucfirst(strtolower($entityType));
+            $entityId = intval($request->request->get('entityId', 0));
+            $error = false;
+
+            if (!in_array($entityType, ['Source', 'Attestation', 'Element']) || !is_numeric($entityId)) {
+                $error = true;
+            }
+
+            // Check Existence of the entity
+            $query = $doctrine->getManager()->createQuery("SELECT e.id FROM \App\Entity\\$entityType e WHERE e.id = $entityId");
+            $result = $query->getOneOrNullResult();
+            if ($result === null) {
+                $error = true;
+            }
+
+            if ($error) {
+                $request->getSession()->getFlashBag()->add(
+                    'error',
+                    $translator->trans('search.messages.reindex_failed_single', [
+                        '%type%' => $entityType,
+                        '%id%'   => $entityId
+                    ])
+                );
+            } else {
+                $repo = $doctrine->getRepository(\App\Entity\IndexRecherche::class);
+                $repo->rebuildEntry($entityType, $entityId);
+
+                $request->getSession()->getFlashBag()->add(
+                    'success',
+                    $translator->trans('search.messages.reindex_done_single', [
+                        '%type%' => $entityType,
+                        '%id%'   => $entityId
+                    ])
+                );
+            }
+        }
+        return $this->redirectToRoute('search');
+    }
+
 
     /**
      * @Route("/search/export_nodes", name="search_export_nodes")

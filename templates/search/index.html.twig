@@ -488,7 +488,8 @@
                                 <i class="fas fa-search fa-fw"></i>
                                 {{ 'generic.search'|trans }}
                             </button>
-                            {% include 'partials/_help.html.twig' with {'section': 'search_sql_mcd', 'text': 'search.mcd'|trans} %}
+                            {% include 'partials/_help.html.twig' with {'section': 'search_sql_mcd', 'text':
+                            'search.mcd'|trans} %}
                         </div>
                     </div>
                 </form>
@@ -540,6 +541,24 @@
             <i class="fas fa-fw fa-trash"></i>
             {{ 'search.clear_cache'|trans }}
         </a>
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col-6 offset-3 d-flex justify-content-center align-items-center alert alert-danger">
+        <p class="font-weight-bold mr-2 mb-0">{{ 'search.reindex_entry'|trans }}</p>
+        <form action="{{ url('search_rebuild_entry') }}" method="post" class="d-flex align-items-center">
+            <select name="entityType" id="rebuild-type" class="form-control w-25">
+                <option value="source">{{ 'source.name'|trans }}</option>
+                <option value="attestation">{{ 'attestation.name'|trans }}</option>
+                <option value="element">{{ 'element.name'|trans }}</option>
+            </select>
+            <label for="rebuild-id" class="ml-2 mr-2 mb-0">#</label>
+            <input type="number" name="entityId" id="rebuild-id" class="form-control w-25">
+            <button type="submit" class="btn btn-danger ml-2">
+                <i class="fas fa-fw fa-sync"></i>
+                {{ 'generic.send'|trans }}
+            </button>
+        </form>
     </div>
 </div>
 {% endif %}
